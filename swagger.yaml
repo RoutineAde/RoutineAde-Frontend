@@ -1,0 +1,328 @@
+openapi: 3.0.1
+info:
+  title: "루틴 에이드 API 명세서"
+  description: "오른쪽에 Authorize를 이용하면 사용자 인증이 된 상태로 API를 이용할 수 있습니다!"
+  version: "1.0.0"
+servers:
+  - url: "http://15.164.88.94:8080"
+    description: "Generated server url"
+security:
+  - JWT: []
+tags:
+  - name: "루틴 API"
+    description: "루틴 관련 API"
+  - name: "유저 API"
+    description: "유저 관련 API"
+paths:
+  /routines/{routineId}:
+    put:
+      tags:
+        - "루틴 API"
+      summary: "루틴 수정"
+      description: "사용자의 루틴을 수정하는 API"
+      operationId: "updateRoutine"
+      parameters:
+        - name: "routineId"
+          in: "path"
+          description: "수정할 루틴의 ID"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+          example: 1
+        - name: "routineTitle"
+          in: "query"
+          description: "루틴명"
+          example: "하루 30분 운동하기"
+        - name: "routineCategory"
+          in: "query"
+          description: "루틴 카테고리 (DAILY, HEALTH, CARE, SELF_IMPROVEMENT, OTHER 중 하나)"
+          example: "HEALTH"
+        - name: "isAlarmEnabled"
+          in: "query"
+          description: "루틴 알람 여부"
+          example: true
+        - name: "repeatDays"
+          in: "query"
+          description: "루틴 반복 요일 (Mon, Tue, Wed, Thu, Fri, Sat, Sun 중 한 개 이상)"
+          example: "[Mon, Wed, Sun]"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoutineUpdateRequest"
+        required: true
+      responses:
+        '200':
+          description: "OK"
+    delete:
+      tags:
+        - "루틴 API"
+      summary: "루틴 삭제"
+      description: "사용자의 루틴을 삭제하는 API"
+      operationId: "deleteRoutine"
+      parameters:
+        - name: "routineId"
+          in: "path"
+          description: "삭제할 루틴의 ID"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+          example: 1
+      responses:
+        '200':
+          description: "OK"
+  /routines/{routineId}/check:
+    put:
+      tags:
+        - "루틴 API"
+      summary: "루틴 수정"
+      description: "사용자의 루틴을 수정하는 API"
+      operationId: "checkRoutine"
+      parameters:
+        - name: "routineId"
+          in: "path"
+          description: "수정할 루틴의 ID"
+          required: true
+          schema:
+            type: "integer"
+            format: "int64"
+          example: 1
+        - name: "checkRoutineDate"
+          in: "query"
+          description: "루틴 체크할 날짜"
+          example: "2024.06.25"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CheckRoutineRequest"
+        required: true
+      responses:
+        '200':
+          description: "OK"
+  /users:
+    post:
+      tags:
+        - "유저 API"
+      summary: "감정 등록"
+      description: "사용자가 특정 날짜에 감정을 등록하는 API"
+      operationId: "createDailyMood"
+      parameters:
+        - name: "date"
+          in: "query"
+          description: "감정을 등록할 날짜"
+          example: "2024.06.25"
+        - name: "dailyMood"
+          in: "query"
+          description: "등록할 감정 (GOOD, OK, SAD, ANGRY 중 하나)"
+          example: "GOOD"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDailyMoodRequest"
+        required: true
+      responses:
+        '200':
+          description: "OK"
+  /users/login:
+    post:
+      tags:
+        - "유저 API"
+      summary: "로그인"
+      description: "로그인하여 인증용 토큰을 조회하는 API"
+      operationId: "login"
+      parameters:
+        - name: "userId"
+          in: "query"
+          description: "로그인할 유저 ID"
+          example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: "string"
+              description: "로그인할 유저 ID"
+        required: true
+      responses:
+        '200':
+          description: "OK"
+          content:
+            "*/*":
+              schema:
+                type: "object"
+                additionalProperties:
+                  type: "string"
+  /routines:
+    get:
+      tags:
+        - "루틴 API"
+      summary: "루틴 조회"
+      description: "사용자의 루틴을 조회하는 API"
+      operationId: "getRoutines"
+      parameters:
+        - name: "routineDate"
+          in: "query"
+          description: "조회할 날짜 (이 날에 수행해야 하는 루틴만 조회됨)"
+          required: true
+          schema:
+            type: "string"
+          example: "2024.06.25"
+      responses:
+        '200':
+          description: "OK"
+          content:
+            "*/*":
+              schema:
+                $ref: "#/components/schemas/RoutinesGetResponse"
+    post:
+      tags:
+        - "루틴 API"
+      summary: "루틴 생성"
+      description: "사용자의 루틴을 생성하는 API"
+      operationId: "createRoutine"
+      parameters:
+        - name: "routineTitle"
+          in: "query"
+          description: "루틴명"
+          example: "하루 30분 운동하기"
+        - name: "routineCategory"
+          in: "query"
+          description: "루틴 카테고리 (DAILY, HEALTH, CARE, SELF_IMPROVEMENT, OTHER 중 하나)"
+          example: "HEALTH"
+        - name: "isAlarmEnabled"
+          in: "query"
+          description: "루틴 알람 여부"
+          example: true
+        - name: "startDate"
+          in: "query"
+          description: "루틴 시작 날짜"
+          example: "2024.06.25"
+        - name: "repeatDays"
+          in: "query"
+          description: "루틴 반복 요일 (Mon, Tue, Wed, Thu, Fri, Sat, Sun 중 한 개 이상)"
+          example:
+            - "Mon"
+            - "Wed"
+            - "Sun"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RoutineCreateRequest"
+        required: true
+      responses:
+        '200':
+          description: "OK"
+components:
+  schemas:
+    RoutineUpdateRequest:
+      required:
+        - "isAlarmEnabled"
+        - "repeatDays"
+        - "routineCategory"
+        - "routineTitle"
+      type: "object"
+      properties:
+        routineTitle:
+          maxLength: 15
+          minLength: 1
+          type: "string"
+        routineCategory:
+          type: "string"
+          enum:
+            - "DAILY"
+            - "HEALTH"
+            - "CARE"
+            - "SELF_IMPROVEMENT"
+            - "OTHER"
+        repeatDays:
+          type: "array"
+          items:
+            type: "string"
+        isAlarmEnabled:
+          type: "boolean"
+    CheckRoutineRequest:
+      required:
+        - "checkRoutineDate"
+      type: "object"
+      properties:
+        checkRoutineDate:
+          type: "string"
+    CreateDailyMoodRequest:
+      required:
+        - "dailyMood"
+        - "date"
+      type: "object"
+      properties:
+        date:
+          type: "string"
+        dailyMood:
+          type: "string"
+          enum:
+            - "GOOD"
+            - "OK"
+            - "SAD"
+            - "ANGRY"
+    RoutineCreateRequest:
+      required:
+        - "isAlarmEnabled"
+        - "repeatDays"
+        - "routineCategory"
+        - "routineTitle"
+        - "startDate"
+      type: "object"
+      properties:
+        routineTitle:
+          maxLength: 15
+          minLength: 1
+          type: "string"
+        routineCategory:
+          type: "string"
+          enum:
+            - "DAILY"
+            - "HEALTH"
+            - "CARE"
+            - "SELF_IMPROVEMENT"
+            - "OTHER"
+        isAlarmEnabled:
+          type: "boolean"
+        startDate:
+          type: "string"
+        repeatDays:
+          type: "array"
+          items:
+            type: "string"
+    RoutineDetail:
+      type: "object"
+      properties:
+        routineId:
+          type: "integer"
+          format: "int64"
+        routineTitle:
+          type: "string"
+        routineCategory:
+          type: "string"
+          enum:
+            - "DAILY"
+            - "HEALTH"
+            - "CARE"
+            - "SELF_IMPROVEMENT"
+            - "OTHER"
+        isAlarmEnabled:
+          type: "boolean"
+  RoutinesGetResponse:
+    type: "object"
+    properties:
+      routines:
+        type: "array"
+        items:
+          $ref: "#/components/schemas/RoutineDetail"
+securitySchemes:
+  JWT:
+    type: "http"
+    scheme: "bearer"
+    bearerFormat: "JWT"
+
