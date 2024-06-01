@@ -6,41 +6,39 @@ import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
 class GroupMainPage extends StatefulWidget {
   @override
   _GroupMainPageState createState() => _GroupMainPageState();
-  }
+}
 
-  class _GroupMainPageState extends State<GroupMainPage>{
-    bool isExpanded = false;
+class _GroupMainPageState extends State<GroupMainPage> {
+  bool isExpanded = false;
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('내 그룹', 
-        style: TextStyle(
-          color: Colors.black, 
-          fontSize: 25, 
-          fontWeight: FontWeight.bold ),),
-          centerTitle: true,
-          backgroundColor: Colors.grey[200],
-      ), 
+        title: Text(
+          '내 그룹',
+          style: TextStyle(
+              color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.grey[200],
+      ),
       body: Container(
-        color:Colors.grey[200],
-        child: Center(
-          child: Text("그룹을 추가하세요")), //루틴그룹 내용 표시
+        color: Colors.grey[200],
+        child: Center(child: Text("그룹을 추가하세요")), //루틴그룹 내용 표시
       ),
 
-
       //바텀 네비게이션 바
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.white,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyRoutinePage()),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyRoutinePage()),
                 );
               },
               child: Container(
@@ -83,7 +81,7 @@ class GroupMainPage extends StatefulWidget {
         ),
       ),
       //add 버튼
-    floatingActionButton: Stack(
+      floatingActionButton: Stack(
         alignment: Alignment.bottomRight,
         children: <Widget>[
           Padding(
@@ -96,25 +94,25 @@ class GroupMainPage extends StatefulWidget {
                   FloatingActionButton(
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(
-                        builder: (context){
-                          return  GroupRoutinePage();
+                        builder: (context) {
+                          return GroupRoutinePage();
                         },
-                        ));
+                      ));
                     },
                     backgroundColor: Color(0xffF87c3ff),
-                  child: Image.asset('assets/images/group-list.png'),
-                  shape: CircleBorder(),
+                    child: Image.asset('assets/images/group-list.png'),
+                    shape: CircleBorder(),
                   ),
                   SizedBox(height: 20),
-                  
+
                   //그룹 루틴 추가 버튼
                   FloatingActionButton(
                     onPressed: () {
                       // Second button action code
-                    },  
+                    },
                     backgroundColor: Color(0xffF1E977),
-                  child: Image.asset('assets/images/add.png'),
-                  shape: CircleBorder(),
+                    child: Image.asset('assets/images/add.png'),
+                    shape: CircleBorder(),
                   ),
                   SizedBox(height: 20),
                 ],
@@ -125,10 +123,11 @@ class GroupMainPage extends StatefulWidget {
                       isExpanded = !isExpanded;
                     });
                   },
-                  backgroundColor: isExpanded? Color(0xffF7C7C7C): Color(0xffF1E977),
+                  backgroundColor:
+                      isExpanded ? Color(0xffF7C7C7C) : Color(0xffF1E977),
                   child: isExpanded
-                  ? Image.asset('assets/images/cancel.png')
-                  : Image.asset('assets/images/add.png'),
+                      ? Image.asset('assets/images/cancel.png')
+                      : Image.asset('assets/images/add.png'),
                   shape: CircleBorder(),
                 ),
               ],
@@ -136,8 +135,6 @@ class GroupMainPage extends StatefulWidget {
           ),
         ],
       ),
-    
     );
-    
   }
-  }
+}

@@ -7,14 +7,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart'; //날짜 포맷팅 init 패키지
 import 'MyRoutinePage.dart';
 
-class AddRoutinePage extends StatefulWidget {
-  const AddRoutinePage({super.key});
+class ModifiedRoutinePage extends StatefulWidget {
+  const ModifiedRoutinePage({super.key});
 
   @override
-  State<AddRoutinePage> createState() => _AddRoutinePageState();
+  State<ModifiedRoutinePage> createState() => _ModifiedRoutinePageState();
 }
 
-class _AddRoutinePageState extends State<AddRoutinePage> {
+class _ModifiedRoutinePageState extends State<ModifiedRoutinePage> {
   //텍스트필드
   final TextEditingController _controller = TextEditingController();
   int _currentLength = 0;
@@ -59,7 +59,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
           child: AppBar(
             backgroundColor: Colors.grey[200],
             title: Text(
-              '루틴 추가',
+              '루틴 수정',
               style: TextStyle(
                   fontSize: 18,
                   color: Colors.black,
@@ -162,7 +162,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                             ["월", "화", "수", "목", "금", "토", "일"][i],
                             style: TextStyle(
                               color:
-                                  isSelected[i] ? Colors.white : Colors.black,
+                              isSelected[i] ? Colors.white : Colors.black,
                             ),
                           ),
                         ),
@@ -203,7 +203,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(
                         5,
-                        (index) => GestureDetector(
+                            (index) => GestureDetector(
                           onTap: () {
                             setState(() {
                               selectedCategoryIndex = index;
@@ -244,7 +244,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 padding:
-                    EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+                EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
                 margin: EdgeInsets.only(top: 30, left: 10, right: 10),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -278,7 +278,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
               ),
               Container(
                 padding:
-                    EdgeInsets.only(top: 20, bottom: 15, left: 10, right: 10),
+                EdgeInsets.only(top: 20, bottom: 15, left: 10, right: 10),
                 margin: EdgeInsets.only(top: 30, left: 10, right: 10),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -320,7 +320,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                       },
                       child: Container(
                         padding:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                        EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                         decoration: BoxDecoration(
                           color: Colors.grey[100],
                           borderRadius: BorderRadius.circular(5),
@@ -343,7 +343,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                   onPressed: () {},
                   style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Color(0xffE6E288)),
+                    MaterialStateProperty.all<Color>(Color(0xffE6E288)),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0), //테두리 둥글게
@@ -352,7 +352,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                     ),
                   ),
                   child: Text(
-                    "루틴 추가하기",
+                    "수정 완료",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
