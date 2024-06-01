@@ -9,6 +9,7 @@ class Group { //그룹
   final int membersCount;
   final String leader;
   final String groupCode;
+  final String groupType;
 
   Group({
     required this.name,
@@ -17,6 +18,7 @@ class Group { //그룹
     required this.membersCount,
     required this.leader,
     required this.groupCode,
+    required this.groupType,
   });
 }
 
@@ -41,6 +43,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
       membersCount: index + 1,
       leader: "익명 $index",
       groupCode: "#$index",
+      groupType: "일상",
     ),
   );
 
@@ -90,10 +93,10 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                   hintText: "  그룹명을 입력하세요",
                   fillColor: Colors.white,
                   filled: true,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                    borderSide: BorderSide.none,
-                  ),
+                  // border: OutlineInputBorder(
+                  //   borderRadius: BorderRadius.circular(12.0),
+                  //   borderSide: BorderSide.none,
+                  // ),
                   contentPadding: EdgeInsets.symmetric(
                     vertical: 12.0,
                   ),
@@ -104,7 +107,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
               )
             : Text(
                 "루틴 그룹",
-                style: TextStyle(color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold),
+                style: TextStyle(color: Colors.black, fontSize: 23, fontWeight: FontWeight.bold),
               ),
         centerTitle: true,
         backgroundColor: Colors.grey[200],
@@ -193,7 +196,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                           Text(group.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                          Text("가입일자: ${group.creationDate.toString().substring(0,10)}"),
+
                           ],
                         ),
                         SizedBox(height: 4.0,),  
@@ -201,7 +204,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(group.category),
-                            Text("인원수: ${group.membersCount}명"),
+                            Text("인원: ${group.membersCount}명"),
                           ],
                         ),
                         SizedBox(height: 4.0),

@@ -3,17 +3,70 @@ import 'package:flutter/material.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
 
+//전체화면 어둡게 
+class DarkOverlay extends StatelessWidget {
+  final Widget child;
+  final bool isDark;
+
+  DarkOverlay({required this.child, required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        child,
+        if (isDark)
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () {}, // 클릭 방지용 빈 함수
+              child: Container(
+                color: Colors.black.withOpacity(0.5), // 어두운 배경색, 투명도 조절 가능
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
 class GroupMainPage extends StatefulWidget {
   @override
   _GroupMainPageState createState() => _GroupMainPageState();
   }
-
-  class _GroupMainPageState extends State<GroupMainPage>{
+class _GroupMainPageState extends State<GroupMainPage>{
     bool isExpanded = false;
+
+    
+//예시 그룹. GroupRoutinPage 상속 
+  List<Group> groups = [
+    Group(name: "성공의 루틴" , 
+    creationDate: DateTime.now().subtract(Duration(days: 1)), 
+    category: "건강", 
+    membersCount: 4, 
+    leader: "서현쓰", 
+    groupCode: "#13",
+    groupType: "건강",
+    ),
+    Group(name: "루틴 킬러", 
+    creationDate: DateTime.now().subtract(Duration(days: 1)), 
+    category: "일상", 
+    membersCount: 21, 
+    leader: "윤정", 
+    groupCode: "#36",
+    groupType: "일상",
+    ),
+  ];
+//가입일자 계산
+  String calculateDaysSinceCreation(DateTime creationDate) {
+    final now = DateTime.now();
+    final difference = now.difference(creationDate).inDays;
+    return "가입 ${difference + 1}일차";
+  }
 
   @override
   Widget build(BuildContext context){
-    return Scaffold(
+    return 
+        Scaffold( 
       appBar: AppBar(
         title: Text('내 그룹', 
         style: TextStyle(
@@ -21,14 +74,79 @@ class GroupMainPage extends StatefulWidget {
           fontSize: 25, 
           fontWeight: FontWeight.bold ),),
           centerTitle: true,
-          backgroundColor: Colors.grey[200],
+          backgroundColor: isExpanded? Colors.grey[600] : Colors.grey[200],
+          automaticallyImplyLeading: false, //뒤로가기 제거
+          actions: [
+            Padding(padding: EdgeInsets.only(right: 16.0),
+            child: Image.asset("assets/images/bell.png",
+            width: 35,
+            height: 35,),
+            ),
+          ], 
       ), 
-      body: Container(
-        color:Colors.grey[200],
-        child: Center(
-          child: Text("그룹을 추가하세요")), //루틴그룹 내용 표시
+      //예시그룹
+      body: DarkOverlay(
+        isDark: isExpanded, //눌렀을때만 어둡게
+        child:  Container(
+        color: Colors.grey[200], 
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: groups.length,
+                itemBuilder: (context, index) {
+                  final group = groups[index];
+                  Color textColor = group.groupType =="건강"? Colors.blue: Colors.orange;
+                  return Card(
+                    margin: EdgeInsets.all(8.0),
+                    color: Colors.white,
+                    child: Padding(
+                      padding: EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                group.name,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,      
+                                ),
+                              ),
+                              Text(calculateDaysSinceCreation(group.creationDate)),
+                            ],
+                          ),
+                          SizedBox(height: 8.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("대표 카테고리"), 
+                              Text(group.category, style: TextStyle( color: textColor)),
+                              SizedBox(width: 160.0), // 간격 조절
+                              Text("인원 ${group.membersCount}/30명"),
+                            ],
+                          ),
+                          SizedBox(height: 8.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("루틴장 ${group.leader}"),
+                              Text("그룹코드 ${group.groupCode}"),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
       ),
-
+      ),
+      ),
 
       //바텀 네비게이션 바
         bottomNavigationBar: BottomAppBar(
@@ -92,7 +210,15 @@ class GroupMainPage extends StatefulWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (isExpanded) ...[
-                  SizedBox(height: 20), //그룹 추가 버튼
+                  SizedBox(height: 20),
+                  Row(mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text("루틴 그룹", style: 
+                    TextStyle( color: Colors.white, fontWeight: FontWeight.bold)
+                  ),
+                    SizedBox(width: 10),
+
+                     //그룹 추가 버튼
                   FloatingActionButton(
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(
@@ -105,20 +231,32 @@ class GroupMainPage extends StatefulWidget {
                   child: Image.asset('assets/images/group-list.png'),
                   shape: CircleBorder(),
                   ),
+                  ],
+                  ),
                   SizedBox(height: 20),
-                  
+                  Row(mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text("그룹 추가", style: TextStyle( color: Colors.white, fontWeight: FontWeight.bold)
+                  ),
+                     SizedBox(width: 10),
+
                   //그룹 루틴 추가 버튼
                   FloatingActionButton(
                     onPressed: () {
-                      // Second button action code
                     },  
                     backgroundColor: Color(0xffF1E977),
                   child: Image.asset('assets/images/add.png'),
                   shape: CircleBorder(),
                   ),
+                  ],
+                  ),
                   SizedBox(height: 20),
                 ],
                 //add 버튼, X버튼
+                Row(mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(""),
+                     SizedBox(width: 10),
                 FloatingActionButton(
                   onPressed: () {
                     setState(() {
@@ -130,6 +268,8 @@ class GroupMainPage extends StatefulWidget {
                   ? Image.asset('assets/images/cancel.png')
                   : Image.asset('assets/images/add.png'),
                   shape: CircleBorder(),
+                ),
+                  ],
                 ),
               ],
             ),
