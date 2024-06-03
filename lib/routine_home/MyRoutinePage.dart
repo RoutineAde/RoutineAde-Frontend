@@ -326,14 +326,18 @@ class _MyRoutinePageState extends State<MyRoutinePage>
               // Do something
             },
             dayOfWeekStyle: TextStyle(
-                color: Colors.black87, fontWeight: FontWeight.w600),
+                color: Colors.black87, fontWeight: FontWeight.w600, fontSize: 17),
             dayOfWeek: ['월', '화', '수', '목', '금', '토', '일'],
             dateStyle: TextStyle(
-                color: Colors.black87, fontWeight: FontWeight.w600),
+                color: Colors.black87, fontWeight: FontWeight.w600, fontSize: 17,),
             todayDateStyle: TextStyle(
-                color: Color(0xffFFFFFF)
+                color: Color(0xffFFFFFF), fontWeight: FontWeight.w600, fontSize: 17,
             ),
             todayBackgroundColor: Color(0xffE6E288),
+            weekendsStyle: TextStyle(
+              fontWeight: FontWeight.bold, fontSize: 17, color: Colors.red,
+            ),
+
             monthViewBuilder: (DateTime time) => Align(
               alignment: FractionalOffset(0.05, 1),
               child: Container(
@@ -898,16 +902,23 @@ class _MyRoutinePageState extends State<MyRoutinePage>
           color: Colors.grey[200],
           child: _selectedImage != null
               ? Row(
-            mainAxisAlignment: MainAxisAlignment.start,
+            //mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 padding: EdgeInsets.fromLTRB(24, 10, 24, 16),
-                child: Image.asset(
-                  _selectedImage!,
-                  fit: BoxFit.cover,
-                  width: 70,
-                  height: 70, // 기분 선택했을 때 루틴페이지에 나타나는 기분 이미지 크기
-                ),
+                child: Column(
+                  children: [
+                    Text("오늘의 기분", style: TextStyle(fontSize: 18),),
+                    SizedBox(height: 10,),
+                    Image.asset(
+                      _selectedImage!,
+                      fit: BoxFit.cover,
+                      width: 70,
+                      height: 70, // 기분 선택했을 때 루틴페이지에 나타나는 기분 이미지 크기
+                    ),
+                  ],
+                )
               )
             ],
           )

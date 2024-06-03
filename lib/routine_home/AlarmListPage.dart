@@ -133,7 +133,7 @@ class _AlarmListPageState extends State<AlarmListPage> {
                                 fontSize: 17,
                               ),),
                               SizedBox(width: 20,),
-                              Text("2024.05.25", style: TextStyle(
+                              Text("2024.05.24", style: TextStyle(
                                 color: Colors.grey, fontSize: 17,
                               ),),
 
@@ -195,7 +195,7 @@ class _AlarmListPageState extends State<AlarmListPage> {
                                 fontSize: 17,
                               ),),
                               SizedBox(width: 20,),
-                              Text("2024.05.25", style: TextStyle(
+                              Text("2024.05.23", style: TextStyle(
                                 color: Colors.grey, fontSize: 17,
                               ),),
 
