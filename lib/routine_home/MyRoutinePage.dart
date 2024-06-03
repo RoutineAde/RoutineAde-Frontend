@@ -7,6 +7,7 @@ import 'package:flutter_calendar_week/flutter_calendar_week.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
+import 'package:routine_ade/routine_group/OnClickGroupPage.dart';
 import 'AddRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
@@ -173,7 +174,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(
-        () => setState(() => _selectedIndex = _tabController.index));
+            () => setState(() => _selectedIndex = _tabController.index));
   }
 
   @override
@@ -184,725 +185,729 @@ class _MyRoutinePageState extends State<MyRoutinePage>
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        //추가 버튼
-        floatingActionButton: Stack(
-          alignment: Alignment.bottomRight,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10, right: 10),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (_isExpanded) ...[
-                    SizedBox(height: 20), //기분 추가 버튼
-                    FloatingActionButton(
-                      onPressed: _showBottomSheet,
-                      backgroundColor: Color(0xffFFB065),
-                      child: Image.asset('assets/images/add-emotion.png'),
-                      shape: CircleBorder(),
-                    ),
-                    SizedBox(height: 20),
-
-                    //루틴 추가 버튼
-                    FloatingActionButton(
-                      onPressed: () {
-                        Navigator.push(context, MaterialPageRoute(
-                          builder: (context) {
-                            return const AddRoutinePage();
-                          },
-                        ));
-                      },
-                      backgroundColor: Color(0xffF1E977),
-                      child: Image.asset('assets/images/add.png'),
-                      shape: CircleBorder(),
-                    ),
-                    SizedBox(height: 20),
-                  ],
-                  //add 버튼, X버튼
-                  FloatingActionButton(
-                    onPressed: () {
-                      setState(() {
-                        _isExpanded = !_isExpanded;
-                      });
-                    },
-                    backgroundColor:
-                        _isExpanded ? Color(0xffF7C7C7C) : Color(0xffF1E977),
-                    child: _isExpanded
-                        ? Image.asset('assets/images/cancel.png')
-                        : Image.asset('assets/images/add.png'),
-                    shape: CircleBorder(),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-
-        appBar: PreferredSize(
-          child: AppBar(),
-          preferredSize: Size.fromHeight(0),
-        ),
-        //bottomBar
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.white,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //추가 버튼
+    floatingActionButton: Stack(
+      alignment: Alignment.bottomRight,
+      children: <Widget>[
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10, right: 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              GestureDetector(
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  child: Image.asset("assets/images/tap-bar/routine02.png"),
+              if (_isExpanded) ...[
+                SizedBox(height: 20), //기분 추가 버튼
+                FloatingActionButton(
+                  onPressed: _showBottomSheet,
+                  backgroundColor: Color(0xffFFB065),
+                  child: Image.asset('assets/images/add-emotion.png'),
+                  shape: CircleBorder(),
                 ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => GroupMainPage()),
-                  );
+                SizedBox(height: 20),
+
+                //루틴 추가 버튼
+                FloatingActionButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return const AddRoutinePage();
+                      },
+                    ));
+                  },
+                  backgroundColor: Color(0xffF1E977),
+                  child: Image.asset('assets/images/add.png'),
+                  shape: CircleBorder(),
+                ),
+                SizedBox(height: 20),
+              ],
+              //add 버튼, X버튼
+              FloatingActionButton(
+                onPressed: () {
+                  setState(() {
+                    _isExpanded = !_isExpanded;
+                  });
                 },
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  child: Image.asset("assets/images/tap-bar/group01.png"),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  // 통계 버튼 클릭 시 동작할 코드
-                },
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  child: Image.asset("assets/images/tap-bar/statistics01.png"),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  // 더보기 버튼 클릭 시 동작할 코드
-                },
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  child: Image.asset("assets/images/tap-bar/more01.png"),
-                ),
+                backgroundColor:
+                _isExpanded ? Color(0xffF7C7C7C) : Color(0xffF1E977),
+                child: _isExpanded
+                    ? Image.asset('assets/images/cancel.png')
+                    : Image.asset('assets/images/add.png'),
+                shape: CircleBorder(),
               ),
             ],
           ),
         ),
+      ],
+    ),
 
-        body: Column(children: [
-          Container(
-              decoration: BoxDecoration(boxShadow: [
-                BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 10,
-                    spreadRadius: 1)
-              ]),
-              child: CalendarWeek(
-                controller: _controller,
-                height: 130,
-                showMonth: true,
-                minDate: DateTime.now().add(
-                  Duration(days: -367),
-                ),
-                maxDate: DateTime.now().add(
-                  Duration(days: 365),
-                ),
-                onDatePressed: (DateTime datetime) {
-                  // Do something
-                  setState(() {});
-                },
-                onDateLongPressed: (DateTime datetime) {
-                  // Do something
-                },
-                onWeekChanged: () {
-                  // Do something
-                },
-                dayOfWeekStyle: TextStyle(
-                    color: Colors.black87, fontWeight: FontWeight.w600),
-                dayOfWeek: ['월', '화', '수', '목', '금', '토', '일'],
-                dateStyle: TextStyle(
-                    color: Colors.black87, fontWeight: FontWeight.w600),
-                todayDateStyle: TextStyle(
-                  color: Color(0xffFFFFFF)
-                ),
-                todayBackgroundColor: Color(0xffE6E288),
-                monthViewBuilder: (DateTime time) => Align(
-                  alignment: FractionalOffset(0.05, 1),
-                  child: Container(
-                    child: Row(
-                      children: [
-                        SizedBox(width: 20,),
-                        Container(
-                            margin: const EdgeInsets.symmetric(vertical: 4),
-                            child: Text(
-                                locale: const Locale('ko', 'KR'),
-                                DateFormat.yMMMM().format(time),
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    color: Colors.black45,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 24)),
-
-                          ),
-                        SizedBox(width: 220,),
-                        IconButton(
-                          icon: Image.asset("assets/images/bell.png",
-                          width: 30,
-                          height: 30,
-                          ),
-                          onPressed: () {
-
-                          },
-                        ),
-
-
-                      ],
-                    ),
-                  ),
-                ),
-              )),
-
-          Expanded(
+    appBar: PreferredSize(
+      child: AppBar(),
+      preferredSize: Size.fromHeight(0),
+    ),
+    //bottomBar
+    bottomNavigationBar: BottomAppBar(
+      color: Colors.white,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          GestureDetector(
             child: Container(
-              color: Colors.grey[200],
-              child: Theme(
-                data: Theme.of(context).copyWith(
-                  dividerColor: Colors.transparent, // 구분선을 투명하게 설정
-                ),
-                child: ListView(
-                  padding: EdgeInsets.fromLTRB(24, 10, 24, 16),
-                  children: <Widget>[
-                    ExpansionTile(
-                      title: Text(
-                        "개인 루틴",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      children: [
-                        SizedBox(height: 10), // 여백 추가
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Column(
-                            children: <Widget>[
+              width: 50,
+              height: 50,
+              child: Image.asset("assets/images/tap-bar/routine02.png"),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => GroupMainPage()),
+              );
+            },
+            child: Container(
+              width: 50,
+              height: 50,
+              child: Image.asset("assets/images/tap-bar/group01.png"),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => OnClickGroupPage()),
+              );
+            },
+            child: Container(
+              width: 50,
+              height: 50,
+              child: Image.asset("assets/images/tap-bar/statistics01.png"),
+            ),
+          ),
+          GestureDetector(
+            onTap: () {
+              // 더보기 버튼 클릭 시 동작할 코드
+            },
+            child: Container(
+              width: 50,
+              height: 50,
+              child: Image.asset("assets/images/tap-bar/more01.png"),
+            ),
+          ),
+        ],
+      ),
+    ),
 
+    body: Column(children: [
+      Container(
+          decoration: BoxDecoration(boxShadow: [
+            BoxShadow(
+                color: Colors.black.withOpacity(0.2),
+                blurRadius: 10,
+                spreadRadius: 1)
+          ]),
+          child: CalendarWeek(
+            controller: _controller,
+            height: 130,
+            showMonth: true,
+            minDate: DateTime.now().add(
+              Duration(days: -367),
+            ),
+            maxDate: DateTime.now().add(
+              Duration(days: 365),
+            ),
+            onDatePressed: (DateTime datetime) {
+              // Do something
+              setState(() {});
+            },
+            onDateLongPressed: (DateTime datetime) {
+              // Do something
+            },
+            onWeekChanged: () {
+              // Do something
+            },
+            dayOfWeekStyle: TextStyle(
+                color: Colors.black87, fontWeight: FontWeight.w600),
+            dayOfWeek: ['월', '화', '수', '목', '금', '토', '일'],
+            dateStyle: TextStyle(
+                color: Colors.black87, fontWeight: FontWeight.w600),
+            todayDateStyle: TextStyle(
+                color: Color(0xffFFFFFF)
+            ),
+            todayBackgroundColor: Color(0xffE6E288),
+            monthViewBuilder: (DateTime time) => Align(
+              alignment: FractionalOffset(0.05, 1),
+              child: Container(
+                child: Row(
+                  children: [
+                    SizedBox(width: 20,),
+                    Container(
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      child: Text(
+                          '${_controller.selectedDate.year}년 ${_controller.selectedDate.month}월',
+                          //locale: const Locale('ko', 'KR'),
+                          //DateFormat.yMMMM().format(time),
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.black45,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24)),
 
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Row(
-                                    children: [
-                                      SizedBox(width: 6,),
-                                      TextButton(
-                                          onPressed: () {
-                                            showDialog(
-                                                context: context,
-                                                builder: (BuildContext context) {
-                                                  return AlertDialog(                   // 수정, 삭제 다이얼로그
-                                                    title: Text('헬스장 가서 운동하기',
-                                                      style: TextStyle(fontSize: 24),),
-                                                    content: Column(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Text('건강', style: TextStyle(fontSize: 15, color: Colors.blueAccent),),
-                                                        SizedBox(height: 20),
-                                                        TextButton(
-                                                          onPressed: () {
-                                                            Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(builder: (context) => ModifiedRoutinePage()),
-                                                            );
-                                                          },
-                                                          child: Row(
-                                                            children: [
-                                                              Image.asset(
-                                                                "assets/images/edit.png",
-                                                                width: 20,
-                                                                height: 20,
-                                                              ),
-                                                              SizedBox(width: 20,),
-                                                              Text('수정', style: TextStyle(fontSize: 18),),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                        TextButton(
-                                                          onPressed: () {
-                                                            Navigator.of(context).pop();
-                                                          },
-                                                          child: Row(
-                                                            children: [
-                                                              Image.asset(
-                                                                "assets/images/delete.png",
-                                                                width: 20,
-                                                                height: 20,
-                                                              ),
-                                                              SizedBox(width: 20,),
-                                                              Text('삭제', style: TextStyle(fontSize: 18),),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  );
-                                                });
-                                          },
-                                          child: Text("건강", style: TextStyle(
-                                              color: Colors.blueAccent,
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18
-                                          ),
-
-                                          ),
-                                      )
-
-                                    ],
-                                  )
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      SizedBox(width: 20),
-                                      Text("헬스장 가서 운동하기", style: TextStyle(fontSize: 18),),
-                                      SizedBox(width: 10),
-                                      Image.asset(
-                                        "assets/images/bell.png",
-                                        width: 20,
-                                        height: 20,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(width: 100),
-                                  Transform.scale(
-                                    scale: 1.5, // 원하는 크기로 체크박스를 스케일
-                                    child: Checkbox(
-                                      value: _checked1,
-                                      onChanged: (bool? newValue) {
-                                        setState(() {
-                                          _checked1 = newValue!;
-                                        });
-                                      },
-                                      activeColor: Color(0xffE6E288),
-                                      checkColor: Colors.white,
-                                    ),
-                                  ),
-
-                                ],
-                              )
-
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 10), // 여백 추가
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Column(
-                            children: <Widget>[
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Row(
-                                    children: [
-                                      SizedBox(width: 6,),
-                                      TextButton(
-                                        onPressed: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(                   // 수정, 삭제 다이얼로그
-                                                  title: Text('일기 쓰기',
-                                                    style: TextStyle(fontSize: 24),),
-                                                  content: Column(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text('자기 개발', style: TextStyle(fontSize: 15, color: Color.fromARGB(255, 68, 252, 255),),),
-                                                      SizedBox(height: 20),
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(builder: (context) => ModifiedRoutinePage()),
-                                                          );
-                                                        },
-                                                        child: Row(
-                                                          children: [
-                                                            Image.asset(
-                                                              "assets/images/edit.png",
-                                                              width: 20,
-                                                              height: 20,
-                                                            ),
-                                                            SizedBox(width: 20,),
-                                                            Text('수정', style: TextStyle(fontSize: 18),),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context).pop();
-                                                        },
-                                                        child: Row(
-                                                          children: [
-                                                            Image.asset(
-                                                              "assets/images/delete.png",
-                                                              width: 20,
-                                                              height: 20,
-                                                            ),
-                                                            SizedBox(width: 20,),
-                                                            Text('삭제', style: TextStyle(fontSize: 18),),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              });
-                                        },
-                                        child: Text("자기 개발", style: TextStyle(
-                                            color: Color.fromARGB(255, 68, 252, 255),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18
-                                        ),
-
-                                        ),
-                                      )
-
-                                    ],
-                                  )
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      SizedBox(width: 20),
-                                      Text("일기 쓰기", style: TextStyle(fontSize: 18),),
-                                      SizedBox(width: 10),
-
-                                    ],
-                                  ),
-                                  SizedBox(width: 100),
-                                  Transform.scale(
-                                    scale: 1.5, // 원하는 크기로 체크박스를 스케일
-                                    child: Checkbox(
-                                      value: _checked2,
-                                      onChanged: (bool? newValue) {
-                                        setState(() {
-                                          _checked2 = newValue!;
-                                        });
-                                      },
-                                      activeColor: Color(0xffE6E288),
-                                      checkColor: Colors.white,
-                                    ),
-                                  ),
-
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
                     ),
-                    SizedBox(height: 10), // 여백 추가
-                    ExpansionTile(
-                      title: Text(
-                        "그룹 취미 부자들",
-                        style: TextStyle(fontSize: 20),
+                    SizedBox(width: 220,),
+                    IconButton(
+                      icon: Image.asset("assets/images/bell.png",
+                        width: 30,
+                        height: 30,
                       ),
-                      children: [
-                        SizedBox(height: 10), // 여백 추가
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Column(
-                            children: <Widget>[
+                      onPressed: () {
 
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Row(
-                                    children: [
-                                      SizedBox(width: 6,),
-                                      TextButton(
-                                        onPressed: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(                   // 수정, 삭제 다이얼로그
-                                                  title: Text('자기 전 스트레칭',
-                                                    style: TextStyle(fontSize: 24),),
-                                                  content: Column(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text('자기 관리', style: TextStyle(fontSize: 15, color: Color.fromARGB(255, 226, 131, 247),),),
-                                                      SizedBox(height: 20),
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(builder: (context) => ModifiedRoutinePage()),
-                                                          );
-                                                        },
-                                                        child: Row(
-                                                          children: [
-                                                            Image.asset(
-                                                              "assets/images/edit.png",
-                                                              width: 20,
-                                                              height: 20,
-                                                            ),
-                                                            SizedBox(width: 20,),
-                                                            Text('수정', style: TextStyle(fontSize: 18),),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context).pop();
-                                                        },
-                                                        child: Row(
-                                                          children: [
-                                                            Image.asset(
-                                                              "assets/images/delete.png",
-                                                              width: 20,
-                                                              height: 20,
-                                                            ),
-                                                            SizedBox(width: 20,),
-                                                            Text('삭제', style: TextStyle(fontSize: 18),),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              });
-                                        },
-                                        child: Text("자기 관리", style: TextStyle(
-                                            color: Color.fromARGB(255, 226, 131, 247),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18
-                                        ),
-
-                                        ),
-                                      )
-
-                                    ],
-                                  )
-                                ],
-                              ),
-
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      SizedBox(width: 20),
-                                      Text("자기 전 스트레칭", style: TextStyle(fontSize: 18),),
-                                      SizedBox(width: 10),
-                                      Image.asset(
-                                        "assets/images/bell.png",
-                                        width: 20,
-                                        height: 20,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(width: 100),
-                                  Transform.scale(
-                                    scale: 1.5, // 원하는 크기로 체크박스를 스케일
-                                    child: Checkbox(
-                                      value: _checked3,
-                                      onChanged: (bool? newValue) {
-                                        setState(() {
-                                          _checked3 = newValue!;
-                                        });
-                                      },
-                                      activeColor: Color(0xffE6E288),
-                                      checkColor: Colors.white,
-                                    ),
-                                  ),
-
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
+                      },
                     ),
-                    SizedBox(height: 10), // 여백 추가
-                    ExpansionTile(
-                      title: Text(
-                        "그룹 취미 부자들",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                      children: [
-                        SizedBox(height: 10), // 여백 추가
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
-                          height: 120,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Column(
-                            children: <Widget>[
 
 
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Row(
-                                    children: [
-                                      SizedBox(width: 6,),
-                                      TextButton(
-                                        onPressed: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(                   // 수정, 삭제 다이얼로그
-                                                  title: Text('물 마시기',
-                                                    style: TextStyle(fontSize: 24),),
-                                                  content: Column(
-                                                    mainAxisSize: MainAxisSize.min,
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Text('일상', style: TextStyle(fontSize: 15, color: Color.fromARGB(255, 244, 187, 103),),),
-                                                      SizedBox(height: 20),
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute(builder: (context) => ModifiedRoutinePage()),
-                                                          );
-                                                        },
-                                                        child: Row(
-                                                          children: [
-                                                            Image.asset(
-                                                              "assets/images/edit.png",
-                                                              width: 20,
-                                                              height: 20,
-                                                            ),
-                                                            SizedBox(width: 20,),
-                                                            Text('수정', style: TextStyle(fontSize: 18),),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      TextButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context).pop();
-                                                        },
-                                                        child: Row(
-                                                          children: [
-                                                            Image.asset(
-                                                              "assets/images/delete.png",
-                                                              width: 20,
-                                                              height: 20,
-                                                            ),
-                                                            SizedBox(width: 20,),
-                                                            Text('삭제', style: TextStyle(fontSize: 18),),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                );
-                                              });
-                                        },
-                                        child: Text("일상", style: TextStyle(
-                                            color: Color.fromARGB(255, 244, 187, 103),
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 18
-                                        ),
-
-                                        ),
-                                      )
-
-                                    ],
-                                  )
-                                ],
-                              ),
-
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      SizedBox(width: 20),
-                                      Text("물 마시기", style: TextStyle(fontSize: 18),),
-                                      SizedBox(width: 10),
-                                      Image.asset(
-                                        "assets/images/bell.png",
-                                        width: 20,
-                                        height: 20,
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(width: 100),
-                                  Transform.scale(
-                                    scale: 1.5, // 원하는 크기로 체크박스를 스케일
-                                    child: Checkbox(
-                                      value: _checked4,
-                                      onChanged: (bool? newValue) {
-                                        setState(() {
-                                          _checked4 = newValue!;
-                                        });
-                                      },
-                                      activeColor: Color(0xffE6E288),
-                                      checkColor: Colors.white,
-                                    ),
-                                  ),
-
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10), // 여백 추가
                   ],
                 ),
               ),
             ),
-          ),
+          )),
 
-          Container(
-              color: Colors.grey[200],
-              child: _selectedImage != null
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: EdgeInsets.fromLTRB(24, 10, 24, 16),
-                          child: Image.asset(
-                            _selectedImage!,
-                            fit: BoxFit.cover,
-                            width: 70,
-                            height: 70, // 기분 선택했을 때 루틴페이지에 나타나는 기분 이미지 크기
+      Expanded(
+        child: Container(
+          color: Colors.grey[200],
+          child: Theme(
+            data: Theme.of(context).copyWith(
+              dividerColor: Colors.transparent, // 구분선을 투명하게 설정
+            ),
+            child: ListView(
+              padding: EdgeInsets.fromLTRB(24, 10, 24, 16),
+              children: <Widget>[
+                ExpansionTile(
+                  title: Text(
+                    "개인 루틴",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  children: [
+                    SizedBox(height: 10), // 여백 추가
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
+                      height: 120,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        children: <Widget>[
+
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Row(
+                                children: [
+                                  SizedBox(width: 6,),
+                                  TextButton(
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(                   // 수정, 삭제 다이얼로그
+                                              title: Text('헬스장 가서 운동하기',
+                                                style: TextStyle(fontSize: 24),),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text('건강', style: TextStyle(fontSize: 15, color: Colors.blueAccent),),
+                                                  SizedBox(height: 20),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(builder: (context) => ModifiedRoutinePage()),
+                                                      );
+                                                    },
+                                                    child: Row(
+                                                      children: [
+                                                        Image.asset(
+                                                          "assets/images/edit.png",
+                                                          width: 20,
+                                                          height: 20,
+                                                        ),
+                                                        SizedBox(width: 20,),
+                                                        Text('수정', style: TextStyle(fontSize: 18),),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                    child: Row(
+                                                      children: [
+                                                        Image.asset(
+                                                          "assets/images/delete.png",
+                                                          width: 20,
+                                                          height: 20,
+                                                        ),
+                                                        SizedBox(width: 20,),
+                                                        Text('삭제', style: TextStyle(fontSize: 18),),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          });
+                                    },
+                                    child: Text("건강", style: TextStyle(
+                                        color: Colors.blueAccent,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18
+                                    ),
+
+                                    ),
+                                  )
+
+                                ],
+                              )
+                            ],
                           ),
-                        )
-                      ],
-                    )
-                  : Center()),
-        ]),
-      );
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  SizedBox(width: 20),
+                                  Text("헬스장 가서 운동하기", style: TextStyle(fontSize: 18),),
+                                  SizedBox(width: 10),
+                                  Image.asset(
+                                    "assets/images/bell.png",
+                                    width: 20,
+                                    height: 20,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(width: 100),
+                              Transform.scale(
+                                scale: 1.5, // 원하는 크기로 체크박스를 스케일
+                                child: Checkbox(
+                                  value: _checked1,
+                                  onChanged: (bool? newValue) {
+                                    setState(() {
+                                      _checked1 = newValue!;
+                                    });
+                                  },
+                                  activeColor: Color(0xffE6E288),
+                                  checkColor: Colors.white,
+                                ),
+                              ),
+
+                            ],
+                          )
+
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10), // 여백 추가
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
+                      height: 120,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Row(
+                                children: [
+                                  SizedBox(width: 6,),
+                                  TextButton(
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(                   // 수정, 삭제 다이얼로그
+                                              title: Text('일기 쓰기',
+                                                style: TextStyle(fontSize: 24),),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text('자기 개발', style: TextStyle(fontSize: 15, color: Color.fromARGB(255, 68, 252, 255),),),
+                                                  SizedBox(height: 20),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(builder: (context) => ModifiedRoutinePage()),
+                                                      );
+                                                    },
+                                                    child: Row(
+                                                      children: [
+                                                        Image.asset(
+                                                          "assets/images/edit.png",
+                                                          width: 20,
+                                                          height: 20,
+                                                        ),
+                                                        SizedBox(width: 20,),
+                                                        Text('수정', style: TextStyle(fontSize: 18),),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                    child: Row(
+                                                      children: [
+                                                        Image.asset(
+                                                          "assets/images/delete.png",
+                                                          width: 20,
+                                                          height: 20,
+                                                        ),
+                                                        SizedBox(width: 20,),
+                                                        Text('삭제', style: TextStyle(fontSize: 18),),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          });
+                                    },
+                                    child: Text("자기 개발", style: TextStyle(
+                                        color: Color.fromARGB(255, 68, 252, 255),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18
+                                    ),
+
+                                    ),
+                                  )
+
+                                ],
+                              )
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  SizedBox(width: 20),
+                                  Text("일기 쓰기", style: TextStyle(fontSize: 18),),
+                                  SizedBox(width: 10),
+
+                                ],
+                              ),
+                              SizedBox(width: 100),
+                              Transform.scale(
+                                scale: 1.5, // 원하는 크기로 체크박스를 스케일
+                                child: Checkbox(
+                                  value: _checked2,
+                                  onChanged: (bool? newValue) {
+                                    setState(() {
+                                      _checked2 = newValue!;
+                                    });
+                                  },
+                                  activeColor: Color(0xffE6E288),
+                                  checkColor: Colors.white,
+                                ),
+                              ),
+
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10), // 여백 추가
+                ExpansionTile(
+                  title: Text(
+                    "그룹 취미 부자들",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  children: [
+                    SizedBox(height: 10), // 여백 추가
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
+                      height: 120,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        children: <Widget>[
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Row(
+                                children: [
+                                  SizedBox(width: 6,),
+                                  TextButton(
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(                   // 수정, 삭제 다이얼로그
+                                              title: Text('자기 전 스트레칭',
+                                                style: TextStyle(fontSize: 24),),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text('자기 관리', style: TextStyle(fontSize: 15, color: Color.fromARGB(255, 226, 131, 247),),),
+                                                  SizedBox(height: 20),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(builder: (context) => ModifiedRoutinePage()),
+                                                      );
+                                                    },
+                                                    child: Row(
+                                                      children: [
+                                                        Image.asset(
+                                                          "assets/images/edit.png",
+                                                          width: 20,
+                                                          height: 20,
+                                                        ),
+                                                        SizedBox(width: 20,),
+                                                        Text('수정', style: TextStyle(fontSize: 18),),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                    child: Row(
+                                                      children: [
+                                                        Image.asset(
+                                                          "assets/images/delete.png",
+                                                          width: 20,
+                                                          height: 20,
+                                                        ),
+                                                        SizedBox(width: 20,),
+                                                        Text('삭제', style: TextStyle(fontSize: 18),),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          });
+                                    },
+                                    child: Text("자기 관리", style: TextStyle(
+                                        color: Color.fromARGB(255, 226, 131, 247),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18
+                                    ),
+
+                                    ),
+                                  )
+
+                                ],
+                              )
+                            ],
+                          ),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  SizedBox(width: 20),
+                                  Text("자기 전 스트레칭", style: TextStyle(fontSize: 18),),
+                                  SizedBox(width: 10),
+                                  Image.asset(
+                                    "assets/images/bell.png",
+                                    width: 20,
+                                    height: 20,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(width: 100),
+                              Transform.scale(
+                                scale: 1.5, // 원하는 크기로 체크박스를 스케일
+                                child: Checkbox(
+                                  value: _checked3,
+                                  onChanged: (bool? newValue) {
+                                    setState(() {
+                                      _checked3 = newValue!;
+                                    });
+                                  },
+                                  activeColor: Color(0xffE6E288),
+                                  checkColor: Colors.white,
+                                ),
+                              ),
+
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10), // 여백 추가
+                ExpansionTile(
+                  title: Text(
+                    "그룹 취미 부자들",
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  children: [
+                    SizedBox(height: 10), // 여백 추가
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
+                      height: 120,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Column(
+                        children: <Widget>[
+
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Row(
+                                children: [
+                                  SizedBox(width: 6,),
+                                  TextButton(
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(                   // 수정, 삭제 다이얼로그
+                                              title: Text('물 마시기',
+                                                style: TextStyle(fontSize: 24),),
+                                              content: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text('일상', style: TextStyle(fontSize: 15, color: Color.fromARGB(255, 244, 187, 103),),),
+                                                  SizedBox(height: 20),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(builder: (context) => ModifiedRoutinePage()),
+                                                      );
+                                                    },
+                                                    child: Row(
+                                                      children: [
+                                                        Image.asset(
+                                                          "assets/images/edit.png",
+                                                          width: 20,
+                                                          height: 20,
+                                                        ),
+                                                        SizedBox(width: 20,),
+                                                        Text('수정', style: TextStyle(fontSize: 18),),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  TextButton(
+                                                    onPressed: () {
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                    child: Row(
+                                                      children: [
+                                                        Image.asset(
+                                                          "assets/images/delete.png",
+                                                          width: 20,
+                                                          height: 20,
+                                                        ),
+                                                        SizedBox(width: 20,),
+                                                        Text('삭제', style: TextStyle(fontSize: 18),),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          });
+                                    },
+                                    child: Text("일상", style: TextStyle(
+                                        color: Color.fromARGB(255, 244, 187, 103),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18
+                                    ),
+
+                                    ),
+                                  )
+
+                                ],
+                              )
+                            ],
+                          ),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Row(
+                                children: <Widget>[
+                                  SizedBox(width: 20),
+                                  Text("물 마시기", style: TextStyle(fontSize: 18),),
+                                  SizedBox(width: 10),
+                                  Image.asset(
+                                    "assets/images/bell.png",
+                                    width: 20,
+                                    height: 20,
+                                  ),
+                                ],
+                              ),
+                              SizedBox(width: 100),
+                              Transform.scale(
+                                scale: 1.5, // 원하는 크기로 체크박스를 스케일
+                                child: Checkbox(
+                                  value: _checked4,
+                                  onChanged: (bool? newValue) {
+                                    setState(() {
+                                      _checked4 = newValue!;
+                                    });
+                                  },
+                                  activeColor: Color(0xffE6E288),
+                                  checkColor: Colors.white,
+                                ),
+                              ),
+
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 10), // 여백 추가
+              ],
+            ),
+          ),
+        ),
+      ),
+
+      Container(
+          color: Colors.grey[200],
+          child: _selectedImage != null
+              ? Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                padding: EdgeInsets.fromLTRB(24, 10, 24, 16),
+                child: Image.asset(
+                  _selectedImage!,
+                  fit: BoxFit.cover,
+                  width: 70,
+                  height: 70, // 기분 선택했을 때 루틴페이지에 나타나는 기분 이미지 크기
+                ),
+              )
+            ],
+          )
+              : Center()),
+    ]),
+  );
 }
