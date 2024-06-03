@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_group/OnClickGroupPage.dart';
+import 'package:routine_ade/routine_home/AlarmListPage.dart';
 import 'AddRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
@@ -360,7 +361,10 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                         height: 30,
                       ),
                       onPressed: () {
-
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => AlarmListPage()),
+                        );
                       },
                     ),
 
@@ -389,8 +393,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                   children: [
                     SizedBox(height: 10), // 여백 추가
                     Container(
-                      padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
-                      height: 120,
+                      padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                      height: 100,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
@@ -510,8 +514,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                     ),
                     SizedBox(height: 10), // 여백 추가
                     Container(
-                      padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
-                      height: 120,
+                      padding: const EdgeInsets.fromLTRB(0, 0.0, 0, 0),
+                      height: 100,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
@@ -633,8 +637,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                   children: [
                     SizedBox(height: 10), // 여백 추가
                     Container(
-                      padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
-                      height: 120,
+                      padding: const EdgeInsets.fromLTRB(0, 0.0, 0, 0),
+                      height: 100,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),
@@ -762,8 +766,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                   children: [
                     SizedBox(height: 10), // 여백 추가
                     Container(
-                      padding: const EdgeInsets.fromLTRB(0, 10.0, 0, 0),
-                      height: 120,
+                      padding: const EdgeInsets.fromLTRB(0, 0.0, 0, 0),
+                      height: 100,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(10),

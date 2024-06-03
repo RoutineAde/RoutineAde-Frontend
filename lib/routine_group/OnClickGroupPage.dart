@@ -218,7 +218,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                           ),
                         ],
                       ),
-                      title: Text('그룹원', style: TextStyle(
+                      title: Text('서현', style: TextStyle(
                         fontSize:18,
                       ),
                       ),
@@ -235,7 +235,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                           ),
                         ],
                       ),
-                      title: Text('그룹원', style: TextStyle(
+                      title: Text('가은', style: TextStyle(
                         fontSize:18,
                       ),
                       ),
@@ -252,7 +252,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                           ),
                         ],
                       ),
-                      title: Text('그룹원', style: TextStyle(
+                      title: Text('채은', style: TextStyle(
                         fontSize:18,
                       ),
                       ),
@@ -270,7 +270,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                           ),
                         ],
                       ),
-                      title: Text('그룹원', style: TextStyle(
+                      title: Text('윤정', style: TextStyle(
                         fontSize:18,
                       ),
                       ),
@@ -288,7 +288,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                           ),
                         ],
                       ),
-                      title: Text('그룹원', style: TextStyle(
+                      title: Text('서연', style: TextStyle(
                         fontSize:18,
                       ),
                       ),
@@ -306,7 +306,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                           ),
                         ],
                       ),
-                      title: Text('그룹원', style: TextStyle(
+                      title: Text('시원', style: TextStyle(
                         fontSize:18,
                       ),
                       ),
