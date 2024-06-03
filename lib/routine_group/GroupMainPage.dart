@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
+import 'package:routine_ade/routine_group/GroupType.dart';
 
 //전체화면 어둡게 
 class DarkOverlay extends StatelessWidget {
@@ -45,7 +46,7 @@ class _GroupMainPageState extends State<GroupMainPage>{
     membersCount: 4, 
     leader: "서현쓰", 
     groupCode: "#13",
-    groupType: "건강",
+
     ),
     Group(name: "루틴 킬러", 
     creationDate: DateTime.now().subtract(Duration(days: 1)), 
@@ -53,7 +54,7 @@ class _GroupMainPageState extends State<GroupMainPage>{
     membersCount: 21, 
     leader: "윤정", 
     groupCode: "#36",
-    groupType: "일상",
+ 
     ),
   ];
 //가입일자 계산
@@ -68,6 +69,7 @@ class _GroupMainPageState extends State<GroupMainPage>{
     return 
         Scaffold( 
       appBar: AppBar(
+
         title: Text('내 그룹', 
         style: TextStyle(
           color: Colors.black, 
@@ -96,7 +98,7 @@ class _GroupMainPageState extends State<GroupMainPage>{
                 itemCount: groups.length,
                 itemBuilder: (context, index) {
                   final group = groups[index];
-                  Color textColor = group.groupType =="건강"? Colors.blue: Colors.orange;
+                  Color textColor = group.category =="건강"? Colors.blue: Colors.orange;
                   return Card(
                     margin: EdgeInsets.all(8.0),
                     color: Colors.white,
@@ -120,12 +122,14 @@ class _GroupMainPageState extends State<GroupMainPage>{
                           ),
                           SizedBox(height: 8.0),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("대표 카테고리"), 
+                              Text("대표 카테고리 "), 
                               Text(group.category, style: TextStyle( color: textColor)),
-                              SizedBox(width: 160.0), // 간격 조절
-                              Text("인원 ${group.membersCount}/30명"),
+                              Expanded(child: Container()),// 간격 조절
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: Text("인원 ${group.membersCount}/30명"),),
                             ],
                           ),
                           SizedBox(height: 8.0),

@@ -1,26 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'Dialog.dart';
-
-class Group { //그룹
-  final String name;
-  final DateTime creationDate;
-  final String category;
-  final int membersCount;
-  final String leader;
-  final String groupCode;
-  final String groupType;
-
-  Group({
-    required this.name,
-    required this.creationDate,
-    required this.category,
-    required this.membersCount,
-    required this.leader,
-    required this.groupCode,
-    required this.groupType,
-  });
-}
+import 'package:routine_ade/routine_group/GroupType.dart';
 
 
 class GroupRoutinePage extends StatefulWidget {
@@ -34,18 +15,62 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
   TextEditingController _searchController = TextEditingController();
 
   // 그룹 데이터 생성
-  List<Group> groups = List.generate(
-    10,
-    (index) => Group(
-      name: "그룹 $index",
-      creationDate: DateTime.now(),
-      category: "카테고리 $index",
-      membersCount: index + 1,
-      leader: "익명 $index",
-      groupCode: "#$index",
-      groupType: "일상",
+List<Group> groups = [
+    Group(name: "꿈을 향해" , 
+    creationDate: DateTime.now().subtract(Duration(days: 1)), 
+    category: "기타", 
+    membersCount: 23, 
+    leader: "가은", 
+    groupCode: "#10",
+
     ),
-  );
+
+    Group(name: "피트니스 챌린지", 
+    creationDate: DateTime.now().subtract(Duration(days: 1)), 
+    category: "건강", 
+    membersCount: 3, 
+    leader: "건강지킴이", 
+    groupCode: "#9",
+    ),
+
+     Group(name: "행복한 일상", 
+    creationDate: DateTime.now().subtract(Duration(days: 1)), 
+    category: "자기관리", 
+    membersCount: 21, 
+    leader: "서현", 
+    groupCode: "#8",
+    ),
+
+     Group(name: "아침의 시작", 
+    creationDate: DateTime.now().subtract(Duration(days: 1)), 
+    category: "자기개발", 
+    membersCount: 15, 
+    leader: "윤정", 
+    groupCode: "#7",
+    ),
+
+     Group(name: "자기관리 마스터모임", 
+    creationDate: DateTime.now().subtract(Duration(days: 1)), 
+    category: "자기관리", 
+    membersCount: 10, 
+    leader: "채은", 
+    groupCode: "#6",
+    ),
+     Group(name: "공부 열심히 할 사람만", 
+    creationDate: DateTime.now().subtract(Duration(days: 1)), 
+    category: "자기개발", 
+    membersCount: 30, 
+    leader: "공부짱", 
+    groupCode: "#5",
+    ),
+     Group(name: "독사모", 
+    creationDate: DateTime.now().subtract(Duration(days: 1)), 
+    category: "자기개발", 
+    membersCount: 30, 
+    leader: "독서초보", 
+    groupCode: "#4",
+    ),
+  ];
 
   // 필터링 된 그룹 데이터
   List<Group> filteredGroups = [];
@@ -113,7 +138,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
         backgroundColor: Colors.grey[200],
         actions: [
           IconButton(
-            icon: _isSearching ? Icon(Icons.close) : Image.asset("assets/images/search.png", width: 35, height: 35),
+            icon: _isSearching ? Icon(Icons.close) : Image.asset("assets/images/search.png", width: 27, height: 27),
             onPressed: toggleSearch,
           ),
         ],
@@ -151,12 +176,18 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                             padding: EdgeInsets.symmetric(horizontal: 3.0),
                             child: ElevatedButton(
                               onPressed: () {
-                
                                 // 카테고리 버튼 클릭 시 동작할 코드 작성
                               },
                               child: Text(
                                 category,
-                                style: TextStyle(color: Colors.black),
+                                style: TextStyle(
+                                  color: category == "전체"? Colors.black:
+                                  category == "일상"? Colors.orange:
+                                  category == "건강"? Colors.blue:
+                                  category == "자기개발"? const Color.fromARGB(255, 186, 224, 255):
+                                  category == "자기관리"? const Color.fromARGB(255, 205, 150, 214):
+                                  category == "기타"? Colors.pink: Colors.black,
+                                  ),
                               ),
                               style: ButtonStyle(
                                 backgroundColor: MaterialStateProperty.all(
@@ -181,10 +212,16 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
               itemCount: filteredGroups.length,
               itemBuilder: (context, index) {
                 final group = filteredGroups[index];
+                Color textColor = group.category == "전체"? Colors.black:
+                                  group.category == "일상"? Colors.orange:
+                                  group.category == "건강"? Colors.blue:
+                                  group.category == "자기개발"? const Color.fromARGB(255, 186, 224, 255):
+                                  group.category == "자기관리"? const Color.fromARGB(255, 205, 150, 214):
+                                  group.category == "기타"? Colors.pink: Colors.black;
                 return Card(
                   color: Colors.white,
                   child: Padding(
-                    padding: EdgeInsets.all(7.0),
+                    padding: EdgeInsets.all(15.0),
                     child: GestureDetector(
                       onTap: (){
                         showGroupDetailsDialog(context, group); //그룹 카드를 누르면 다이얼로그 표시
@@ -201,18 +238,23 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                         ),
                         SizedBox(height: 4.0,),  
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                   
                           children: [
-                            Text(group.category),
-                            Text("인원: ${group.membersCount}명"),
-                          ],
+                            Text("대표 카테고리 "),
+                            // SizedBox(width: 4.0),
+                            Text(group.category, style: TextStyle( color: textColor)),
+                            Expanded(child: Container()),
+
+                            Text("인원 ${group.membersCount}/30명"),],
+                            // SizedBox(width: 10.0), // 간격 조절
+                          
                         ),
                         SizedBox(height: 4.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("루틴장: ${group.leader}"),
-                            Text("그룹코드: ${group.groupCode}"),
+                            Text("루틴장 ${group.leader}"),
+                            Text("그룹코드 ${group.groupCode}"),
                           ],
                         ),
                       ],

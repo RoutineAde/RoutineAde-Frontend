@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
+import 'package:routine_ade/routine_group/GroupType.dart';
 
 //그룹 소개 표시 다이얼로그 함수
 void showGroupDetailsDialog(BuildContext context, Group group) {
