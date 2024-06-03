@@ -46,6 +46,7 @@ class _GroupMainPageState extends State<GroupMainPage>{
     membersCount: 4, 
     leader: "서현쓰", 
     groupCode: "#13",
+    groupIntro: "테스트 용",
 
     ),
     Group(name: "루틴 킬러", 
@@ -54,6 +55,7 @@ class _GroupMainPageState extends State<GroupMainPage>{
     membersCount: 21, 
     leader: "윤정", 
     groupCode: "#36",
+    groupIntro: "테스트 용",
  
     ),
   ];

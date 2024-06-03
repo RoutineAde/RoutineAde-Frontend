@@ -3,11 +3,10 @@ import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'Dialog.dart';
 import 'package:routine_ade/routine_group/GroupType.dart';
 
-
 class GroupRoutinePage extends StatefulWidget {
   @override
   _GroupRoutinePageState createState() => _GroupRoutinePageState();
-  // State<GroupRoutinePage > createState() => _GroupRoutinePagState()
+  // State<GroupRoutinePage> createState() => _GroupRoutinePagState()
 }
 
 class _GroupRoutinePageState extends State<GroupRoutinePage> {
@@ -22,6 +21,7 @@ List<Group> groups = [
     membersCount: 23, 
     leader: "가은", 
     groupCode: "#10",
+    groupIntro: "부지런쟁이들을 환영합니다!\n 주 4회 이상 루틴 수행을 안하면 강퇴입니다!\n성실하게 루틴을 수행하실 분들만 들어와주세요.",
 
     ),
 
@@ -31,6 +31,7 @@ List<Group> groups = [
     membersCount: 3, 
     leader: "건강지킴이", 
     groupCode: "#9",
+    groupIntro: "같이 피트니스 하실 분 모집합니다! 초보자 환영"
     ),
 
      Group(name: "행복한 일상", 
@@ -39,6 +40,7 @@ List<Group> groups = [
     membersCount: 21, 
     leader: "서현", 
     groupCode: "#8",
+    groupIntro: "갓생루틴으로 행복한 일상 보내실 분 구함"
     ),
 
      Group(name: "아침의 시작", 
@@ -47,6 +49,7 @@ List<Group> groups = [
     membersCount: 15, 
     leader: "윤정", 
     groupCode: "#7",
+    groupIntro: "일찍 일어나서 꾸준하게 자기개발 하실분 구합니다!같이 갓생 살아요"
     ),
 
      Group(name: "자기관리 마스터모임", 
@@ -55,6 +58,7 @@ List<Group> groups = [
     membersCount: 10, 
     leader: "채은", 
     groupCode: "#6",
+    groupIntro: "테스트용 입니다.",
     ),
      Group(name: "공부 열심히 할 사람만", 
     creationDate: DateTime.now().subtract(Duration(days: 1)), 
@@ -62,6 +66,7 @@ List<Group> groups = [
     membersCount: 30, 
     leader: "공부짱", 
     groupCode: "#5",
+    groupIntro: "테스트용 입니다.",
     ),
      Group(name: "독사모", 
     creationDate: DateTime.now().subtract(Duration(days: 1)), 
@@ -69,6 +74,7 @@ List<Group> groups = [
     membersCount: 30, 
     leader: "독서초보", 
     groupCode: "#4",
+    groupIntro: "테스트용 입니다.",
     ),
   ];
 
@@ -98,7 +104,8 @@ List<Group> groups = [
     setState(() {
       if (query.isNotEmpty) {
         filteredGroups = groups
-            .where((group) => group.name.toLowerCase().contains(query.toLowerCase()))
+            .where((group) =>
+                group.name.toLowerCase().contains(query.toLowerCase()))
             .toList();
       } else {
         filteredGroups = groups;
@@ -145,18 +152,17 @@ List<Group> groups = [
       ),
       body: Stack(
         children: [
-        Container(
-        color: Colors.grey[200],
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 7.0), // 좌우 여백
-          child: Container(
+          Container(
             color: Colors.grey[200],
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  color: Colors.grey[200], // 전체 배경색 회색으로 변경
-
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 7.0), // 좌우 여백
+              child: Container(
+                color: Colors.grey[200],
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      color: Colors.grey[200], // 전체 배경색 회색으로 변경
                   // 카테고리 버튼
                   child: Padding(
                     padding: EdgeInsets.symmetric(vertical: 1.0),
@@ -199,14 +205,15 @@ List<Group> groups = [
                                 //     borderRadius: BorderRadius.circular(20.0), //버튼 모서리 둥글게
                                 //   )
                                 // ),
+
                               ),
                             ),
                           );
                         }).toList(),
                       ),
                     ),
-                  ),
                 ),
+              ),
                 Expanded(
             child: ListView.builder(
               itemCount: filteredGroups.length,
@@ -225,69 +232,66 @@ List<Group> groups = [
                     child: GestureDetector(
                       onTap: (){
                         showGroupDetailsDialog(context, group); //그룹 카드를 누르면 다이얼로그 표시
+                                },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                    Text(group.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                    ],
+                                  ),
+                                  SizedBox(height: 4.0),  
+                                  Row(
+                                    children: [
+                                      Text("대표 카테고리 "),
+                                      // SizedBox(width: 4.0),
+                                      Text(group.category, style: TextStyle( color: textColor)),
+                                      Expanded(child: Container()),
+
+                                      Text("인원 ${group.membersCount}/30명"),],
+                                      // SizedBox(width: 10.0), // 간격 조절
+                                    
+                                  ),
+                                  SizedBox(height: 4.0),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text("루틴장 ${group.leader}"),
+                                    Text("그룹코드 ${group.groupCode}"),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
                       },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                          Text(group.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-
-                          ],
-                        ),
-                        SizedBox(height: 4.0,),  
-                        Row(
-                   
-                          children: [
-                            Text("대표 카테고리 "),
-                            // SizedBox(width: 4.0),
-                            Text(group.category, style: TextStyle( color: textColor)),
-                            Expanded(child: Container()),
-
-                            Text("인원 ${group.membersCount}/30명"),],
-                            // SizedBox(width: 10.0), // 간격 조절
-                          
-                        ),
-                        SizedBox(height: 4.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("루틴장 ${group.leader}"),
-                            Text("그룹코드 ${group.groupCode}"),
-                          ],
-                        ),
-                      ],
                     ),
-                  ),
+                    ),
+                    
+                  ],
                 ),
-                );
-              },
+              ),
             ),
           ),
-        ],      
-        ),
+          //add 버튼
+          Positioned(
+            bottom: 25,
+            right: 25,
+            child: FloatingActionButton(
+              onPressed: () {
+                // floating action button이 클릭되었을 때의 동작
+              },
+              child: Icon(Icons.add, color: Colors.white),
+              backgroundColor: Color(0xffF1E977),
+              shape: CircleBorder(),
+            ),
+          ),
+        ],
       ),
-      ),
-        ),
-    //add 버튼
-    Positioned(
-      bottom: 25,
-      right: 25,
-    child: FloatingActionButton(
-    onPressed: () {
-      // floating action button이 클릭되었을 때의 동작
-    },
-    child: Icon(
-      Icons.add,
-      color:Colors.white),
-    backgroundColor: Color(0xffF1E977),
-    shape:CircleBorder(),
-    ),
-    ),
-      ],
-      ),
-//바텀 네비게이션바 
+//바텀 네비게이션바
       // bottomNavigationBar: BottomAppBar(
       //   color: Colors.white,
       //   child: Row(

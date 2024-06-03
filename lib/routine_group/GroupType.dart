@@ -5,6 +5,7 @@ class Group { //그룹
   final int membersCount;
   final String leader;
   final String groupCode;
+  final String groupIntro;
 
   Group({
     required this.name,
@@ -13,5 +14,9 @@ class Group { //그룹
     required this.membersCount,
     required this.leader,
     required this.groupCode,
+    required this.groupIntro,
   });
+  
+  
 }
+
