@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_calendar_week/flutter_calendar_week.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_group/OnClickGroupPage.dart';
 import 'package:routine_ade/routine_home/AlarmListPage.dart';
@@ -285,6 +286,10 @@ class _MyRoutinePageState extends State<MyRoutinePage>
           ),
           GestureDetector(
             onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ChatScreen()),
+              );
               // 더보기 버튼 클릭 시 동작할 코드
             },
             child: Container(

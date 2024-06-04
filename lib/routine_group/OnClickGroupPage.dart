@@ -5,9 +5,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart'; //날짜 포맷팅 init 패키지
 //import 'MyRoutinePage';
+
+
+
 
 class OnClickGroupPage extends StatefulWidget {
   const OnClickGroupPage({super.key});
@@ -851,8 +855,16 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
 
 
 
-            //채팅
-            Icon(Icons.abc),
+
+            //채팅페이지
+            IconButton(
+                icon: Icon(Icons.door_back_door_outlined),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ChatScreen()),
+                );
+              },),
           ],
         ),
         endDrawerEnableOpenDragGesture: false,
