@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupType.dart';
+import 'package:routine_ade/routine_group/AddGroupPage.dart';
 
 //전체화면 어둡게 
 class DarkOverlay extends StatelessWidget {
@@ -249,6 +250,11 @@ class _GroupMainPageState extends State<GroupMainPage>{
                   //그룹 루틴 추가 버튼
                   FloatingActionButton(
                     onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(
+                        builder: (context){
+                          return  AddGroupPage();
+                        },
+                        ));
                     },  
                     backgroundColor: Color(0xffF1E977),
                   child: Image.asset('assets/images/add.png'),
