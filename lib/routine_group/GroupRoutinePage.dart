@@ -21,7 +21,7 @@ List<Group> groups = [
     membersCount: 23, 
     leader: "가은", 
     groupCode: "#10",
-    groupIntro: "부지런쟁이들을 환영합니다!\n 주 4회 이상 루틴 수행을 안하면 강퇴입니다!\n성실하게 루틴을 수행하실 분들만 들어와주세요.",
+    groupIntro: "부지런쟁이들을 환영합니다!\n주 4회 이상 루틴 수행을 안하면 강퇴입니다!\n성실하게 루틴을 수행하실 분들만 들어와주세요.",
 
     ),
 
@@ -188,11 +188,11 @@ List<Group> groups = [
                                 category,
                                 style: TextStyle(
                                   color: category == "전체"? Colors.black:
-                                  category == "일상"? Colors.orange:
-                                  category == "건강"? Colors.blue:
-                                  category == "자기개발"? const Color.fromARGB(255, 186, 224, 255):
-                                  category == "자기관리"? const Color.fromARGB(255, 205, 150, 214):
-                                  category == "기타"? Colors.pink: Colors.black,
+                                  category == "일상"? Color(0xffF5A77B):
+                                  category == "건강"? Color(0xff6ACBF3):
+                                  category == "자기개발"? const Color(0xff7BD7C6):
+                                  category == "자기관리"? const Color(0xffC69FEC):
+                                  category == "기타"? Color(0xffF4A2D8): Colors.black,
                                   ),
                               ),
                               style: ButtonStyle(

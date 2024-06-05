@@ -10,15 +10,15 @@ Color getCategoryColor(String category) {
     case "전체":
       return Colors.black;
     case "일상":
-      return Colors.orange;
+      return Color(0xff5A77B);
     case "건강":
-      return Colors.blue;
+      return Color(0xff6ACBF3);
     case "자기개발":
-      return const Color.fromARGB(255, 186, 224, 255);
+      return const Color(0xff7BD7C6);
     case "자기관리":
-      return const Color.fromARGB(255, 205, 150, 214);
+      return const Color(0xffC69FEC);
     case "기타":
-      return Colors.pink;
+      return Color(0xffF4A2D8);
     default:
       return Colors.black;
   }
