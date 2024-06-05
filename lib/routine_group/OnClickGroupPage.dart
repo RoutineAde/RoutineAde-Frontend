@@ -151,7 +151,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text('기타', style: TextStyle(
-                              fontSize: 18
+                              fontSize: 18, color: Color(0xffF4A2D8),
                           ),),
                         ],
                       ),
@@ -400,7 +400,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                             child: Padding(
                               padding: EdgeInsets.all(10.0),
                               child: Text("자기 개발", style: TextStyle(
-                                fontSize:18, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 68, 252, 255),),
+                                fontSize:18, fontWeight: FontWeight.bold, color: Color(0xff7BD7C6),),
                               ),
                             ),
                           ),
@@ -553,7 +553,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                           child: Padding(
                             padding: EdgeInsets.all(10.0),
                             child: Text("건강", style: TextStyle(
-                              fontSize:18, fontWeight: FontWeight.bold, color: Colors.blueAccent,),
+                              fontSize:18, fontWeight: FontWeight.bold, color: Color(0xff6ACBF3),),
                             ),
                           ),
                         ),
@@ -708,7 +708,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                           child: Padding(
                             padding: EdgeInsets.all(10.0),
                             child: Text("일상", style: TextStyle(
-                              fontSize:18, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 244, 187, 103),),
+                              fontSize:18, fontWeight: FontWeight.bold, color: Color(0xffF5A77B),),
                             ),
                           ),
                         ),
