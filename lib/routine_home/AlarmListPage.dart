@@ -66,7 +66,7 @@ class _AlarmListPageState extends State<AlarmListPage> {
                           Row(
                             children: [
                               Text("건강", style: TextStyle(
-                                color: Colors.blueAccent, fontWeight: FontWeight.bold,
+                                color: Color(0xff6ACBF3), fontWeight: FontWeight.bold,
                                 fontSize: 17,
                               ),),
                               SizedBox(width: 20,),
@@ -129,7 +129,7 @@ class _AlarmListPageState extends State<AlarmListPage> {
                           Row(
                             children: [
                               Text("자기 개발", style: TextStyle(
-                                color: Color.fromARGB(255, 68, 252, 255), fontWeight: FontWeight.bold,
+                                color: Color(0xff7BD7C6), fontWeight: FontWeight.bold,
                                 fontSize: 17,
                               ),),
                               SizedBox(width: 20,),
@@ -191,7 +191,7 @@ class _AlarmListPageState extends State<AlarmListPage> {
                           Row(
                             children: [
                               Text("자기 관리", style: TextStyle(
-                                color: Color.fromARGB(255, 226, 131, 247), fontWeight: FontWeight.bold,
+                                color: Color(0xffC69FEC), fontWeight: FontWeight.bold,
                                 fontSize: 17,
                               ),),
                               SizedBox(width: 20,),
