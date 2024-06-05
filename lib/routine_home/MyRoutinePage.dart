@@ -758,7 +758,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                   checkColor: Colors.white,
                                 ),
                               ),
-
                             ],
                           )
                         ],
