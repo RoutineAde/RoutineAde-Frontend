@@ -10,9 +10,6 @@ import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart'; //날짜 포맷팅 init 패키지
 //import 'MyRoutinePage';
 
-
-
-
 class OnClickGroupPage extends StatefulWidget {
   const OnClickGroupPage({super.key});
 
@@ -400,7 +397,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                             child: Padding(
                               padding: EdgeInsets.all(10.0),
                               child: Text("자기 개발", style: TextStyle(
-                                fontSize:18, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 68, 252, 255),),
+                                fontSize:18, fontWeight: FontWeight.bold, color: Color(0xff7BD7C6),),
                               ),
                             ),
                           ),
@@ -708,7 +705,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                           child: Padding(
                             padding: EdgeInsets.all(10.0),
                             child: Text("일상", style: TextStyle(
-                              fontSize:18, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 244, 187, 103),),
+                              fontSize:18, fontWeight: FontWeight.bold, color: Color(0xff5A77B),),
                             ),
                           ),
                         ),
