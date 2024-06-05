@@ -430,7 +430,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                                 mainAxisSize: MainAxisSize.min,
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Text('건강', style: TextStyle(fontSize: 15, color: Colors.blueAccent),),
+                                                  Text('건강', style: TextStyle(fontSize: 15, color: Color(0xff6ACBF3)),),
                                                   SizedBox(height: 20),
                                                   TextButton(
                                                     onPressed: () {
@@ -473,7 +473,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                           });
                                     },
                                     child: Text("건강", style: TextStyle(
-                                        color: Colors.blueAccent,
+                                        color: Color(0xff6ACBF3),
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18
                                     ),
@@ -549,7 +549,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                                 mainAxisSize: MainAxisSize.min,
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Text('자기 개발', style: TextStyle(fontSize: 15, color: Color.fromARGB(255, 68, 252, 255),),),
+                                                  Text('자기 개발', style: TextStyle(fontSize: 15, color: Color(0xff7BD7C6),),),
                                                   SizedBox(height: 20),
                                                   TextButton(
                                                     onPressed: () {
@@ -592,7 +592,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                           });
                                     },
                                     child: Text("자기 개발", style: TextStyle(
-                                        color: Color.fromARGB(255, 68, 252, 255),
+                                        color: Color(0xff7BD7C6),
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18
                                     ),
@@ -673,7 +673,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                                 mainAxisSize: MainAxisSize.min,
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Text('자기 관리', style: TextStyle(fontSize: 15, color: Color.fromARGB(255, 226, 131, 247),),),
+                                                  Text('자기 관리', style: TextStyle(fontSize: 15, color: Color(0xffC69FEC),),),
                                                   SizedBox(height: 20),
                                                   TextButton(
                                                     onPressed: () {
@@ -716,7 +716,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                           });
                                     },
                                     child: Text("자기 관리", style: TextStyle(
-                                        color: Color.fromARGB(255, 226, 131, 247),
+                                        color: Color(0xffC69FEC),
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18
                                     ),
@@ -803,7 +803,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                                 mainAxisSize: MainAxisSize.min,
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
-                                                  Text('일상', style: TextStyle(fontSize: 15, color: Color.fromARGB(255, 244, 187, 103),),),
+                                                  Text('일상', style: TextStyle(fontSize: 15, color: Color(0xffF5A77B),),),
                                                   SizedBox(height: 20),
                                                   TextButton(
                                                     onPressed: () {
@@ -846,7 +846,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                           });
                                     },
                                     child: Text("일상", style: TextStyle(
-                                        color: Color.fromARGB(255, 244, 187, 103),
+                                        color: Color(0xffF5A77B),
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18
                                     ),
