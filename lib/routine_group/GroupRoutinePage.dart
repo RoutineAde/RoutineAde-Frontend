@@ -188,7 +188,7 @@ List<Group> groups = [
                                 category,
                                 style: TextStyle(
                                   color: category == "전체"? Colors.black:
-                                  category == "일상"? Color(0xff5A77B):
+                                  category == "일상"? Color(0xffF5A77B):
                                   category == "건강"? Color(0xff6ACBF3):
                                   category == "자기개발"? const Color(0xff7BD7C6):
                                   category == "자기관리"? const Color(0xffC69FEC):
