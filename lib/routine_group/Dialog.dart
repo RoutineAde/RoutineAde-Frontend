@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupType.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
+import 'package:routine_ade/routine_group/OnClickGroupPage.dart';
 
 
 //카테고리 색상
@@ -65,7 +66,7 @@ void showGroupDetailsDialog(BuildContext context, Group group) {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [  
             Text("루틴장 ${group.leader}"),
-            Text("   인원 ${group.membersCount}/25명"),
+            Text("   인원 ${group.membersCount}/30명"),
               ],
             ),
              SizedBox(height: 12),
@@ -83,8 +84,12 @@ void showGroupDetailsDialog(BuildContext context, Group group) {
         actions: [
           TextButton(
             onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) =>OnClickGroupPage()),
+               );
+       
             },
-            
             child: Text('그룹 가입', style: TextStyle(color: const Color.fromARGB(255, 210, 197, 81), fontSize: 15)),
             ),
           TextButton(

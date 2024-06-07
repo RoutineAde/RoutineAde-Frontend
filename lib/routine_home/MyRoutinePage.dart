@@ -12,11 +12,34 @@ import 'package:routine_ade/routine_group/OnClickGroupPage.dart';
 import 'package:routine_ade/routine_home/AlarmListPage.dart';
 import 'AddRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
-import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_home/ModifiedRoutinePage.dart';
 
-// import 'package:shelf/shelf_io.dart' as io;
-// import 'package:shelf_swagger_ui/shelf_swagger_ui.dart';
+//전체화면 어둡게 
+class DarkOverlay extends StatelessWidget {
+  final Widget child;
+  final bool isDark;
+  final VoidCallback onTap;
+
+  DarkOverlay({required this.child, required this.isDark, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        child,
+        if (isDark)
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: onTap, // 클릭 방지용 빈 함수
+              child: Container(
+                color: Colors.black.withOpacity(0.5), // 어두운 배경색, 투명도 조절 가능
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
 
 void main() async {
   await initializeDateFormatting();
@@ -29,6 +52,7 @@ class MyRoutinePage extends StatefulWidget {
   @override
   State<MyRoutinePage> createState() => _MyRoutinePageState();
 }
+
 
 class CalendarStyle {
   late final String locale;
@@ -198,13 +222,27 @@ class _MyRoutinePageState extends State<MyRoutinePage>
             children: [
               if (_isExpanded) ...[
                 SizedBox(height: 20), //기분 추가 버튼
+                 Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text("기분 추가", style: 
+                    TextStyle( color: Colors.black, fontWeight: FontWeight.bold)
+                  ),
+                    SizedBox(width: 10),
                 FloatingActionButton(
                   onPressed: _showBottomSheet,
-                  backgroundColor: Color(0xffFFB065),
+                  backgroundColor: Color(0xffF1E977),
                   child: Image.asset('assets/images/add-emotion.png'),
                   shape: CircleBorder(),
                 ),
+                ],
+                ),
                 SizedBox(height: 20),
+               Row(mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text("루틴 추가", style: TextStyle( color: Colors.black, fontWeight: FontWeight.bold)
+                  ),
+                     SizedBox(width: 10),
 
                 //루틴 추가 버튼
                 FloatingActionButton(
@@ -219,9 +257,15 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                   child: Image.asset('assets/images/add.png'),
                   shape: CircleBorder(),
                 ),
+                  ],
+               ),
                 SizedBox(height: 20),
               ],
               //add 버튼, X버튼
+              Row(mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(""),
+                     SizedBox(width: 10),
               FloatingActionButton(
                 onPressed: () {
                   setState(() {
@@ -237,6 +281,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
               ),
             ],
           ),
+              ],
+        ),
         ),
       ],
     ),
@@ -758,7 +804,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                   checkColor: Colors.white,
                                 ),
                               ),
-
                             ],
                           )
                         ],
@@ -769,7 +814,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                 SizedBox(height: 10), // 여백 추가
                 ExpansionTile(
                   title: Text(
-                    "그룹 취미 부자들",
+                    "그룹 미라클 모닝",
                     style: TextStyle(fontSize: 20),
                   ),
                   children: [
