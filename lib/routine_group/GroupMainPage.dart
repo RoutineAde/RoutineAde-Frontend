@@ -9,8 +9,9 @@ import 'package:routine_ade/routine_group/AddGroupPage.dart';
 class DarkOverlay extends StatelessWidget {
   final Widget child;
   final bool isDark;
+  final VoidCallback onTap;
 
-  DarkOverlay({required this.child, required this.isDark});
+  DarkOverlay({required this.child, required this.isDark, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +21,7 @@ class DarkOverlay extends StatelessWidget {
         if (isDark)
           Positioned.fill(
             child: GestureDetector(
-              onTap: () {}, // 클릭 방지용 빈 함수
+              onTap: onTap, // 클릭 방지용 빈 함수
               child: Container(
                 color: Colors.black.withOpacity(0.5), // 어두운 배경색, 투명도 조절 가능
               ),
@@ -72,7 +73,6 @@ class _GroupMainPageState extends State<GroupMainPage>{
     return 
         Scaffold( 
       appBar: AppBar(
-
         title: Text('내 그룹', 
         style: TextStyle(
           color: Colors.black, 
@@ -89,9 +89,15 @@ class _GroupMainPageState extends State<GroupMainPage>{
             ),
           ], 
       ), 
+      
       //예시그룹
       body: DarkOverlay(
         isDark: isExpanded, //눌렀을때만 어둡게
+        onTap: (){
+          setState(() {
+            isExpanded=false;
+          });
+        },
         child:  Container(
         color: Colors.grey[200], 
         child: Column(
@@ -102,7 +108,8 @@ class _GroupMainPageState extends State<GroupMainPage>{
                 itemBuilder: (context, index) {
                   final group = groups[index];
                   Color textColor = group.category =="건강"? Colors.blue: Colors.orange;
-                  return Card(
+                  return  
+                  Card(
                     margin: EdgeInsets.all(8.0),
                     color: Colors.white,
                     child: Padding(

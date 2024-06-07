@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:routine_ade/routine_group/AddGroupPage.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'Dialog.dart';
 import 'package:routine_ade/routine_group/GroupType.dart';
@@ -12,13 +13,14 @@ class GroupRoutinePage extends StatefulWidget {
 class _GroupRoutinePageState extends State<GroupRoutinePage> {
   // 텍스트필드 컨트롤러
   TextEditingController _searchController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
 
   // 그룹 데이터 생성
 List<Group> groups = [
     Group(name: "꿈을 향해" , 
     creationDate: DateTime.now().subtract(Duration(days: 1)), 
     category: "기타", 
-    membersCount: 23, 
+    membersCount: 6, 
     leader: "가은", 
     groupCode: "#10",
     groupIntro: "부지런쟁이들을 환영합니다!\n주 4회 이상 루틴 수행을 안하면 강퇴입니다!\n성실하게 루틴을 수행하실 분들만 들어와주세요.",
@@ -81,6 +83,7 @@ List<Group> groups = [
   // 필터링 된 그룹 데이터
   List<Group> filteredGroups = [];
   bool _isSearching = false;
+  bool _isPasswordIncorrect = false; // 비밀번호 틀림 여부 상태 추가
 
   @override
   void initState() {
@@ -112,6 +115,73 @@ List<Group> groups = [
       }
     });
   }
+  //비밀번호 다이얼로그
+ void showPasswordDialog(BuildContext context) {
+  TextEditingController _passwordController = TextEditingController();
+  showDialog(
+    context: context,
+    builder: (context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            title: Text(
+              "비밀번호를 입력해주세요",
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: _passwordController,
+                  decoration: InputDecoration(
+                    hintText: _isPasswordIncorrect
+                        ? "비밀번호가 일치하지 않습니다"
+                        : "비밀번호 4자리",
+                    hintStyle: TextStyle(color: Colors.grey),
+                    border: InputBorder.none,
+                    counterText: "",
+                  ),
+                  keyboardType: TextInputType.number,
+                  maxLength: 4,
+                  obscureText: true,
+                  style: TextStyle(
+                    decoration: TextDecoration.none,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  if (_passwordController.text == "1234") {
+                    Navigator.of(context).pop();
+                  } else {
+                    setState(() {
+                      _isPasswordIncorrect = true; // 일치하지 않을 때 상태 업데이트
+                    });
+                  }
+                },
+                child: Text("확인", style: TextStyle(color: Colors.black)),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("취소", style: TextStyle(color: Colors.black)),
+              ),
+            ],
+          );
+        },
+      );
+    },
+  ).then((_) {
+    setState(() {
+      _isPasswordIncorrect = false; // 다이얼로그 닫힐 때 상태 초기화
+    });
+  });
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -125,10 +195,6 @@ List<Group> groups = [
                   hintText: "  그룹명을 입력하세요",
                   fillColor: Colors.white,
                   filled: true,
-                  // border: OutlineInputBorder(
-                  //   borderRadius: BorderRadius.circular(12.0),
-                  //   borderSide: BorderSide.none,
-                  // ),
                   contentPadding: EdgeInsets.symmetric(
                     vertical: 12.0,
                   ),
@@ -137,8 +203,7 @@ List<Group> groups = [
                   filterGroups(value);
                 },
               )
-            : Text(
-                "루틴 그룹",
+            : Text("루틴 그룹",
                 style: TextStyle(color: Colors.black, fontSize: 23, fontWeight: FontWeight.bold),
               ),
         centerTitle: true,
@@ -220,26 +285,35 @@ List<Group> groups = [
               itemBuilder: (context, index) {
                 final group = filteredGroups[index];
                 Color textColor = group.category == "전체"? Colors.black:
-                                  group.category == "일상"? Colors.orange:
-                                  group.category == "건강"? Colors.blue:
-                                  group.category == "자기개발"? const Color.fromARGB(255, 186, 224, 255):
-                                  group.category == "자기관리"? const Color.fromARGB(255, 205, 150, 214):
-                                  group.category == "기타"? Colors.pink: Colors.black;
+                                  group.category == "일상"? Color(0xff5A77B):
+                                  group.category == "건강"? Color(0xff6ACBF3):
+                                  group.category == "자기개발"? Color(0xff7BD7C6):
+                                  group.category == "자기관리"? Color(0xffC69FEC):
+                                  group.category == "기타"? Color(0xff4A2D8): Colors.black;
                 return Card(
                   color: Colors.white,
                   child: Padding(
                     padding: EdgeInsets.all(15.0),
                     child: GestureDetector(
                       onTap: (){
+                        if(index ==2 ){
+                          showPasswordDialog(context); //3번째 카드 누르면 비밀번호 화면 표시 
+                        }
+                        else
                         showGroupDetailsDialog(context, group); //그룹 카드를 누르면 다이얼로그 표시
                                 },
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                     Text(group.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                    if(index==2)
+                                     Padding(
+                                       padding: const EdgeInsets.only(left:2.0),
+                                      child:Image.asset("assets/images/lock.png", width: 24, height: 24,),
+                                     ),
                                     ],
                                   ),
                                   SizedBox(height: 4.0),  
@@ -282,7 +356,10 @@ List<Group> groups = [
             right: 25,
             child: FloatingActionButton(
               onPressed: () {
-                // floating action button이 클릭되었을 때의 동작
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddGroupPage()),
+                );
               },
               child: Icon(Icons.add, color: Colors.white),
               backgroundColor: Color(0xffF1E977),

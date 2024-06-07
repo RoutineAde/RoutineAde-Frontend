@@ -160,7 +160,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('6 / 25 명', style: TextStyle(
+                          Text('6 / 30 명', style: TextStyle(
                               fontSize: 18
                           ),),
                         ],
@@ -190,8 +190,6 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                     ),
 
                     Divider(),  //구분선 추가
-
-
                     ListTile(
                       title: Text('그룹원', style: TextStyle(
                           fontSize:20, fontWeight: FontWeight.bold
@@ -468,11 +466,8 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
 
                                   ],
                                 ),
-
-
                               ],
                             ),
-
                             Row(  // 반복요일
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
@@ -482,18 +477,12 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                                     Text("매주 토, 일", style: TextStyle(
                                       color: Colors.grey,
                                     ),),
-
                                   ],
                                 ),
-
-
                               ],
                             ),
 
                             SizedBox(height: 20,),
-
-
-
                             Row(  // 루틴
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
@@ -705,10 +694,9 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                           child: Padding(
                             padding: EdgeInsets.all(10.0),
                             child: Text("일상", style: TextStyle(
-                              fontSize:18, fontWeight: FontWeight.bold, color: Color(0xff5A77B),),
+                              fontSize:18, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 208, 125, 1))),
                             ),
                           ),
-                        ),
                       ],
                     ),
                   ),

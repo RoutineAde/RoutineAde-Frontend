@@ -162,7 +162,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                             ),
                             decoration: BoxDecoration(
                               color: selectedCategoryIndex == index
-                                  ? Colors.grey
+                                  ? Color(0xffE6E288)
                                   : Colors.white,
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(color: Colors.grey),
@@ -207,6 +207,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                               ),
                               child: Text(
                                 '$_selectedMemberCount명',
+                          
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.black,
@@ -226,7 +227,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                 padding: EdgeInsets.only(top: 20, bottom: 15, left: 10, right: 10),
                 child: TextField(
                   controller: _groupDescriptionController,
-                  maxLines: 3,
+                  maxLines: 6,
                   style: TextStyle(color: Colors.black, fontSize: 18),
                   decoration: InputDecoration(
                     fillColor: Colors.white,
