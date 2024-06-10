@@ -58,7 +58,15 @@ class _GroupMainPageState extends State<GroupMainPage>{
     leader: "윤정", 
     groupCode: "#36",
     groupIntro: "테스트 용",
- 
+    ),
+
+    Group(name: "갓생러 모여", 
+    creationDate: DateTime.now().subtract(Duration(days: 1)), 
+    category: "건강", 
+    membersCount: 1,
+    leader: "갓생호소인", 
+    groupCode: "#8",
+    groupIntro: "테스트 용",
     ),
   ];
 //가입일자 계산
