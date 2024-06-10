@@ -36,11 +36,11 @@ List<Group> groups = [
     groupIntro: "같이 피트니스 하실 분 모집합니다! 초보자 환영"
     ),
 
-     Group(name: "행복한 일상", 
+     Group(name: "갓생러 모여", 
     creationDate: DateTime.now().subtract(Duration(days: 1)), 
-    category: "자기관리", 
-    membersCount: 21, 
-    leader: "서현", 
+    category: "건강", 
+    membersCount: 1, 
+    leader: "갓생호소인", 
     groupCode: "#8",
     groupIntro: "갓생루틴으로 행복한 일상 보내실 분 구함"
     ),

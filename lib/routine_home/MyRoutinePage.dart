@@ -68,6 +68,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
   bool _checked2 = false;
   bool _checked3 = false;
   bool _checked4 = false;
+  bool _checked5 = false;
 
   bool _isExpanded = false;
 
@@ -456,8 +457,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                       ),
                       child: Column(
                         children: <Widget>[
-
-
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -526,7 +525,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
 
                                     ),
                                   )
-
                                 ],
                               )
                             ],
@@ -560,10 +558,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                   checkColor: Colors.white,
                                 ),
                               ),
-
                             ],
-                          )
-
+                          ),
                         ],
                       ),
                     ),
@@ -642,10 +638,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18
                                     ),
-
                                     ),
-                                  )
-
+                                  ),
                                 ],
                               )
                             ],
@@ -658,7 +652,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                   SizedBox(width: 20),
                                   Text("일기 쓰기", style: TextStyle(fontSize: 18),),
                                   SizedBox(width: 10),
-
                                 ],
                               ),
                               SizedBox(width: 100),
@@ -679,10 +672,79 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                             ],
                           )
                         ],
+                        
                       ),
                     ),
+                  SizedBox(height: 10), 
+                    //새로운 카드추가 
+        Container(
+          padding: const EdgeInsets.fromLTRB(0, 0.0, 0, 0),
+          height: 100,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Column(
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Row(
+                    children: [
+                      SizedBox(width: 6),
+                      TextButton(
+                        onPressed: () {
+                        
+                        },
+                        child: Text(
+                          "일상",
+                          style: TextStyle(
+                            color: Color(0xffF5A77B),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Row(
+                    children: <Widget>[
+                      SizedBox(width: 20),
+                      Text(
+                        "스트레칭하기",
+                        style: TextStyle(fontSize: 18),                      
+                      ),
+                      SizedBox(width: 10),
+                      Image.asset("assets/images/bell.png", width: 20, height: 20,),
+                    ],
+                  ),
+                  SizedBox(width: 100),
+                  Transform.scale(
+                    scale: 1.5, // 원하는 크기로 체크박스를 스케일
+                    child: Checkbox(
+                      value: _checked5,
+                      onChanged: (bool? newValue) {
+                        setState(() {
+                          _checked5 = newValue!;
+                        });
+                      },
+                      activeColor: Color(0xffE6E288),
+                      checkColor: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+                    
                   ],
-                ),
+                ),    
                 SizedBox(height: 10), // 여백 추가
                 ExpansionTile(
                   title: Text(
@@ -814,7 +876,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                 SizedBox(height: 10), // 여백 추가
                 ExpansionTile(
                   title: Text(
-                    "그룹 미라클 모닝",
+                    "그룹 여고추리반",
                     style: TextStyle(fontSize: 20),
                   ),
                   children: [
