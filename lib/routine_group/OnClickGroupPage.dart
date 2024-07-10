@@ -228,13 +228,13 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Image.asset(
-                            "assets/images/new-icons/user02.png",
+                            "assets/images/new-icons/김외롭.png",
                             width: 40,
                             height: 40,
                           ),
                         ],
                       ),
-                      title: Text('가은', style: TextStyle(
+                      title: Text('김외롭', style: TextStyle(
                         fontSize:18,
                       ),
                       ),
@@ -287,7 +287,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                           ),
                         ],
                       ),
-                      title: Text('서연', style: TextStyle(
+                      title: Text('가은', style: TextStyle(
                         fontSize:18,
                       ),
                       ),
@@ -305,7 +305,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                           ),
                         ],
                       ),
-                      title: Text('시원', style: TextStyle(
+                      title: Text('이똑똑', style: TextStyle(
                         fontSize:18,
                       ),
                       ),
