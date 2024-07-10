@@ -17,18 +17,18 @@ import 'RoutineDetail.dart';
 
 
 // 루틴 데이터 생성
-List<Routine> routines = [
-  Routine(
+List<indvRoutine> indvRoutines = [
+  indvRoutine(
     category: "건강",
     name: "헬스장 가서 운동하기" ,
   ),
 
-  Routine(
+  indvRoutine(
     category: "자기 개발",
     name: "일기 쓰기" ,
   ),
 
-  Routine(
+  indvRoutine(
     category: "일상",
     name: "스트레칭하기" ,
   ),
@@ -111,13 +111,13 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                                 context: context,
                                                 builder: (BuildContext context) {
                                                   return AlertDialog(                   // 수정, 삭제 다이얼로그
-                                                    title: Text(routines[index].name,
+                                                    title: Text(indvRoutines[index].name,
                                                       style: TextStyle(fontSize: 24),),
                                                     content: Column(
                                                       mainAxisSize: MainAxisSize.min,
                                                       crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
-                                                        Text(routines[index].category, style: TextStyle(fontSize: 15, color: Color(0xff6ACBF3)),),
+                                                        Text(indvRoutines[index].category, style: TextStyle(fontSize: 15, color: Color(0xff6ACBF3)),),
                                                         SizedBox(height: 20),
                                                         TextButton(
                                                           onPressed: () {
@@ -141,7 +141,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                                         TextButton(
                                                           onPressed: () {
                                                             setState(() {
-                                                              routines.removeAt(index);
+                                                              indvRoutines.removeAt(index);
                                                               //_chekced.removeAt(index);
                                                               Navigator.of(context).pop();
                                                             });
@@ -266,7 +266,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
   @override
   void initState() {
     super.initState();
-    _checked = List.generate(routines.length, (index) => false);
+    _checked = List.generate(indvRoutines.length, (index) => false);
     _tabController = TabController(length: 4, vsync: this);
     _tabController.addListener(
             () => setState(() => _selectedIndex = _tabController.index));
@@ -520,7 +520,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                     SizedBox(height: 10), // 여백 추가
                     SingleChildScrollView(
                       child: Column(
-                        children: List.generate(routines.length, (index) {
+                        children: List.generate(indvRoutines.length, (index) {
 
                           //카테고리에 따라 색상을 반환하는 함수
                           Color getCategoryColor(String category) {
@@ -569,13 +569,13 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                                   context: context,
                                                   builder: (BuildContext context) {
                                                     return AlertDialog( // 수정, 삭제 다이얼로그
-                                                      title: Text(routines[index].name,
+                                                      title: Text(indvRoutines[index].name,
                                                         style: TextStyle(fontSize: 24),),
                                                       content: Column(
                                                         mainAxisSize: MainAxisSize.min,
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
-                                                          Text(routines[index].category, style: TextStyle(fontSize: 15, color: getCategoryColor(routines[index].category),),),
+                                                          Text(indvRoutines[index].category, style: TextStyle(fontSize: 15, color: getCategoryColor(indvRoutines[index].category),),),
                                                           SizedBox(height: 20),
                                                           TextButton(
                                                             onPressed: () {
@@ -599,7 +599,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                                           TextButton(
                                                             onPressed: () {
                                                               setState(() {
-                                                                routines.removeAt(index);
+                                                                indvRoutines.removeAt(index);
                                                                 //_chekced.removeAt(index);
                                                                 Navigator.of(context).pop();
                                                               });
@@ -620,10 +620,10 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                                       ),
                                                     );
                                                   }
-                                                  );
+                                              );
                                             },
-                                            child: Text(routines[index].category, style: TextStyle(
-                                                color: getCategoryColor(routines[index].category),
+                                            child: Text(indvRoutines[index].category, style: TextStyle(
+                                                color: getCategoryColor(indvRoutines[index].category),
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 18
                                             ),
@@ -639,7 +639,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                       Row(
                                         children: <Widget>[
                                           SizedBox(width: 20),
-                                          Text(routines[index].name, style: TextStyle(fontSize: 18),),
+                                          Text(indvRoutines[index].name, style: TextStyle(fontSize: 18),),
                                           SizedBox(width: 10),
                                           Image.asset(
                                             "assets/images/bell.png",
