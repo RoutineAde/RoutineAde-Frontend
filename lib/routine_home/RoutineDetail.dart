@@ -1,23 +1,7 @@
-class indvRoutine { // 개인 루틴
+class Routine {
   String category;
   String name;
+  bool isChecked;
 
-  indvRoutine({
-    required this.category,
-    required this.name,
-  });
-
+  Routine({required this.category, required this.name, this.isChecked=false});
 }
-
-class groupRoutine { // 그룹 루틴
-  String groupName;
-  String category;
-  String name;
-
-  groupRoutine({
-    required this.groupName,
-    required this.category,
-    required this.name,
-  });
-}
-
