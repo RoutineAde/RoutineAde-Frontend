@@ -7,9 +7,12 @@ version: 1.0.0+1
 environment:
   sdk: '3.3.4'
 
+
 dependencies:
   flutter:
     sdk: flutter
+  google_fonts: ^2.0.0
+
 
   #추가한 패키지
   flutter_calendar_week: ^3.0.1
@@ -36,3 +39,10 @@ flutter:
     - assets/images/tap-bar/
     - assets/images/emotion/
     - assets/images/new-icons/
+
+fonts:
+  - family: NotoSansKR
+    fonts:
+      - asset: assets/fonts/NotoSansKR-Regular.otf
+      - asset: assets/fonts/NotoSansKR-Bold.otf
+      - asset: assets/fonts/NotoSansKR-Medium.otf
