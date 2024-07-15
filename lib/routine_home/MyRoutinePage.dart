@@ -10,6 +10,9 @@ import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_group/OnClickGroupPage.dart';
 import 'package:routine_ade/routine_home/AlarmListPage.dart';
 import 'package:routine_ade/routine_home/ModifiedRoutinePage.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 void main() async {
   await initializeDateFormatting();
   runApp(const MyRoutinePage());
@@ -23,20 +26,19 @@ class MyRoutinePage extends StatefulWidget {
 }
 
 class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProviderStateMixin {
+  late Future<List<Routine>> futureRoutines; // late 키워드를 사용하여 초기화를 나중에 하도록 설정
+
   late TabController _tabController;
   final CalendarWeekController _controller = CalendarWeekController();
   bool _isExpanded = false;
   String? _selectedImage;
 
-  List<Routine> routines = [
-    Routine(category: "건강", name: "헬스장 가서 운동하기"),
-    Routine(category: "자기 개발", name: "일기 쓰기"),
-    Routine(category: "일상", name: "스트레칭하기"),
-  ];
-
   @override
   void initState() {
     super.initState();
+    String date = '2024.07.15'; // 요청할 날짜 설정
+    futureRoutines = fetchRoutines(date);
+
     _tabController = TabController(length: 4, vsync: this);
   }
 
@@ -117,9 +119,54 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
         Expanded(
           child: Container(
             color: Colors.grey[200],
-            child: _buildRoutineList(),
+            child: FutureBuilder<List<Routine>>(
+              future: futureRoutines,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Failed to load routines'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No routines available'));
+                }
+
+                return ListView(
+                  padding: EdgeInsets.fromLTRB(24, 10, 24, 16),
+                  children: <Widget>[
+                    SizedBox(height: 10,), // 여백 추가
+                    Theme(
+                      data: Theme.of(context).copyWith(
+                        dividerColor: Colors.transparent,
+                      ),
+                      child: ExpansionTile(
+                        title: Text("개인 루틴", style: TextStyle(fontSize: 20)),
+                        children: snapshot.data!.map((routine) => _buildRoutineTile(routine)).toList(),
+                      ),
+                    ),
+                    SizedBox(height: 10,), // 여백 추가
+                  ],
+                );
+              },
+            ),
           ),
         ),
+        if(_selectedImage != null)
+          Container(
+            padding: EdgeInsets.all(16),
+            color: Colors.grey[200],
+            child: Column(
+              children: [
+                Text("오늘의 기분", style: TextStyle(fontSize: 18)),
+                SizedBox(height: 10,),
+                Image.asset(
+                  _selectedImage!,
+                  fit: BoxFit.cover,
+                  width: 70,
+                  height: 70,
+                ),
+              ],
+            ),
+          ),
       ],
     ),
   );
@@ -256,69 +303,25 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
     );
   }
 
-
-  Widget _buildRoutineList() {
-    return Column(
-      children: [
-        Expanded(
-          child: ListView(
-            padding: EdgeInsets.fromLTRB(24, 10, 24, 16),
-            children: <Widget>[
-              SizedBox(height: 10,), //여백 추가
-              Theme(
-                data: Theme.of(context).copyWith(
-                  dividerColor: Colors.transparent,
-                ),
-                child: ExpansionTile(
-                  title: Text("개인 루틴", style: TextStyle(fontSize: 20)),
-                  children: routines.map((routine) => _buildRoutineTile(routine)).toList(),
-                ),
-              ),
-              SizedBox(height: 10,), //여백추가
-            ],
-          ),
-        ),
-        //기분추가
-        if(_selectedImage!=null)
-          Container(
-            padding: EdgeInsets.all(16),
-            color: Colors.grey[200],
-            child:Column(
-              children:[
-                Text("오늘의 기분", style:TextStyle(fontSize: 18)),
-                SizedBox(height: 10,),
-                Image.asset(
-                  _selectedImage!,
-                  fit:BoxFit.cover,
-                  width: 70,
-                  height: 70,
-                ),
-              ],
-            ),
-          ),
-      ],
-
-    );
-  }
   Widget _buildRoutineTile(Routine routine) {
     Color categoryColor;
 
     // 카테고리 색상
-    switch(routine.category){
+    switch (routine.routineCategory) {
       case "건강":
-        categoryColor=Color(0xff6ACBF3);
+        categoryColor = Color(0xff6ACBF3);
         break;
       case "자기 개발":
-        categoryColor=Color(0xff7BD7C6);
+        categoryColor = Color(0xff7BD7C6);
         break;
       case "일상":
-        categoryColor=Color(0xffF5A77B);
+        categoryColor = Color(0xffF5A77B);
         break;
       case "자기 관리":
-        categoryColor=Color(0xffC69FEC);
+        categoryColor = Color(0xffC69FEC);
         break;
       default:
-        categoryColor=Color(0xffF4A2D8);
+        categoryColor = Color(0xffF4A2D8);
         break;
     }
 
@@ -336,19 +339,19 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
           // 카테고리 텍스트
           Container(
             padding: EdgeInsets.only(left: 13), // 왼쪽에 10의 간격 추가
-            child:Text(
-              routine.category,
-              style:TextStyle(color: categoryColor, fontWeight: FontWeight.bold, fontSize: 18),
+            child: Text(
+              ' ${routine.routineCategory}',
+              style: TextStyle(color: categoryColor, fontWeight: FontWeight.bold, fontSize: 18),
             ),
           ),
           // 루틴 이름
           ListTile(
-            title: Text(routine.name, style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Text('${routine.routineTitle}', style: TextStyle(fontWeight: FontWeight.bold)),
             trailing: Checkbox(
-              value: routine.isChecked,
+              value: routine.isAlarmEnabled,
               onChanged: (bool? value) {
                 setState(() {
-                  routine.isChecked = value!;
+                  routine.isAlarmEnabled = value!;
                 });
               },
             ),
@@ -366,8 +369,8 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
       barrierColor: Colors.black54,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(routine.name),
-          content: Text(routine.category),
+          title: Text(routine.routineTitle),
+          content: Text(routine.routineCategory),
           actions: <Widget>[
             ElevatedButton(
               onPressed: () {
@@ -382,7 +385,7 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
             ElevatedButton(
               onPressed: () {
                 setState(() {
-                  routines.remove(routine);
+                  //routines.remove(routine);
                 });
                 Navigator.of(context).pop();
               },
@@ -395,10 +398,43 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
   }
 }
 
-class Routine {
-  final String category;
-  final String name;
-  bool isChecked;
+Future<List<Routine>> fetchRoutines(String date) async {
+  print('Date used for API request: $date'); // 요청할 날짜를 출력하여 확인
 
-  Routine({required this.category, required this.name, this.isChecked = false});
+  final response = await http.get(
+    Uri.parse('http://15.164.88.94:8080/routines?routineDate=$date'),
+    headers: {
+      'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw', // 여기에 올바른 인증 토큰을 넣으세요
+    },
+  );
+
+  print('Response status: ${response.statusCode}');
+  print('Response body: ${response.body}');
+
+  if (response.statusCode == 200) {
+    Map<String, dynamic> responseBody = json.decode(utf8.decode(response.bodyBytes)); // UTF-8 디코딩
+    List<dynamic> routines = responseBody['routines'];
+    print('Parsed data: $routines'); // 데이터를 출력하여 확인
+    return routines.map((item) => Routine.fromJson(item)).toList();
+  } else {
+    print('Failed to load routines: ${response.statusCode}');
+    print('Response body: ${response.body}');
+    throw Exception('Failed to load routines');
+  }
+}
+
+class Routine {
+  final String routineTitle;
+  final String routineCategory;
+  bool isAlarmEnabled; // isAlarmEnabled를 mutable로 변경
+
+  Routine({required this.routineTitle, required this.routineCategory, required this.isAlarmEnabled});
+
+  factory Routine.fromJson(Map<String, dynamic> json) {
+    return Routine(
+      routineTitle: json['routineTitle'], // 한국어로 된 필드명을 사용하여 데이터를 파싱
+      routineCategory: json['routineCategory'],
+      isAlarmEnabled: json['isAlarmEnabled'],
+    );
+  }
 }
