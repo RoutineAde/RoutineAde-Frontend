@@ -353,7 +353,7 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
           SizedBox(height: 10,),
           // 카테고리 텍스트
           Container(
-            padding: EdgeInsets.only(left: 13), // 왼쪽에 10의 간격 추가
+            padding: EdgeInsets.only(left: 10), // 왼쪽에 10의 간격 추가
             child: Text(
               ' ${routine.routineCategory}',
               style: TextStyle(color: categoryColor, fontWeight: FontWeight.bold, fontSize: 18),
@@ -398,9 +398,10 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
               child: Text('수정'),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                await deleteRoutine(routine.routineId);
                 setState(() {
-                  //routines.remove(routine);
+                  futureRoutines = fetchRoutines(selectedDate); // Refresh the routines
                 });
                 Navigator.of(context).pop();
               },
@@ -410,6 +411,19 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
         );
       },
     );
+  }
+
+  Future<void> deleteRoutine(int routineId) async {
+    final response = await http.delete(
+      Uri.parse('http://15.164.88.94:8080/routines/$routineId'),
+      headers: {
+        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw', // 여기에 올바른 인증 토큰을 넣으세요
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete routine');
+    }
   }
 }
 
@@ -439,14 +453,16 @@ Future<List<Routine>> fetchRoutines(String date) async {
 }
 
 class Routine {
+  final int routineId;
   final String routineTitle;
   final String routineCategory;
   bool isAlarmEnabled; // isAlarmEnabled를 mutable로 변경
 
-  Routine({required this.routineTitle, required this.routineCategory, required this.isAlarmEnabled});
+  Routine({required this.routineId, required this.routineTitle, required this.routineCategory, required this.isAlarmEnabled});
 
   factory Routine.fromJson(Map<String, dynamic> json) {
     return Routine(
+      routineId: json['routineId'],
       routineTitle: json['routineTitle'], // 한국어로 된 필드명을 사용하여 데이터를 파싱
       routineCategory: json['routineCategory'],
       isAlarmEnabled: json['isAlarmEnabled'],
