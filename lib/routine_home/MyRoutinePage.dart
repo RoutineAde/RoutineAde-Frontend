@@ -12,6 +12,7 @@ import 'package:routine_ade/routine_home/AlarmListPage.dart';
 import 'package:routine_ade/routine_home/ModifiedRoutinePage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 void main() async {
   await initializeDateFormatting();
@@ -26,20 +27,31 @@ class MyRoutinePage extends StatefulWidget {
 }
 
 class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProviderStateMixin {
-  late Future<List<Routine>> futureRoutines; // late 키워드를 사용하여 초기화를 나중에 하도록 설정
+  Future<List<Routine>>? futureRoutines; // late 키워드를 사용하여 초기화를 나중에 하도록 설정
+  String selectedDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
+  late CalendarWeekController _controller;
+
+  bool _isTileExpanded = false;
 
   late TabController _tabController;
-  final CalendarWeekController _controller = CalendarWeekController();
   bool _isExpanded = false;
   String? _selectedImage;
 
   @override
   void initState() {
     super.initState();
-    String date = '2024.07.15'; // 요청할 날짜 설정
-    futureRoutines = fetchRoutines(date);
+    _controller = CalendarWeekController();
+    futureRoutines = fetchRoutines(selectedDate);
 
     _tabController = TabController(length: 4, vsync: this);
+  }
+
+  void _onDateSelected(DateTime date) {
+    setState(() {
+      selectedDate = DateFormat('yyyy.MM.dd').format(date);
+      futureRoutines = fetchRoutines(selectedDate);
+      _isTileExpanded = true; // 날짜를 선택할 때마다 ExpansionTile이 펼쳐지도록 설정
+    });
   }
 
   @override
@@ -140,6 +152,7 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
                       ),
                       child: ExpansionTile(
                         title: Text("개인 루틴", style: TextStyle(fontSize: 20)),
+                        initiallyExpanded: _isTileExpanded,
                         children: snapshot.data!.map((routine) => _buildRoutineTile(routine)).toList(),
                       ),
                     ),
@@ -269,7 +282,9 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
         showMonth: true,
         minDate: DateTime.now().add(Duration(days: -367)),
         maxDate: DateTime.now().add(Duration(days: 365)),
-        onDatePressed: (DateTime datetime) => setState(() {}),
+        onDatePressed: (DateTime datetime) {
+          _onDateSelected(datetime);
+        },
         dayOfWeekStyle: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600, fontSize: 17),
         dayOfWeek: ['월', '화', '수', '목', '금', '토', '일'],
         dateStyle: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600, fontSize: 17),
