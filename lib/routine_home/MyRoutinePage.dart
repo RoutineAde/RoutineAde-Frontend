@@ -37,6 +37,9 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
   bool _isExpanded = false;
   String? _selectedImage;
 
+  //루틴완료체크여부
+  //Map<int, bool> isCheckedMap = {};
+
   @override
   void initState() {
     super.initState();
@@ -327,13 +330,13 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
       case "건강":
         categoryColor = Color(0xff6ACBF3);
         break;
-      case "자기 개발":
+      case "자기개발":
         categoryColor = Color(0xff7BD7C6);
         break;
       case "일상":
         categoryColor = Color(0xffF5A77B);
         break;
-      case "자기 관리":
+      case "자기관리":
         categoryColor = Color(0xffC69FEC);
         break;
       default:
@@ -362,7 +365,25 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
           ),
           // 루틴 이름
           ListTile(
-            title: Text('${routine.routineTitle}', style: TextStyle(fontWeight: FontWeight.bold)),
+            title: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start, // Align elements to the start of the row
+              children: [
+                GestureDetector(
+                  onTap: () => _showDialog(context, routine),
+                  child: Text('${routine.routineTitle}', style: TextStyle(fontWeight: FontWeight.bold)),
+                ),
+                SizedBox(width: 5), // Adjust the width as needed
+                if (routine.isAlarmEnabled) // Conditionally display the bell icon
+                  GestureDetector(
+                    onTap: () {
+                      // Do nothing when the image is tapped
+                    },
+                    child: Image.asset('assets/images/bell.png', width: 20, height: 20), // Add the image here
+                  ),
+              ],
+            ),
+            /*
             trailing: Checkbox(
               value: routine.isAlarmEnabled,
               onChanged: (bool? value) {
@@ -371,8 +392,10 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
                 });
               },
             ),
+            */
             onTap: () => _showDialog(context, routine),
           ),
+
         ],
       ),
     );
@@ -463,16 +486,17 @@ class Routine {
   final int routineId;
   final String routineTitle;
   final String routineCategory;
-  bool isAlarmEnabled; // isAlarmEnabled를 mutable로 변경
+  final bool isAlarmEnabled; // isAlarmEnabled를 mutable로 변경
 
-  Routine({required this.routineId, required this.routineTitle, required this.routineCategory, required this.isAlarmEnabled});
+
+  Routine({required this.routineId, required this.routineTitle, required this.routineCategory, required this.isAlarmEnabled,});
 
   factory Routine.fromJson(Map<String, dynamic> json) {
     return Routine(
       routineId: json['routineId'],
       routineTitle: json['routineTitle'], // 한국어로 된 필드명을 사용하여 데이터를 파싱
       routineCategory: json['routineCategory'],
-      isAlarmEnabled: json['isAlarmEnabled'],
+      isAlarmEnabled: json['isAlarmEnabled'] ?? false,
     );
   }
 }
