@@ -139,7 +139,8 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Failed to load routines'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('No routines available'));
+                  return Center(child: Text('\t\t\t\t\t\t\t아래 + 버튼을 눌러\n\n새로운 루틴을 추가해보세요!',
+                    style: TextStyle(fontSize: 20, color: Colors.grey),));
                 }
 
                 return ListView(
@@ -399,11 +400,16 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
             ),
             ElevatedButton(
               onPressed: () async {
-                await deleteRoutine(routine.routineId);
-                setState(() {
-                  futureRoutines = fetchRoutines(selectedDate); // Refresh the routines
-                });
+                // 다이얼로그를 먼저 닫음
                 Navigator.of(context).pop();
+
+                // 루틴 삭제
+                await deleteRoutine(routine.routineId);
+
+                // 상태 갱신
+                setState(() {
+                  futureRoutines = fetchRoutines(selectedDate);
+                });
               },
               child: Text('삭제'),
             ),
@@ -412,6 +418,7 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
       },
     );
   }
+
 
   Future<void> deleteRoutine(int routineId) async {
     final response = await http.delete(
