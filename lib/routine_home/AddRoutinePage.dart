@@ -1,10 +1,13 @@
+import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart'; //날짜 포맷팅 init 패키지
+import 'package:http/http.dart' as http;
 import 'MyRoutinePage.dart';
 
 class AddRoutinePage extends StatefulWidget {
@@ -17,6 +20,8 @@ class AddRoutinePage extends StatefulWidget {
 class _AddRoutinePageState extends State<AddRoutinePage> {
   //텍스트필드
   final TextEditingController _controller = TextEditingController();
+  late final String _token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM'; // 토큰 입력 
+
   int _currentLength = 0;
   final int _maxLength = 15;
 
@@ -24,10 +29,11 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
   List<bool> isSelected = [false, false, false, false, false, false, false];
   //카테고리 선택 (한번에 하나만)
   int selectedCategoryIndex = -1;
-  List<String> isCategory = ["일상", "건강", "자기개발", "자기관리", "기타"];
+  List<String> isCategory = ["일상", "건강", "자기개발", "자기관리", "기타"]; //.
 
   bool _isAlarmOn = false; //알람
   DateTime _selectedDate = DateTime.now(); //선택된 날짜
+  List<String> selectedDays =[];
 
   //날짜 포맷팅
   String get formattedDate => DateFormat('yyyy.MM.dd').format(_selectedDate);
@@ -48,6 +54,86 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
     _controller.dispose();
     super.dispose();
   }
+
+// 루틴 추가 API 호출 함수 
+ void _addRoutine() async {
+  //카테고리 선택 여부 확인
+  if(selectedCategoryIndex == -1){
+    _showDialog("경고", "키테고리를 선택해주세요.");
+    return;
+  }
+
+  void _addRoutine() async{
+    if(selectedCategoryIndex == -1){
+      _showDialog("경고", "카테고리를 선택해주세요.");
+      return;
+    }
+    if(_controller.text.isEmpty){
+      _showDialog("경고", "루틴 이름을 입력해주세요.");
+      return;
+    }
+    if(selectedDays.isEmpty){
+      _showDialog("경고", "반복 요일을 선택해주세요.");
+      return;
+    }
+  }
+    // 요청 바디 준비
+    final url = Uri.parse('http://15.164.88.94:8080/routines');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $_token',
+    };
+    final body = jsonEncode({
+      'routineTitle':_controller.text,
+      'routineCategory': _getCategoryFromIndex(selectedCategoryIndex),
+      'isAlarmEnabled': _isAlarmOn,
+      'startDate': formattedDate,
+      'repeatDays': selectedDays,
+    });
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        _showDialog('성공', '루틴이 성공적으로 추가되었습니다.');
+      } else {
+        _showDialog('오류', '루틴 추가에 실패했습니다: ${response.body}');
+      }
+    } catch (e) {
+      print('Error: $e');
+      _showDialog('오류', '오류가 발생했습니다: $e');
+    }
+  }
+
+  void _showDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('확인'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  String _getCategoryFromIndex(int index) {
+    if (index < 0 || index >= isCategory.length) {
+    return '';
+  }
+  return isCategory[index];
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -146,6 +232,11 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                         onTap: () {
                           setState(() {
                             isSelected[i] = !isSelected[i];
+                            if (isSelected[i]) {
+                              selectedDays.add(_getWeekdayName(i));
+                            } else {
+                              selectedDays.remove(_getWeekdayName(i));
+                          }
                           });
                         },
                         child: Container(
@@ -159,7 +250,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                           ),
                           alignment: Alignment.center,
                           child: Text(
-                            ["월", "화", "수", "목", "금", "토", "일"][i],
+                             _getWeekdayName(i),
                             style: TextStyle(
                               color:
                                   isSelected[i] ? Colors.white : Colors.black,
@@ -340,7 +431,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                 height: 80,
                 padding: EdgeInsets.only(top: 30),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: _addRoutine,
                   style: ButtonStyle(
                     backgroundColor:
                         MaterialStateProperty.all<Color>(Color(0xffE6E288)),
@@ -366,5 +457,26 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
         ),
       ),
     );
+  }
+
+   String _getWeekdayName(int index) {
+    switch (index) {
+      case 0:
+        return '월';
+      case 1:
+        return '화';
+      case 2:
+        return '수';
+      case 3:
+        return '목';
+      case 4:
+        return '금';
+      case 5:
+        return '토';
+      case 6:
+        return '일';
+      default:
+        return '';
+    }
   }
 }

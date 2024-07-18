@@ -335,10 +335,10 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                                   children: [
                                     TextButton(
                                         onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => GroupMainPage()),
-                                          );
+                                          // Navigator.push(
+                                          //   context,
+                                          //   MaterialPageRoute(builder: (context) => GroupMainPage()),
+                                          // );
                                         },
                                         child: Row(
                                           children: [
