@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart'; //날짜 포맷팅 init 패키지
-//import 'MyRoutinePage';
 
 class OnClickGroupPage extends StatefulWidget {
   const OnClickGroupPage({super.key});

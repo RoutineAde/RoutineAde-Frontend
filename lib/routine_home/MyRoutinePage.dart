@@ -54,6 +54,7 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
       selectedDate = DateFormat('yyyy.MM.dd').format(date);
       futureRoutines = fetchRoutines(selectedDate);
       _isTileExpanded = true; // 날짜를 선택할 때마다 ExpansionTile이 펼쳐지도록 설정
+      // _showBottomSheet(date); 
     });
   }
 
@@ -69,11 +70,11 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
     });
   }
 
-  void _showBottomSheet() async {
+  void _showBottomSheet(DateTime date) async {
     final String? selectedImage = await showModalBottomSheet<String>(
       context: context,
       builder: (BuildContext context) {
-        return _buildBottomSheetContent();
+        return _buildBottomSheetContent(date);
       },
     );
 
@@ -82,22 +83,69 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
         _selectedImage = selectedImage;
       });
 
-      await _registerEmotion(selectedImage);
+      await _registerEmotion(date, selectedImage);
     }
-  
 }
+//기분등록 
+Future<void> _registerEmotion(DateTime date, String selectedImage) async{
+  final today = DateTime.now();
+  final isPastOrToday = date.isBefore(today) || date.isAtSameMomentAs(today);
 
 
-  Widget _buildBottomSheetContent() {
+  if (!isPastOrToday) {
+    // 선택한 날짜가 미래일 경우 알림 메시지를 표시하고 등록을 차단
+    if(mounted){
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('과거와 오늘 날짜만 선택 가능합니다.')),
+    );
+    }
+    return;
+  }
+
+
+  final formattedDate = DateFormat("yyyy.MM.dd").format(date);
+    final url = Uri.parse("http://15.164.88.94:8080/users/emotion");
+    final headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM"
+    };
+
+    final body = jsonEncode({
+      "date": formattedDate,
+      "userEmotion": _getImageEmotion(selectedImage),
+    });
+
+    try{
+      final response = await http.post(
+        url, 
+        headers: headers,
+        body: body,  
+      );
+
+      if(response.statusCode == 200 || response.statusCode == 201){
+        print("감정 등록 성공");
+      }else{
+        print("감정 등록 실패: ${response.statusCode}- ${response.body}");
+      }
+      }catch(e){
+        print("감정 등록 중 에러: $e");
+    }
+  }
+
+
+  Widget _buildBottomSheetContent(DateTime date) {
     return Container(
       height: 250,
       child: Column(
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 30),
-            child: Text(
-              '${_controller.selectedDate.year ?? DateTime.now().year}년 ${_controller.selectedDate.month?? DateTime.now().month}월 ${_controller.selectedDate.day?? DateTime.now().day}일',
-              style: TextStyle(fontSize: 20),
+            // child: Text(
+            //   '${_controller.selectedDate.year ?? DateTime.now().year}년 ${_controller.selectedDate.month?? DateTime.now().month}월 ${_controller.selectedDate.day?? DateTime.now().day}일',
+            //   style: TextStyle(fontSize: 20),
+             child: Text(
+            '${date.year}년 ${date.month}월 ${date.day}일',
+            style: TextStyle(fontSize: 20),
             ),
           ),
           Row(
@@ -166,6 +214,10 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
           Container(
             padding: EdgeInsets.all(16),
             color: Colors.grey[200],
+            child: Center(
+              child: Container(
+                padding: EdgeInsets.all(16),
+                color:Colors.grey[200],
             child: Column(
               children: [
                 Text("오늘의 기분", style: TextStyle(fontSize: 18)),
@@ -177,6 +229,8 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
                   height: 70,
                 ),
               ],
+            ),
+          ),
             ),
           ),
       ],
@@ -193,7 +247,10 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
             mainAxisSize: MainAxisSize.min,
             children: [
               if (_isExpanded) ...[
-                _buildFABRow("기분 추가", _showBottomSheet, 'assets/images/add-emotion.png'),
+               _buildFABRow("기분 추가", () {
+                final DateTime selectedDateTime = DateFormat('yyyy.MM.dd').parse(selectedDate);
+                _showBottomSheet(selectedDateTime);},
+                'assets/images/add-emotion.png'),
                 SizedBox(height: 20),
                 _buildFABRow("루틴 추가", () {
                   Navigator.push(context, MaterialPageRoute(builder: (context) => const AddRoutinePage()));
@@ -222,6 +279,7 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
         ),
       ],
     );
+
   }
 
   Widget _buildMainFAB() {
@@ -247,7 +305,7 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildBottomAppBarItem("assets/images/tap-bar/routine02.png"),
-          // _buildBottomAppBarItem("assets/images/tap-bar/group01.png", GroupMainPage()),
+          _buildBottomAppBarItem("assets/images/tap-bar/group01.png", GroupMainPage()),
           _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png", OnClickGroupPage()),
           _buildBottomAppBarItem("assets/images/tap-bar/more01.png", ChatScreen()),
         ],
@@ -449,7 +507,7 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
     final response = await http.delete(
       Uri.parse('http://15.164.88.94:8080/routines/$routineId'),
       headers: {
-        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM', // 여기에 올바른 인증 토큰을 넣으세요
+        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM', 
       },
     );
 
@@ -459,8 +517,9 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
   }
 }
 
+//조회 
 Future<List<Routine>> fetchRoutines(String date) async {
-  print('Date used for API request: $date'); // 요청할 날짜를 출력하여 확인
+  print('API 요청 날짜: $date'); // 요청할 날짜를 출력하여 확인
 
   final response = await http.get(
     Uri.parse('http://15.164.88.94:8080/routines?routineDate=$date'),
@@ -468,21 +527,38 @@ Future<List<Routine>> fetchRoutines(String date) async {
       'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM', // 여기에 올바른 인증 토큰을 넣으세요
     },
   );
-  
-  print('Response status: ${response.statusCode}');
-  print('Response body: ${response.body}');
 
   if (response.statusCode == 200) {
-    Map<String, dynamic> responseBody = json.decode(utf8.decode(response.bodyBytes)); // UTF-8 디코딩
-    List<dynamic> routines = responseBody['routines'] ?? [];
-    print('Parsed data: $routines'); // 데이터를 출력하여 확인
-    return routines.map((item) => Routine.fromJson(item)).toList();
+    List<dynamic> responseBody = json.decode(utf8.decode(response.bodyBytes)); // UTF-8 디코딩
+    print('Parsed data: $responseBody'); // 데이터를 출력하여 확인
+    return responseBody.map((item){
+     String startDate = item['startDate'] ?? ''; // 기본값 설정
+      // 날짜 형식이 올바르지 않은 경우에 대한 예외 처리
+      if (!RegExp(r'^\d{4}\.\d{2}\.\d{2}$').hasMatch(startDate)) {
+        try {
+          DateTime parsedDate = DateFormat('yyyy.MM.dd').parse(startDate, true);
+          startDate = DateFormat('yyyy.MM.dd').format(parsedDate);
+        } catch (e) {
+          print('Date parsing error: $e');
+          startDate = ''; // 기본값으로 빈 문자열 설정
+        }
+      }
+      return Routine.fromJson(item..['startDate'] = startDate);
+    }).toList();
   } else {
-    print('Failed to load routines: ${response.statusCode}');
-    print('Response body: ${response.body}');
     throw Exception('Failed to load routines');
   }
 }
+//       }
+//     }
+    
+//     Routine.fromJson(item)).toList();
+//   } else {
+//     print('Failed to load routines: ${response.statusCode}');
+//     print('Response body: ${response.body}');
+//     throw Exception('Failed to load routines');
+//   }
+// }
 //루틴 조회 및 수정
 Future<void> _fetchRoutineDate(BuildContext context, int routineId) async {
   final url = Uri.parse("http://15.164.88.94:8080/routines/$routineId");
@@ -526,46 +602,18 @@ Future<void> _fetchRoutineDate(BuildContext context, int routineId) async {
   }
 }
 //기분 등록 
-  Future<void> _registerEmotion(String selectedImage) async{
-    final currentDate = DateFormat("yyyy.MM.dd").format(DateTime.now());
 
-    final url = Uri.parse("http://15.164.88.94:8080/users/emotion");
-    final headers = {
-      "Content-Type": "application/json",
-      "Authorization": "BearereyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM"
-    };
-
-    final body = jsonEncode({
-      "data": currentDate,
-      "emotion": _getImageEmotion(selectedImage),
-    });
-
-    try{
-      final response = await http.post(
-        url, 
-        headers: headers,
-        body: body, 
-      );
-
-      if(response.statusCode == 200){
-        print("감정 등록 성공");
-      }else{
-        print("감정 등록 실패: ${response.statusCode}");
-      }
-      }catch(e){
-        print("감정 등록 중 에러: $e");
-    }
-  }
   String _getImageEmotion(String selectedImage) {
     if (selectedImage.contains('assets/images/emotion/happy.png')) {
       return 'GOOD';
     } else if (selectedImage.contains('assets/images/emotion/depressed.png')) {
       return 'SAD';
-    } else if (selectedImage.contains('assets/images/emotion/sad.png')) {
-      return 'SAD';
     } else if (selectedImage.contains('assets/images/emotion/angry.png')) {
       return 'ANGRY';
-    } else {
+    } else if (selectedImage.contains('assets/images/emotion/depressed.png')) {
+      return 'OK';
+    }
+    else {
       return 'OK';
     }
   }
@@ -583,11 +631,11 @@ class Routine {
 
   factory Routine.fromJson(Map<String, dynamic> json) {
     return Routine(
-      routineId: json['routineId'],
-      routineTitle: json['routineTitle'], // 한국어로 된 필드명을 사용하여 데이터를 파싱
+      routineId: json['routineId']?? 0, //기본값 설정
+      routineTitle: json['routineTitle']?? '', // 한국어로 된 필드명을 사용하여 데이터를 파싱
       routineCategory: json['routineCategory'] ?? '기타',
       isAlarmEnabled: json['isAlarmEnabled'] ?? false,
-       startDate: json["startDate"] ?? '',
+      startDate: json["startDate"] ?? DateFormat('yyyy.MM.dd').format(DateTime.now()),
       repeatDays: List<String>.from(json["repeatDays"] ?? []),
 
     );

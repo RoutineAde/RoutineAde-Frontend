@@ -5,14 +5,12 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart'; //날짜 포맷팅 init 패키지
+import 'package:http/http.dart' as http;
 import 'MyRoutinePage.dart';
 
 class ModifiedroutinePage extends StatefulWidget {
-  static const List<String> isCategory = ["일상", "건강", "자기개발", "자기관리", "기타"];
-
   final int routineId;
   final String routineTitle;
   final String? routineCategory;
@@ -21,14 +19,14 @@ class ModifiedroutinePage extends StatefulWidget {
   final List<String> repeatDays;
 
   const ModifiedroutinePage({
+    super.key,
     required this.routineId,
     required this.routineTitle,
     this.routineCategory,
     required this.isAlarmEnabled,
     required this.startDate,
     required this.repeatDays,
-    Key? key,
-  }) : super(key: key);
+  });
 
   @override
   State<ModifiedroutinePage> createState() => _ModifiedRoutinePageState();
@@ -36,25 +34,29 @@ class ModifiedroutinePage extends StatefulWidget {
 
 class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
   final TextEditingController _controller = TextEditingController();
-  late String _token;
+  late final String _token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM';
 
-  late int _currentLength;
+  int _currentLength = 0;
   final int _maxLength = 15;
-  late int selectedCategoryIndex;
-  late bool _isAlarmOn;
-  late DateTime _selectedDate;
-  late List<String> selectedDays;
+
   List<bool> isSelected = [false, false, false, false, false, false, false];
+  int selectedCategoryIndex = -1;
+  List<String> isCategory = ["일상", "건강", "자기개발", "자기관리", "기타"];
+
+  bool _isAlarmOn = false;
+  DateTime _selectedDate = DateTime.now();
+  List<String> selectedDays = [];
+
+  String get formattedDate => DateFormat('yyyy.MM.dd').format(_selectedDate);
 
   @override
   void initState() {
     super.initState();
-    _token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM';
     _controller.text = widget.routineTitle;
     _currentLength = widget.routineTitle.length;
     selectedCategoryIndex = _getIndexFromCategory(widget.routineCategory ?? '');
     _isAlarmOn = widget.isAlarmEnabled;
-    _selectedDate = widget.startDate.isNotEmpty ? DateTime.parse(widget.startDate) : DateTime.now();
+    _selectedDate = _parseDate(widget.startDate);
     selectedDays = List<String>.from(widget.repeatDays);
 
     for (var day in selectedDays) {
@@ -71,19 +73,59 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
     });
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  DateTime _parseDate(String date) {
+    try {
+      if (date.contains('.')) {
+        return DateFormat('yyyy.MM.dd').parse(date);
+      }
+      return DateTime.parse(date);
+    } catch (e) {
+      return DateTime.now();
+    }
   }
 
-  void _editRoutine() async {
-    final url = Uri.parse('http://15.164.88.94:8080/routines/${widget.routineId}');
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $_token',
-    };
-    final body = jsonEncode({
+  int _getIndexFromCategory(String category) {
+    return isCategory.indexOf(category);
+  }
+
+  int _getDayIndex(String day) {
+    switch (day) {
+      case '월':
+        return 0;
+      case '화':
+        return 1;
+      case '수':
+        return 2;
+      case '목':
+        return 3;
+      case '금':
+        return 4;
+      case '토':
+        return 5;
+      case '일':
+        return 6;
+      default:
+        return -1;
+    }
+  }
+
+  void _ModifiedRoutine() async {
+
+    final url = Uri.parse(
+    'http://15.164.88.94:8080/routines/${widget.routineId}');
+  //   'routineTitle=${Uri.encodeComponent(_controller.text)}&'
+  //   'routineCategory=${Uri.encodeComponent(_getCategoryFromIndex(selectedCategoryIndex))}&'
+  //   'isAlarmEnabled=$_isAlarmOn&'
+  //   'startDate=${Uri.encodeComponent(formattedDate)}&'
+  //   'repeatDays=${Uri.encodeComponent(selectedDays.join(','))}'
+  // );
+
+  final headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer $_token',
+  };
+
+  final body = jsonEncode({
       'routineTitle': _controller.text,
       'routineCategory': _getCategoryFromIndex(selectedCategoryIndex),
       'isAlarmEnabled': _isAlarmOn,
@@ -91,19 +133,15 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
       'repeatDays': selectedDays,
     });
 
-    print('URL: $url');
-    print('Headers: $headers');
-    print('Body: $body');
-
     try {
-      final response = await http.put(url, headers: headers, body: body);
+       final response = await http.put(url, headers: headers, body: body);
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        _showDialog('성공', '루틴이 성공적으로 수정되었습니다.');
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        _showDialog('성공', '수정완료');
       } else {
-        _showDialog('오류', '루틴 수정에 실패했습니다: ${response.body}');
+        _showDialog('오류', '수정에 실패했습니다: ${response.body}');
       }
     } catch (e) {
       print('Error: $e');
@@ -132,121 +170,35 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
   }
 
   String _getCategoryFromIndex(int index) {
-    switch (index) {
-      case 0:
-        return '일상';
-      case 1:
-        return '건강';
-      case 2:
-        return '자기개발';
-      case 3:
-        return '자기관리';
-      case 4:
-        return '기타';
-      default:
-        return '';
+    if (index < 0 || index >= isCategory.length) {
+      return '';
     }
+    return isCategory[index];
   }
-
-  int _getIndexFromCategory(String? category) {
-    if (category == null) {
-      return 4; // 기본 카테고리는 "기타"
-    }
-    switch (category) {
-      case '일상':
-        return 0;
-      case '건강':
-        return 1;
-      case '자기개발':
-        return 2;
-      case '자기관리':
-        return 3;
-      case '기타':
-        return 4;
-      default:
-        return 4;
-    }
-  }
-
-  int _getDayIndex(String day) {
-    switch (day) {
-      case '월':
-        return 0;
-      case '화':
-        return 1;
-      case '수':
-        return 2;
-      case '목':
-        return 3;
-      case '금':
-        return 4;
-      case '토':
-        return 5;
-      case '일':
-        return 6;
-      default:
-        return -1;
-    }
-  }
-
-  String _getWeekdayAbbreviation(int index) {
-    switch (index) {
-      case 0:
-        return '월';
-      case 1:
-        return '화';
-      case 2:
-        return '수';
-      case 3:
-        return '목';
-      case 4:
-        return '금';
-      case 5:
-        return '토';
-      case 6:
-        return '일';
-      default:
-        return '';
-    }
-  }
-
-  // String _getWeekdayName(int index) {
-  //   switch (index) {
-  //     case 0:
-  //       return '월';
-  //     case 1:
-  //       return '화';
-  //     case 2:
-  //       return '수';
-  //     case 3:
-  //       return '목';
-  //     case 4:
-  //       return '금';
-  //     case 5:
-  //       return '토';
-  //     case 6:
-  //       return '일';
-  //     default:
-  //       return '';
-  //   }
-  // }
-
-  String get formattedDate => DateFormat('yyyy.MM.dd').format(_selectedDate);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[200],
-      appBar: AppBar(
-        backgroundColor: Colors.grey[200],
-        title: Text(
-          '루틴 수정',
-          style: TextStyle(fontSize: 18, color: Colors.black, fontWeight: FontWeight.bold),
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, size: 20),
-          onPressed: () => Navigator.pop(context),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(50),
+        child: AppBar(
+          backgroundColor: Colors.grey[200],
+          title: Text(
+            '루틴 수정',
+            style: TextStyle(
+                fontSize: 18,
+                color: Colors.black,
+                fontWeight: FontWeight.bold),
+          ),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              size: 20,
+            ),
+            onPressed: () => Navigator.pop(context),
+          ),
         ),
       ),
       body: SingleChildScrollView(
@@ -280,7 +232,12 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                   topRight: Radius.circular(10),
                 ),
               ),
-              padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+              padding: const EdgeInsets.only(
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10,
+              ),
               margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -299,7 +256,8 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(10), bottomRight: Radius.circular(10)),
+                    bottomLeft: Radius.circular(10),
+                    bottomRight: Radius.circular(10)),
               ),
               padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
               margin: const EdgeInsets.only(left: 10, right: 10),
@@ -312,9 +270,9 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                         setState(() {
                           isSelected[i] = !isSelected[i];
                           if (isSelected[i]) {
-                            selectedDays.add(_getWeekdayAbbreviation(i));
+                            selectedDays.add(_getWeekdayName(i));
                           } else {
-                            selectedDays.remove(_getWeekdayAbbreviation(i));
+                            selectedDays.remove(_getWeekdayName(i));
                           }
                         });
                       },
@@ -322,14 +280,17 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                         width: 40,
                         height: 40,
                         decoration: BoxDecoration(
-                          color: isSelected[i] ? Color(0xffE6E288) : Colors.grey[200],
+                          color: isSelected[i]
+                              ? Color(0xffE6E288)
+                              : Colors.grey[200],
                           borderRadius: BorderRadius.circular(20),
                         ),
                         alignment: Alignment.center,
                         child: Text(
-                          _getWeekdayAbbreviation(i),
+                          _getWeekdayName(i),
                           style: TextStyle(
-                            color: isSelected[i] ? Colors.white : Colors.black,
+                            color:
+                                isSelected[i] ? Colors.white : Colors.black,
                           ),
                         ),
                       ),
@@ -337,160 +298,220 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                 ],
               ),
             ),
-            // 카테고리
+            //카테고리
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
               ),
               padding: const EdgeInsets.only(top: 10, left: 10, right: 10),
-              margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
-              child: Row(
-                children: [
-                  Text(
-                    '카테고리',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
+              margin: const EdgeInsets.only(top: 30, left: 10, right: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(
+                    children: [
+                      Image.asset(
+                        "assets/images/category.png",
+                        width: 30,
+                        height: 30,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        "카테고리",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(width: 10),
-                  Expanded(
-                    child: DropdownButton<int>(
-                      value: selectedCategoryIndex,
-                      items: ModifiedroutinePage.isCategory.asMap().entries.map((entry) {
-                        int index = entry.key;
-                        String value = entry.value;
-                        return DropdownMenuItem<int>(
-                          value: index,
-                          child: Text(value),
-                        );
-                      }).toList(),
-                      onChanged: (int? newIndex) {
-                        if (newIndex != null) {
+                  SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: List.generate(
+                      5,
+                      (index) => GestureDetector(
+                        onTap: () {
                           setState(() {
-                            selectedCategoryIndex = newIndex;
-                          });
-                        }
-                      },
-                      isExpanded: true,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-              margin: const EdgeInsets.only(left: 10, right: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-              ),
-              child: Row(
-                children: [
-                  Text(
-                    '알림',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
-                  ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.centerRight,
-                      child: CupertinoSwitch(
-                        value: _isAlarmOn,
-                        onChanged: (bool value) {
-                          setState(() {
-                            _isAlarmOn = value;
+                            selectedCategoryIndex = index;
                           });
                         },
+                        child: Container(
+                          width: 70,
+                          height: 35,
+                          margin: EdgeInsets.only(
+                            bottom: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: selectedCategoryIndex == index
+                                ? Color(0xffE6E288)
+                                : Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: Colors.grey),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            isCategory[index],
+                            style: TextStyle(
+                                color: selectedCategoryIndex == index
+                                    ? Colors.white
+                                    : Colors.grey),
+                          ),
+                        ),
                       ),
                     ),
                   ),
                 ],
               ),
             ),
+            //알림 설정
             Container(
-              padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-              margin: const EdgeInsets.only(left: 10, right: 10),
               decoration: BoxDecoration(
                 color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              padding:
+                  EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+              margin: EdgeInsets.only(top: 30, left: 10, right: 10),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    '시작 날짜',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
+                  Image.asset(
+                    "assets/images/bell.png",
+                    width: 30,
+                    height: 30,
                   ),
-                  ListTile(
-                    title: Text(formattedDate),
-                    trailing: Icon(Icons.calendar_today),
-                    onTap: _pickStartDate,
+                  SizedBox(
+                    width: 10,
                   ),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-              margin: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 20),
-              decoration: BoxDecoration(
-                color: Colors.white,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '반복 요일',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
+                  Text("알림",
+                      style: TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold)),
+                  Container(
+                    padding: EdgeInsets.only(left: 228),
                   ),
-                  ToggleButtons(
-                    children: List.generate(7, (index) {
-                      return Text(_getWeekdayAbbreviation(index));
-                    }),
-                    isSelected: isSelected,
-                    onPressed: (int index) {
+                  CupertinoSwitch(
+                    value: _isAlarmOn,
+                    activeColor: Color(0xffE6E288),
+                    onChanged: (value) {
                       setState(() {
-                        isSelected[index] = !isSelected[index];
-                        if (isSelected[index]) {
-                          selectedDays.add(_getWeekdayAbbreviation(index));
-                        } else {
-                          selectedDays.remove(_getWeekdayAbbreviation(index));
-                        }
+                        _isAlarmOn = value;
                       });
                     },
                   ),
                 ],
               ),
             ),
-            ElevatedButton(
-              onPressed: _editRoutine,
-              child: Text('루틴 수정하기'),
+            Container(
+              padding:
+                  EdgeInsets.only(top: 20, bottom: 15, left: 10, right: 10),
+              margin: EdgeInsets.only(top: 30, left: 10, right: 10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Image.asset(
+                    "assets/images/calendar.png",
+                    width: 30,
+                    height: 30,
+                  ),
+                  SizedBox(width: 10),
+                  Text(
+                    "루틴 시작일",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 130),
+                  ),
+                  //시작일 선택
+                  GestureDetector(
+                    onTap: () async {
+                      DateTime? pickedDate = await showDatePicker(
+                        context: context,
+                        initialDate: _selectedDate,
+                        firstDate: DateTime.now(),
+                        lastDate: DateTime(2100),
+                      );
+                      if (pickedDate != null && pickedDate != _selectedDate) {
+                        setState(() {
+                          _selectedDate = pickedDate;
+                        });
+                      }
+                    },
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[100],
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Text(
+                        formattedDate,
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
+            //루틴 추가 버튼
+            Container(
+              width: 400,
+              height: 80,
+              padding: EdgeInsets.only(top: 30),
+              child: ElevatedButton(
+                onPressed: _ModifiedRoutine,
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Color(0xffE6E288)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                    ),
+                  ),
+                ),
+                child: Text(
+                  "수정하기",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
           ],
         ),
       ),
     );
   }
 
-  Future<void> _pickStartDate() async {
-    DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(2020),
-      lastDate: DateTime(2101),
-    );
-
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
+  String _getWeekdayName(int index) {
+    switch (index) {
+      case 0:
+        return '월';
+      case 1:
+        return '화';
+      case 2:
+        return '수';
+      case 3:
+        return '목';
+      case 4:
+        return '금';
+      case 5:
+        return '토';
+      case 6:
+        return '일';
+      default:
+        return '';
     }
   }
 }
