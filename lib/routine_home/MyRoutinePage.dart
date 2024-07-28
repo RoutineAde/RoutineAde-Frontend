@@ -81,8 +81,12 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
       setState(() {
         _selectedImage = selectedImage;
       });
+
+      //await _registerEmotion(selectedImage);
     }
+
   }
+
 
   Widget _buildBottomSheetContent() {
     return Container(
@@ -92,7 +96,7 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
           Padding(
             padding: const EdgeInsets.only(top: 30),
             child: Text(
-              '${_controller.selectedDate.year}년 ${_controller.selectedDate.month}월 ${_controller.selectedDate.day}일',
+              '${_controller.selectedDate.year ?? DateTime.now().year}년 ${_controller.selectedDate.month?? DateTime.now().month}월 ${_controller.selectedDate.day?? DateTime.now().day}일',
               style: TextStyle(fontSize: 20),
             ),
           ),
@@ -140,33 +144,24 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
-                  return Center(child: Text('Failed to load routines'));
+                  return Center(child: Text('루틴을 불러오는 중 오류가 발생했습니다: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return Center(child: Text('\t\t\t\t\t\t\t아래 + 버튼을 눌러\n\n새로운 루틴을 추가해보세요!',
+                  return Center(child: Text('루틴을 추가하세요',
                     style: TextStyle(fontSize: 20, color: Colors.grey),));
                 }
-
-                return ListView(
+                return ListView.builder(
                   padding: EdgeInsets.fromLTRB(24, 10, 24, 16),
-                  children: <Widget>[
-                    SizedBox(height: 10,), // 여백 추가
-                    Theme(
-                      data: Theme.of(context).copyWith(
-                        dividerColor: Colors.transparent,
-                      ),
-                      child: ExpansionTile(
-                        title: Text("개인 루틴", style: TextStyle(fontSize: 20)),
-                        initiallyExpanded: _isTileExpanded,
-                        children: snapshot.data!.map((routine) => _buildRoutineTile(routine)).toList(),
-                      ),
-                    ),
-                    SizedBox(height: 10,), // 여백 추가
-                  ],
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    Routine routine = snapshot.data![index];
+                    return _buildRoutineTile(routine);
+                  },
                 );
               },
             ),
           ),
         ),
+
         if(_selectedImage != null)
           Container(
             padding: EdgeInsets.all(16),
@@ -252,7 +247,7 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildBottomAppBarItem("assets/images/tap-bar/routine02.png"),
-          _buildBottomAppBarItem("assets/images/tap-bar/group01.png", GroupMainPage()),
+          // _buildBottomAppBarItem("assets/images/tap-bar/group01.png", GroupMainPage()),
           _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png", OnClickGroupPage()),
           _buildBottomAppBarItem("assets/images/tap-bar/more01.png", ChatScreen()),
         ],
@@ -377,22 +372,20 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
                 if (routine.isAlarmEnabled) // Conditionally display the bell icon
                   GestureDetector(
                     onTap: () {
-                      // Do nothing when the image is tapped
+                      // Do nothing when the image is tapped3
                     },
                     child: Image.asset('assets/images/bell.png', width: 20, height: 20), // Add the image here
                   ),
               ],
             ),
-            /*
             trailing: Checkbox(
               value: routine.isAlarmEnabled,
               onChanged: (bool? value) {
                 setState(() {
-                  routine.isAlarmEnabled = value!;
+                  routine.isCompletion = value!;
                 });
               },
             ),
-            */
             onTap: () => _showDialog(context, routine),
           ),
 
@@ -409,14 +402,21 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
       builder: (BuildContext context) {
         return AlertDialog(
           title: Text(routine.routineTitle),
-          content: Text(routine.routineCategory),
+          content: Text(routine.routineCategory?? '기타'),
           actions: <Widget>[
             ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => ModifiedRoutinePage()),
+                  MaterialPageRoute(builder: (context) => ModifiedroutinePage(
+                    routineId: routine.routineId,
+                    routineTitle: routine.routineTitle,
+                    routineCategory: routine.routineCategory,
+                    isAlarmEnabled: routine.isAlarmEnabled,
+                    startDate: routine.startDate,
+                    repeatDays: routine.repeatDays,
+                  )),
                 );
               },
               child: Text('수정'),
@@ -471,10 +471,9 @@ Future<List<Routine>> fetchRoutines(String date) async {
   print('Response body: ${response.body}');
 
   if (response.statusCode == 200) {
-    Map<String, dynamic> responseBody = json.decode(utf8.decode(response.bodyBytes)); // UTF-8 디코딩
-    List<dynamic> routines = responseBody['routines'];
-    print('Parsed data: $routines'); // 데이터를 출력하여 확인
-    return routines.map((item) => Routine.fromJson(item)).toList();
+    List<dynamic> responseBody = json.decode(utf8.decode(response.bodyBytes)); // UTF-8 디코딩
+    print('Parsed data: $responseBody'); // 데이터를 출력하여 확인
+    return responseBody.map((item) => Routine.fromJson(item)).toList();
   } else {
     print('Failed to load routines: ${response.statusCode}');
     print('Response body: ${response.body}');
@@ -482,21 +481,125 @@ Future<List<Routine>> fetchRoutines(String date) async {
   }
 }
 
+//루틴 조회 및 수정
+Future<void> _fetchRoutineDate(BuildContext context, int routineId) async {
+  final url = Uri.parse("http://15.164.88.94:8080/routines/$routineId");
+  final headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM"
+  };
+
+  try{
+    final response = await http.get(url, headers: headers);
+    print("Response status: ${response.statusCode}");
+    print("Response body: ${response.body}");
+
+    if(response.statusCode==200){
+      final data = json.decode(response.body);
+      print("Decoded date: $data");
+
+      String routineTitle = data['routineTitle'];
+      String routineCategory = data['routineCategory'] as String ?? '기타';
+      bool isAlarmEnabled = data['isAlarmEnabled'];
+      String startDate = data['startDate'];
+      List<String> repeatDays = List<String>.from(data['repeatDays']);
+
+
+      //수정 페이지 이동
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context)=> ModifiedroutinePage
+          (routineId: routineId,
+          routineTitle: routineTitle,
+          routineCategory: routineCategory,
+          isAlarmEnabled: isAlarmEnabled,
+          startDate: startDate, repeatDays: repeatDays,
+        ),
+        ),
+      );
+    } else {
+      throw Exception("루틴이 없습니다.");
+    }
+  } catch(e){
+    print("에러");
+  }
+}
+/*
+//기분 등록
+Future<void> _registerEmotion(String selectedImage) async{
+  final currentDate = DateFormat("yyyy.MM.dd").format(DateTime.now());
+
+  final url = Uri.parse("http://15.164.88.94:8080/users/emotion");
+  final headers = {
+    "Content-Type": "application/json",
+    "Authorization": "BearereyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM"
+  };
+
+  final body = jsonEncode({
+    "data": currentDate,
+    "emotion": _getImageEmotion(selectedImage),
+  });
+
+  try{
+    final response = await http.post(
+      url,
+      headers: headers,
+      body: body,
+    );
+
+    if(response.statusCode == 200){
+      print("감정 등록 성공");
+    }else{
+      print("감정 등록 실패: ${response.statusCode}");
+    }
+  }catch(e){
+    print("감정 등록 중 에러: $e");
+  }
+}
+String _getImageEmotion(String selectedImage) {
+  if (selectedImage.contains('assets/images/emotion/happy.png')) {
+    return 'GOOD';
+  } else if (selectedImage.contains('assets/images/emotion/depressed.png')) {
+    return 'SAD';
+  } else if (selectedImage.contains('assets/images/emotion/sad.png')) {
+    return 'SAD';
+  } else if (selectedImage.contains('assets/images/emotion/angry.png')) {
+    return 'ANGRY';
+  } else {
+    return 'OK';
+  }
+}
+
+ */
+
 class Routine {
   final int routineId;
   final String routineTitle;
-  final String routineCategory;
-  final bool isAlarmEnabled; // isAlarmEnabled를 mutable로 변경
+  final List<String> repeatDays;
+  final String? routineCategory;
+  bool isAlarmEnabled; // mutable로 변경
+  final String startDate;
+  bool isCompletion;
 
-
-  Routine({required this.routineId, required this.routineTitle, required this.routineCategory, required this.isAlarmEnabled,});
+  Routine({
+    required this.routineId,
+    required this.routineTitle,
+    required this.repeatDays,
+    required this.routineCategory,
+    required this.isAlarmEnabled,
+    required this.startDate,
+    required this.isCompletion,
+  });
 
   factory Routine.fromJson(Map<String, dynamic> json) {
     return Routine(
       routineId: json['routineId'],
-      routineTitle: json['routineTitle'], // 한국어로 된 필드명을 사용하여 데이터를 파싱
-      routineCategory: json['routineCategory'],
+      routineTitle: json['routineTitle'],
+      repeatDays: List<String>.from(json['repeatDays'] ?? []),
+      routineCategory: json['routineCategory'] ?? '기타',
       isAlarmEnabled: json['isAlarmEnabled'] ?? false,
+      startDate: json['startDate'] ?? '',
+      isCompletion: json['isCompletion'] ?? false,
     );
   }
 }

@@ -84,10 +84,10 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
               labelStyle: TextStyle(
                 fontSize: 18,
               ),
-                labelColor: Colors.black,
+              labelColor: Colors.black,
               indicator: UnderlineTabIndicator(
-                borderSide: BorderSide(width: 3.0, color: Color(0xffE6E288),),
-                insets: EdgeInsets.symmetric(horizontal: 115.0)
+                  borderSide: BorderSide(width: 3.0, color: Color(0xffE6E288),),
+                  insets: EdgeInsets.symmetric(horizontal: 115.0)
               ),
             ),
             //backgroundColor: Colors.grey[200],
@@ -148,7 +148,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Text('기타', style: TextStyle(
-                              fontSize: 18, color: Color(0xffF4A2D8),
+                            fontSize: 18, color: Color(0xffF4A2D8),
                           ),),
                         ],
                       ),
@@ -327,44 +327,44 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                         ),
                         onPressed: () {
                           showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: Text("그룹을 나가시겠습니까?"),
-                                content: Row(
-                                  children: [
-                                    TextButton(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: Text("그룹을 나가시겠습니까?"),
+                                  content: Row(
+                                    children: [
+                                      TextButton(
                                         onPressed: () {
-                                          Navigator.push(
-                                            context,
-                                            MaterialPageRoute(builder: (context) => GroupMainPage()),
-                                          );
+                                          // Navigator.push(
+                                          //   context,
+                                          //   MaterialPageRoute(builder: (context) => GroupMainPage()),
+                                          // );
                                         },
                                         child: Row(
                                           children: [
                                             Text("나가기"),
                                           ],
                                         ),
-                                    ),
-
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => OnClickGroupPage()),
-                                        );
-                                      },
-                                      child: Row(
-                                        children: [
-                                          Text("취소"),
-                                        ],
                                       ),
-                                    ),
 
-                                  ],
-                                ),
-                              );
-                            }
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => OnClickGroupPage()),
+                                          );
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Text("취소"),
+                                          ],
+                                        ),
+                                      ),
+
+                                    ],
+                                  ),
+                                );
+                              }
                           );
                         },),
 
@@ -388,17 +388,17 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                     title: Wrap(
                       children: [
                         Container(
-                            decoration: BoxDecoration(
-                              color: Colors.grey[200],
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.all(10.0),
-                              child: Text("자기 개발", style: TextStyle(
-                                fontSize:18, fontWeight: FontWeight.bold, color: Color(0xff7BD7C6),),
-                              ),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200],
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.all(10.0),
+                            child: Text("자기 개발", style: TextStyle(
+                              fontSize:18, fontWeight: FontWeight.bold, color: Color(0xff7BD7C6),),
                             ),
                           ),
+                        ),
                       ],
                     ),
                   ),
@@ -694,9 +694,9 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                           child: Padding(
                             padding: EdgeInsets.all(10.0),
                             child: Text("일상", style: TextStyle(
-                              fontSize:18, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 208, 125, 1))),
-                            ),
+                                fontSize:18, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 208, 125, 1))),
                           ),
+                        ),
                       ],
                     ),
                   ),
@@ -843,7 +843,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
 
             //채팅페이지
             IconButton(
-                icon: Icon(Icons.door_back_door_outlined),
+              icon: Icon(Icons.door_back_door_outlined),
               onPressed: () {
                 Navigator.push(
                   context,
