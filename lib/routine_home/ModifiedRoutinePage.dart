@@ -122,7 +122,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
 
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $_token',
+      'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
     };
 
     final body = jsonEncode({

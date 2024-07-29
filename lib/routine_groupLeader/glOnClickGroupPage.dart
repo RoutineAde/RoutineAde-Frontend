@@ -7,20 +7,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
+import 'package:routine_ade/routine_groupLeader/glAddRoutinePage.dart';
+import 'package:routine_ade/routine_groupLeader/glgroupManagement.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 
-import 'groupManagement.dart'; //날짜 포맷팅 init 패키지
+import '../routine_group/groupManagement.dart';
 
-class OnClickGroupPage extends StatefulWidget {
-  const OnClickGroupPage({super.key});
+class glOnClickGroupPage extends StatefulWidget {
+  const glOnClickGroupPage({super.key});
 
 
 
   @override
-  State<OnClickGroupPage> createState() => _OnClickGroupPageState();
+  State<glOnClickGroupPage> createState() => _glOnClickGroupPageState();
 }
 
-class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerProviderStateMixin{
+class _glOnClickGroupPageState extends State<glOnClickGroupPage> with SingleTickerProviderStateMixin{
   final List<String> categories = ["자기개발", "건강", "일상"];
 
   /*
@@ -239,6 +241,27 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                         fontSize:18,
                       ),
                       ),
+                      trailing: TextButton(
+                        onPressed: () {
+                          // TextButton이 눌렸을 때의 동작을 여기에 작성하세요.
+                        },
+                        style: ButtonStyle(
+                          padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(8.0)),
+                          backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent), // 배경 색상
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(50.0), // 원형 테두리
+                              side: BorderSide(color: Colors.black, width: 1.0), // 테두리 색상 및 두께
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          '내보내기',
+                          style: TextStyle(
+                            color: Colors.black, // 버튼의 텍스트 색상 설정
+                          ),
+                        ),
+                      ),
                     ),
 
                     ListTile(
@@ -327,7 +350,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                           height: 30,
                         ),
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => groupManagement()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => glgroupManagement()));
                         },),
 
                     ],
@@ -815,6 +838,19 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
           ],
         ),
         endDrawerEnableOpenDragGesture: false,
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            // Add your onPressed code here!
+          },
+          child: IconButton(
+            icon: Image.asset("assets/images/add.png", width: 30, height: 30),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => glAddRoutinePage()));
+            },
+          ),
+          backgroundColor: Color(0xffF1E977),
+          shape: CircleBorder(),
+        ),
       ),
     );
   }

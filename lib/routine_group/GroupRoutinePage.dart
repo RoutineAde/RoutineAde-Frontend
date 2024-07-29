@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:routine_ade/routine_group/AddGroupPage.dart';
+import 'package:routine_ade/routine_groupLeader/glOnClickGroupPage.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'Dialog.dart';
 import 'package:routine_ade/routine_group/GroupType.dart';
@@ -166,7 +167,8 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Navigator.of(context).pop();
+                    //Navigator.of(context).pop();
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => glOnClickGroupPage()));
                   },
                   child: Text("취소", style: TextStyle(color: Colors.black)),
                 ),

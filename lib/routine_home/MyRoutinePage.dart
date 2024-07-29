@@ -197,13 +197,22 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
                   return Center(child: Text('루틴을 추가하세요',
                     style: TextStyle(fontSize: 20, color: Colors.grey),));
                 }
-                return ListView.builder(
+                return ListView(
                   padding: EdgeInsets.fromLTRB(24, 10, 24, 16),
-                  itemCount: snapshot.data!.length,
-                  itemBuilder: (context, index) {
-                    Routine routine = snapshot.data![index];
-                    return _buildRoutineTile(routine);
-                  },
+                  children: <Widget>[
+                    SizedBox(height: 10,), // 여백 추가
+                    Theme(
+                      data: Theme.of(context).copyWith(
+                        dividerColor: Colors.transparent,
+                      ),
+                      child: ExpansionTile(
+                        title: Text("개인 루틴", style: TextStyle(fontSize: 20)),
+                        initiallyExpanded: _isTileExpanded,
+                        children: snapshot.data!.map((routine) => _buildRoutineTile(routine)).toList(),
+                      ),
+                    ),
+                    SizedBox(height: 10,), // 여백 추가
+                  ],
                 );
               },
             ),
@@ -436,16 +445,16 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
                   ),
               ],
             ),
-            /*
+
             trailing: Checkbox(
               value: routine.isAlarmEnabled,
               onChanged: (bool? value) {
                 setState(() {
-                  routine.isAlarmEnabled = value!;
+                  routine.isCompletion = value!;
                 });
               },
             ),
-            */
+
             onTap: () => _showDialog(context, routine),
           ),
 
@@ -507,7 +516,7 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
     final response = await http.delete(
       Uri.parse('http://15.164.88.94:8080/routines/$routineId'),
       headers: {
-        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM',
+        'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
       },
     );
 
@@ -524,7 +533,7 @@ Future<List<Routine>> fetchRoutines(String date) async {
   final response = await http.get(
     Uri.parse('http://15.164.88.94:8080/routines?routineDate=$date'),
     headers: {
-      'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM', // 여기에 올바른 인증 토큰을 넣으세요
+      'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw', // 여기에 올바른 인증 토큰을 넣으세요
     },
   );
 
@@ -564,7 +573,7 @@ Future<void> _fetchRoutineDate(BuildContext context, int routineId) async {
   final url = Uri.parse("http://15.164.88.94:8080/routines/$routineId");
   final headers = {
     "Content-Type": "application/json",
-    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM"
+    "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw"
   };
 
   try{
@@ -625,9 +634,10 @@ class Routine {
   final bool isAlarmEnabled; // isAlarmEnabled를 mutable로 변경
   final String startDate;
   final List<String> repeatDays;
+  late final bool isCompletion;
 
 
-  Routine({required this.routineId, required this.routineTitle, required this.routineCategory, required this.isAlarmEnabled,required this.startDate, required this.repeatDays});
+  Routine({required this.routineId, required this.routineTitle, required this.routineCategory, required this.isAlarmEnabled,required this.startDate, required this.repeatDays, required this.isCompletion});
 
   factory Routine.fromJson(Map<String, dynamic> json) {
     return Routine(
@@ -637,6 +647,7 @@ class Routine {
       isAlarmEnabled: json['isAlarmEnabled'] ?? false,
       startDate: json["startDate"] ?? DateFormat('yyyy.MM.dd').format(DateTime.now()),
       repeatDays: List<String>.from(json["repeatDays"] ?? []),
+      isCompletion: json['isCompletion'],
 
     );
   }
