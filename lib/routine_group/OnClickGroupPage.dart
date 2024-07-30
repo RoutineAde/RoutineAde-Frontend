@@ -7,51 +7,56 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
+import 'package:routine_ade/routine_groupLeader/glAddRoutinePage.dart';
+import 'package:routine_ade/routine_groupLeader/glgroupManagement.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 
-import 'groupManagement.dart'; //날짜 포맷팅 init 패키지
+import '../routine_group/groupManagement.dart';
+
+class GroupMember {
+  final String name;
+  final String avatarPath;
+  final bool isLeader;
+
+  GroupMember({required this.name, required this.avatarPath, this.isLeader = false});
+}
 
 class OnClickGroupPage extends StatefulWidget {
   const OnClickGroupPage({super.key});
-
-
 
   @override
   State<OnClickGroupPage> createState() => _OnClickGroupPageState();
 }
 
-class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerProviderStateMixin{
+class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerProviderStateMixin {
   final List<String> categories = ["자기개발", "건강", "일상"];
-
-  /*
-  final Map<String, List<String>> items = {
-    "자기 개발" : ["일기 쓰기", "1시간 독서하기",],
-    "건강" : ["아침 스트레칭 하기"],
-    "일상" : ["명상하기"],
-  };
-   */
 
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   bool _isSwitchOn = false;
 
+  List<GroupMember> members = [
+    GroupMember(name: '서현', avatarPath: "assets/images/new-icons/user01.png", isLeader: true),
+    GroupMember(name: '김외롭', avatarPath: "assets/images/new-icons/김외롭.png"),
+    GroupMember(name: '채은', avatarPath: "assets/images/new-icons/user03.png"),
+    GroupMember(name: '윤정', avatarPath: "assets/images/new-icons/user01.png"),
+    GroupMember(name: '가은', avatarPath: "assets/images/new-icons/user02.png"),
+    GroupMember(name: '이똑똑', avatarPath: "assets/images/new-icons/user03.png"),
+  ];
+
   late TabController _tabController;
 
-  //카테고리 선택 (한번에 하나만)
   int selectedCategoryIndex = -1;
   List<String> isCategory = ["일상", "건강", "자기개발", "자기관리", "기타"];
 
-  DateTime _selectedDate = DateTime.now(); //선택된 날짜
+  DateTime _selectedDate = DateTime.now();
 
-  //날짜 포맷팅
   String get formattedDate => DateFormat('yyyy.MM.dd').format(_selectedDate);
 
-  //탭
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
   }
-
 
   @override
   void dispose() {
@@ -64,7 +69,6 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
     return MaterialApp(
       home: Scaffold(
         key: _scaffoldKey,
-        //backgroundColor: Colors.grey[200],
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(100),
           child: AppBar(
@@ -91,13 +95,13 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                   insets: EdgeInsets.symmetric(horizontal: 115.0)
               ),
             ),
-            //backgroundColor: Colors.grey[200],
             title: Text(
               '꿈을 향해',
               style: TextStyle(
                   fontSize: 20,
                   color: Colors.black,
-                  fontWeight: FontWeight.bold),
+                  fontWeight: FontWeight.bold
+              ),
             ),
             centerTitle: true,
             leading: IconButton(
@@ -125,8 +129,6 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                   ],
                 ),
               ),
-
-
               Expanded(
                 child: ListView(
                   padding: EdgeInsets.all(10.0),
@@ -141,9 +143,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                         ],
                       ),
                       title: Text('그룹 코드'),
-
                     ),
-
                     ListTile(
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -154,9 +154,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                         ],
                       ),
                       title: Text('대표 카테고리'),
-
                     ),
-
                     ListTile(
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -167,9 +165,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                         ],
                       ),
                       title: Text('인원'),
-
                     ),
-
                     ListTile(
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -186,132 +182,37 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                         ],
                       ),
                       title: Text('그룹 알림'),
-
-
                     ),
-
-                    Divider(),  //구분선 추가
+                    Divider(),
                     ListTile(
                       title: Text('그룹원', style: TextStyle(
-                          fontSize:20, fontWeight: FontWeight.bold
-                      ),
-                      ),
-                      onTap: () {
-
-                      },
+                          fontSize: 20, fontWeight: FontWeight.bold
+                      ),),
+                      onTap: () {},
                     ),
-
-                    ListTile(
+                    for (var member in members) ListTile(
                       leading: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Image.asset(
-                            "assets/images/new-icons/user01.png",
+                            member.avatarPath,
                             width: 40,
                             height: 40,
                           ),
-                          SizedBox(width: 15,),
-                          Image.asset(
-                            "assets/images/new-icons/crown.png",
-                            width: 20,
-                            height: 20,
-                          ),
+                          if (member.isLeader)
+                            SizedBox(width: 15,),
+                          if (member.isLeader)
+                            Image.asset(
+                              "assets/images/new-icons/crown.png",
+                              width: 20,
+                              height: 20,
+                            ),
                         ],
                       ),
-                      title: Text('서현', style: TextStyle(
-                        fontSize:18,
-                      ),
-                      ),
+                      title: Text(member.name, style: TextStyle(
+                        fontSize: 18,
+                      ),),
                     ),
-
-                    ListTile(
-                      leading: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(
-                            "assets/images/new-icons/김외롭.png",
-                            width: 40,
-                            height: 40,
-                          ),
-                        ],
-                      ),
-                      title: Text('김외롭', style: TextStyle(
-                        fontSize:18,
-                      ),
-                      ),
-                    ),
-
-                    ListTile(
-                      leading: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(
-                            "assets/images/new-icons/user03.png",
-                            width: 40,
-                            height: 40,
-                          ),
-                        ],
-                      ),
-                      title: Text('채은', style: TextStyle(
-                        fontSize:18,
-                      ),
-                      ),
-
-                    ),
-
-                    ListTile(
-                      leading: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(
-                            "assets/images/new-icons/user01.png",
-                            width: 40,
-                            height: 40,
-                          ),
-                        ],
-                      ),
-                      title: Text('윤정', style: TextStyle(
-                        fontSize:18,
-                      ),
-                      ),
-
-                    ),
-
-                    ListTile(
-                      leading: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(
-                            "assets/images/new-icons/user02.png",
-                            width: 40,
-                            height: 40,
-                          ),
-                        ],
-                      ),
-                      title: Text('가은', style: TextStyle(
-                        fontSize:18,
-                      ),
-                      ),
-
-                    ),
-
-                    ListTile(
-                      leading: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(
-                            "assets/images/new-icons/user03.png",
-                            width: 40,
-                            height: 40,
-                          ),
-                        ],
-                      ),
-                      title: Text('이똑똑', style: TextStyle(
-                        fontSize:18,
-                      ),
-                      ),
-                    ),
-
                   ],
                 ),
               ),
@@ -328,11 +229,10 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
                         ),
                         onPressed: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context) => groupManagement()));
-                        },),
-
+                        },
+                      ),
                     ],
                   ),
-                  //title: Text('그룹 나가기'),
                 ),
               ),
             ],
@@ -341,480 +241,97 @@ class _OnClickGroupPageState extends State<OnClickGroupPage> with SingleTickerPr
         body: TabBarView(
           controller: _tabController,
           children: [
-            //루틴 페이지
-            Expanded(
-              child:  ListView(
-                padding: EdgeInsets.fromLTRB(24, 30, 24, 16),
-                children: <Widget>[
-                  ListTile(
-                    title: Wrap(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Text("자기 개발", style: TextStyle(
-                              fontSize:18, fontWeight: FontWeight.bold, color: Color(0xff7BD7C6),),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Column(
-                    children: <Widget>[
-
-                      Container(
-                        padding: EdgeInsets.fromLTRB(0, 15.0, 0, 0),
-                        child: Column(
-                          children: <Widget>[
-
-
-                            Row(  // 루틴
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SizedBox(width: 15,),
-                                    Image.asset("assets/images/new-icons/group-check.png",
-                                      width: 30,
-                                      height: 30,
-                                    ),
-                                    SizedBox(width: 20,),
-                                    Text("일기 쓰기"),
-
-                                  ],
-                                ),
-
-
-                              ],
-                            ),
-
-                            Row(  // 반복요일
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SizedBox(width: 67,),
-                                    Text("매주 화, 목", style: TextStyle(
-                                      color: Colors.grey,
-                                    ),),
-
-                                  ],
-                                ),
-
-
-                              ],
-                            ),
-
-                            SizedBox(height: 20,),
-
-
-                            Row(  // 루틴
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SizedBox(width: 15,),
-                                    Image.asset("assets/images/new-icons/group-check.png",
-                                      width: 30,
-                                      height: 30,
-                                    ),
-                                    SizedBox(width: 20,),
-                                    Text("1시간 독서하기"),
-
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Row(  // 반복요일
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SizedBox(width: 67,),
-                                    Text("매주 토, 일", style: TextStyle(
-                                      color: Colors.grey,
-                                    ),),
-                                  ],
-                                ),
-                              ],
-                            ),
-
-                            SizedBox(height: 20,),
-                            Row(  // 루틴
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SizedBox(width: 15,),
-                                    Image.asset("assets/images/new-icons/group-check.png",
-                                      width: 30,
-                                      height: 30,
-                                    ),
-                                    SizedBox(width: 20,),
-                                    Text("1시간 공부하기"),
-
-                                  ],
-                                ),
-
-
-                              ],
-                            ),
-
-                            Row(  // 반복요일
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SizedBox(width: 67,),
-                                    Text("매주 토, 일", style: TextStyle(
-                                      color: Colors.grey,
-                                    ),),
-
-                                  ],
-                                ),
-
-
-                              ],
-                            ),
-
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-
-                  SizedBox(height: 50,),
-
-                  ListTile(
-                    title: Wrap(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Text("건강", style: TextStyle(
-                              fontSize:18, fontWeight: FontWeight.bold, color: Color(0xff6ACBF3),),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Column(
-                    children: <Widget>[
-
-                      Container(
-                        padding: EdgeInsets.fromLTRB(0, 15.0, 0, 0),
-                        child: Column(
-                          children: <Widget>[
-
-
-                            Row(  // 루틴
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SizedBox(width: 15,),
-                                    Image.asset("assets/images/new-icons/group-check.png",
-                                      width: 30,
-                                      height: 30,
-                                    ),
-                                    SizedBox(width: 20,),
-                                    Text("아침 스트레칭 하기"),
-
-                                  ],
-                                ),
-
-
-                              ],
-                            ),
-
-                            Row(  // 반복요일
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SizedBox(width: 67,),
-                                    Text("매주 월, 화, 수, 목, 금", style: TextStyle(
-                                      color: Colors.grey,
-                                    ),),
-
-                                  ],
-                                ),
-
-
-                              ],
-                            ),
-
-                            SizedBox(height: 20,),
-
-
-                            Row(  // 루틴
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SizedBox(width: 15,),
-                                    Image.asset("assets/images/new-icons/group-check.png",
-                                      width: 30,
-                                      height: 30,
-                                    ),
-                                    SizedBox(width: 20,),
-                                    Text("1시간 독서하기"),
-
-                                  ],
-                                ),
-
-
-                              ],
-                            ),
-
-                            Row(  // 반복요일
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SizedBox(width: 67,),
-                                    Text("매주 토, 일", style: TextStyle(
-                                      color: Colors.grey,
-                                    ),),
-
-                                  ],
-                                ),
-
-
-                              ],
-                            ),
-
-                            SizedBox(height: 20,),
-
-
-
-                            Row(  // 루틴
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SizedBox(width: 15,),
-                                    Image.asset("assets/images/new-icons/group-check.png",
-                                      width: 30,
-                                      height: 30,
-                                    ),
-                                    SizedBox(width: 20,),
-                                    Text("1시간 독서하기"),
-
-                                  ],
-                                ),
-
-
-                              ],
-                            ),
-
-                            Row(  // 반복요일
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SizedBox(width: 67,),
-                                    Text("매주 토, 일", style: TextStyle(
-                                      color: Colors.grey,
-                                    ),),
-
-                                  ],
-                                ),
-
-
-                              ],
-                            ),
-
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-
-
-
-                  SizedBox(height: 50,),
-
-                  ListTile(
-                    title: Wrap(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey[200],
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.all(10.0),
-                            child: Text("일상", style: TextStyle(
-                                fontSize:18, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 208, 125, 1))),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Column(
-                    children: <Widget>[
-
-                      Container(
-                        padding: EdgeInsets.fromLTRB(0, 15.0, 0, 0),
-                        child: Column(
-                          children: <Widget>[
-
-
-                            Row(  // 루틴
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SizedBox(width: 15,),
-                                    Image.asset("assets/images/new-icons/group-check.png",
-                                      width: 30,
-                                      height: 30,
-                                    ),
-                                    SizedBox(width: 20,),
-                                    Text("명상하기"),
-
-                                  ],
-                                ),
-
-
-                              ],
-                            ),
-
-                            Row(  // 반복요일
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SizedBox(width: 67,),
-                                    Text("매주 월, 수, 금", style: TextStyle(
-                                      color: Colors.grey,
-                                    ),),
-
-                                  ],
-                                ),
-
-
-                              ],
-                            ),
-
-                            SizedBox(height: 20,),
-
-
-                            Row(  // 루틴
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SizedBox(width: 15,),
-                                    Image.asset("assets/images/new-icons/group-check.png",
-                                      width: 30,
-                                      height: 30,
-                                    ),
-                                    SizedBox(width: 20,),
-                                    Text("1시간 독서하기"),
-
-                                  ],
-                                ),
-
-
-                              ],
-                            ),
-
-                            Row(  // 반복요일
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SizedBox(width: 67,),
-                                    Text("매주 토, 일", style: TextStyle(
-                                      color: Colors.grey,
-                                    ),),
-
-                                  ],
-                                ),
-
-
-                              ],
-                            ),
-
-                            SizedBox(height: 20,),
-
-
-
-                            Row(  // 루틴
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SizedBox(width: 15,),
-                                    Image.asset("assets/images/new-icons/group-check.png",
-                                      width: 30,
-                                      height: 30,
-                                    ),
-                                    SizedBox(width: 20,),
-                                    Text("1시간 독서하기"),
-
-                                  ],
-                                ),
-
-
-                              ],
-                            ),
-
-                            Row(  // 반복요일
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Row(
-                                  children: [
-                                    SizedBox(width: 67,),
-                                    Text("매주 토, 일", style: TextStyle(
-                                      color: Colors.grey,
-                                    ),),
-
-                                  ],
-                                ),
-
-
-                              ],
-                            ),
-
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-
-
-                ],
-              ),
+            // 루틴 페이지
+            ListView(
+              padding: EdgeInsets.fromLTRB(24, 30, 24, 16),
+              children: <Widget>[
+                _buildCategorySection('자기 개발', Color(0xff7BD7C6), [
+                  _buildRoutineItem('일기 쓰기', '매주 화, 목'),
+                  _buildRoutineItem('1시간 독서하기', '매주 토, 일'),
+                  _buildRoutineItem('1시간 공부하기', '매주 토, 일'),
+                ]),
+                SizedBox(height: 50,),
+                _buildCategorySection('건강', Color(0xff6ACBF3), [
+                  _buildRoutineItem('아침 스트레칭 하기', '매주 월, 화, 수, 목, 금'),
+                  _buildRoutineItem('1시간 독서하기', '매주 토, 일'),
+                  _buildRoutineItem('1시간 운동하기', '매주 토, 일'),
+                ]),
+                SizedBox(height: 50,),
+                _buildCategorySection('일상', Color(0xffF4A2D8), [
+                  _buildRoutineItem('아침 스트레칭 하기', '매주 월, 화, 수, 목, 금'),
+                  _buildRoutineItem('1시간 독서하기', '매주 토, 일'),
+                  _buildRoutineItem('1시간 공부하기', '매주 토, 일'),
+                ]),
+              ],
             ),
-
-
-
-
-            //채팅페이지
-            IconButton(
-              icon: Icon(Icons.door_back_door_outlined),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ChatScreen()),
-                );
-              },),
+            // 채팅 페이지
+            ChatScreen(),
           ],
         ),
-        endDrawerEnableOpenDragGesture: false,
+      ),
+    );
+  }
+
+  Widget _buildCategorySection(String title, Color color, List<Widget> routines) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        IntrinsicWidth(
+          child: Container(
+            height: 40,
+            decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.circular(20.0),
+            ),
+            margin: EdgeInsets.fromLTRB(10, 0, 0, 16),
+            padding: EdgeInsets.symmetric(horizontal: 10.0),  // 좌우 여백을 추가하여 텍스트 주변에 공간을 줍니다.
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: color,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        Column(
+          children: routines,
+        ),
+      ],
+    );
+  }
+
+
+  Widget _buildRoutineItem(String title, String schedule) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 16),
+      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      child: Row(
+        children: [
+          Image.asset("assets/images/new-icons/group-check.png",
+            width: 30,
+            height: 30,
+          ),
+          SizedBox(width: 12,),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(title, style: TextStyle(
+                fontSize: 18, fontWeight: FontWeight.bold,
+              ),),
+              SizedBox(height: 4,),
+              Text(schedule, style: TextStyle(
+                fontSize: 16, color: Colors.grey[600],
+              ),),
+            ],
+          ),
+        ],
       ),
     );
   }

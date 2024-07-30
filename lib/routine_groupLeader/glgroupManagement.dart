@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:routine_ade/routine_group/groupIntroRule.dart';
+import 'package:routine_ade/routine_groupLeader/glModifiedRoutine.dart';
 import 'package:routine_ade/routine_groupLeader/groupDelete.dart';
 
 class glgroupManagement extends StatefulWidget {
@@ -64,7 +65,7 @@ class _glgroupManagementState extends State<glgroupManagement> {
                 ),
               ),
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => glModifiedRoutine()));
               },
             ),
 
@@ -99,4 +100,3 @@ class _glgroupManagementState extends State<glgroupManagement> {
     );
   }
 }
-
