@@ -107,7 +107,7 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
     final url = Uri.parse("http://15.164.88.94:8080/users/emotion");
     final headers = {
       "Content-Type": "application/json",
-      "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM"
+      "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw"
     };
 
     final body = jsonEncode({
@@ -448,15 +448,20 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
 
             trailing: Checkbox(
               value: routine.isCompletion,
-              onChanged: (bool? value) {
-                setState(() {
-                  routine.isCompletion = value!;
-                });
-                updateRoutineCompletion(routine.routineId, value!, selectedDate);
-              },
+                onChanged: (bool? value) {
+                  if (value != null) {
+                    print("Checkbox changed: $value");
+                    setState(() {
+                      routine.isCompletion = value;
+                    });
+                    updateRoutineCompletion(routine.routineId, value, selectedDate);
+                  }
+                }
+
             ),
 
-            onTap: () => _showDialog(context, routine),
+
+              onTap: () => _showDialog(context, routine),
           ),
 
         ],
@@ -516,13 +521,15 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
     final url = Uri.parse("http://15.164.88.94:8080/routines/$routineId/completion?date=$date");
     final headers = {
       "Content-Type": "application/json",
-      'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw'
+      'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
     };
-    final body = jsonEncode({"date": date,});
+    final body = jsonEncode({"date": date, "isCompletion": isCompletion});
 
     try {
       final response = await http.put(url, headers: headers, body: body);
-      if (response.statusCode == 200) {
+      if (response.statusCode == 204) {
+        print("루틴 완료 상태 업데이트 성공 (응답 본문 없음)");
+      } else if (response.statusCode == 200) {
         print("루틴 완료 상태 업데이트 성공");
       } else {
         print("루틴 완료 상태 업데이트 실패: ${response.statusCode} - ${response.body}");
@@ -531,6 +538,8 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
       print("루틴 완료 상태 업데이트 중 오류 발생: $e");
     }
   }
+
+
 
 
   Future<void> deleteRoutine(int routineId) async {
@@ -658,10 +667,10 @@ class Routine {
   final bool isAlarmEnabled; // isAlarmEnabled를 mutable로 변경
   final String startDate;
   final List<String> repeatDays;
-  late final bool isCompletion;
+  bool isCompletion;
 
 
-  Routine({required this.routineId, required this.routineTitle, required this.routineCategory, required this.isAlarmEnabled,required this.startDate, required this.repeatDays, required this.isCompletion});
+  Routine({required this.routineId, required this.routineTitle, required this.routineCategory, required this.isAlarmEnabled,required this.startDate, required this.repeatDays, this.isCompletion = false});
 
   factory Routine.fromJson(Map<String, dynamic> json) {
     return Routine(
