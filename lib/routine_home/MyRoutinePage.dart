@@ -447,11 +447,12 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
             ),
 
             trailing: Checkbox(
-              value: routine.isAlarmEnabled,
+              value: routine.isCompletion,
               onChanged: (bool? value) {
                 setState(() {
                   routine.isCompletion = value!;
                 });
+                updateRoutineCompletion(routine.routineId, value!, selectedDate);
               },
             ),
 
@@ -511,6 +512,26 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
     );
   }
 
+  Future<void> updateRoutineCompletion(int routineId, bool isCompletion, String date) async {
+    final url = Uri.parse("http://15.164.88.94:8080/routines/$routineId/completion?date=$date");
+    final headers = {
+      "Content-Type": "application/json",
+      'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw'
+    };
+    final body = jsonEncode({"date": date,});
+
+    try {
+      final response = await http.put(url, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        print("루틴 완료 상태 업데이트 성공");
+      } else {
+        print("루틴 완료 상태 업데이트 실패: ${response.statusCode} - ${response.body}");
+      }
+    } catch (e) {
+      print("루틴 완료 상태 업데이트 중 오류 발생: $e");
+    }
+  }
+
 
   Future<void> deleteRoutine(int routineId) async {
     final response = await http.delete(
@@ -525,6 +546,9 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
     }
   }
 }
+
+
+
 
 //조회
 Future<List<Routine>> fetchRoutines(String date) async {
@@ -647,7 +671,7 @@ class Routine {
       isAlarmEnabled: json['isAlarmEnabled'] ?? false,
       startDate: json["startDate"] ?? DateFormat('yyyy.MM.dd').format(DateTime.now()),
       repeatDays: List<String>.from(json["repeatDays"] ?? []),
-      isCompletion: json['isCompletion'],
+      isCompletion: json['isCompletion'] ?? false,
 
     );
   }
