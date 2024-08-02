@@ -1,22 +1,35 @@
-class Group { //그룹
-  final String name;
-  final DateTime creationDate;
-  final String category;
-  final int membersCount;
-  final String leader;
-  final String groupCode;
-  final String groupIntro;
+class Group {
+  final int groupId;
+  final String groupTitle;
+  final String groupCategory;
+  final String createdUserNickname;
+  final int maxMemberCount;
+  final int joinMemberCount;
+  final DateTime joinDate;
+  final bool isPublic;
 
   Group({
-    required this.name,
-    required this.creationDate,
-    required this.category,
-    required this.membersCount,
-    required this.leader,
-    required this.groupCode,
-    required this.groupIntro,
+    required this.groupId,
+    required this.groupTitle,
+    required this.groupCategory,
+    required this.createdUserNickname,
+    required this.maxMemberCount,
+    required this.joinMemberCount,
+    required this.joinDate,
+    required this.isPublic,
   });
   
-  
+  factory Group.fromJson(Map<String, dynamic> json) {
+    return Group(
+      groupId: json['groupId'],
+      groupTitle: json['groupTitle'],
+      groupCategory: json['groupCategory'],
+      createdUserNickname: json['createdUserNickname'],
+      maxMemberCount: json['maxMemberCount'],
+      joinMemberCount: json['joinMemberCount'],
+      joinDate: DateTime.fromMillisecondsSinceEpoch(json['joinDate']),
+      isPublic: json['isPublic'],
+    );
+  }
 }
 

@@ -1,5 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupType.dart';
@@ -38,43 +40,37 @@ class GroupMainPage extends StatefulWidget {
   }
 class _GroupMainPageState extends State<GroupMainPage>{
     bool isExpanded = false;
+    List<Group> groups = [];
 
-    
-//예시 그룹. GroupRoutinPage 상속 
-  List<Group> groups = [
-    Group(name: "성공의 루틴" , 
-    creationDate: DateTime.now().subtract(Duration(days: 1)), 
-    category: "건강", 
-    membersCount: 4, 
-    leader: "서현쓰", 
-    groupCode: "#13",
-    groupIntro: "테스트 용",
-
-    ),
-    Group(name: "루틴 킬러", 
-    creationDate: DateTime.now().subtract(Duration(days: 1)), 
-    category: "일상", 
-    membersCount: 21, 
-    leader: "윤정", 
-    groupCode: "#36",
-    groupIntro: "테스트 용",
-    ),
-
-    Group(name: "갓생러 모여", 
-    creationDate: DateTime.now().subtract(Duration(days: 1)), 
-    category: "건강", 
-    membersCount: 1,
-    leader: "갓생호소인", 
-    groupCode: "#8",
-    groupIntro: "테스트 용",
-    ),
-  ];
-//가입일자 계산
-  String calculateDaysSinceCreation(DateTime creationDate) {
-    final now = DateTime.now();
-    final difference = now.difference(creationDate).inDays;
-    return "가입 ${difference + 1}일차";
+  @override
+  void initState(){
+    super.initState();
+    _fetchGroups();
   }
+  Future<void> _fetchGroups() async {
+    final url = Uri.parse('http://15.164.88.94:8080/groups/my');
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM',
+    });
+
+   if (response.statusCode == 200) {
+      final decodedResponse = utf8.decode(response.bodyBytes);
+      final data = jsonDecode(response.body);
+      setState(() {
+        groups = (data['groups'] as List).map((json) => Group.fromJson(json)).toList();
+      });
+    } else {
+      print("그룹 불러오기를 실패하였습니다.");
+    }
+  }
+
+//가입일자 계산
+  // String calculateDaysSinceCreation(DateTime creationDate) {
+  //   final now = DateTime.now();
+  //   final difference = now.difference(creationDate).inDays;
+  //   return "가입 ${difference + 1}일차";
+  // }
 
   @override
   Widget build(BuildContext context){
@@ -98,7 +94,6 @@ class _GroupMainPageState extends State<GroupMainPage>{
           ], 
       ), 
       
-      //예시그룹
       body: DarkOverlay(
         isDark: isExpanded, //눌렀을때만 어둡게
         onTap: (){
@@ -115,9 +110,8 @@ class _GroupMainPageState extends State<GroupMainPage>{
                 itemCount: groups.length,
                 itemBuilder: (context, index) {
                   final group = groups[index];
-                  Color textColor = group.category =="건강"? Colors.blue: Colors.orange;
-                  return  
-                  Card(
+                  Color textColor = group.groupCategory =="건강"? Colors.blue: Colors.orange;
+                  return  Card(
                     margin: EdgeInsets.all(8.0),
                     color: Colors.white,
                     child: Padding(
@@ -129,33 +123,38 @@ class _GroupMainPageState extends State<GroupMainPage>{
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                group.name,
+                                group.groupTitle,
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,      
                                 ),
                               ),
-                              Text(calculateDaysSinceCreation(group.creationDate)),
+                              if(group.isPublic)
+                                Image.asset("assets/images/lock.png", width: 20, height: 20,), //비밀번호 방 여부
+                                
                             ],
                           ),
+                              Text("가입 ${group.joinDate}일차"),
+                      //   ],
+                      // ),
                           SizedBox(height: 8.0),
                           Row(
                             // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text("대표 카테고리 "), 
-                              Text(group.category, style: TextStyle( color: textColor)),
+                              Text(group.groupCategory, style: TextStyle( color: textColor)),
                               Expanded(child: Container()),// 간격 조절
                               Align(
                                 alignment: Alignment.centerRight,
-                                child: Text("인원 ${group.membersCount}/30명"),),
+                                child: Text("인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),),
                             ],
                           ),
                           SizedBox(height: 8.0),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("루틴장 ${group.leader}"),
-                              Text("그룹코드 ${group.groupCode}"),
+                              Text("루틴장 ${group.createdUserNickname}"),
+                              Text("그룹코드 ${group.groupId}"),
                           ],
                         ),
                       ],
@@ -245,7 +244,7 @@ class _GroupMainPageState extends State<GroupMainPage>{
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(
                         builder: (context){
-                          return  GroupRoutinePage();
+                          return  MyRoutinePage();//그룹 루틴 페이지 이동 바꿔야함
                         },
                         ));
                     },
