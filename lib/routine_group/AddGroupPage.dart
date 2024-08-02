@@ -1,6 +1,8 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
+import 'GroupType.dart';
 
 class AddGroupPage extends StatefulWidget {
   const AddGroupPage({Key? key}) : super(key: key);
@@ -12,11 +14,10 @@ class AddGroupPage extends StatefulWidget {
 class _AddGroupPageState extends State<AddGroupPage> {
   final TextEditingController _groupNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _groupDescriptionController =
-      TextEditingController();
+  final TextEditingController _groupDescriptionController = TextEditingController();
   int _selectedMemberCount = 0;
 
-  //카테고리 선택 (한번에 하나만)
+  // 카테고리 선택 (한번에 하나만)
   int selectedCategoryIndex = -1;
   List<String> isCategory = ["일상", "건강", "자기개발", "자기관리", "기타"];
 
@@ -26,6 +27,84 @@ class _AddGroupPageState extends State<AddGroupPage> {
     _passwordController.dispose();
     _groupDescriptionController.dispose();
     super.dispose();
+  }
+
+
+  // 그룹 추가 API 호출 함수
+  void _addGroup() async {
+    // 카테고리 선택 여부 확인
+    if (selectedCategoryIndex == -1) {
+      _showDialog("경고", "카테고리를 선택해주세요.");
+      return;
+    }
+    if (_groupNameController.text.isEmpty) {
+      _showDialog("경고", "그룹 이름을 입력해주세요.");
+      return;
+    }
+    if (_passwordController.text.isEmpty) {
+      _showDialog("경고", "비밀번호를 입력해주세요.");
+      return;
+    }
+    if (_groupDescriptionController.text.isEmpty) {
+      _showDialog("경고", "그룹 소개를 입력해주세요.");
+      return;
+    }
+
+    // 요청 바디 준비
+    final url = Uri.parse('http://15.164.88.94:8080/groups');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+    };
+    final body = jsonEncode({
+      'groupTitle': _groupNameController.text,
+      'groupPassword': _passwordController.text,
+      'groupCategory': _getCategoryFromIndex(selectedCategoryIndex),
+      'maxMember': _selectedMemberCount,
+      'description': _groupDescriptionController.text,
+    });
+
+    try {
+      final response = await http.post(url, headers: headers, body: body);
+      print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        _showDialog('성공', '그룹이 성공적으로 추가되었습니다.');
+      } else {
+        _showDialog('오류', '그룹 추가에 실패했습니다: ${response.body}');
+      }
+    } catch (e) {
+      print('Error: $e');
+      _showDialog('오류', '오류가 발생했습니다: $e');
+    }
+  }
+
+  void _showDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              child: Text('확인'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  String _getCategoryFromIndex(int index) {
+    if (index < 0 || index >= isCategory.length) {
+      return '';
+    }
+    return isCategory[index];
   }
 
   Future<void> _selectMemberCount() async {
@@ -110,7 +189,6 @@ class _AddGroupPageState extends State<AddGroupPage> {
                       ),
                     ),
                     SizedBox(height: 10),
-                    // Divider(),
                     TextField(
                       controller: _passwordController,
                       style: TextStyle(color: Colors.black, fontSize: 18),
@@ -121,68 +199,65 @@ class _AddGroupPageState extends State<AddGroupPage> {
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding: EdgeInsets.symmetric(vertical:15), // 세로 여백 조정
+                        contentPadding: EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
                       ),
                     ),
-                    // SizedBox(height: 10),
-              Container(
-                color: Colors.white,
-                padding: const EdgeInsets.only(left:10, right: 10, top: 10 ),
-                margin: const EdgeInsets.only(top: 30),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Row(
-                      children: [
-                        Text(
-                          "대표 카테고리",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+                    Container(
+                      color: Colors.white,
+                      padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                      margin: const EdgeInsets.only(top: 30),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: [
+                              Text(
+                                "대표 카테고리",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(
-                        5,
-                        (index) => GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedCategoryIndex = index;
-                            });
-                          },
-                          child: Container(
-                            width: 70,
-                            height: 35,
-                            margin: EdgeInsets.only(
-                              bottom: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              color: selectedCategoryIndex == index
-                                  ? Color(0xffE6E288)
-                                  : Colors.white,
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Colors.grey),
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              isCategory[index],
-                              style: TextStyle(
-                                color: selectedCategoryIndex == index
-                                    ? Colors.white
-                                    : Colors.grey,
+                          SizedBox(height: 10),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: List.generate(
+                              5,
+                                  (index) => GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedCategoryIndex = index;
+                                  });
+                                },
+                                child: Container(
+                                  width: 70,
+                                  height: 35,
+                                  margin: EdgeInsets.only(bottom: 10),
+                                  decoration: BoxDecoration(
+                                    color: selectedCategoryIndex == index
+                                        ? Color(0xffE6E288)
+                                        : Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: Colors.grey),
+                                  ),
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    isCategory[index],
+                                    style: TextStyle(
+                                      color: selectedCategoryIndex == index
+                                          ? Colors.white
+                                          : Colors.grey,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                       margin: EdgeInsets.only(top: 20),
@@ -207,7 +282,6 @@ class _AddGroupPageState extends State<AddGroupPage> {
                               ),
                               child: Text(
                                 '$_selectedMemberCount명',
-                          
                                 style: TextStyle(
                                   fontSize: 16,
                                   color: Colors.black,
@@ -221,7 +295,6 @@ class _AddGroupPageState extends State<AddGroupPage> {
                   ],
                 ),
               ),
-              //그룹 소개
               Container(
                 color: Colors.grey[200],
                 padding: EdgeInsets.only(top: 20, bottom: 15, left: 10, right: 10),
@@ -239,16 +312,14 @@ class _AddGroupPageState extends State<AddGroupPage> {
                   ),
                 ),
               ),
-              //루틴 추가 버튼
               Container(
                 width: 400,
                 height: 80,
                 padding: EdgeInsets.only(top: 20),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: _addGroup,
                   style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Color(0xffE6E288)),
+                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xffE6E288)),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
@@ -256,7 +327,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                     ),
                   ),
                   child: Text(
-                    "루틴 추가하기",
+                    "그룹 추가하기",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
@@ -264,7 +335,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 20), //버튼 아래 여백
+              SizedBox(height: 20), // 버튼 아래 여백
             ],
           ),
         ),
