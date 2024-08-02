@@ -5,7 +5,7 @@ class Group {
   final String createdUserNickname;
   final int maxMemberCount;
   final int joinMemberCount;
-  final DateTime joinDate;
+  final int joinDate;
   final bool isPublic;
 
   Group({
@@ -27,7 +27,7 @@ class Group {
       createdUserNickname: json['createdUserNickname'],
       maxMemberCount: json['maxMemberCount'],
       joinMemberCount: json['joinMemberCount'],
-      joinDate: DateTime.fromMillisecondsSinceEpoch(json['joinDate']),
+      joinDate: json['joinDate'],
       isPublic: json['isPublic'],
     );
   }

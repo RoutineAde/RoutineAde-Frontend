@@ -65,13 +65,28 @@ class _GroupMainPageState extends State<GroupMainPage>{
     }
   }
 
-
 //가입일자 계산
-  // String calculateDaysSinceCreation(DateTime creationDate) {
-  //   final now = DateTime.now();
-  //   final difference = now.difference(creationDate).inDays;
-  //   return "가입 ${difference + 1}일차";
-  // }
+  int calculateDaysSinceCreation(int joinDate) {
+    final now = DateTime.now();
+    final joinDateTime = DateTime.fromMicrosecondsSinceEpoch(joinDate);
+    return now.difference(joinDateTime).inDays + 1;
+  }
+
+  // 카테고리 색상 설정 함수
+  Color getCategoryColor(String category) {
+    switch (category) {
+      case "건강":
+        return Color(0xff6ACBF3);
+      case "자기개발":
+        return Color(0xff7BD7C6);
+      case "일상":
+        return Color(0xffF5A77B);
+      case "자기관리":
+        return Color(0xffC69FEC);
+      default:
+        return Color(0xffF4A2D8);
+    }
+  }
 
   @override
   Widget build(BuildContext context){
@@ -111,7 +126,7 @@ class _GroupMainPageState extends State<GroupMainPage>{
                     itemCount: groups.length,
                     itemBuilder: (context, index) {
                       final group = groups[index];
-                      Color textColor = group.groupCategory =="건강"? Colors.blue: Colors.orange;
+                      Color categoryColor = getCategoryColor(group.groupCategory);
                       return  Card(
                         margin: EdgeInsets.all(8.0),
                         color: Colors.white,
@@ -123,6 +138,8 @@ class _GroupMainPageState extends State<GroupMainPage>{
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
+                                  Row(
+                                    children: [
                                   Text(
                                     group.groupTitle,
                                     style: TextStyle(
@@ -131,19 +148,22 @@ class _GroupMainPageState extends State<GroupMainPage>{
                                     ),
                                   ),
                                   if(group.isPublic)
-                                    Image.asset("assets/images/lock.png", width: 20, height: 20,), //비밀번호 방 여부
-
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8.0),
+                                    child: Image.asset("assets/images/lock.png", width: 20, height: 20,), //비밀번호 방 여부
+                                  ),
                                 ],
                               ),
                               Text("가입 ${group.joinDate}일차"),
-                              //   ],
-                              // ),
+                              
+                            ],
+                              ),
                               SizedBox(height: 8.0),
                               Row(
                                 // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("대표 카테고리 "),
-                                  Text(group.groupCategory, style: TextStyle( color: textColor)),
+                                  Text(group.groupCategory, style: TextStyle( color: categoryColor)),
                                   Expanded(child: Container()),// 간격 조절
                                   Align(
                                     alignment: Alignment.centerRight,
@@ -161,7 +181,9 @@ class _GroupMainPageState extends State<GroupMainPage>{
                             ],
                           ),
                         ),
+                        
                       );
+                      
                     },
                   ),
                 ),
@@ -169,7 +191,7 @@ class _GroupMainPageState extends State<GroupMainPage>{
             ),
           ),
         ),
-
+    
         //바텀 네비게이션 바
         bottomNavigationBar: BottomAppBar(
           color: Colors.white,
