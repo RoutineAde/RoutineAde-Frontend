@@ -41,10 +41,6 @@ class _AddGroupPageState extends State<AddGroupPage> {
       _showDialog("경고", "그룹 이름을 입력해주세요.");
       return;
     }
-    if (_passwordController.text.isEmpty) {
-      _showDialog("경고", "비밀번호를 입력해주세요.");
-      return;
-    }
     if (_groupDescriptionController.text.isEmpty) {
       _showDialog("경고", "그룹 소개를 입력해주세요.");
       return;

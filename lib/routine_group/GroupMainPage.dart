@@ -117,7 +117,8 @@ class _GroupMainPageState extends State<GroupMainPage>{
               isExpanded=false;
             });
           },
-          child:  Container(
+          child:
+          Container(
             color: Colors.grey[200],
             child: Column(
               children: [
@@ -267,7 +268,7 @@ class _GroupMainPageState extends State<GroupMainPage>{
                           onPressed: () {
                             Navigator.push(context, MaterialPageRoute(
                               builder: (context){
-                                return  MyRoutinePage();//그룹 루틴 페이지 이동 바꿔야함
+                                return  GroupRoutinePage();//그룹 루틴 페이지 이동 바꿔야함
                               },
                             ));
                           },

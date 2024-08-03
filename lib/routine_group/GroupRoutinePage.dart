@@ -1,367 +1,418 @@
-// import 'package:flutter/material.dart';
-// import 'package:routine_ade/routine_group/AddGroupPage.dart';
-// import 'package:routine_ade/routine_home/MyRoutinePage.dart';
-// import 'Dialog.dart';
-// import 'package:routine_ade/routine_group/GroupType.dart';
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-// class GroupRoutinePage extends StatefulWidget {
-//   @override
-//   _GroupRoutinePageState createState() => _GroupRoutinePageState();
-//   // State<GroupRoutinePage> createState() => _GroupRoutinePagState()
-// }
+class GroupRoutinePage extends StatefulWidget {
+  @override
+  _GroupRoutinePageState createState() => _GroupRoutinePageState();
+}
 
-// class _GroupRoutinePageState extends State<GroupRoutinePage> {
-//   // 텍스트필드 컨트롤러
-//   TextEditingController _searchController = TextEditingController();
-//   TextEditingController _passwordController = TextEditingController();
+class _GroupRoutinePageState extends State<GroupRoutinePage> {
+  TextEditingController _searchController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+  List<EntireGroup> allGroups = [];
+  List<EntireGroup> filteredGroups = [];
+  bool _isSearching = false;
+  bool _isPasswordIncorrect = false;
+  bool _isLoading = false;
+  int _currentPage = 1; // 현재 페이지
+  final int _pageSize = 10; // 한 번에 가져올 데이터 양
 
-//   // 그룹 데이터 생성
-// List<Group> groups = [
-//     Group(name: "꿈을 향해" ,
-//     creationDate: DateTime.now().subtract(Duration(days: 1)),
-//     category: "기타",
-//     membersCount: 6,
-//     leader: "가은",
-//     groupCode: "#10",
-//     groupIntro: "부지런쟁이들을 환영합니다!\n주 4회 이상 루틴 수행을 안하면 강퇴입니다!\n성실하게 루틴을 수행하실 분들만 들어와주세요.",
+  @override
+  void initState() {
+    super.initState();
+    _fetchGroups();
+  }
 
-//     ),
+  Future<void> _fetchGroups({bool loadMore = false}) async {
+    if (loadMore) {
+      _currentPage++; // 더 로드할 때는 페이지 증가
+    } else {
+      setState(() {
+        _isLoading = true;
+        _currentPage = 1; // 처음 로드 시 페이지 초기화
+        allGroups.clear();
+      });
+    }
 
-//     Group(name: "피트니스 챌린지",
-//     creationDate: DateTime.now().subtract(Duration(days: 1)),
-//     category: "건강",
-//     membersCount: 3,
-//     leader: "건강지킴이",
-//     groupCode: "#9",
-//     groupIntro: "같이 피트니스 하실 분 모집합니다! 초보자 환영"
-//     ),
+    final url = Uri.parse(
+        'http://15.164.88.94:8080/groups?groupCategory=%EC%A0%84%EC%B2%B4'); // URL 확인
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Authorization':
+      'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+    });
 
-//      Group(name: "갓생러 모여",
-//     creationDate: DateTime.now().subtract(Duration(days: 1)),
-//     category: "건강",
-//     membersCount: 1,
-//     leader: "갓생호소인",
-//     groupCode: "#8",
-//     groupIntro: "갓생루틴으로 행복한 일상 보내실 분 구함"
-//     ),
+    if (response.statusCode == 200) {
+      final decodedResponse = utf8.decode(response.bodyBytes); // UTF-8 디코딩
+      final data = jsonDecode(decodedResponse); // 디코딩된 문자열을 JSON으로 파싱
 
-//      Group(name: "아침의 시작",
-//     creationDate: DateTime.now().subtract(Duration(days: 1)),
-//     category: "자기개발",
-//     membersCount: 15,
-//     leader: "윤정",
-//     groupCode: "#7",
-//     groupIntro: "일찍 일어나서 꾸준하게 자기개발 하실분 구합니다!같이 갓생 살아요"
-//     ),
+      // 응답 데이터를 로그로 출력하여 확인
+      print("Response Data: $data");
 
-//      Group(name: "자기관리 마스터모임",
-//     creationDate: DateTime.now().subtract(Duration(days: 1)),
-//     category: "자기관리",
-//     membersCount: 10,
-//     leader: "채은",
-//     groupCode: "#6",
-//     groupIntro: "테스트용 입니다.",
-//     ),
-//      Group(name: "공부 열심히 할 사람만",
-//     creationDate: DateTime.now().subtract(Duration(days: 1)),
-//     category: "자기개발",
-//     membersCount: 30,
-//     leader: "공부짱",
-//     groupCode: "#5",
-//     groupIntro: "테스트용 입니다.",
-//     ),
-//      Group(name: "독사모",
-//     creationDate: DateTime.now().subtract(Duration(days: 1)),
-//     category: "자기개발",
-//     membersCount: 30,
-//     leader: "독서초보",
-//     groupCode: "#4",
-//     groupIntro: "테스트용 입니다.",
-//     ),
-//   ];
+      setState(() {
+        // 응답이 객체일 때 처리
+        if (data is Map<String, dynamic>) {
+          allGroups.add(EntireGroup.fromJson(data));
+        } else if (data is List<dynamic>) {
+          final newGroups = data
+              .map((json) => EntireGroup.fromJson(json))
+              .toList();
+          allGroups.addAll(newGroups);
+        }
 
-//   // 필터링 된 그룹 데이터
-//   List<Group> filteredGroups = [];
-//   bool _isSearching = false;
-//   bool _isPasswordIncorrect = false; // 비밀번호 틀림 여부 상태 추가
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     filteredGroups = groups;
-//   }
-
-//   // 검색 모드 전환 함수
-//   void toggleSearch() {
-//     setState(() {
-//       _isSearching = !_isSearching;
-//       if (!_isSearching) {
-//         _searchController.clear();
-//         filterGroups('');
-//       }
-//     });
-//   }
-
-//   // 그룹 필터링 함수
-//   void filterGroups(String query) {
-//     setState(() {
-//       if (query.isNotEmpty) {
-//         filteredGroups = groups
-//             .where((group) =>
-//                 group.name.toLowerCase().contains(query.toLowerCase()))
-//             .toList();
-//       } else {
-//         filteredGroups = groups;
-//       }
-//     });
-//   }
-//   //비밀번호 다이얼로그
-//  void showPasswordDialog(BuildContext context) {
-//   TextEditingController _passwordController = TextEditingController();
-//   showDialog(
-//     context: context,
-//     builder: (context) {
-//       return StatefulBuilder(
-//         builder: (context, setState) {
-//           return AlertDialog(
-//             backgroundColor: Colors.white,
-//             title: Text(
-//               "비밀번호를 입력해주세요",
-//               style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-//             ),
-//             content: Column(
-//               mainAxisSize: MainAxisSize.min,
-//               children: [
-//                 TextField(
-//                   controller: _passwordController,
-//                   decoration: InputDecoration(
-//                     hintText: _isPasswordIncorrect
-//                         ? "비밀번호가 일치하지 않습니다"
-//                         : "비밀번호 4자리",
-//                     hintStyle: TextStyle(color: Colors.grey),
-//                     border: InputBorder.none,
-//                     counterText: "",
-//                   ),
-//                   keyboardType: TextInputType.number,
-//                   maxLength: 4,
-//                   obscureText: true,
-//                   style: TextStyle(
-//                     decoration: TextDecoration.none,
-//                   ),
-//                 ),
-//               ],
-//             ),
-//             actions: [
-//               TextButton(
-//                 onPressed: () {
-//                   if (_passwordController.text == "1234") {
-//                     Navigator.of(context).pop();
-//                   } else {
-//                     setState(() {
-//                       _isPasswordIncorrect = true; // 일치하지 않을 때 상태 업데이트
-//                     });
-//                   }
-//                 },
-//                 child: Text("확인", style: TextStyle(color: Colors.black)),
-//               ),
-//               TextButton(
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                 },
-//                 child: Text("취소", style: TextStyle(color: Colors.black)),
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     },
-//   ).then((_) {
-//     setState(() {
-//       _isPasswordIncorrect = false; // 다이얼로그 닫힐 때 상태 초기화
-//     });
-//   });
-// }
+        filteredGroups = allGroups; // 초기에는 모든 그룹을 필터링된 그룹에 할당
+        _isLoading = false;
+      });
+    } else {
+      setState(() {
+        _isLoading = false;
+      });
+      print("그룹 불러오기를 실패하였습니다.");
+      print("Status Code: ${response.statusCode}");
+      print("Response Body: ${response.body}");
+    }
+  }
 
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         // 검색 모드인 경우, 텍스트필드,아닌 경우 루틴그룹 표시
-//         title: _isSearching
-//             ? TextField(
-//                 controller: _searchController,
-//                 decoration: InputDecoration(
-//                   hintText: "  그룹명을 입력하세요",
-//                   fillColor: Colors.white,
-//                   filled: true,
-//                   contentPadding: EdgeInsets.symmetric(
-//                     vertical: 12.0,
-//                   ),
-//                 ),
-//                 onChanged: (value) {
-//                   filterGroups(value);
-//                 },
-//               )
-//             : Text("루틴 그룹",
-//                 style: TextStyle(color: Colors.black, fontSize: 23, fontWeight: FontWeight.bold),
-//               ),
-//         centerTitle: true,
-//         backgroundColor: Colors.grey[200],
-//         actions: [
-//           IconButton(
-//             icon: _isSearching ? Icon(Icons.close) : Image.asset("assets/images/search.png", width: 27, height: 27),
-//             onPressed: toggleSearch,
-//           ),
-//         ],
-//       ),
-//       body: Stack(
-//         children: [
-//           Container(
-//             color: Colors.grey[200],
-//             child: Padding(
-//               padding: EdgeInsets.symmetric(horizontal: 7.0), // 좌우 여백
-//               child: Container(
-//                 color: Colors.grey[200],
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.stretch,
-//                   children: [
-//                     Container(
-//                       color: Colors.grey[200], // 전체 배경색 회색으로 변경
-//                   // 카테고리 버튼
-//                   child: Padding(
-//                     padding: EdgeInsets.symmetric(vertical: 1.0),
-//                     child: SingleChildScrollView(
-//                       scrollDirection: Axis.horizontal,
-//                       child: Row(
-//                         mainAxisAlignment: MainAxisAlignment.start,
-//                         children: [
-//                           '전체',
-//                           '일상',
-//                           '건강',
-//                           '자기개발',
-//                           '자기관리',
-//                           '기타'
-//                         ].map((category) {
-//                           return Padding(
-//                             padding: EdgeInsets.symmetric(horizontal: 3.0),
-//                             child: ElevatedButton(
-//                               onPressed: () {
-//                                 // 카테고리 버튼 클릭 시 동작할 코드 작성
-//                               },
-//                               child: Text(
-//                                 category,
-//                                 style: TextStyle(
-//                                   color: category == "전체"? Colors.black:
-//                                   category == "일상"? Color(0xffF5A77B):
-//                                   category == "건강"? Color(0xff6ACBF3):
-//                                   category == "자기개발"? const Color(0xff7BD7C6):
-//                                   category == "자기관리"? const Color(0xffC69FEC):
-//                                   category == "기타"? Color(0xffF4A2D8): Colors.black,
-//                                   ),
-//                               ),
-//                               style: ButtonStyle(
-//                                 backgroundColor: MaterialStateProperty.all(
-//                                     Colors.white),
 
+  int calculateDaysSinceCreation(int joinDate) {
+    final now = DateTime.now();
+    final joinDateTime = DateTime.fromMillisecondsSinceEpoch(joinDate);
+    return now.difference(joinDateTime).inDays + 1;
+  }
 
-//                               ),
-//                             ),
-//                           );
-//                         }).toList(),
-//                       ),
-//                     ),
-//                 ),
-//               ),
-//                 Expanded(
-//             child: ListView.builder(
-//               itemCount: filteredGroups.length,
-//               itemBuilder: (context, index) {
-//                 final group = filteredGroups[index];
-//                 Color textColor = group.category == "전체"? Colors.black:
-//                                   group.category == "일상"? Color(0xff5A77B):
-//                                   group.category == "건강"? Color(0xff6ACBF3):
-//                                   group.category == "자기개발"? Color(0xff7BD7C6):
-//                                   group.category == "자기관리"? Color(0xffC69FEC):
-//                                   group.category == "기타"? Color(0xff4A2D8): Colors.black;
-//                 return Card(
-//                   color: Colors.white,
-//                   child: Padding(
-//                     padding: EdgeInsets.all(15.0),
-//                     child: GestureDetector(
-//                       onTap: (){
-//                         if(index ==2 ){
-//                           showPasswordDialog(context); //3번째 카드 누르면 비밀번호 화면 표시
-//                         }
-//                         else
-//                         showGroupDetailsDialog(context, group); //그룹 카드를 누르면 다이얼로그 표시
-//                                 },
-//                               child: Column(
-//                                 crossAxisAlignment: CrossAxisAlignment.start,
-//                                 children: [
-//                                   Row(
-//                                     mainAxisAlignment: MainAxisAlignment.start,
-//                                     children: [
-//                                     Text(group.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-//                                     if(index==2)
-//                                      Padding(
-//                                        padding: const EdgeInsets.only(left:2.0),
-//                                       child:Image.asset("assets/images/lock.png", width: 24, height: 24,),
-//                                      ),
-//                                     ],
-//                                   ),
-//                                   SizedBox(height: 4.0),
-//                                   Row(
-//                                     children: [
-//                                       Text("대표 카테고리 "),
-//                                       // SizedBox(width: 4.0),
-//                                       Text(group.category, style: TextStyle( color: textColor)),
-//                                       Expanded(child: Container()),
+  Color getCategoryColor(String category) {
+    switch (category) {
+      case "건강":
+        return Color(0xff6ACBF3);
+      case "자기개발":
+        return Color(0xff7BD7C6);
+      case "일상":
+        return Color(0xffF5A77B);
+      case "자기관리":
+        return Color(0xffC69FEC);
+      default:
+        return Color(0xffF4A2D8);
+    }
+  }
 
-//                                       Text("인원 ${group.membersCount}/30명"),],
-//                                       // SizedBox(width: 10.0), // 간격 조절
+  void toggleSearch() {
+    setState(() {
+      _isSearching = !_isSearching;
+      if (!_isSearching) {
+        _searchController.clear();
+        filterGroups('');
+      }
+    });
+  }
 
-//                                   ),
-//                                   SizedBox(height: 4.0),
-//                                   Row(
-//                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                                     children: [
-//                                       Text("루틴장 ${group.leader}"),
-//                                     Text("그룹코드 ${group.groupCode}"),
-//                                   ],
-//                                 ),
-//                               ],
-//                             ),
-//                           ),
-//                         ),
-//                       );
-//                       },
-//                     ),
-//                     ),
+  void filterGroups(String query) {
+    setState(() {
+      if (query.isNotEmpty) {
+        filteredGroups = allGroups
+            .where((group) =>
+            group.groupTitle.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      } else {
+        filteredGroups = allGroups; // 검색어가 없을 때 모든 그룹을 보여줌
+      }
+    });
+  }
 
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           ),
-//           //add 버튼
-//           Positioned(
-//             bottom: 25,
-//             right: 25,
-//             child: FloatingActionButton(
-//               onPressed: () {
-//                   Navigator.push(
-//                     context,
-//                     MaterialPageRoute(builder: (context) => AddGroupPage()),
-//                 );
-//               },
-//               child: Icon(Icons.add, color: Colors.white),
-//               backgroundColor: Color(0xffF1E977),
-//               shape: CircleBorder(),
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+  void showPasswordDialog(BuildContext context, String groupPassword) {
+    _passwordController.clear();
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              title: Text(
+                "비밀번호를 입력해주세요",
+                style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: _passwordController,
+                    decoration: InputDecoration(
+                      hintText: _isPasswordIncorrect
+                          ? "비밀번호가 일치하지 않습니다"
+                          : "비밀번호 4자리",
+                      hintStyle: TextStyle(color: Colors.grey),
+                      border: InputBorder.none,
+                      counterText: "",
+                    ),
+                    keyboardType: TextInputType.number,
+                    maxLength: 4,
+                    obscureText: true,
+                    style: TextStyle(
+                      decoration: TextDecoration.none,
+                    ),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    if (_passwordController.text == groupPassword) {
+                      Navigator.of(context).pop();
+                    } else {
+                      setState(() {
+                        _isPasswordIncorrect = true; // 일치하지 않을 때 상태 업데이트
+                      });
+                    }
+                  },
+                  child: Text("확인", style: TextStyle(color: Colors.black)),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("취소", style: TextStyle(color: Colors.black)),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    ).then((_) {
+      setState(() {
+        _isPasswordIncorrect = false; // 다이얼로그 닫힐 때 상태 초기화
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: _isSearching
+            ? TextField(
+          controller: _searchController,
+          decoration: InputDecoration(
+            hintText: "  그룹명을 입력하세요",
+            fillColor: Colors.white,
+            filled: true,
+            contentPadding: EdgeInsets.symmetric(
+              vertical: 12.0,
+            ),
+          ),
+          onChanged: (value) {
+            filterGroups(value);
+          },
+        )
+            : Text(
+          "루틴 그룹",
+          style: TextStyle(
+              color: Colors.black,
+              fontSize: 23,
+              fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.grey[200],
+        actions: [
+          IconButton(
+            icon: _isSearching
+                ? Icon(Icons.close)
+                : Image.asset("assets/images/search.png",
+                width: 27, height: 27),
+            onPressed: toggleSearch,
+          ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          Container(
+            color: Colors.grey[200],
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 7.0), // 좌우 여백
+              child: Container(
+                color: Colors.grey[200],
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      color: Colors.grey[200], // 전체 배경색 회색으로 변경
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 1.0),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              '전체',
+                              '일상',
+                              '건강',
+                              '자기개발',
+                              '자기관리',
+                              '기타'
+                            ].map((category) {
+                              return Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 3.0),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    // 카테고리 버튼 클릭 시 동작할 코드 작성
+                                  },
+                                  child: Text(
+                                    category,
+                                    style: TextStyle(
+                                      color: category == "전체"
+                                          ? Colors.black
+                                          : category == "일상"
+                                          ? Color(0xffF5A77B)
+                                          : category == "건강"
+                                          ? Color(0xff6ACBF3)
+                                          : category == "자기개발"
+                                          ? const Color(0xff7BD7C6)
+                                          : category == "자기관리"
+                                          ? const Color(
+                                          0xffC69FEC)
+                                          : category == "기타"
+                                          ? Color(
+                                          0xffF4A2D8)
+                                          : Colors.black,
+                                    ),
+                                  ),
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                    MaterialStateProperty.all(Colors.white),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    Expanded(
+                      child: _isLoading
+                          ? Center(child: CircularProgressIndicator())
+                          : ListView.builder(
+                        itemCount: filteredGroups.length,
+                        itemBuilder: (context, index) {
+                          final group = filteredGroups[index];
+                          Color textColor =
+                          getCategoryColor(group.groupCategory);
+                          return Card(
+                            margin: EdgeInsets.all(8.0),
+                            color: Colors.white,
+                            child: Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Text(
+                                            group.groupTitle,
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          if (!group.isPublic)
+                                            Padding(
+                                              padding:
+                                              const EdgeInsets.only(
+                                                  left: 8.0),
+                                              child: Image.asset(
+                                                "assets/images/lock.png",
+                                                width: 20,
+                                                height: 20,
+                                              ), //비밀번호 방 여부
+                                            ),
+                                        ],
+                                      ),
+                                      Text(
+                                          "가입 ${calculateDaysSinceCreation(group.joinDate)}일차"),
+                                    ],
+                                  ),
+                                  SizedBox(height: 8.0),
+                                  Row(
+                                    children: [
+                                      Text("대표 카테고리 "),
+                                      Text(group.groupCategory,
+                                          style: TextStyle(
+                                              color: textColor)),
+                                      Expanded(child: Container()), // 간격 조절
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(
+                                            "인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 8.0),
+                                  Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text("루틴장 ${group.createdUserNickname}"),
+                                      Text("그룹코드 ${group.groupId}"),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class EntireGroup {
+  final int groupId;
+  final String groupTitle;
+  final String groupCategory;
+  final String createdUserNickname;
+  final int maxMemberCount;
+  final int joinMemberCount;
+  final int joinDate;
+  final bool isPublic;
+  final String? groupPassword;  // 비밀번호는 null 가능
+
+  EntireGroup({
+    required this.groupId,
+    required this.groupTitle,
+    required this.groupCategory,
+    required this.createdUserNickname,
+    required this.maxMemberCount,
+    required this.joinMemberCount,
+    required this.joinDate,
+    required this.isPublic,
+    this.groupPassword,  // nullable로 선언
+  });
+
+  factory EntireGroup.fromJson(Map<String, dynamic> json) {
+    return EntireGroup(
+      groupId: json['groupId'] ?? 0,  // 기본값 0으로 설정
+      groupTitle: json['groupTitle'] ?? 'Unknown',  // 기본값 설정
+      groupCategory: json['groupCategory'] ?? '기타',  // 기본값 설정
+      createdUserNickname: json['createdUserNickname'] ?? 'Unknown',  // 기본값 설정
+      maxMemberCount: json['maxMemberCount'] ?? 0,  // 기본값 0으로 설정
+      joinMemberCount: json['joinMemberCount'] ?? 0,  // 기본값 0으로 설정
+      joinDate: json['joinDate'] ?? DateTime.now().millisecondsSinceEpoch,  // 기본값 현재 시간으로 설정
+      isPublic: json['isPublic'] ?? true,  // 기본값 true로 설정
+      groupPassword: json['groupPassword'],  // nullable 값 처리
+    );
+  }
+}
