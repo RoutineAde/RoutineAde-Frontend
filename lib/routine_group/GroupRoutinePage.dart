@@ -17,14 +17,15 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
   bool _isLoading = false;
   int _currentPage = 1; // 현재 페이지
   final int _pageSize = 10; // 한 번에 가져올 데이터 양
+  String? selectedCategory = '전체'; // 선택된 카테고리 추가
 
   @override
   void initState() {
     super.initState();
-    _fetchGroups();
+    _fetchGroups(); // 초기 로드 시 '전체' 카테고리 데이터 불러오기
   }
 
-  Future<void> _fetchGroups({bool loadMore = false}) async {
+  Future<void> _fetchGroups({bool loadMore = false, String? category}) async {
     if (loadMore) {
       _currentPage++; // 더 로드할 때는 페이지 증가
     } else {
@@ -35,8 +36,11 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
       });
     }
 
+    String categoryQuery = category != null && category != '전체'
+        ? 'groupCategory=${Uri.encodeComponent(category)}'
+        : 'groupCategory=%EC%A0%84%EC%B2%B4';
     final url = Uri.parse(
-        'http://15.164.88.94:8080/groups?groupCategory=%EC%A0%84%EC%B2%B4');
+        'http://15.164.88.94:8080/groups?$categoryQuery');
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization':
@@ -69,9 +73,6 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
       print("Response Body: ${response.body}");
     }
   }
-
-
-
 
   int calculateDaysSinceCreation(int joinDate) {
     final now = DateTime.now();
@@ -252,26 +253,17 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                 padding: EdgeInsets.symmetric(horizontal: 3.0),
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    // 카테고리 버튼 클릭 시 동작할 코드 작성
+                                    setState(() {
+                                      selectedCategory = category; // 선택된 카테고리 설정
+                                    });
+                                    _fetchGroups(category: category); // 선택된 카테고리로 그룹 불러오기
                                   },
                                   child: Text(
                                     category,
                                     style: TextStyle(
-                                      color: category == "전체"
+                                      color: category == selectedCategory
                                           ? Colors.black
-                                          : category == "일상"
-                                          ? Color(0xffF5A77B)
-                                          : category == "건강"
-                                          ? Color(0xff6ACBF3)
-                                          : category == "자기개발"
-                                          ? const Color(0xff7BD7C6)
-                                          : category == "자기관리"
-                                          ? const Color(
-                                          0xffC69FEC)
-                                          : category == "기타"
-                                          ? Color(
-                                          0xffF4A2D8)
-                                          : Colors.black,
+                                          : getCategoryColor(category),
                                     ),
                                   ),
                                   style: ButtonStyle(
@@ -285,7 +277,6 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                         ),
                       ),
                     ),
-
                     Expanded(
                       child: _isLoading
                           ? Center(child: CircularProgressIndicator())
@@ -412,5 +403,4 @@ class EntireGroup {
       groupPassword: json['groupPassword'],
     );
   }
-
 }
