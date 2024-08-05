@@ -156,7 +156,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
-                                    if (group.isPublic)
+                                    if (!group.isPublic)
                                       Padding(
                                         padding:
                                         const EdgeInsets.only(left: 8.0),
