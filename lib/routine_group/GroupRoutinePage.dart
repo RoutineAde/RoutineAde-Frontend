@@ -36,7 +36,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     }
 
     final url = Uri.parse(
-        'http://15.164.88.94:8080/groups?groupCategory=%EC%A0%84%EC%B2%B4'); // URL 확인
+        'http://15.164.88.94:8080/groups?groupCategory=%EC%A0%84%EC%B2%B4');
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization':
@@ -45,17 +45,13 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
 
     if (response.statusCode == 200) {
       final decodedResponse = utf8.decode(response.bodyBytes); // UTF-8 디코딩
-      final data = jsonDecode(decodedResponse); // 디코딩된 문자열을 JSON으로 파싱
+      final data = jsonDecode(decodedResponse);
 
-      // 응답 데이터를 로그로 출력하여 확인
-      print("Response Data: $data");
+      print("Response Data: $data"); // 응답 데이터를 로그로 출력하여 확인
 
       setState(() {
-        // 응답이 객체일 때 처리
-        if (data is Map<String, dynamic>) {
-          allGroups.add(EntireGroup.fromJson(data));
-        } else if (data is List<dynamic>) {
-          final newGroups = data
+        if (data is Map<String, dynamic> && data.containsKey('groups')) {
+          final newGroups = (data['groups'] as List<dynamic>)
               .map((json) => EntireGroup.fromJson(json))
               .toList();
           allGroups.addAll(newGroups);
@@ -73,6 +69,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
       print("Response Body: ${response.body}");
     }
   }
+
 
 
 
@@ -404,15 +401,16 @@ class EntireGroup {
 
   factory EntireGroup.fromJson(Map<String, dynamic> json) {
     return EntireGroup(
-      groupId: json['groupId'] ?? 0,  // 기본값 0으로 설정
-      groupTitle: json['groupTitle'] ?? 'Unknown',  // 기본값 설정
-      groupCategory: json['groupCategory'] ?? '기타',  // 기본값 설정
-      createdUserNickname: json['createdUserNickname'] ?? 'Unknown',  // 기본값 설정
-      maxMemberCount: json['maxMemberCount'] ?? 0,  // 기본값 0으로 설정
-      joinMemberCount: json['joinMemberCount'] ?? 0,  // 기본값 0으로 설정
-      joinDate: json['joinDate'] ?? DateTime.now().millisecondsSinceEpoch,  // 기본값 현재 시간으로 설정
-      isPublic: json['isPublic'] ?? true,  // 기본값 true로 설정
-      groupPassword: json['groupPassword'],  // nullable 값 처리
+      groupId: json['groupId'] ?? 0,
+      groupTitle: json['groupTitle'] ?? 'Unknown',
+      groupCategory: json['groupCategory'] ?? '기타',
+      createdUserNickname: json['createdUserNickname'] ?? 'Unknown',
+      maxMemberCount: json['maxMemberCount'] ?? 0,
+      joinMemberCount: json['joinMemberCount'] ?? 0,
+      joinDate: json['joinDate'] != null ? DateTime.parse(json['joinDate']).millisecondsSinceEpoch : DateTime.now().millisecondsSinceEpoch,
+      isPublic: json['isPublic'] ?? true,
+      groupPassword: json['groupPassword'],
     );
   }
+
 }
