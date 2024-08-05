@@ -118,22 +118,22 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     });
   }
 
-  void _showGroupDialog(EntireGroup group) {
-    if (group.isPublic) {
+  void _showGroupDialog(EntireGroup Egroup) {
+    if (Egroup.isPublic) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Colors.white,  // 배경색을 하얀색으로 설정
-            title: Center(child: Text(group.groupTitle)),  // 가운데 정렬
+            title: Center(child: Text(Egroup.groupTitle)),  // 가운데 정렬
             content: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,  // 가운데 정렬
               children: [
-                Text("그룹 코드 #${group.groupId}"),
-                Text("대표 카테고리 ${group.groupCategory}"),
-                Text("루틴장 ${group.createdUserNickname}"),
-                Text("인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),
+                Text("그룹 코드 #${Egroup.groupId}"),
+                Text("대표 카테고리 ${Egroup.groupCategory}"),
+                Text("루틴장 ${Egroup.createdUserNickname}"),
+                Text("인원 ${Egroup.joinMemberCount}/${Egroup.maxMemberCount}명"),
               ],
             ),
             actions: [
@@ -160,7 +160,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
         },
       );
     } else {
-      _showPasswordDialog(group);
+      _showPasswordDialog(Egroup);
     }
   }
 

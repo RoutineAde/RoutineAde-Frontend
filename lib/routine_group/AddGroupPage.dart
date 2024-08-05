@@ -29,7 +29,6 @@ class _AddGroupPageState extends State<AddGroupPage> {
     super.dispose();
   }
 
-
   // 그룹 추가 API 호출 함수
   void _addGroup() async {
     // 카테고리 선택 여부 확인
@@ -46,6 +45,9 @@ class _AddGroupPageState extends State<AddGroupPage> {
       return;
     }
 
+    // 비밀번호 값 설정
+    final groupPassword = _passwordController.text.isEmpty ? null : _passwordController.text;
+
     // 요청 바디 준비
     final url = Uri.parse('http://15.164.88.94:8080/groups');
     final headers = {
@@ -54,7 +56,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
     };
     final body = jsonEncode({
       'groupTitle': _groupNameController.text,
-      'groupPassword': _passwordController.text,
+      'groupPassword': groupPassword,
       'groupCategory': _getCategoryFromIndex(selectedCategoryIndex),
       'maxMember': _selectedMemberCount,
       'description': _groupDescriptionController.text,

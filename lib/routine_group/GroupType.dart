@@ -45,6 +45,7 @@ class EntireGroup {
   final int joinMemberCount;
   final bool isPublic;
   final String groupPassword;
+  final String description;
 
   EntireGroup({
     required this.groupId,
@@ -55,6 +56,7 @@ class EntireGroup {
     required this.joinMemberCount,
     required this.isPublic,
     required this.groupPassword,
+    required this.description,
   });
 
   factory EntireGroup.fromJson(Map<String, dynamic> json) {
@@ -67,6 +69,7 @@ class EntireGroup {
       joinMemberCount: json['joinMemberCount'],
       isPublic: json['isPublic'],
       groupPassword: json['groupPassword'],
+      description: json['description'],
     );
   }
 }
