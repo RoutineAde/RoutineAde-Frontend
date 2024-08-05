@@ -75,6 +75,8 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
 
   Color getCategoryColor(String category) {
     switch (category) {
+      case "전체":
+        return Colors.black;
       case "건강":
         return Color(0xff6ACBF3);
       case "자기개발":
@@ -116,7 +118,112 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     });
   }
 
-  // 나머지 메서드와 클래스 정의는 동일합니다.
+  void _showGroupDialog(EntireGroup group) {
+    if (group.isPublic) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,  // 배경색을 하얀색으로 설정
+            title: Center(child: Text(group.groupTitle)),  // 가운데 정렬
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,  // 가운데 정렬
+              children: [
+                Text("그룹 코드 #${group.groupId}"),
+                Text("대표 카테고리 ${group.groupCategory}"),
+                Text("루틴장 ${group.createdUserNickname}"),
+                Text("인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),
+              ],
+            ),
+            actions: [
+              ButtonBar(
+                alignment: MainAxisAlignment.end,  // 버튼들을 오른쪽에 정렬
+                children: [
+                  TextButton(
+                    child: Text("가입하기"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: Text("취소"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      // 참여 로직 추가 가능
+                    },
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      _showPasswordDialog(group);
+    }
+  }
+
+  void _showPasswordDialog(EntireGroup group) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,  // 배경색을 하얀색으로 설정
+          title: Center(child: Text("비공개 그룹")),  // 가운데 정렬
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,  // 가운데 정렬
+            children: [
+              TextField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  labelText: "비밀번호 4자리 입력",
+                  errorText: _isPasswordIncorrect ? "비밀번호가 틀렸습니다." : null,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            ButtonBar(
+              alignment: MainAxisAlignment.end,  // 버튼들을 오른쪽에 정렬
+              children: [
+                TextButton(
+                  child: Text("취소"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    _passwordController.clear();
+                    _isPasswordIncorrect = false;
+                  },
+                ),
+                TextButton(
+                  child: Text("확인"),
+                  onPressed: () {
+                    _checkPassword(group);
+                  },
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _checkPassword(EntireGroup group) {
+    setState(() {
+      if (_passwordController.text == group.groupPassword) {
+        Navigator.of(context).pop();
+        _passwordController.clear();
+        _isPasswordIncorrect = false;
+        // 비밀번호가 맞으면, 참여 로직 추가 가능
+        print("참여 성공!");
+      } else {
+        _isPasswordIncorrect = true;
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -183,6 +290,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                               '자기관리',
                               '기타'
                             ].map((category) {
+                              bool isSelected = selectedCategory == category;
                               return Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 3.0),
                                 child: ElevatedButton(
@@ -195,14 +303,13 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                   child: Text(
                                     category,
                                     style: TextStyle(
-                                      color: category == selectedCategory
-                                          ? Colors.black
-                                          : getCategoryColor(category),
+                                      color: getCategoryColor(category), // Always set the color based on the category
                                     ),
                                   ),
                                   style: ButtonStyle(
-                                    backgroundColor:
-                                    MaterialStateProperty.all(Colors.white),
+                                    backgroundColor: MaterialStateProperty.all(
+                                      isSelected ? Colors.white : Color(0xE8E8E8EF),
+                                    ),
                                   ),
                                 ),
                               );
@@ -220,68 +327,73 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                           final group = filteredGroups[index];
                           Color textColor =
                           getCategoryColor(group.groupCategory);
-                          return Card(
-                            margin: EdgeInsets.all(8.0),
-                            color: Colors.white,
-                            child: Padding(
-                              padding: EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            group.groupTitle,
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          if (!group.isPublic)
-                                            Padding(
-                                              padding:
-                                              const EdgeInsets.only(
-                                                  left: 8.0),
-                                              child: Image.asset(
-                                                "assets/images/lock.png",
-                                                width: 20,
-                                                height: 20,
+                          return InkWell(
+                            onTap: () {
+                              _showGroupDialog(group);
+                            },
+                            child: Card(
+                              margin: EdgeInsets.all(8.0),
+                              color: Colors.white,
+                              child: Padding(
+                                padding: EdgeInsets.all(16.0),
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              group.groupTitle,
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
                                               ),
                                             ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 8.0),
-                                  Row(
-                                    children: [
-                                      Text("대표 카테고리 "),
-                                      Text(group.groupCategory,
-                                          style: TextStyle(
-                                              color: textColor)),
-                                      Expanded(child: Container()),
-                                      Align(
-                                        alignment: Alignment.centerRight,
-                                        child: Text(
-                                            "인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 8.0),
-                                  Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("루틴장 ${group.createdUserNickname}"),
-                                      Text("그룹코드 ${group.groupId}"),
-                                    ],
-                                  ),
-                                ],
+                                            if (!group.isPublic)
+                                              Padding(
+                                                padding:
+                                                const EdgeInsets.only(
+                                                    left: 8.0),
+                                                child: Image.asset(
+                                                  "assets/images/lock.png",
+                                                  width: 20,
+                                                  height: 20,
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 8.0),
+                                    Row(
+                                      children: [
+                                        Text("대표 카테고리 "),
+                                        Text(group.groupCategory,
+                                            style: TextStyle(
+                                                color: textColor)),
+                                        Expanded(child: Container()),
+                                        Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Text(
+                                              "인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(height: 8.0),
+                                    Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text("루틴장 ${group.createdUserNickname}"),
+                                        Text("그룹코드 ${group.groupId}"),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           );
