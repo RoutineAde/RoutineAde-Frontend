@@ -5,19 +5,22 @@ description: "A new Flutter project."
 version: 1.0.0+1
 
 environment:
-  sdk: '3.4.0'
+  sdk: ">=3.3.4 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  google_fonts: ^2.0.0
 
- #추가한 패키지
+
+  #추가한 패키지
   flutter_calendar_week: ^3.0.1
   intl: ^0.18.0
   cupertino_icons: ^1.0.6
   json_annotation: ^4.0.1
   shelf_swagger_ui: ^1.0.0+2
   http: ^0.13.3
+  shared_preferences: ^2.0.8
   # flutter_localizations:
   #   sdk: flutter
 
@@ -31,7 +34,14 @@ flutter:
   uses-material-design: true
 
   assets:
-   - assets/images/
-   - assets/images/tap-bar/
-   - assets/images/emotion/
-   - assets/images/new-icons/
+    - assets/images/
+    - assets/images/tap-bar/
+    - assets/images/emotion/
+    - assets/images/new-icons/
+
+fonts:
+  - family: NotoSansKR
+    fonts:
+      - asset: assets/fonts/NotoSansKR-Regular.otf
+      - asset: assets/fonts/NotoSansKR-Bold.otf
+      - asset: assets/fonts/NotoSansKR-Medium.otf

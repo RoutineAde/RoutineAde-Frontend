@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 
-const String _name = "윤정";
+const String _name = "김외롭";
 
 
 
@@ -181,17 +181,13 @@ class ChatMessage extends StatelessWidget {
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 10.0),
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
-            Container(
-              margin: const EdgeInsets.only(right: 16.0),
-              // 사용자명의 첫번째 글자를 서클 아바타로 표시
-              child: CircleAvatar(child: Text(_name[0])),
-            ),
+
             Expanded(
               // 컬럼 추가
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
                   // 사용자명을 subhead 테마로 출력
                   Text(_name),
@@ -202,7 +198,14 @@ class ChatMessage extends StatelessWidget {
                   ),
                 ],
               ),
-            )
+            ),
+            SizedBox(width: 20,),
+            Container(
+
+              margin: const EdgeInsets.only(right: 16.0),
+              // 사용자 프로필 사진
+              child: CircleAvatar(child: Image.asset("assets/images/new-icons/김외롭.png")),
+            ),
           ],
         ),
       ),
