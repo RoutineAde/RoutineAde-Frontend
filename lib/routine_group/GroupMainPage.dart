@@ -73,10 +73,10 @@ class _GroupMainPageState extends State<GroupMainPage> {
     }
   }
 
-  // 가입일자 계산
-  int calculateDaysSinceCreation(int? joinDate) {
+  //가입일자 계산
+  int calculateDaysSinceCreation(int joinDate) {
     final now = DateTime.now();
-    final joinDateTime = DateTime.fromMicrosecondsSinceEpoch(joinDate ?? 0);
+    final joinDateTime = DateTime.fromMicrosecondsSinceEpoch(joinDate);
     return now.difference(joinDateTime).inDays + 1;
   }
 
@@ -169,7 +169,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
                                   ],
                                 ),
                                 Text(
-                                    "가입 ${calculateDaysSinceCreation(group.joinDate)}일차"),
+                                    "가입 ${group.joinDate}일차"),
                               ],
                             ),
                             SizedBox(height: 8.0),

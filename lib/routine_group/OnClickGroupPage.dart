@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
+import 'package:routine_ade/routine_group/groupManagement.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:http/http.dart' as http;
 import 'groupType.dart';
@@ -288,18 +289,33 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
     );
   }
 
-  ListTile buildLeaveGroupTile() {
-    return ListTile(
-      title: const Text(
-        '그룹 나가기',
-        style: TextStyle(
-            fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
+  Container buildLeaveGroupTile() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      height: 60.0, // 컨테이너의 높이 설정
+      decoration: BoxDecoration(
+        color: Colors.grey[200], // 회색 배경
+        borderRadius: BorderRadius.circular(8.0),
       ),
-      onTap: () {
-        // 그룹 나가기 동작 추가
-      },
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => groupManagement()));
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end, // 이미지가 오른쪽에 배치되도록 설정
+          children: [
+            Image.asset(
+              'assets/images/new-icons/setting.png',
+              width: 30,
+              height: 30,
+            ),
+          ],
+        ),
+      ),
     );
   }
+
+
 }
 
 class RoutinePage extends StatelessWidget {
