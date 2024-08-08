@@ -107,7 +107,7 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
       // 선택한 날짜가 미래일 경우 알림 메시지를 표시하고 등록을 차단
       if(mounted){
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('과거와 오늘 날짜만 선택 가능합니다.')),
+          const SnackBar(content: Text('과거와 오늘 날짜만 선택 가능합니다.')),
         );
       }
       return;
@@ -333,7 +333,7 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
         children: [
           _buildBottomAppBarItem("assets/images/tap-bar/routine02.png"),
           _buildBottomAppBarItem("assets/images/tap-bar/group01.png", GroupMainPage()),
-          _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png", OnClickGroupPage()),
+          _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png", const OnClickGroupPage(groupId: 1)),
           _buildBottomAppBarItem("assets/images/tap-bar/more01.png", ChatScreen()),
         ],
       ),

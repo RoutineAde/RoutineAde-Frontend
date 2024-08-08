@@ -65,8 +65,8 @@ class _GroupMainPageState extends State<GroupMainPage> {
             .toList();
 
         // Sort groups by joinDate in ascending order
-        groups.sort((a, b) => DateTime.fromMicrosecondsSinceEpoch(a.joinDate)
-            .compareTo(DateTime.fromMicrosecondsSinceEpoch(b.joinDate)));
+        groups.sort((a, b) => DateTime.fromMicrosecondsSinceEpoch(a.joinDate ?? 0)
+            .compareTo(DateTime.fromMicrosecondsSinceEpoch(b.joinDate ?? 0)));
       });
     } else {
       print("그룹 불러오기를 실패하였습니다.");
@@ -74,9 +74,9 @@ class _GroupMainPageState extends State<GroupMainPage> {
   }
 
   // 가입일자 계산
-  int calculateDaysSinceCreation(int joinDate) {
+  int calculateDaysSinceCreation(int? joinDate) {
     final now = DateTime.now();
-    final joinDateTime = DateTime.fromMicrosecondsSinceEpoch(joinDate);
+    final joinDateTime = DateTime.fromMicrosecondsSinceEpoch(joinDate ?? 0);
     return now.difference(joinDateTime).inDays + 1;
   }
 
@@ -169,7 +169,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
                                   ],
                                 ),
                                 Text(
-                                    "가입 ${group.joinDate}일차"),
+                                    "가입 ${calculateDaysSinceCreation(group.joinDate)}일차"),
                               ],
                             ),
                             SizedBox(height: 8.0),
