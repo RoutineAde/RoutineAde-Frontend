@@ -31,16 +31,16 @@ Color getCategoryColor(String category) {
 }
 
 
-class OnClickGroupPage extends StatefulWidget {
+class glOnClickGroupPage extends StatefulWidget {
   final int groupId; // 특정 그룹을 가져오기 위한 groupId 매개변수 추가
 
-  const OnClickGroupPage({required this.groupId, super.key});
+  const glOnClickGroupPage({required this.groupId, super.key});
 
   @override
-  State<OnClickGroupPage> createState() => _OnClickGroupPageState();
+  State<glOnClickGroupPage> createState() => _glOnClickGroupPageState();
 }
 
-class _OnClickGroupPageState extends State<OnClickGroupPage>
+class _glOnClickGroupPageState extends State<glOnClickGroupPage>
     with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   bool _isSwitchOn = false;
