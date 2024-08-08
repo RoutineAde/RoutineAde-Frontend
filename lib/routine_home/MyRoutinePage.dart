@@ -334,7 +334,7 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
           _buildBottomAppBarItem("assets/images/tap-bar/routine02.png"),
           _buildBottomAppBarItem("assets/images/tap-bar/group01.png", GroupMainPage()),
           _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png", const OnClickGroupPage(groupId: 1)),
-          _buildBottomAppBarItem("assets/images/tap-bar/more01.png", ChatScreen()),
+          _buildBottomAppBarItem("assets/images/tap-bar/more01.png",),
         ],
       ),
     );

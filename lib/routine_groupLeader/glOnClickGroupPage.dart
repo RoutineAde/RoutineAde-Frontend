@@ -1,61 +1,57 @@
 import 'dart:ui';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
-import 'package:routine_ade/routine_groupLeader/glAddRoutinePage.dart';
-import 'package:routine_ade/routine_groupLeader/glgroupManagement.dart';
+import 'package:routine_ade/routine_group/groupManagement.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
+import 'package:http/http.dart' as http;
+import '../routine_group/GroupType.dart';
+import '../routine_groupLeader/glAddRoutinePage.dart';
+import 'groupType.dart';
 
-import '../routine_group/groupManagement.dart';
-
-class GroupMember {
-  final String name;
-  final String avatarPath;
-  final bool isLeader;
-
-  GroupMember({required this.name, required this.avatarPath, this.isLeader = false});
+// 전역 함수로 getCategoryColor를 정의
+Color getCategoryColor(String category) {
+  switch (category) {
+    case "전체":
+      return Colors.black;
+    case "건강":
+      return Color(0xff6ACBF3);
+    case "자기개발":
+      return Color(0xff7BD7C6);
+    case "일상":
+      return Color(0xffF5A77B);
+    case "자기관리":
+      return Color(0xffC69FEC);
+    default:
+      return Color(0xffF4A2D8);
+  }
 }
 
-class glOnClickGroupPage extends StatefulWidget {
-  const glOnClickGroupPage({super.key});
+
+class OnClickGroupPage extends StatefulWidget {
+  final int groupId; // 특정 그룹을 가져오기 위한 groupId 매개변수 추가
+
+  const OnClickGroupPage({required this.groupId, super.key});
 
   @override
-  State<glOnClickGroupPage> createState() => _glOnClickGroupPageState();
+  State<OnClickGroupPage> createState() => _OnClickGroupPageState();
 }
 
-class _glOnClickGroupPageState extends State<glOnClickGroupPage> with SingleTickerProviderStateMixin {
-  final List<String> categories = ["자기개발", "건강", "일상"];
-
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+class _OnClickGroupPageState extends State<OnClickGroupPage>
+    with SingleTickerProviderStateMixin {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   bool _isSwitchOn = false;
-
-  List<GroupMember> members = [
-    GroupMember(name: '서현', avatarPath: "assets/images/new-icons/user01.png", isLeader: true),
-    GroupMember(name: '김외롭', avatarPath: "assets/images/new-icons/김외롭.png"),
-    GroupMember(name: '채은', avatarPath: "assets/images/new-icons/user03.png"),
-    GroupMember(name: '윤정', avatarPath: "assets/images/new-icons/user01.png"),
-    GroupMember(name: '가은', avatarPath: "assets/images/new-icons/user02.png"),
-    GroupMember(name: '이똑똑', avatarPath: "assets/images/new-icons/user03.png"),
-  ];
-
   late TabController _tabController;
-
-  int selectedCategoryIndex = -1;
-  List<String> isCategory = ["일상", "건강", "자기개발", "자기관리", "기타"];
-
-  DateTime _selectedDate = DateTime.now();
-
-  String get formattedDate => DateFormat('yyyy.MM.dd').format(_selectedDate);
+  late Future<GroupResponse> futureGroupResponse;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    futureGroupResponse = fetchGroupResponse(widget.groupId);
   }
 
   @override
@@ -64,248 +60,327 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage> with SingleTick
     super.dispose();
   }
 
+  Future<GroupResponse> fetchGroupResponse(int groupId) async {
+    final response = await http.get(
+      Uri.parse('http://15.164.88.94:8080/groups/$groupId'),
+      headers: {
+        'Authorization':
+        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM', // 필요 시 여기에 토큰을 추가
+        'Accept': 'application/json', // JSON 응답을 기대하는 경우
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final decodedResponse = utf8.decode(response.bodyBytes);
+      final jsonResponse = json.decode(decodedResponse);
+      return GroupResponse.fromJson(jsonResponse);
+    } else {
+      throw Exception('Failed to load group data');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        key: _scaffoldKey,
-        appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100),
-          child: AppBar(
-            actions: [
-              IconButton(
-                icon: Image.asset("assets/images/new-icons/hamburger.png"),
-                onPressed: () {
-                  _scaffoldKey.currentState?.openEndDrawer();
-                },
-              ),
-            ],
-            bottom: TabBar(
-              controller: _tabController,
-              tabs: [
-                Tab(text: "루틴",),
-                Tab(text: "채팅",),
-              ],
-              labelStyle: TextStyle(
-                fontSize: 18,
-              ),
-              labelColor: Colors.black,
-              indicator: UnderlineTabIndicator(
-                  borderSide: BorderSide(width: 3.0, color: Color(0xffE6E288),),
-                  insets: EdgeInsets.symmetric(horizontal: 115.0)
-              ),
-            ),
-            title: Text(
-              '꿈을 향해',
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold
-              ),
-            ),
-            centerTitle: true,
-            leading: IconButton(
-              icon: Icon(
-                Icons.arrow_back,
-                size: 20,
-              ),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ),
+    return Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        title: FutureBuilder<GroupResponse>(
+          future: futureGroupResponse,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Text('Loading...');
+            } else if (snapshot.hasError) {
+              return const Text('Error');
+            } else {
+              final groupResponse = snapshot.data!;
+              return Text(
+                groupResponse.groupInfo.groupTitle,
+                style: const TextStyle(
+                    fontSize: 20,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold),
+              );
+            }
+          },
         ),
-        endDrawer: Drawer(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              DrawerHeader(
-                padding: EdgeInsets.fromLTRB(25, 10, 10, 20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text("꿈을 향해                           ", style: TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold,
-                    ),),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: ListView(
-                  padding: EdgeInsets.all(10.0),
-                  children: <Widget>[
-                    ListTile(
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('#51', style: TextStyle(
-                              fontSize: 18
-                          ),),
-                        ],
-                      ),
-                      title: Text('그룹 코드'),
-                    ),
-                    ListTile(
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('기타', style: TextStyle(
-                            fontSize: 18, color: Color(0xffF4A2D8),
-                          ),),
-                        ],
-                      ),
-                      title: Text('대표 카테고리'),
-                    ),
-                    ListTile(
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('6 / 30 명', style: TextStyle(
-                              fontSize: 18
-                          ),),
-                        ],
-                      ),
-                      title: Text('인원'),
-                    ),
-                    ListTile(
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          CupertinoSwitch(
-                            value: _isSwitchOn,
-                            activeColor: Color(0xffE6E288),
-                            onChanged: (value) {
-                              setState(() {
-                                _isSwitchOn = value;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      title: Text('그룹 알림'),
-                    ),
-                    Divider(),
-                    ListTile(
-                      title: Text('그룹원', style: TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold
-                      ),),
-                      onTap: () {},
-                    ),
-                    for (var member in members) ListTile(
-                      leading: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(
-                            member.avatarPath,
-                            width: 40,
-                            height: 40,
-                          ),
-                          if (member.isLeader)
-                            SizedBox(width: 15,),
-                          if (member.isLeader)
-                            Image.asset(
-                              "assets/images/new-icons/crown.png",
-                              width: 20,
-                              height: 20,
-                            ),
-                        ],
-                      ),
-                      title: Text(member.name, style: TextStyle(
-                        fontSize: 18,
-                      ),),
-                      trailing: member.isLeader
-                          ? null
-                          : TextButton(
-                        onPressed: () {
-                          // Handle member removal
-                        },
-                        style: ButtonStyle(
-                          padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(8.0)),
-                          backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(50.0),
-                              side: BorderSide(color: Colors.black, width: 1.0),
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          '내보내기',
-                          style: TextStyle(
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                color: Colors.grey[300],
-                child: ListTile(
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Image.asset("assets/images/new-icons/setting.png",
-                          width: 30,
-                          height: 30,
-                        ),
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => glgroupManagement()));
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
+        actions: [
+          IconButton(
+            icon: Image.asset("assets/images/new-icons/hamburger.png"),
+            onPressed: () {
+              _scaffoldKey.currentState?.openEndDrawer();
+            },
           ),
-        ),
-        body: TabBarView(
+        ],
+        bottom: TabBar(
           controller: _tabController,
-          children: [
-            // 루틴 페이지
-            ListView(
-              padding: EdgeInsets.fromLTRB(24, 30, 24, 16),
+          tabs: const [
+            Tab(text: "루틴"),
+            Tab(text: "채팅"),
+          ],
+          labelStyle: const TextStyle(fontSize: 18),
+          labelColor: Colors.black,
+          indicator: const UnderlineTabIndicator(
+            borderSide: BorderSide(width: 3.0, color: Color(0xffE6E288)),
+            insets: EdgeInsets.symmetric(horizontal: 115.0),
+          ),
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, size: 20),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      endDrawer: FutureBuilder<GroupResponse>(
+        future: futureGroupResponse,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            final groupResponse = snapshot.data!;
+            return buildDrawer(groupResponse);
+          }
+        },
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          FutureBuilder<GroupResponse>(
+            future: futureGroupResponse,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else {
+                final groupResponse = snapshot.data!;
+                return RoutinePage(groupResponse.groupRoutines);
+              }
+            },
+          ),
+          ChatScreen(),
+        ],
+      ),
+      endDrawerEnableOpenDragGesture: false,
+      floatingActionButton: _tabController.index == 0
+          ? FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => glAddRoutinePage()));
+        },
+        backgroundColor: Color(0xffE6E288),
+        shape: CircleBorder(),
+        child: Image.asset(
+          "assets/images/add.png",
+          width: 30,
+          height: 30,
+        ),
+      )
+          : null,
+    );
+  }
+
+  Widget buildDrawer(GroupResponse groupResponse) {
+    final groupInfo = groupResponse.groupInfo;
+
+    return Drawer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          DrawerHeader(
+            padding: const EdgeInsets.fromLTRB(25, 10, 10, 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                _buildCategorySection('자기 개발', Color(0xff7BD7C6), [
-                  _buildRoutineItem('일기 쓰기', '매주 화, 목'),
-                  _buildRoutineItem('1시간 독서하기', '매주 토, 일'),
-                  _buildRoutineItem('1시간 공부하기', '매주 토, 일'),
-                ]),
-                SizedBox(height: 50,),
-                _buildCategorySection('건강', Color(0xff6ACBF3), [
-                  _buildRoutineItem('아침 스트레칭 하기', '매주 월, 화, 수, 목, 금'),
-                  _buildRoutineItem('1시간 독서하기', '매주 토, 일'),
-                  _buildRoutineItem('1시간 운동하기', '매주 토, 일'),
-                ]),
-                SizedBox(height: 50,),
-                _buildCategorySection('일상', Color(0xffF4A2D8), [
-                  _buildRoutineItem('아침 스트레칭 하기', '매주 월, 화, 수, 목, 금'),
-                  _buildRoutineItem('1시간 독서하기', '매주 토, 일'),
-                  _buildRoutineItem('1시간 공부하기', '매주 토, 일'),
-                ]),
+                Text(
+                  groupInfo.groupTitle,
+                  style: const TextStyle(
+                      fontSize: 24, fontWeight: FontWeight.bold),
+                ),
               ],
             ),
-            // 채팅 페이지
-            ChatScreen(),
+          ),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(10.0),
+              children: <Widget>[
+                buildDrawerListTile("그룹 코드", "#${groupInfo.groupId}"),
+                buildDrawerListTile(
+                  "대표 카테고리",
+                  groupInfo.groupCategory,
+                  color: Colors.black, // "대표 카테고리"의 title 텍스트는 검은색으로 유지
+                  trailingColor: getCategoryColor(groupInfo.groupCategory), // trailing 텍스트에만 색상을 적용
+                ),
+                buildDrawerListTile("인원",
+                    "${groupInfo.joinMemberCount} / ${groupInfo.maxMemberCount} 명"),
+                buildSwitchListTile(),
+                const Divider(),
+                buildDrawerHeaderTile("그룹원"),
+                ...groupResponse.groupMembers.map((member) {
+                  return buildDrawerMemberTile(
+                    member.nickname,
+                    member.profileImage,
+                    isLeader: groupResponse.isGroupAdmin &&
+                        member.nickname == groupInfo.createdUserNickname,
+                  );
+                }),
+              ],
+            ),
+          ),
+          buildLeaveGroupTile(),
+        ],
+      ),
+    );
+  }
+
+
+  ListTile buildDrawerListTile(String title, String trailing, {Color? color, Color? trailingColor}) {
+    return ListTile(
+      trailing: Text(
+        trailing,
+        style: TextStyle(
+          color: trailingColor ?? Colors.black, // trailing 텍스트 색상 설정
+          fontSize: 15,),
+      ),
+      title: Text(
+        title,
+        style: TextStyle(
+          fontSize: 18,
+          color: color ?? Colors.black, // title 텍스트 색상 설정
+        ),
+      ),
+    );
+  }
+
+
+  ListTile buildSwitchListTile() {
+    return ListTile(
+      trailing: CupertinoSwitch(
+        activeColor: const Color(0xffE6E288),
+        value: _isSwitchOn,
+        onChanged: (bool value) {
+          setState(() {
+            _isSwitchOn = value;
+          });
+        },
+      ),
+      title: const Text(
+        '알림',
+        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  ListTile buildDrawerHeaderTile(String title) {
+    return ListTile(
+      title: Text(
+        title,
+        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+      ),
+    );
+  }
+
+  ListTile buildDrawerMemberTile(String title, String imagePath,
+      {bool isLeader = false}) {
+    return ListTile(
+      leading: CircleAvatar(
+        radius: 25,
+        backgroundImage: AssetImage("assets/images/profile/$imagePath"),
+      ),
+      title: Row(
+        children: <Widget>[
+          Text(title),
+          if (isLeader)
+            const Padding(
+              padding: EdgeInsets.only(left: 8.0),
+              child: Image(
+                image: AssetImage("assets/images/new-icons/crown.png"),
+                width: 16,
+                height: 16,
+              ),
+            ),
+        ],
+      ),
+      trailing: isLeader
+          ? null
+          : TextButton(
+        onPressed: () {
+          // 그룹원 내보내기 기능 추가
+        },
+        style: ButtonStyle(
+          padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(8.0)),
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50.0),
+              side: BorderSide(color: Colors.black, width: 1.0),
+            ),
+          ),
+        ),
+        child: const Text(
+          '내보내기',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 13,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container buildLeaveGroupTile() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      height: 60.0, // 컨테이너의 높이 설정
+      decoration: BoxDecoration(
+        color: Colors.grey[200], // 회색 배경
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: GestureDetector(
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => groupManagement()));
+        },
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end, // 이미지가 오른쪽에 배치되도록 설정
+          children: [
+            Image.asset(
+              'assets/images/new-icons/setting.png',
+              width: 30,
+              height: 30,
+            ),
           ],
         ),
-        floatingActionButton: _tabController.index == 0
-            ? FloatingActionButton(
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) => glAddRoutinePage()));
-          },
-          backgroundColor: Color(0xffE6E288),
-          shape: CircleBorder(),
-          child: Image.asset(
-            "assets/images/add.png",
-            width: 30,
-            height: 30,
-          ),
-        )
-            : null,
       ),
+    );
+  }
+
+
+}
+
+class RoutinePage extends StatelessWidget {
+  final List<RoutineCategory> routineCategories;
+
+  const RoutinePage(this.routineCategories, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      itemCount: routineCategories.length,
+      itemBuilder: (context, index) {
+        final category = routineCategories[index];
+        final color = getCategoryColor(category.routineCategory);  // 카테고리 색상 설정
+        return _buildCategorySection(
+          category.routineCategory,
+          color,  // 여기에서 색상을 전달
+          category.routines.map((routine) {
+            return _buildRoutineItem(
+              routine.routineTitle,
+              routine.repeatDay.join(", "),
+            );
+          }).toList(),
+        );
+      },
     );
   }
 
@@ -320,8 +395,8 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage> with SingleTick
               color: Colors.grey[200],
               borderRadius: BorderRadius.circular(20.0),
             ),
-            margin: EdgeInsets.fromLTRB(10, 0, 0, 16),
-            padding: EdgeInsets.symmetric(horizontal: 10.0),  // 좌우 여백을 추가하여 텍스트 주변에 공간을 줍니다.
+            margin: EdgeInsets.fromLTRB(30, 40, 0, 16),
+            padding: EdgeInsets.symmetric(horizontal: 20.0),  // 좌우 여백을 추가하여 텍스트 주변에 공간을 줍니다.
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -344,28 +419,35 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage> with SingleTick
     );
   }
 
-
   Widget _buildRoutineItem(String title, String schedule) {
     return Container(
-      margin: EdgeInsets.only(bottom: 16),
+      margin: EdgeInsets.fromLTRB(20, 0, 0, 16),
       padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       child: Row(
         children: [
-          Image.asset("assets/images/new-icons/group-check.png",
+          Image.asset(
+            "assets/images/new-icons/group-check.png",
             width: 30,
             height: 30,
           ),
-          SizedBox(width: 12,),
+          SizedBox(width: 12),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold,
-              ),),
-              SizedBox(height: 4,),
-              Text(schedule, style: TextStyle(
-                fontSize: 16, color: Colors.grey[600],
-              ),),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 18,
+                ),
+              ),
+              SizedBox(height: 4),
+              Text(
+                schedule,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[600],
+                ),
+              ),
             ],
           ),
         ],
