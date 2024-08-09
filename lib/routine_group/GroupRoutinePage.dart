@@ -119,50 +119,53 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
   }
 
   void _showGroupDialog(EntireGroup Egroup) {
-    if (Egroup.isPublic) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: Colors.white,  // 배경색을 하얀색으로 설정
-            title: Center(child: Text(Egroup.groupTitle)),  // 가운데 정렬
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,  // 가운데 정렬
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,  // 배경색을 하얀색으로 설정
+          title: Center(child: Text(Egroup.groupTitle)),  // 가운데 정렬
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,  // 가운데 정렬
+            children: [
+              Text("그룹 코드 #${Egroup.groupId}"),
+              Text("대표 카테고리 ${Egroup.groupCategory}"),
+              Text("루틴장 ${Egroup.createdUserNickname}"),
+              Text("인원 ${Egroup.joinMemberCount}/${Egroup.maxMemberCount}명"),
+            ],
+          ),
+          actions: [
+            ButtonBar(
+              alignment: MainAxisAlignment.end,  // 버튼들을 오른쪽에 정렬
               children: [
-                Text("그룹 코드 #${Egroup.groupId}"),
-                Text("대표 카테고리 ${Egroup.groupCategory}"),
-                Text("루틴장 ${Egroup.createdUserNickname}"),
-                Text("인원 ${Egroup.joinMemberCount}/${Egroup.maxMemberCount}명"),
+                TextButton(
+                  child: Text("가입하기"),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // 다이얼로그를 닫고
+                    if (Egroup.isPublic) {
+                      // 공개 그룹이면 바로 참여 로직 추가 가능
+                      print("참여 성공!");
+                    } else {
+                      // 비공개 그룹이면 비밀번호 입력 다이얼로그를 보여줌
+                      _showPasswordDialog(Egroup);
+                    }
+                  },
+                ),
+                TextButton(
+                  child: Text("취소"),
+                  onPressed: () {
+                    Navigator.of(context).pop(); // 다이얼로그 닫기
+                  },
+                ),
               ],
             ),
-            actions: [
-              ButtonBar(
-                alignment: MainAxisAlignment.end,  // 버튼들을 오른쪽에 정렬
-                children: [
-                  TextButton(
-                    child: Text("가입하기"),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                  TextButton(
-                    child: Text("취소"),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      // 참여 로직 추가 가능
-                    },
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-      );
-    } else {
-      _showPasswordDialog(Egroup);
-    }
+          ],
+        );
+      },
+    );
   }
+
 
   void _showPasswordDialog(EntireGroup group) {
     showDialog(
@@ -178,11 +181,13 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
               TextField(
                 controller: _passwordController,
                 obscureText: true,
+                keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: "비밀번호 4자리 입력",
                   errorText: _isPasswordIncorrect ? "비밀번호가 틀렸습니다." : null,
                 ),
               ),
+
             ],
           ),
           actions: [

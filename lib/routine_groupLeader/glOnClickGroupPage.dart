@@ -10,6 +10,7 @@ import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:http/http.dart' as http;
 import '../routine_group/GroupType.dart';
 import '../routine_groupLeader/glAddRoutinePage.dart';
+import 'glgroupManagement.dart';
 import 'groupType.dart';
 
 // 전역 함수로 getCategoryColor를 정의
@@ -339,7 +340,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
       ),
       child: GestureDetector(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => groupManagement()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => glgroupManagement()));
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end, // 이미지가 오른쪽에 배치되도록 설정
