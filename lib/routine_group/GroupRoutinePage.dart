@@ -127,7 +127,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
           title: Center(child: Text(Egroup.groupTitle)),
           content: SingleChildScrollView(
             child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.2,  // 화면 높이의 40%로 다이얼로그 높이를 설정
+              height: MediaQuery.of(context).size.height * 0.2,  // 화면 높이의 20%로 다이얼로그 높이를 설정
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -178,46 +178,54 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,  // 배경색을 하얀색으로 설정
-          title: Center(child: Text("비공개 그룹")),  // 가운데 정렬
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,  // 가운데 정렬
-            children: [
-              TextField(
-                controller: _passwordController,
-                obscureText: true,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: "비밀번호 4자리 입력",
-                  errorText: _isPasswordIncorrect ? "비밀번호가 틀렸습니다." : null,
-                ),
+        return StatefulBuilder(
+          builder: (BuildContext context, StateSetter setState) {
+            return AlertDialog(
+              backgroundColor: Colors.white, // 배경색을 하얀색으로 설정
+              title: Center(child: Text("비공개 그룹")), // 가운데 정렬
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center, // 가운데 정렬
+                children: [
+                  TextField(
+                    controller: _passwordController,
+                    obscureText: true,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: "비밀번호 4자리 입력",
+                      errorText:
+                      _isPasswordIncorrect ? "비밀번호가 틀렸습니다." : null,
+                    ),
+                  ),
+                ],
               ),
-
-            ],
-          ),
-          actions: [
-            ButtonBar(
-              alignment: MainAxisAlignment.end,  // 버튼들을 오른쪽에 정렬
-              children: [
-                TextButton(
-                  child: Text("취소"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    _passwordController.clear();
-                    _isPasswordIncorrect = false;
-                  },
-                ),
-                TextButton(
-                  child: Text("확인"),
-                  onPressed: () {
-                    _checkPassword(group);
-                  },
+              actions: [
+                ButtonBar(
+                  alignment: MainAxisAlignment.end, // 버튼들을 오른쪽에 정렬
+                  children: [
+                    TextButton(
+                      child: Text("취소"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _passwordController.clear();
+                        setState(() {
+                          _isPasswordIncorrect = false;
+                        });
+                      },
+                    ),
+                    TextButton(
+                      child: Text("확인"),
+                      onPressed: () {
+                        setState(() {
+                          _checkPassword(group);
+                        });
+                      },
+                    ),
+                  ],
                 ),
               ],
-            ),
-          ],
+            );
+          },
         );
       },
     );
