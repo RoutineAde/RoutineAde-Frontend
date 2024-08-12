@@ -192,8 +192,10 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
   Widget build(BuildContext context) => Scaffold(
     floatingActionButton: _buildFloatingActionButton(),
     appBar: PreferredSize(
-      child: AppBar(),
       preferredSize: Size.fromHeight(0),
+      child: AppBar(
+        backgroundColor: Color(0xFF8DCCFF),
+      ),
     ),
     bottomNavigationBar: _buildBottomAppBar(),
     body: Column(
