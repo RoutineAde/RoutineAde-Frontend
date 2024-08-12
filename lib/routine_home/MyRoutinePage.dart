@@ -199,9 +199,48 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
     body: Column(
       children: [
         _buildCalendarWeek(),
+        if(_userEmotion != null && _userEmotion!.isNotEmpty)
+          Container(
+            padding: EdgeInsets.all(16),
+            color: Color(0xFFF8F8EF),
+            child: Center(
+              child: Container(
+                width: 360,
+                padding: EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white, // 하얀색 배경
+                  borderRadius: BorderRadius.circular(12), // 둥근 모서리
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.3), // 그림자 색상과 투명도
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: Offset(0, 3), // 그림자의 위치
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    SizedBox(width: 10,),
+                    if (_getImageEmotion(_userEmotion!) != null)
+                      Image.asset(
+                        _getImageEmotion(_userEmotion!)!,
+                        fit: BoxFit.cover,
+                        width: 50,
+                        height: 50,
+                      ),
+                    SizedBox(width: 10),
+                    Text(_getTextForEmotion(_userEmotion!), // 감정에 따른 텍스트 표시
+                      style: TextStyle(fontSize: 18),),
+                  ],
+                ),
+              ),
+            ),
+          ),
+
         Expanded(
           child: Container(
-            color: Colors.grey[200],
+            color: Color(0xFFF8F8EF),
             child: FutureBuilder<RoutineResponse>(
               future: futureRoutineResponse,
               builder: (context, snapshot) {
@@ -219,47 +258,31 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
                   padding: EdgeInsets.fromLTRB(24, 10, 24, 16),
                   children: <Widget>[
                     SizedBox(height: 10,), // 여백 추가
-                    Theme(
-                      data: Theme.of(context).copyWith(
-                        dividerColor: Colors.transparent,
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Color(0xFFE6F5F8), // 배경색 설정
+                        borderRadius: BorderRadius.circular(12), // 둥근 모서리 설정
                       ),
-                      child: ExpansionTile(
-                        title: Text("개인 루틴", style: TextStyle(fontSize: 20)),
-                        initiallyExpanded: _isTileExpanded,
-                        children: snapshot.data!.personalRoutines.map((routine) => _buildRoutineTile(routine)).toList(),
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          dividerColor: Colors.transparent,
+                        ),
+                        child: ExpansionTile(
+                          title: Text("개인 루틴", style: TextStyle(fontSize: 20, color: Colors.black)), // 텍스트 색상 변경
+                          initiallyExpanded: _isTileExpanded,
+                          children: snapshot.data!.personalRoutines.map((routine) => _buildRoutineTile(routine)).toList(),
+                        ),
                       ),
                     ),
                     SizedBox(height: 10,), // 여백 추가
                   ],
                 );
+                ;
               },
             ),
           ),
         ),
-        if(_userEmotion != null && _userEmotion!.isNotEmpty)
-          Container(
-            padding: EdgeInsets.all(16),
-            color: Colors.grey[200],
-            child: Center(
-              child: Container(
-                padding: EdgeInsets.all(16),
-                color:Colors.grey[200],
-                child: Column(
-                  children: [
-                    Text("오늘의 기분", style: TextStyle(fontSize: 18)),
-                    SizedBox(height: 10,),
-                    if (_getImageEmotion(_userEmotion!)!= null)
-                      Image.asset(
-                        _getImageEmotion(_userEmotion!)!,
-                        fit: BoxFit.cover,
-                        width: 70,
-                        height: 70,
-                      ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+
       ],
     ),
   );
@@ -363,45 +386,66 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
       ]),
       child: CalendarWeek(
         controller: _controller,
-        height: 130,
+        height: 160,
         showMonth: true,
         minDate: DateTime.now().add(Duration(days: -367)),
         maxDate: DateTime.now().add(Duration(days: 365)),
         onDatePressed: (DateTime datetime) {
           _onDateSelected(datetime);
         },
-        dayOfWeekStyle: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600, fontSize: 17),
+        dayOfWeekStyle: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 17),
         dayOfWeek: ['월', '화', '수', '목', '금', '토', '일'],
-        dateStyle: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600, fontSize: 17),
+        dateStyle: TextStyle(color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 17),
         todayDateStyle: TextStyle(color: Color(0xffFFFFFF), fontWeight: FontWeight.w600, fontSize: 17),
-        todayBackgroundColor: Color(0xffE6E288),
-        weekendsStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: Colors.red),
+        //todayBackgroundColor: Colors.blueAccent,
+        weekendsStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 17, color: Colors.grey),
         monthViewBuilder: (DateTime time) => _buildMonthView(),
       ),
     );
   }
 
+
   Widget _buildMonthView() {
     return Align(
       alignment: FractionalOffset(0.05, 1),
-      child: Row(
+      child: Column(
         children: [
-          SizedBox(width: 20),
-          Text(
-            '${_controller.selectedDate.year}년 ${_controller.selectedDate.month}월',
-            style: TextStyle(color: Colors.black45, fontWeight: FontWeight.bold, fontSize: 24),
+          Container(
+            width: double.infinity, // 화면의 양끝까지 채우기
+            color: Color(0xFF8DCCFF), // 파란색 배경
+            padding: EdgeInsets.symmetric(vertical: 8), // 상하단 여백 추가
+            child: Row(
+              children: [
+                SizedBox(width: 20),
+                Text(
+                  '${_controller.selectedDate.year}년 ${_controller.selectedDate.month}월',
+                  style: TextStyle(
+                    color: Colors.white, // 텍스트 색상
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                Spacer(),
+                IconButton(
+                  icon: Image.asset("assets/images/bell.png", width: 30, height: 30),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => AlarmListPage()),
+                    );
+                  },
+                ),
+                SizedBox(width: 20), // 오른쪽 여백 추가
+              ],
+            ),
           ),
-          Spacer(),
-          IconButton(
-            icon: Image.asset("assets/images/bell.png", width: 30, height: 30),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => AlarmListPage()));
-            },
-          ),
+          SizedBox(height: 10),
         ],
       ),
     );
   }
+
+
 
   Widget _buildRoutineTile(Routine routine) {
     Color categoryColor;
@@ -464,7 +508,9 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
                   ),
               ],
             ),
-            trailing: Checkbox(
+            trailing: Transform.scale(
+              scale: 1.5, // Checkbox size increased by 1.5 times
+              child: Checkbox(
                 value: routine.isCompletion,
                 onChanged: (bool? value) {
                   if (value != null) {
@@ -474,9 +520,18 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
                     });
                     updateRoutineCompletion(routine.routineId, value, selectedDate);
                   }
-                }
-
+                },
+                activeColor: Color(0xFF8DCCFF), // Color when the checkbox is checked
+                checkColor: Colors.white, // The check mark color inside the checkbox
+                fillColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
+                  if (states.contains(MaterialState.selected)) {
+                    return Color(0xFF8DCCFF); // Checkbox fill color when checked
+                  }
+                  return Colors.transparent; // Checkbox fill color when unchecked
+                }),
+              ),
             ),
+
             onTap: () => _showDialog(context, routine),
           ),
 
@@ -661,6 +716,22 @@ String? _getImageEmotion2(String emotion) {
       return 'ANGRY';
     default:
       return null; // 기본 이미지
+  }
+}
+
+//기분 텍스트
+String _getTextForEmotion(String emotion) {
+  switch (emotion) {
+    case 'GOOD':
+      return '기분굿';
+    case 'OK':
+      return '기분쏘쏘';
+    case 'SAD':
+      return '슬퍼요';
+    case 'ANGRY':
+      return '화나요';
+    default:
+      return '알 수 없음'; // 기본 텍스트
   }
 }
 

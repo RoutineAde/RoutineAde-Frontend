@@ -179,16 +179,16 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Color(0xFFF8F8EF),
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(50),
         child: AppBar(
-          backgroundColor: Colors.grey[200],
+          backgroundColor: Color(0xFF8DCCFF),
           title: Text(
             '루틴 수정',
             style: TextStyle(
                 fontSize: 18,
-                color: Colors.black,
+                color: Colors.white,
                 fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
@@ -206,7 +206,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
           children: <Widget>[
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey[200],
+                color: Color(0xFFF8F8EF),
                 borderRadius: BorderRadius.circular(10),
               ),
               padding: EdgeInsets.all(10),
@@ -281,7 +281,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                         height: 40,
                         decoration: BoxDecoration(
                           color: isSelected[i]
-                              ? Color(0xffE6E288)
+                              ? Color(0xFF8DCCFF)
                               : Colors.grey[200],
                           borderRadius: BorderRadius.circular(20),
                         ),
@@ -345,7 +345,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                           ),
                           decoration: BoxDecoration(
                             color: selectedCategoryIndex == index
-                                ? Color(0xffE6E288)
+                                ? Color(0xFF8DCCFF)
                                 : Colors.white,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(color: Colors.grey),
@@ -394,7 +394,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                   ),
                   CupertinoSwitch(
                     value: _isAlarmOn,
-                    activeColor: Color(0xffE6E288),
+                    activeColor: Color(0xFF8DCCFF),
                     onChanged: (value) {
                       setState(() {
                         _isAlarmOn = value;
@@ -471,7 +471,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                 onPressed: _ModifiedRoutine,
                 style: ButtonStyle(
                   backgroundColor:
-                  MaterialStateProperty.all<Color>(Color(0xffE6E288)),
+                  MaterialStateProperty.all<Color>(Color(0xFF8DCCFF)),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
