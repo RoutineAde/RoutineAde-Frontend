@@ -103,10 +103,10 @@ class _GroupMainPageState extends State<GroupMainPage> {
         title: Text(
           '내 그룹',
           style: TextStyle(
-              color: Colors.black, fontSize: 25, fontWeight: FontWeight.bold),
+              color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: isExpanded ? Colors.grey[600] : Colors.grey[200],
+        backgroundColor: isExpanded ? Colors.grey[600] : Color(0xFF8DCCFF),
         automaticallyImplyLeading: false, // 뒤로가기 제거
         actions: [
           Padding(
@@ -127,9 +127,10 @@ class _GroupMainPageState extends State<GroupMainPage> {
           });
         },
         child: Container(
-          color: Colors.grey[200],
+          color: Color(0xFFF8F8EF),
           child: Column(
             children: [
+              SizedBox(height: 20,),
               Expanded(
                 child: ListView.builder(
                   itemCount: groups.length,
@@ -138,7 +139,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
                     Color categoryColor = getCategoryColor(group.groupCategory);
                     return Card(
                       margin: EdgeInsets.all(8.0),
-                      color: Colors.white,
+                      color: Color(0xFFE6F5F8),
                       child: Padding(
                         padding: EdgeInsets.all(16.0),
                         child: Column(

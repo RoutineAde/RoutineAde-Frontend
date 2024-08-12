@@ -204,6 +204,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
+            SizedBox(height: 20,),
             Container(
               decoration: BoxDecoration(
                 color: Color(0xFFF8F8EF),

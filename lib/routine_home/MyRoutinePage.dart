@@ -251,7 +251,7 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
                 } else if (snapshot.hasError) {
                   return Center(child: Text('루틴을 불러오는 중 오류가 발생했습니다: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.personalRoutines.isEmpty) {
-                  return Center(child: Text('루틴을 추가하세요',
+                  return Center(child: Text('\n\t\t\t\t\t\t\t\t 아래 + 버튼을 눌러 \n 새로운 루틴을 추가해보세요',
                     style: TextStyle(fontSize: 20, color: Colors.grey),));
                 }
                 _userEmotion = snapshot.data!.userEmotion; // 감정 상태를 업데이트
@@ -424,7 +424,7 @@ class _MyRoutinePageState extends State<MyRoutinePage> with SingleTickerProvider
                   style: TextStyle(
                     color: Colors.white, // 텍스트 색상
                     fontWeight: FontWeight.bold,
-                    fontSize: 20,
+                    fontSize: 22,
                   ),
                 ),
                 Spacer(),

@@ -165,6 +165,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
           //스크롤 가능하게 변경  bottom overflowed 오류 해결
           child: Column(
             children: <Widget>[
+              SizedBox(height: 20,),
               Container(
                 decoration: BoxDecoration(
                   color: Color(0xFFF8F8EF),

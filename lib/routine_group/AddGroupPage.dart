@@ -145,14 +145,14 @@ class _AddGroupPageState extends State<AddGroupPage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Colors.grey[200],
+        backgroundColor: Color(0xFFF8F8EF),
         appBar: AppBar(
-          backgroundColor: Colors.grey[200],
+          backgroundColor: Color(0xFF8DCCFF),
           title: Text(
             '그룹 만들기',
             style: TextStyle(
               fontSize: 25,
-              color: Colors.black,
+              color: Colors.white,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -165,8 +165,9 @@ class _AddGroupPageState extends State<AddGroupPage> {
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
+              SizedBox(height: 10,),
               Container(
-                color: Colors.grey[200],
+                color: Color(0xFFF8F8EF),
                 padding: EdgeInsets.all(10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -294,7 +295,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                 ),
               ),
               Container(
-                color: Colors.grey[200],
+                color: Color(0xFFF8F8EF),
                 padding: EdgeInsets.only(top: 20, bottom: 15, left: 10, right: 10),
                 child: TextField(
                   controller: _groupDescriptionController,
@@ -317,7 +318,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                 child: ElevatedButton(
                   onPressed: _addGroup,
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xffE6E288)),
+                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF8DCCFF)),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),

@@ -254,7 +254,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
           controller: _searchController,
           decoration: InputDecoration(
             hintText: "  그룹명을 입력하세요",
-            fillColor: Colors.white,
+            fillColor: Color(0xFFF8F8EF),
             filled: true,
             contentPadding: EdgeInsets.symmetric(
               vertical: 12.0,
@@ -267,12 +267,12 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
             : Text(
           "루틴 그룹",
           style: TextStyle(
-              color: Colors.black,
+              color: Colors.white,
               fontSize: 23,
               fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: Colors.grey[200],
+        backgroundColor: Color(0xFF8DCCFF),
         actions: [
           IconButton(
             icon: _isSearching
@@ -286,16 +286,17 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
       body: Stack(
         children: [
           Container(
-            color: Colors.grey[200],
+            color: Color(0xFFF8F8EF),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 7.0),
               child: Container(
-                color: Colors.grey[200],
+                color: Color(0xFFF8F8EF),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    SizedBox(height: 10,),
                     Container(
-                      color: Colors.grey[200],
+                      color: Color(0xFFF8F8EF),
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 1.0),
                         child: SingleChildScrollView(
@@ -353,7 +354,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                             },
                             child: Card(
                               margin: EdgeInsets.all(8.0),
-                              color: Colors.white,
+                              color: Color(0xFFE6F5F8),
                               child: Padding(
                                 padding: EdgeInsets.all(16.0),
                                 child: Column(
@@ -379,7 +380,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                                 const EdgeInsets.only(
                                                     left: 8.0),
                                                 child: Image.asset(
-                                                  "assets/images/lock.png",
+                                                  "assets/images/lock.png", color: Color(0xFF8DCCFF),
                                                   width: 20,
                                                   height: 20,
                                                 ),
