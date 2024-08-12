@@ -274,6 +274,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                           height: 10,
                         ), // 여백 추가
                         Container(
+                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                           decoration: BoxDecoration(
                             color: const Color(0xFFE6F5F8), // 배경색 설정
                             borderRadius:
@@ -510,8 +511,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     }
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(8),
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -520,7 +521,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(
-            height: 10,
+            height: 3,
           ),
           // 카테고리 텍스트
           Container(
@@ -545,7 +546,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                   child: Text(routine.routineTitle,
                       style: const TextStyle(fontWeight: FontWeight.bold)),
                 ),
-                const SizedBox(width: 5), // Adjust the width as needed
+                const SizedBox(width: 3), // Adjust the width as needed
                 if (routine
                     .isAlarmEnabled) // Conditionally display the bell icon
                   GestureDetector(
@@ -553,7 +554,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                       // Do nothing when the image is tapped3
                     },
                     child: Image.asset('assets/images/bell.png',
-                        width: 20, height: 20), // Add the image here
+                        width: 20, height: 20),
                   ),
               ],
             ),
