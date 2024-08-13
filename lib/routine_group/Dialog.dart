@@ -43,7 +43,7 @@
 //             children: [
 //               Text(group.name, style: TextStyle(color: Colors.black)),
 //               SizedBox(height: 1.0), //그룹 여백
-//               Text("그룹코드 ${group.groupCode}", 
+//               Text("그룹코드 ${Egroup.groupId}", 
 //               textAlign: TextAlign.center, 
 //               style: TextStyle(color: Colors.grey, fontSize: 13)),
 //             ],
@@ -58,15 +58,15 @@
 //               mainAxisAlignment: MainAxisAlignment.center,
 //               children: [
 //             Text("대표 카테고리 "),
-//             Text(group.category, style: TextStyle( color: getCategoryColor(group.category))),
+//             Text(Egroup.groupCategory, style: TextStyle( color: getCategoryColor(group.category))),
 //           ],
 //           ),
 //           SizedBox(height: 4.0,), //대표카테고리와 루틴장 사이의 여백 
 //               Row(
 //               mainAxisAlignment: MainAxisAlignment.center,
 //               children: [  
-//             Text("루틴장 ${group.leader}"),
-//             Text("   인원 ${group.membersCount}/30명"),
+//             Text("루틴장 ${Egroup.createdUserNickname}"),
+//             Text("   인원 ${Egroup.joinMemberCount}/${Egroup.maxMemberCount}명"),
 //               ],
 //             ),
 //              SizedBox(height: 12),
@@ -76,7 +76,7 @@
 //               color: Colors.black,
 //             ),
 //             SizedBox(height: 12), //간격 조절
-//             Text(group.groupIntro),
+//             Text("${Egroup.description}"),
 //             // 다른 정보도 추가
 //           SizedBox(height: 80.0,),
 //           ],
