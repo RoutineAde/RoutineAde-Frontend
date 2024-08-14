@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-
 import 'OnClickGroupPage.dart';
-
 
 class GroupRoutinePage extends StatefulWidget {
   @override
@@ -121,25 +119,10 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     });
   }
 
-
-  void _navigateToGroupPage(int groupId) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => OnClickGroupPage(groupId: groupId),
-      ),
-    );
-  }
-
   void _showGroupDialog(EntireGroup Egroup) {
-    print("그룹 다이얼로그를 시도합니다: ${Egroup.groupTitle}"); // 로그 추가
     if (Egroup.isJoined) {
-      print("그룹에 이미 참여한 상태입니다."); // 로그 추가
-      // 이미 참여한 경우 바로 그룹 페이지로 이동
       _navigateToGroupPage(Egroup.groupId);
     } else {
-      print("그룹에 참여하지 않았으므로 다이얼로그를 표시합니다."); // 로그 추가
-      // 참여하지 않은 경우 다이얼로그 표시
       showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -148,7 +131,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
             title: Center(child: Text(Egroup.groupTitle)),
             content: SingleChildScrollView(
               child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.2,  // 화면 높이의 20%로 다이얼로그 높이를 설정
+                height: MediaQuery.of(context).size.height * 0.2,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -157,9 +140,9 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                     Text("대표 카테고리 ${Egroup.groupCategory}"),
                     Text("루틴장 ${Egroup.createdUserNickname}"),
                     Text("인원 ${Egroup.joinMemberCount}/${Egroup.maxMemberCount}명"),
-                    SizedBox(height: 20), // 추가 설명 텍스트를 위한 공간
+                    SizedBox(height: 20),
                     Divider(),
-                    SizedBox(height: 20,),
+                    SizedBox(height: 20),
                     Text("${Egroup.description}"),
                   ],
                 ),
@@ -171,21 +154,23 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                 children: [
                   TextButton(
                     child: Text("가입하기"),
-                    onPressed: () {
-                      print("가입하기 버튼이 클릭되었습니다."); // 로그 추가
-                      Navigator.of(context).pop();
+                    onPressed: () async {
+                      Navigator.of(context).pop();  // 다이얼로그 닫기
                       if (Egroup.isPublic) {
-                        print("참여 성공!");
-                        // 추가 로직을 여기에 추가
+                        bool joinSuccess = await _joinGroup(Egroup.groupId);
+                        if (joinSuccess) {
+                          _navigateToGroupPage(Egroup.groupId); // 가입 성공 시 페이지 이동
+                        } else {
+                          print("그룹 참여 실패!");
+                        }
                       } else {
-                        _showPasswordDialog(Egroup);
+                        _showPasswordDialog(Egroup); // 비밀번호 입력 필요 시 다이얼로그 표시
                       }
                     },
                   ),
                   TextButton(
                     child: Text("취소"),
                     onPressed: () {
-                      print("취소 버튼이 클릭되었습니다."); // 로그 추가
                       Navigator.of(context).pop();
                     },
                   ),
@@ -198,6 +183,40 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     }
   }
 
+  void _navigateToGroupPage(int groupId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OnClickGroupPage(groupId: groupId),
+      ),
+    );
+  }
+
+
+
+  Future<bool> _joinGroup(int groupId, {String? password}) async {
+    final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId/join');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization':
+        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+      },
+      body: password != null ? jsonEncode({'password': password}) : null,
+    );
+
+    if (response.statusCode == 201) {
+      print("그룹 참여 성공!");
+      return true;
+    } else {
+      print("그룹 참여 실패! Status Code: ${response.statusCode}");
+      print("Response Body: ${response.body}");
+      return false;
+    }
+  }
+
+
 
 
   void _showPasswordDialog(EntireGroup group) {
@@ -207,11 +226,11 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              backgroundColor: Colors.white, // 배경색을 하얀색으로 설정
-              title: Center(child: Text("비공개 그룹")), // 가운데 정렬
+              backgroundColor: Colors.white,
+              title: Center(child: Text("비공개 그룹")),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center, // 가운데 정렬
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   TextField(
                     controller: _passwordController,
@@ -227,7 +246,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
               ),
               actions: [
                 ButtonBar(
-                  alignment: MainAxisAlignment.end, // 버튼들을 오른쪽에 정렬
+                  alignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
                       child: Text("취소"),
@@ -241,10 +260,19 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                     ),
                     TextButton(
                       child: Text("확인"),
-                      onPressed: () {
-                        setState(() {
-                          //_checkPassword(group);
-                        });
+                      onPressed: () async {
+                        bool joinSuccess = await _joinGroup(
+                          group.groupId,
+                          password: _passwordController.text,
+                        );
+                        if (joinSuccess) {
+                          Navigator.of(context).pop();
+                          _navigateToGroupPage(group.groupId);
+                        } else {
+                          setState(() {
+                            _isPasswordIncorrect = true;
+                          });
+                        }
                       },
                     ),
                   ],
@@ -256,6 +284,9 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
       },
     );
   }
+
+
+
 
   // void _checkPassword(EntireGroup group) {
   //   setState(() {
