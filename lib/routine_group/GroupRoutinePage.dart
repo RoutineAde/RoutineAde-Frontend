@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import 'OnClickGroupPage.dart';
+
+
 class GroupRoutinePage extends StatefulWidget {
   @override
   _GroupRoutinePageState createState() => _GroupRoutinePageState();
@@ -118,60 +121,83 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     });
   }
 
-  void _showGroupDialog(EntireGroup Egroup) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          title: Center(child: Text(Egroup.groupTitle)),
-          content: SingleChildScrollView(
-            child: SizedBox(
-              height: MediaQuery.of(context).size.height * 0.2,  // 화면 높이의 20%로 다이얼로그 높이를 설정
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text("그룹 코드 #${Egroup.groupId}"),
-                  Text("대표 카테고리 ${Egroup.groupCategory}"),
-                  Text("루틴장 ${Egroup.createdUserNickname}"),
-                  Text("인원 ${Egroup.joinMemberCount}/${Egroup.maxMemberCount}명"),
-                  SizedBox(height: 20), // 추가 설명 텍스트를 위한 공간
-                  Divider(),
-                  SizedBox(height: 20,),
-                  Text("${Egroup.description}"),
-                ],
-              ),
-            ),
-          ),
-          actions: [
-            ButtonBar(
-              alignment: MainAxisAlignment.end,
-              children: [
-                TextButton(
-                  child: Text("가입하기"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    if (Egroup.isPublic) {
-                      print("참여 성공!");
-                    } else {
-                      _showPasswordDialog(Egroup);
-                    }
-                  },
-                ),
-                TextButton(
-                  child: Text("취소"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          ],
-        );
-      },
+
+  void _navigateToGroupPage(int groupId) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => OnClickGroupPage(groupId: groupId),
+      ),
     );
   }
+
+  void _showGroupDialog(EntireGroup Egroup) {
+    print("그룹 다이얼로그를 시도합니다: ${Egroup.groupTitle}"); // 로그 추가
+    if (Egroup.isJoined) {
+      print("그룹에 이미 참여한 상태입니다."); // 로그 추가
+      // 이미 참여한 경우 바로 그룹 페이지로 이동
+      _navigateToGroupPage(Egroup.groupId);
+    } else {
+      print("그룹에 참여하지 않았으므로 다이얼로그를 표시합니다."); // 로그 추가
+      // 참여하지 않은 경우 다이얼로그 표시
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.white,
+            title: Center(child: Text(Egroup.groupTitle)),
+            content: SingleChildScrollView(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.2,  // 화면 높이의 20%로 다이얼로그 높이를 설정
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("그룹 코드 #${Egroup.groupId}"),
+                    Text("대표 카테고리 ${Egroup.groupCategory}"),
+                    Text("루틴장 ${Egroup.createdUserNickname}"),
+                    Text("인원 ${Egroup.joinMemberCount}/${Egroup.maxMemberCount}명"),
+                    SizedBox(height: 20), // 추가 설명 텍스트를 위한 공간
+                    Divider(),
+                    SizedBox(height: 20,),
+                    Text("${Egroup.description}"),
+                  ],
+                ),
+              ),
+            ),
+            actions: [
+              ButtonBar(
+                alignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    child: Text("가입하기"),
+                    onPressed: () {
+                      print("가입하기 버튼이 클릭되었습니다."); // 로그 추가
+                      Navigator.of(context).pop();
+                      if (Egroup.isPublic) {
+                        print("참여 성공!");
+                        // 추가 로직을 여기에 추가
+                      } else {
+                        _showPasswordDialog(Egroup);
+                      }
+                    },
+                  ),
+                  TextButton(
+                    child: Text("취소"),
+                    onPressed: () {
+                      print("취소 버튼이 클릭되었습니다."); // 로그 추가
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                ],
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
 
 
   void _showPasswordDialog(EntireGroup group) {
@@ -217,7 +243,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                       child: Text("확인"),
                       onPressed: () {
                         setState(() {
-                          _checkPassword(group);
+                          //_checkPassword(group);
                         });
                       },
                     ),
@@ -231,19 +257,19 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     );
   }
 
-  void _checkPassword(EntireGroup group) {
-    setState(() {
-      if (_passwordController.text == group.groupPassword) {
-        Navigator.of(context).pop();
-        _passwordController.clear();
-        _isPasswordIncorrect = false;
-        // 비밀번호가 맞으면, 참여 로직 추가 가능
-        print("참여 성공!");
-      } else {
-        _isPasswordIncorrect = true;
-      }
-    });
-  }
+  // void _checkPassword(EntireGroup group) {
+  //   setState(() {
+  //     if (_passwordController.text == group.groupPassword) {
+  //       Navigator.of(context).pop();
+  //       _passwordController.clear();
+  //       _isPasswordIncorrect = false;
+  //       // 비밀번호가 맞으면, 참여 로직 추가 가능
+  //       print("참여 성공!");
+  //     } else {
+  //       _isPasswordIncorrect = true;
+  //     }
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -441,7 +467,7 @@ class EntireGroup {
   final int maxMemberCount;
   final int joinMemberCount;
   final bool isPublic;
-  final String? groupPassword;
+  final bool isJoined;
 
   EntireGroup({
     required this.groupId,
@@ -452,7 +478,8 @@ class EntireGroup {
     required this.maxMemberCount,
     required this.joinMemberCount,
     required this.isPublic,
-    this.groupPassword,
+    required this.isJoined,
+
   });
 
   factory EntireGroup.fromJson(Map<String, dynamic> json) {
@@ -465,7 +492,7 @@ class EntireGroup {
       maxMemberCount: json['maxMemberCount'] ?? 0,
       joinMemberCount: json['joinMemberCount'] ?? 0,
       isPublic: json['isPublic'] ?? true,
-      groupPassword: json['groupPassword'],
+      isJoined: json['isJoined'] ?? true,
     );
   }
 }

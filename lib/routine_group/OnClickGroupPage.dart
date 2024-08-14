@@ -63,7 +63,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
       Uri.parse('http://15.164.88.94:8080/groups/$groupId'),
       headers: {
         'Authorization':
-        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM', // 필요 시 여기에 토큰을 추가
+        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw', // 필요 시 여기에 토큰을 추가
         'Accept': 'application/json', // JSON 응답을 기대하는 경우
       },
     );
