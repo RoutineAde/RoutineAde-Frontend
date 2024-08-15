@@ -38,15 +38,17 @@ class GroupMainPage extends StatefulWidget {
   @override
   _GroupMainPageState createState() => _GroupMainPageState();
 }
-class _GroupMainPageState extends State<GroupMainPage>{
+
+class _GroupMainPageState extends State<GroupMainPage> {
   bool isExpanded = false;
   List<Group> groups = [];
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _fetchGroups();
   }
+
   Future<void> _fetchGroups() async {
     final url = Uri.parse('http://15.164.88.94:8080/groups/my');
     final response = await http.get(url, headers: {
@@ -55,17 +57,25 @@ class _GroupMainPageState extends State<GroupMainPage>{
     });
 
     if (response.statusCode == 200) {
-      final decodedResponse = utf8.decode(response.bodyBytes);  // UTF-8 디코딩
-      final data = jsonDecode(decodedResponse);  // 디코딩된 문자열을 JSON으로 파싱
+<
+      final decodedResponse = utf8.decode(response.bodyBytes); // UTF-8 디코딩
+      final data = jsonDecode(decodedResponse); // 디코딩된 문자열을 JSON으로 파싱
       setState(() {
-        groups = (data['groups'] as List).map((json) => Group.fromJson(json)).toList();
+        groups = (data['groups'] as List)
+            .map((json) => Group.fromJson(json))
+            .toList();
+
+        // Sort groups by joinDate in ascending order
+        groups.sort((a, b) => DateTime.fromMicrosecondsSinceEpoch(a.joinDate ?? 0)
+            .compareTo(DateTime.fromMicrosecondsSinceEpoch(b.joinDate ?? 0)));
       });
     } else {
       print("그룹 불러오기를 실패하였습니다.");
     }
   }
 
-//가입일자 계산
+  //가입일자 계산
+
   int calculateDaysSinceCreation(int joinDate) {
     final now = DateTime.now();
     final joinDateTime = DateTime.fromMicrosecondsSinceEpoch(joinDate);
@@ -89,127 +99,134 @@ class _GroupMainPageState extends State<GroupMainPage>{
   }
 
   @override
-  Widget build(BuildContext context){
-    return
-      Scaffold(
-        appBar: AppBar(
-          title: Text('내 그룹',
-            style: TextStyle(
-                color: Colors.black,
-                fontSize: 25,
-                fontWeight: FontWeight.bold ),),
-          centerTitle: true,
-          backgroundColor: isExpanded? Colors.grey[600] : Colors.grey[200],
-          automaticallyImplyLeading: false, //뒤로가기 제거
-          actions: [
-            Padding(padding: EdgeInsets.only(right: 16.0),
-              child: Image.asset("assets/images/bell.png",
-                width: 35,
-                height: 35,),
-            ),
-          ],
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          '내 그룹',
+          style: TextStyle(
+              color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
         ),
-
-        body: DarkOverlay(
-          isDark: isExpanded, //눌렀을때만 어둡게
-          onTap: (){
-            setState(() {
-              isExpanded=false;
-            });
-          },
-          child:  Container(
-            color: Colors.grey[200],
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: groups.length,
-                    itemBuilder: (context, index) {
-                      final group = groups[index];
-                      Color categoryColor = getCategoryColor(group.groupCategory);
-                      return  Card(
-                        margin: EdgeInsets.all(8.0),
-                        color: Colors.white,
-                        child: Padding(
-                          padding: EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                  Text(
-                                    group.groupTitle,
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  if(group.isPublic)
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 8.0),
-                                    child: Image.asset("assets/images/lock.png", width: 20, height: 20,), //비밀번호 방 여부
-                                  ),
-                                ],
-                              ),
-                              Text("가입 ${group.joinDate}일차"),
-                              
-                            ],
-                              ),
-                              SizedBox(height: 8.0),
-                              Row(
-                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("대표 카테고리 "),
-                                  Text(group.groupCategory, style: TextStyle( color: categoryColor)),
-                                  Expanded(child: Container()),// 간격 조절
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Text("인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),),
-                                ],
-                              ),
-                              SizedBox(height: 8.0),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("루틴장 ${group.createdUserNickname}"),
-                                  Text("그룹코드 ${group.groupId}"),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        
-                      );
-                      
-                    },
-                  ),
-                ),
-              ],
+        centerTitle: true,
+        backgroundColor: isExpanded ? Colors.grey[600] : Color(0xFF8DCCFF),
+        automaticallyImplyLeading: false, // 뒤로가기 제거
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 16.0),
+            child: Image.asset(
+              "assets/images/bell.png",
+              width: 35,
+              height: 35,
             ),
           ),
-        ),
-    
-        //바텀 네비게이션 바
-        bottomNavigationBar: BottomAppBar(
-          color: Colors.white,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        ],
+      ),
+      body: DarkOverlay(
+        isDark: isExpanded, // 눌렀을때만 어둡게
+        onTap: () {
+          setState(() {
+            isExpanded = false;
+          });
+        },
+        child: Container(
+          color: Color(0xFFF8F8EF),
+          child: Column(
             children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyRoutinePage()),
-                  );
-                },
-                child: Container(
-                  width: 50,
-                  height: 50,
-                  child: Image.asset("assets/images/tap-bar/routine01.png"),
+              SizedBox(height: 20,),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: groups.length,
+                  itemBuilder: (context, index) {
+                    final group = groups[index];
+                    Color categoryColor = getCategoryColor(group.groupCategory);
+                    return Card(
+                      margin: EdgeInsets.all(8.0),
+                      color: Color(0xFFE6F5F8),
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      group.groupTitle,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    if (!group.isPublic)
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets.only(left: 8.0),
+                                        child: Image.asset(
+                                          "assets/images/lock.png",
+                                          width: 20,
+                                          height: 20,
+                                        ), // 비밀번호 방 여부
+                                      ),
+                                  ],
+                                ),
+                                Text(
+                                    "가입 ${group.joinDate}일차"),
+                              ],
+                            ),
+                            SizedBox(height: 8.0),
+                            Row(
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("대표 카테고리 "),
+                                Text(group.groupCategory,
+                                    style: TextStyle(color: categoryColor)),
+                                Expanded(child: Container()), // 간격 조절
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                      "인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 8.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("루틴장 ${group.createdUserNickname}"),
+                                Text("그룹코드 ${group.groupId}"),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
+              ),
+            ],
+          ),
+        ),
+      ),
+      // 바텀 네비게이션 바
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyRoutinePage()),
+                );
+              },
+              child: Container(
+                width: 50,
+                height: 50,
+                child: Image.asset("assets/images/tap-bar/routine01.png"),
+
               ),
               GestureDetector(
                 onTap: () {
@@ -244,89 +261,95 @@ class _GroupMainPageState extends State<GroupMainPage>{
             ],
           ),
         ),
-        //add 버튼
-        floatingActionButton: Stack(
-          alignment: Alignment.bottomRight,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10, right: 10),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (isExpanded) ...[
-                    SizedBox(height: 20),
-                    Row(mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text("루틴 그룹", style:
-                        TextStyle( color: Colors.white, fontWeight: FontWeight.bold)
-                        ),
-                        SizedBox(width: 10),
-
-                        //그룹 추가 버튼
-                        FloatingActionButton(
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context){
-                                return  MyRoutinePage();//그룹 루틴 페이지 이동 바꿔야함
-                              },
-                            ));
-                          },
-                          backgroundColor: Color(0xffF87c3ff),
-                          child: Image.asset('assets/images/group-list.png'),
-                          shape: CircleBorder(),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                    Row(mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text("그룹 추가", style: TextStyle( color: Colors.white, fontWeight: FontWeight.bold)
-                        ),
-                        SizedBox(width: 10),
-
-                        //그룹 루틴 추가 버튼
-                        FloatingActionButton(
-                          onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(
-                              builder: (context){
-                                return  AddGroupPage();
-                              },
-                            ));
-                          },
-                          backgroundColor: Color(0xffF1E977),
-                          child: Image.asset('assets/images/add.png'),
-                          shape: CircleBorder(),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 20),
-                  ],
-                  //add 버튼, X버튼
-                  Row(mainAxisAlignment: MainAxisAlignment.end,
+      ),
+      // add 버튼
+      floatingActionButton: Stack(
+        alignment: Alignment.bottomRight,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10, right: 10),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (isExpanded) ...[
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      Text(""),
+                      Text("루틴 그룹",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
                       SizedBox(width: 10),
+                      // 그룹 추가 버튼
                       FloatingActionButton(
                         onPressed: () {
-                          setState(() {
-                            isExpanded = !isExpanded;
-                          });
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return GroupRoutinePage(); // 그룹 루틴 페이지 이동 바꿔야함
+                            },
+                          ));
                         },
-                        backgroundColor: isExpanded? Color(0xffF7C7C7C): Color(0xffF1E977),
-                        child: isExpanded
-                            ? Image.asset('assets/images/cancel.png')
-                            : Image.asset('assets/images/add.png'),
+                        backgroundColor: Color(0xffF87c3ff),
+                        child: Image.asset('assets/images/group-list.png'),
+                        shape: CircleBorder(),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text("그룹 추가",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold)),
+                      SizedBox(width: 10),
+                      // 그룹 루틴 추가 버튼
+                      FloatingActionButton(
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(
+                            builder: (context) {
+                              return AddGroupPage();
+                            },
+                          ));
+                        },
+                        backgroundColor: Color(0xffF1E977),
+                        child: Image.asset('assets/images/add.png'),
+
                         shape: CircleBorder(),
                       ),
                     ],
                   ),
                 ],
-              ),
+                // add 버튼, X버튼
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(""),
+                    SizedBox(width: 10),
+                    FloatingActionButton(
+                      onPressed: () {
+                        setState(() {
+                          isExpanded = !isExpanded;
+                        });
+                      },
+                      backgroundColor: isExpanded
+                          ? Color(0xffF7C7C7C)
+                          : Color(0xffF1E977),
+                      child: isExpanded
+                          ? Image.asset('assets/images/cancel.png')
+                          : Image.asset('assets/images/add.png'),
+                      shape: CircleBorder(),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
-
-      );
+          ),
+        ],
+      ),
+    );
 
   }
 }

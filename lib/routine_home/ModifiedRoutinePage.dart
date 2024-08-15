@@ -112,20 +112,20 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
   void _ModifiedRoutine() async {
 
     final url = Uri.parse(
-    'http://15.164.88.94:8080/routines/${widget.routineId}');
-  //   'routineTitle=${Uri.encodeComponent(_controller.text)}&'
-  //   'routineCategory=${Uri.encodeComponent(_getCategoryFromIndex(selectedCategoryIndex))}&'
-  //   'isAlarmEnabled=$_isAlarmOn&'
-  //   'startDate=${Uri.encodeComponent(formattedDate)}&'
-  //   'repeatDays=${Uri.encodeComponent(selectedDays.join(','))}'
-  // );
+        'http://15.164.88.94:8080/routines/${widget.routineId}');
+    //   'routineTitle=${Uri.encodeComponent(_controller.text)}&'
+    //   'routineCategory=${Uri.encodeComponent(_getCategoryFromIndex(selectedCategoryIndex))}&'
+    //   'isAlarmEnabled=$_isAlarmOn&'
+    //   'startDate=${Uri.encodeComponent(formattedDate)}&'
+    //   'repeatDays=${Uri.encodeComponent(selectedDays.join(','))}'
+    // );
 
-  final headers = {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer $_token',
-  };
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+    };
 
-  final body = jsonEncode({
+    final body = jsonEncode({
       'routineTitle': _controller.text,
       'routineCategory': _getCategoryFromIndex(selectedCategoryIndex),
       'isAlarmEnabled': _isAlarmOn,
@@ -134,7 +134,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
     });
 
     try {
-       final response = await http.put(url, headers: headers, body: body);
+      final response = await http.put(url, headers: headers, body: body);
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
 
@@ -179,16 +179,16 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[200],
+      backgroundColor: Color(0xFFF8F8EF),
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(50),
         child: AppBar(
-          backgroundColor: Colors.grey[200],
+          backgroundColor: Color(0xFF8DCCFF),
           title: Text(
             '루틴 수정',
             style: TextStyle(
                 fontSize: 18,
-                color: Colors.black,
+                color: Colors.white,
                 fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
@@ -204,9 +204,10 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
+            SizedBox(height: 20,),
             Container(
               decoration: BoxDecoration(
-                color: Colors.grey[200],
+                color: Color(0xFFF8F8EF),
                 borderRadius: BorderRadius.circular(10),
               ),
               padding: EdgeInsets.all(10),
@@ -281,7 +282,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                         height: 40,
                         decoration: BoxDecoration(
                           color: isSelected[i]
-                              ? Color(0xffE6E288)
+                              ? Color(0xFF8DCCFF)
                               : Colors.grey[200],
                           borderRadius: BorderRadius.circular(20),
                         ),
@@ -290,7 +291,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                           _getWeekdayName(i),
                           style: TextStyle(
                             color:
-                                isSelected[i] ? Colors.white : Colors.black,
+                            isSelected[i] ? Colors.white : Colors.black,
                           ),
                         ),
                       ),
@@ -331,7 +332,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(
                       5,
-                      (index) => GestureDetector(
+                          (index) => GestureDetector(
                         onTap: () {
                           setState(() {
                             selectedCategoryIndex = index;
@@ -345,7 +346,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                           ),
                           decoration: BoxDecoration(
                             color: selectedCategoryIndex == index
-                                ? Color(0xffE6E288)
+                                ? Color(0xFF8DCCFF)
                                 : Colors.white,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(color: Colors.grey),
@@ -372,7 +373,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                 borderRadius: BorderRadius.circular(10),
               ),
               padding:
-                  EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
+              EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
               margin: EdgeInsets.only(top: 30, left: 10, right: 10),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -394,7 +395,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                   ),
                   CupertinoSwitch(
                     value: _isAlarmOn,
-                    activeColor: Color(0xffE6E288),
+                    activeColor: Color(0xFF8DCCFF),
                     onChanged: (value) {
                       setState(() {
                         _isAlarmOn = value;
@@ -406,7 +407,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
             ),
             Container(
               padding:
-                  EdgeInsets.only(top: 20, bottom: 15, left: 10, right: 10),
+              EdgeInsets.only(top: 20, bottom: 15, left: 10, right: 10),
               margin: EdgeInsets.only(top: 30, left: 10, right: 10),
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -448,7 +449,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                     },
                     child: Container(
                       padding:
-                          EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                      EdgeInsets.symmetric(vertical: 8, horizontal: 12),
                       decoration: BoxDecoration(
                         color: Colors.grey[100],
                         borderRadius: BorderRadius.circular(5),
@@ -471,7 +472,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                 onPressed: _ModifiedRoutine,
                 style: ButtonStyle(
                   backgroundColor:
-                      MaterialStateProperty.all<Color>(Color(0xffE6E288)),
+                  MaterialStateProperty.all<Color>(Color(0xFF8DCCFF)),
                   shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),

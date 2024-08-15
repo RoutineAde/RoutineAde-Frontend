@@ -64,6 +64,7 @@ class GroupRoutine {
     required this.routineId,
     required this.routineTitle,
     required this.repeatDay,
+
   });
 
   factory GroupRoutine.fromJson(Map<String, dynamic> json) {
@@ -89,6 +90,44 @@ class RoutineCategory {
       routineCategory: json['routineCategory'],
       routines: (json['routines'] as List)
           .map((routineJson) => GroupRoutine.fromJson(routineJson))
+          .toList(),
+    );
+  }
+}
+
+class Routine {
+  final String routineTitle;
+  final List<String> repeatDay;
+
+  Routine(this.routineTitle, this.repeatDay);
+}
+
+class GroupResponse {
+  final bool isGroupAdmin;
+  final bool isGroupAlarmEnabled;
+  final Group groupInfo;
+  final List<GroupMember> groupMembers;
+  final List<RoutineCategory> groupRoutines;
+
+  GroupResponse({
+    required this.isGroupAdmin,
+    required this.isGroupAlarmEnabled,
+    required this.groupInfo,
+    required this.groupMembers,
+    required this.groupRoutines,
+  });
+
+  factory GroupResponse.fromJson(Map<String, dynamic> json) {
+    return GroupResponse(
+      isGroupAdmin: json['isGroupAdmin'],
+      isGroupAlarmEnabled: json['isGroupAlarmEnabled'],
+      groupInfo: Group.fromJson(json['groupInfo']),
+      groupMembers: (json['groupMembers'] as List)
+          .map((memberJson) => GroupMember.fromJson(memberJson))
+          .toList(),
+      groupRoutines: (json['groupRoutines'] as List)
+          .map((routineCategoryJson) =>
+          RoutineCategory.fromJson(routineCategoryJson))
           .toList(),
     );
   }

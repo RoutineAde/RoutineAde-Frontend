@@ -38,11 +38,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('꿈을 향해'),
-        // appBar 하단의 그림자 정도
-        elevation: Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 6.0,
-      ),
+
       body: Container(
         child: Column(
           children: <Widget>[
@@ -77,11 +73,19 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   // 사용자로부터 메시지를 입력받는 위젯 선언
   Widget _buildTextComposer() {
     return IconTheme(
-      data: IconThemeData(color: Colors.red),
+      data: IconThemeData(color: Colors.blue),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(
           children: <Widget>[
+            // 사진 아이콘 버튼 추가
+            IconButton(
+              icon: Icon(Icons.photo),
+              onPressed: () {
+                // 이미지 추가 기능을 넣을 곳
+                // 예: 이미지 선택 다이얼로그를 띄우거나, 카메라를 여는 기능
+              },
+            ),
             // 텍스트 입력 필드
             Flexible(
               child: TextField(

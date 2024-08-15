@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_calendar_week/flutter_calendar_week.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:routine_ade/routine_groupLeader/glOnClickGroupPage.dart';
 import 'AddRoutinePage.dart';
 import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
@@ -121,7 +122,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     final headers = {
       "Content-Type": "application/json",
       "Authorization":
-          "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM"
+          "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw"
     };
 
     final body = jsonEncode({
@@ -194,15 +195,59 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         floatingActionButton: _buildFloatingActionButton(),
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(0),
-          child: AppBar(),
+          child: AppBar(
+            backgroundColor: const Color(0xFF8DCCFF),
+          ),
         ),
         bottomNavigationBar: _buildBottomAppBar(),
         body: Column(
           children: [
             _buildCalendarWeek(),
+            if (_userEmotion != null && _userEmotion!.isNotEmpty)
+              Container(
+                padding: const EdgeInsets.all(16),
+                color: const Color(0xFFF8F8EF),
+                child: Center(
+                  child: Container(
+                    width: 360,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white, // 하얀색 배경
+                      borderRadius: BorderRadius.circular(12), // 둥근 모서리
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3), // 그림자 색상과 투명도
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3), // 그림자의 위치
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        if (_getImageEmotion(_userEmotion!) != null)
+                          Image.asset(
+                            _getImageEmotion(_userEmotion!)!,
+                            fit: BoxFit.cover,
+                            width: 50,
+                            height: 50,
+                          ),
+                        const SizedBox(width: 10),
+                        Text(
+                          _getTextForEmotion(_userEmotion!), // 감정에 따른 텍스트 표시
+                          style: const TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
             Expanded(
               child: Container(
-                color: Colors.grey[200],
+                color: const Color(0xFFF8F8EF),
                 child: FutureBuilder<RoutineResponse>(
                   future: futureRoutineResponse,
                   builder: (context, snapshot) {
@@ -216,51 +261,51 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                         snapshot.data!.personalRoutines.isEmpty) {
                       return const Center(
                           child: Text(
-                        '루틴을 추가하세요',
+                        '\n\t\t\t\t\t\t\t\t 아래 + 버튼을 눌러 \n 새로운 루틴을 추가해보세요',
                         style: TextStyle(fontSize: 20, color: Colors.grey),
                       ));
                     }
                     _userEmotion = snapshot.data!.userEmotion; // 감정 상태를 업데이트
 
-                    return ListView.builder(
+                    return ListView(
                       padding: const EdgeInsets.fromLTRB(24, 10, 24, 16),
-                      itemCount: snapshot.data!.personalRoutines.length,
-                      itemBuilder: (context, index) {
-                        Routine routine =
-                            snapshot.data!.personalRoutines[index];
-                        return _buildRoutineTile(routine);
-                      },
+                      children: <Widget>[
+                        const SizedBox(
+                          height: 10,
+                        ), // 여백 추가
+                        Container(
+                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFE6F5F8), // 배경색 설정
+                            borderRadius:
+                                BorderRadius.circular(12), // 둥근 모서리 설정
+                          ),
+                          child: Theme(
+                            data: Theme.of(context).copyWith(
+                              dividerColor: Colors.transparent,
+                            ),
+                            child: ExpansionTile(
+                              title: const Text("개인 루틴",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.black)), // 텍스트 색상 변경
+                              initiallyExpanded: _isTileExpanded,
+                              children: snapshot.data!.personalRoutines
+                                  .map((routine) => _buildRoutineTile(routine))
+                                  .toList(),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ), // 여백 추가
+                      ],
                     );
                   },
                 ),
               ),
             ),
-            if (_userEmotion != null && _userEmotion!.isNotEmpty)
-              Container(
-                padding: const EdgeInsets.all(16),
-                color: Colors.grey[200],
-                child: Center(
-                  child: Container(
-                    padding: const EdgeInsets.all(16),
-                    color: Colors.grey[200],
-                    child: Column(
-                      children: [
-                        const Text("오늘의 기분", style: TextStyle(fontSize: 18)),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        if (_getImageEmotion(_userEmotion!) != null)
-                          Image.asset(
-                            _getImageEmotion(_userEmotion!)!,
-                            fit: BoxFit.cover,
-                            width: 70,
-                            height: 70,
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
+
           ],
         ),
       );
@@ -345,8 +390,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
               "assets/images/tap-bar/group01.png", GroupMainPage()),
           _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png",
               const OnClickGroupPage(groupId: 1)),
-          _buildBottomAppBarItem(
-              "assets/images/tap-bar/more01.png", ChatScreen()),
+          _buildBottomAppBarItem("assets/images/tap-bar/more01.png",
+              const glOnClickGroupPage(groupId: 1)),
         ],
       ),
     );
@@ -378,7 +423,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
       ]),
       child: CalendarWeek(
         controller: _controller,
-        height: 130,
+        height: 160,
         showMonth: true,
         minDate: DateTime.now().add(const Duration(days: -367)),
         maxDate: DateTime.now().add(const Duration(days: 365)),
@@ -386,17 +431,17 @@ class _MyRoutinePageState extends State<MyRoutinePage>
           _onDateSelected(datetime);
         },
         dayOfWeekStyle: const TextStyle(
-            color: Colors.black87, fontWeight: FontWeight.w600, fontSize: 17),
+            color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 17),
         dayOfWeek: const ['월', '화', '수', '목', '금', '토', '일'],
         dateStyle: const TextStyle(
-            color: Colors.black87, fontWeight: FontWeight.w600, fontSize: 17),
+            color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 17),
         todayDateStyle: const TextStyle(
             color: Color(0xffFFFFFF),
             fontWeight: FontWeight.w600,
             fontSize: 17),
-        todayBackgroundColor: const Color(0xffE6E288),
+        //todayBackgroundColor: Colors.blueAccent,
         weekendsStyle: const TextStyle(
-            fontWeight: FontWeight.bold, fontSize: 17, color: Colors.red),
+            fontWeight: FontWeight.bold, fontSize: 17, color: Colors.grey),
         monthViewBuilder: (DateTime time) => _buildMonthView(),
       ),
     );
@@ -405,26 +450,40 @@ class _MyRoutinePageState extends State<MyRoutinePage>
   Widget _buildMonthView() {
     return Align(
       alignment: const FractionalOffset(0.05, 1),
-      child: Row(
+      child: Column(
         children: [
-          const SizedBox(width: 20),
-          Text(
-            '${_controller.selectedDate.year}년 ${_controller.selectedDate.month}월',
-            style: const TextStyle(
-                color: Colors.black45,
-                fontWeight: FontWeight.bold,
-                fontSize: 24),
+          Container(
+            width: double.infinity, // 화면의 양끝까지 채우기
+            color: const Color(0xFF8DCCFF), // 파란색 배경
+            padding: const EdgeInsets.symmetric(vertical: 8), // 상하단 여백 추가
+            child: Row(
+              children: [
+                const SizedBox(width: 20),
+                Text(
+                  '${_controller.selectedDate.year}년 ${_controller.selectedDate.month}월',
+                  style: const TextStyle(
+                    color: Colors.white, // 텍스트 색상
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                  ),
+                ),
+                const Spacer(),
+                IconButton(
+                  icon: Image.asset("assets/images/bell.png",
+                      width: 30, height: 30),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const AlarmListPage()),
+                    );
+                  },
+                ),
+                const SizedBox(width: 20), // 오른쪽 여백 추가
+              ],
+            ),
           ),
-          const Spacer(),
-          IconButton(
-            icon: Image.asset("assets/images/bell.png", width: 30, height: 30),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const AlarmListPage()));
-            },
-          ),
+          const SizedBox(height: 10),
         ],
       ),
     );
@@ -453,8 +512,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     }
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.all(8),
+      margin: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.all(5),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(10),
@@ -463,7 +522,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const SizedBox(
-            height: 10,
+            height: 3,
           ),
           // 카테고리 텍스트
           Container(
@@ -488,7 +547,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                   child: Text(routine.routineTitle,
                       style: const TextStyle(fontWeight: FontWeight.bold)),
                 ),
-                const SizedBox(width: 5), // Adjust the width as needed
+                const SizedBox(width: 3), // Adjust the width as needed
                 if (routine
                     .isAlarmEnabled) // Conditionally display the bell icon
                   GestureDetector(
@@ -496,18 +555,38 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                       // Do nothing when the image is tapped3
                     },
                     child: Image.asset('assets/images/bell.png',
-                        width: 20, height: 20), // Add the image here
+                        width: 20, height: 20),
                   ),
               ],
             ),
-            /*
-            trailing: Checkbox(
-              value: routine.isAlarmEnabled,
-              onChanged: (bool? value) {
-                setState(() {
-                  routine.isAlarmEnabled = value!;
-                });
-              },
+            trailing: Transform.scale(
+              scale: 1.5, // Checkbox size increased by 1.5 times
+              child: Checkbox(
+                value: routine.isCompletion,
+                onChanged: (bool? value) {
+                  if (value != null) {
+                    print("Checkbox changed: $value");
+                    setState(() {
+                      routine.isCompletion = value;
+                    });
+                    updateRoutineCompletion(
+                        routine.routineId, value, selectedDate);
+                  }
+                },
+                activeColor: const Color(
+                    0xFF8DCCFF), // Color when the checkbox is checked
+                checkColor:
+                    Colors.white, // The check mark color inside the checkbox
+                fillColor: WidgetStateProperty.resolveWith<Color>(
+                    (Set<WidgetState> states) {
+                  if (states.contains(WidgetState.selected)) {
+                    return const Color(
+                        0xFF8DCCFF); // Checkbox fill color when checked
+                  }
+                  return Colors
+                      .transparent; // Checkbox fill color when unchecked
+                }),
+              ),
             ),
             */
             onTap: () => _showDialog(context, routine),
@@ -566,12 +645,37 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     );
   }
 
+  Future<void> updateRoutineCompletion(
+      int routineId, bool isCompletion, String date) async {
+    final url = Uri.parse(
+        "http://15.164.88.94:8080/routines/$routineId/completion?date=$date");
+    final headers = {
+      "Content-Type": "application/json",
+      'Authorization':
+          'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+    };
+    final body = jsonEncode({"date": date, "isCompletion": isCompletion});
+
+    try {
+      final response = await http.put(url, headers: headers, body: body);
+      if (response.statusCode == 204) {
+        print("루틴 완료 상태 업데이트 성공 (응답 본문 없음)");
+      } else if (response.statusCode == 200) {
+        print("루틴 완료 상태 업데이트 성공");
+      } else {
+        print("루틴 완료 상태 업데이트 실패: ${response.statusCode} - ${response.body}");
+      }
+    } catch (e) {
+      print("루틴 완료 상태 업데이트 중 오류 발생: $e");
+    }
+  }
+
   Future<void> deleteRoutine(int routineId) async {
     final response = await http.delete(
       Uri.parse('http://15.164.88.94:8080/routines/$routineId'),
       headers: {
         'Authorization':
-            'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM',
+            'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
       },
     );
 
@@ -589,7 +693,7 @@ Future<RoutineResponse> fetchRoutines(String date) async {
     Uri.parse('http://15.164.88.94:8080/routines/v2?routineDate=$date'),
     headers: {
       'Authorization':
-          'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM', // 여기에 올바른 인증 토큰을 넣으세요
+          'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw', // 여기에 올바른 인증 토큰을 넣으세요
     },
   );
 
@@ -609,7 +713,7 @@ Future<void> _fetchRoutineDate(BuildContext context, int routineId) async {
   final headers = {
     "Content-Type": "application/json",
     "Authorization":
-        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM"
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw"
   };
 
   try {
@@ -681,6 +785,21 @@ String? _getImageEmotion2(String emotion) {
   }
 }
 
+//기분 텍스트
+String _getTextForEmotion(String emotion) {
+  switch (emotion) {
+    case 'GOOD':
+      return '기분굿';
+    case 'OK':
+      return '기분쏘쏘';
+    case 'SAD':
+      return '슬퍼요';
+    case 'ANGRY':
+      return '화나요';
+    default:
+      return '알 수 없음'; // 기본 텍스트
+  }
+}
 //루틴, 감정 조회 class
 class RoutineResponse {
   final List<Routine> personalRoutines;
@@ -705,6 +824,7 @@ class Routine {
   final bool isAlarmEnabled; // isAlarmEnabled를 mutable로 변경
   final String startDate;
   final List<String> repeatDays;
+  bool isCompletion;
 
   Routine(
       {required this.routineId,
@@ -712,7 +832,8 @@ class Routine {
       required this.routineCategory,
       required this.isAlarmEnabled,
       required this.startDate,
-      required this.repeatDays});
+      required this.repeatDays,
+      this.isCompletion = false});
 
   factory Routine.fromJson(Map<String, dynamic> json) {
     return Routine(
@@ -723,6 +844,7 @@ class Routine {
       startDate:
           json["startDate"] ?? DateFormat('yyyy.MM.dd').format(DateTime.now()),
       repeatDays: List<String>.from(json["repeatDays"] ?? []),
+      isCompletion: json['isCompletion'] ?? false,
     );
   }
 }

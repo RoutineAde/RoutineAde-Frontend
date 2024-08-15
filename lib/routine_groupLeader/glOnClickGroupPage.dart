@@ -8,6 +8,9 @@ import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_group/groupManagement.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:http/http.dart' as http;
+import '../routine_group/GroupType.dart';
+import '../routine_groupLeader/glAddRoutinePage.dart';
+import 'glgroupManagement.dart';
 import 'groupType.dart';
 
 // 전역 함수로 getCategoryColor를 정의
@@ -29,16 +32,16 @@ Color getCategoryColor(String category) {
 }
 
 
-class OnClickGroupPage extends StatefulWidget {
+class glOnClickGroupPage extends StatefulWidget {
   final int groupId; // 특정 그룹을 가져오기 위한 groupId 매개변수 추가
 
-  const OnClickGroupPage({required this.groupId, super.key});
+  const glOnClickGroupPage({required this.groupId, super.key});
 
   @override
-  State<OnClickGroupPage> createState() => _OnClickGroupPageState();
+  State<glOnClickGroupPage> createState() => _glOnClickGroupPageState();
 }
 
-class _OnClickGroupPageState extends State<OnClickGroupPage>
+class _glOnClickGroupPageState extends State<glOnClickGroupPage>
     with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   bool _isSwitchOn = false;
@@ -63,7 +66,6 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
       Uri.parse('http://15.164.88.94:8080/groups/$groupId'),
       headers: {
         'Authorization':
-
         'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM', // 필요 시 여기에 토큰을 추가
         'Accept': 'application/json', // JSON 응답을 기대하는 경우
       },
@@ -162,6 +164,20 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
         ],
       ),
       endDrawerEnableOpenDragGesture: false,
+      floatingActionButton: _tabController.index == 0
+          ? FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => glAddRoutinePage()));
+        },
+        backgroundColor: Color(0xffE6E288),
+        shape: CircleBorder(),
+        child: Image.asset(
+          "assets/images/add.png",
+          width: 30,
+          height: 30,
+        ),
+      )
+          : null,
     );
   }
 
@@ -287,6 +303,30 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
             ),
         ],
       ),
+      trailing: isLeader
+          ? null
+          : TextButton(
+        onPressed: () {
+          // 그룹원 내보내기 기능 추가
+        },
+        style: ButtonStyle(
+          padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(8.0)),
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50.0),
+              side: BorderSide(color: Colors.black, width: 1.0),
+            ),
+          ),
+        ),
+        child: const Text(
+          '내보내기',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 13,
+          ),
+        ),
+      ),
     );
   }
 
@@ -300,7 +340,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
       ),
       child: GestureDetector(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => groupManagement()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => glgroupManagement()));
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end, // 이미지가 오른쪽에 배치되도록 설정
@@ -407,15 +447,12 @@ class RoutinePage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey[600],
-
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-
         ],
       ),
-
     );
   }
 }
