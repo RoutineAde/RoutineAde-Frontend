@@ -305,6 +305,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                 ),
               ),
             ),
+
           ],
         ),
       );
@@ -587,6 +588,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                 }),
               ),
             ),
+            */
             onTap: () => _showDialog(context, routine),
           ),
         ],
@@ -798,7 +800,6 @@ String _getTextForEmotion(String emotion) {
       return '알 수 없음'; // 기본 텍스트
   }
 }
-
 //루틴, 감정 조회 class
 class RoutineResponse {
   final List<Routine> personalRoutines;

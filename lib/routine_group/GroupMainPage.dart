@@ -57,6 +57,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
     });
 
     if (response.statusCode == 200) {
+<
       final decodedResponse = utf8.decode(response.bodyBytes); // UTF-8 디코딩
       final data = jsonDecode(decodedResponse); // 디코딩된 문자열을 JSON으로 파싱
       setState(() {
@@ -74,6 +75,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
   }
 
   //가입일자 계산
+
   int calculateDaysSinceCreation(int joinDate) {
     final now = DateTime.now();
     final joinDateTime = DateTime.fromMicrosecondsSinceEpoch(joinDate);
@@ -224,39 +226,40 @@ class _GroupMainPageState extends State<GroupMainPage> {
                 width: 50,
                 height: 50,
                 child: Image.asset("assets/images/tap-bar/routine01.png"),
+
               ),
-            ),
-            GestureDetector(
-              onTap: () {
-                // 그룹 버튼 클릭 시 동작할 코드
-              },
-              child: Container(
-                width: 50,
-                height: 50,
-                child: Image.asset("assets/images/tap-bar/group02.png"),
+              GestureDetector(
+                onTap: () {
+                  // 그룹 버튼 클릭 시 동작할 코드
+                },
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  child: Image.asset("assets/images/tap-bar/group02.png"),
+                ),
               ),
-            ),
-            GestureDetector(
-              onTap: () {
-                // 통계 버튼 클릭 시 동작할 코드
-              },
-              child: Container(
-                width: 50,
-                height: 50,
-                child: Image.asset("assets/images/tap-bar/statistics01.png"),
+              GestureDetector(
+                onTap: () {
+                  // 통계 버튼 클릭 시 동작할 코드
+                },
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  child: Image.asset("assets/images/tap-bar/statistics01.png"),
+                ),
               ),
-            ),
-            GestureDetector(
-              onTap: () {
-                // 더보기 버튼 클릭 시 동작할 코드
-              },
-              child: Container(
-                width: 50,
-                height: 50,
-                child: Image.asset("assets/images/tap-bar/more01.png"),
+              GestureDetector(
+                onTap: () {
+                  // 더보기 버튼 클릭 시 동작할 코드
+                },
+                child: Container(
+                  width: 50,
+                  height: 50,
+                  child: Image.asset("assets/images/tap-bar/more01.png"),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       // add 버튼
@@ -313,11 +316,11 @@ class _GroupMainPageState extends State<GroupMainPage> {
                         },
                         backgroundColor: Color(0xffF1E977),
                         child: Image.asset('assets/images/add.png'),
+
                         shape: CircleBorder(),
                       ),
                     ],
                   ),
-                  SizedBox(height: 20),
                 ],
                 // add 버튼, X버튼
                 Row(
@@ -347,5 +350,6 @@ class _GroupMainPageState extends State<GroupMainPage> {
         ],
       ),
     );
+
   }
 }

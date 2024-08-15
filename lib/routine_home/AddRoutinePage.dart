@@ -77,11 +77,13 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
         return;
       }
     }
+
     // 요청 바디 준비
     final url = Uri.parse('http://15.164.88.94:8080/routines');
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+
     };
     final body = jsonEncode({
       'routineTitle':_controller.text,
@@ -238,6 +240,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                             } else {
                               selectedDays.remove(_getWeekdayName(i));
                             }
+
                           });
                         },
                         child: Container(
@@ -459,6 +462,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
       ),
     );
   }
+
 
   String _getWeekdayName(int index) {
     switch (index) {

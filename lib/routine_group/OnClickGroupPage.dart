@@ -63,6 +63,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
       Uri.parse('http://15.164.88.94:8080/groups/$groupId'),
       headers: {
         'Authorization':
+
         'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM', // 필요 시 여기에 토큰을 추가
         'Accept': 'application/json', // JSON 응답을 기대하는 경우
       },
@@ -406,12 +407,15 @@ class RoutinePage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.grey[600],
+
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
+
         ],
       ),
+
     );
   }
 }
