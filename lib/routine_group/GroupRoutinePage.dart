@@ -1,24 +1,29 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:routine_ade/routine_group/groupSearchPage.dart';
+
+import '../routine_groupLeader/glOnClickGroupPage.dart';
 import 'OnClickGroupPage.dart';
 
 class GroupRoutinePage extends StatefulWidget {
+  const GroupRoutinePage({super.key});
+
   @override
   _GroupRoutinePageState createState() => _GroupRoutinePageState();
 }
 
 class _GroupRoutinePageState extends State<GroupRoutinePage> {
-  TextEditingController _searchController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   List<EntireGroup> allGroups = [];
   List<EntireGroup> filteredGroups = [];
-  bool _isSearching = false;
   bool _isPasswordIncorrect = false;
   bool _isLoading = false;
   int _currentPage = 1;
   final int _pageSize = 10;
   String? selectedCategory = '전체';
+  bool searchByGroupName = true; //
 
   @override
   void initState() {
@@ -40,8 +45,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     String categoryQuery = category != null && category != '전체'
         ? 'groupCategory=${Uri.encodeComponent(category)}'
         : 'groupCategory=%EC%A0%84%EC%B2%B4';
-    final url = Uri.parse(
-        'http://15.164.88.94:8080/groups?$categoryQuery');
+    final url = Uri.parse('http://15.164.88.94:8080/groups?$categoryQuery');
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization':
@@ -79,44 +83,20 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
       case "전체":
         return Colors.black;
       case "건강":
-        return Color(0xff6ACBF3);
+        return const Color(0xff6ACBF3);
       case "자기개발":
-        return Color(0xff7BD7C6);
+        return const Color(0xff7BD7C6);
       case "일상":
-        return Color(0xffF5A77B);
+        return const Color(0xffF5A77B);
       case "자기관리":
-        return Color(0xffC69FEC);
+        return const Color(0xffC69FEC);
       default:
-        return Color(0xffF4A2D8);
+        return const Color(0xffF4A2D8);
     }
-  }
-
-  void toggleSearch() {
-    setState(() {
-      _isSearching = !_isSearching;
-      if (!_isSearching) {
-        _searchController.clear();
-        filterGroups('');
-      }
-    });
   }
 
   void _sortGroupsByGroupIdDescending() {
     filteredGroups.sort((a, b) => b.groupId.compareTo(a.groupId));
-  }
-
-  void filterGroups(String query) {
-    setState(() {
-      if (query.isNotEmpty) {
-        filteredGroups = allGroups
-            .where((group) =>
-            group.groupTitle.toLowerCase().contains(query.toLowerCase()))
-            .toList();
-      } else {
-        filteredGroups = allGroups;
-      }
-      _sortGroupsByGroupIdDescending(); // 필터 후 정렬 유지
-    });
   }
 
   void _showGroupDialog(EntireGroup Egroup) {
@@ -183,19 +163,54 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     }
   }
 
-  void _navigateToGroupPage(int groupId) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => OnClickGroupPage(groupId: groupId),
-      ),
-    );
+  Future<void> _navigateToGroupPage(int groupId) async {
+    final isAdmin = await _fetchIsGroupAdmin(groupId);
+
+    if (isAdmin) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => glOnClickGroupPage(groupId: groupId),
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OnClickGroupPage(groupId: groupId),
+        ),
+      );
+    }
   }
 
+  Future<bool> _fetchIsGroupAdmin(int groupId) async {
+    final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId');
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Authorization':
+      'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+    });
 
+    if (response.statusCode == 200) {
+      final decodedResponse = utf8.decode(response.bodyBytes);
+      final data = jsonDecode(decodedResponse);
+
+      if (data is Map<String, dynamic> && data.containsKey('isGroupAdmin')) {
+        return data['isGroupAdmin'] as bool;
+      } else {
+        return false;
+      }
+    } else {
+      print("Error fetching group admin status: ${response.statusCode}");
+      return false;
+    }
+  }
 
   Future<bool> _joinGroup(int groupId, {String? password}) async {
-    final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId/join');
+    final url = Uri.parse(
+      'http://15.164.88.94:8080/groups/$groupId/join?password=${Uri.encodeComponent(password ?? '')}',
+    );
+
     final response = await http.post(
       url,
       headers: {
@@ -203,21 +218,21 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
         'Authorization':
         'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
       },
-      body: password != null ? jsonEncode({'password': password}) : null,
     );
 
+    final decodedResponseBody = utf8.decode(response.bodyBytes);
+
     if (response.statusCode == 201) {
-      print("그룹 참여 성공!");
       return true;
+    } else if (response.statusCode == 401) {
+      print("Error: 비밀번호가 틀렸습니다.");
+      return false;
     } else {
-      print("그룹 참여 실패! Status Code: ${response.statusCode}");
-      print("Response Body: ${response.body}");
+      print("Error: 서버 응답 에러 발생 (Status Code: ${response.statusCode})");
+      print("Response Body: $decodedResponseBody");
       return false;
     }
   }
-
-
-
 
   void _showPasswordDialog(EntireGroup group) {
     showDialog(
@@ -238,8 +253,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: "비밀번호 4자리 입력",
-                      errorText:
-                      _isPasswordIncorrect ? "비밀번호가 틀렸습니다." : null,
+                      errorText: _isPasswordIncorrect ? "비밀번호가 틀렸습니다." : null,
                     ),
                   ),
                 ],
@@ -261,16 +275,22 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                     TextButton(
                       child: Text("확인"),
                       onPressed: () async {
+                        // 서버로 비밀번호 검증 요청
                         bool joinSuccess = await _joinGroup(
                           group.groupId,
                           password: _passwordController.text,
                         );
+
                         if (joinSuccess) {
-                          Navigator.of(context).pop();
-                          _navigateToGroupPage(group.groupId);
+                          Navigator.of(context).pop(); // 다이얼로그 닫기
+                          _navigateToGroupPage(group.groupId); // 그룹 페이지로 이동
+                          _passwordController.clear(); // 비밀번호 필드 초기화
+                          setState(() {
+                            _isPasswordIncorrect = false;
+                          });
                         } else {
                           setState(() {
-                            _isPasswordIncorrect = true;
+                            _isPasswordIncorrect = true; // 비밀번호 틀림 표시
                           });
                         }
                       },
@@ -284,8 +304,6 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
       },
     );
   }
-
-
 
 
   // void _checkPassword(EntireGroup group) {
@@ -306,71 +324,54 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: _isSearching
-            ? TextField(
-          controller: _searchController,
-          decoration: InputDecoration(
-            hintText: "  그룹명을 입력하세요",
-            fillColor: Color(0xFFF8F8EF),
-            filled: true,
-            contentPadding: EdgeInsets.symmetric(
-              vertical: 12.0,
-            ),
-          ),
-          onChanged: (value) {
-            filterGroups(value);
-          },
-        )
-            : Text(
+        title: const Text(
           "루틴 그룹",
           style: TextStyle(
-              color: Colors.white,
-              fontSize: 23,
-              fontWeight: FontWeight.bold),
+              color: Colors.white, fontSize: 23, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        backgroundColor: Color(0xFF8DCCFF),
+        backgroundColor: const Color(0xFF8DCCFF),
         actions: [
           IconButton(
-            icon: _isSearching
-                ? Icon(Icons.close)
-                : Image.asset("assets/images/search.png",
-                width: 27, height: 27),
-            onPressed: toggleSearch,
-          ),
+              icon: Image.asset("assets/images/search.png",
+                  width: 27, height: 27),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const GroupSearchPage()),
+                );
+              }),
         ],
       ),
       body: Stack(
         children: [
           Container(
-            color: Color(0xFFF8F8EF),
+            color: const Color(0xFFF8F8EF),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 7.0),
+              padding: const EdgeInsets.symmetric(horizontal: 7.0),
               child: Container(
-                color: Color(0xFFF8F8EF),
+                color: const Color(0xFFF8F8EF),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    SizedBox(height: 10,),
+                    const SizedBox(
+                      height: 10,
+                    ),
                     Container(
-                      color: Color(0xFFF8F8EF),
+                      color: const Color(0xFFF8F8EF),
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 1.0),
+                        padding: const EdgeInsets.symmetric(vertical: 1.0),
                         child: SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              '전체',
-                              '일상',
-                              '건강',
-                              '자기개발',
-                              '자기관리',
-                              '기타'
-                            ].map((category) {
+                            children: ['전체', '일상', '건강', '자기개발', '자기관리', '기타']
+                                .map((category) {
                               bool isSelected = selectedCategory == category;
                               return Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 3.0),
+                                padding:
+                                const EdgeInsets.symmetric(horizontal: 3.0),
                                 child: ElevatedButton(
                                   onPressed: () {
                                     setState(() {
@@ -378,15 +379,18 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                     });
                                     _fetchGroups(category: category);
                                   },
+                                  style: ButtonStyle(
+                                    backgroundColor: WidgetStateProperty.all(
+                                      isSelected
+                                          ? Colors.white
+                                          : const Color(0xE8E8E8EF),
+                                    ),
+                                  ),
                                   child: Text(
                                     category,
                                     style: TextStyle(
-                                      color: getCategoryColor(category), // Always set the color based on the category
-                                    ),
-                                  ),
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(
-                                      isSelected ? Colors.white : Color(0xE8E8E8EF),
+                                      color: getCategoryColor(
+                                          category), // Always set the color based on the category
                                     ),
                                   ),
                                 ),
@@ -398,7 +402,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                     ),
                     Expanded(
                       child: _isLoading
-                          ? Center(child: CircularProgressIndicator())
+                          ? const Center(child: CircularProgressIndicator())
                           : ListView.builder(
                         itemCount: filteredGroups.length,
                         itemBuilder: (context, index) {
@@ -410,10 +414,10 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                               _showGroupDialog(group);
                             },
                             child: Card(
-                              margin: EdgeInsets.all(8.0),
-                              color: Color(0xFFE6F5F8),
+                              margin: const EdgeInsets.all(8.0),
+                              color: const Color(0xFFE6F5F8),
                               child: Padding(
-                                padding: EdgeInsets.all(16.0),
+                                padding: const EdgeInsets.all(16.0),
                                 child: Column(
                                   crossAxisAlignment:
                                   CrossAxisAlignment.start,
@@ -426,9 +430,10 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                           children: [
                                             Text(
                                               group.groupTitle,
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                 fontSize: 18,
-                                                fontWeight: FontWeight.bold,
+                                                fontWeight:
+                                                FontWeight.bold,
                                               ),
                                             ),
                                             if (!group.isPublic)
@@ -437,7 +442,9 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                                 const EdgeInsets.only(
                                                     left: 8.0),
                                                 child: Image.asset(
-                                                  "assets/images/lock.png", color: Color(0xFF8DCCFF),
+                                                  "assets/images/lock.png",
+                                                  color: const Color(
+                                                      0xFF8DCCFF),
                                                   width: 20,
                                                   height: 20,
                                                 ),
@@ -446,27 +453,29 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                         ),
                                       ],
                                     ),
-                                    SizedBox(height: 8.0),
+                                    const SizedBox(height: 8.0),
                                     Row(
                                       children: [
-                                        Text("대표 카테고리 "),
+                                        const Text("대표 카테고리 "),
                                         Text(group.groupCategory,
                                             style: TextStyle(
                                                 color: textColor)),
                                         Expanded(child: Container()),
                                         Align(
-                                          alignment: Alignment.centerRight,
+                                          alignment:
+                                          Alignment.centerRight,
                                           child: Text(
                                               "인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),
                                         ),
                                       ],
                                     ),
-                                    SizedBox(height: 8.0),
+                                    const SizedBox(height: 8.0),
                                     Row(
                                       mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text("루틴장 ${group.createdUserNickname}"),
+                                        Text(
+                                            "루틴장 ${group.createdUserNickname}"),
                                         Text("그룹코드 ${group.groupId}"),
                                       ],
                                     ),

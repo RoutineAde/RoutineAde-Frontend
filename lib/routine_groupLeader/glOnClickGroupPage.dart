@@ -11,6 +11,7 @@ import 'package:http/http.dart' as http;
 import '../routine_group/GroupType.dart';
 import '../routine_groupLeader/glAddRoutinePage.dart';
 import 'glgroupManagement.dart';
+import 'groupRoutineEditPage.dart';
 import 'groupType.dart';
 
 // 전역 함수로 getCategoryColor를 정의
@@ -19,18 +20,17 @@ Color getCategoryColor(String category) {
     case "전체":
       return Colors.black;
     case "건강":
-      return Color(0xff6ACBF3);
+      return const Color(0xff6ACBF3);
     case "자기개발":
-      return Color(0xff7BD7C6);
+      return const Color(0xff7BD7C6);
     case "일상":
-      return Color(0xffF5A77B);
+      return const Color(0xffF5A77B);
     case "자기관리":
-      return Color(0xffC69FEC);
+      return const Color(0xffC69FEC);
     default:
-      return Color(0xffF4A2D8);
+      return const Color(0xffF4A2D8);
   }
 }
-
 
 class glOnClickGroupPage extends StatefulWidget {
   final int groupId; // 특정 그룹을 가져오기 위한 groupId 매개변수 추가
@@ -66,7 +66,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
       Uri.parse('http://15.164.88.94:8080/groups/$groupId'),
       headers: {
         'Authorization':
-        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM', // 필요 시 여기에 토큰을 추가
+        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw', // 필요 시 여기에 토큰을 추가
         'Accept': 'application/json', // JSON 응답을 기대하는 경우
       },
     );
@@ -167,12 +167,15 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
       floatingActionButton: _tabController.index == 0
           ? FloatingActionButton(
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => glAddRoutinePage()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const glAddRoutinePage()));
         },
-        backgroundColor: Color(0xffE6E288),
-        shape: CircleBorder(),
+        backgroundColor: const Color(0xffE6E288),
+        shape: const CircleBorder(),
         child: Image.asset(
-          "assets/images/add.png",
+          "assets/images/add-button.png",
           width: 30,
           height: 30,
         ),
@@ -211,7 +214,8 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
                   "대표 카테고리",
                   groupInfo.groupCategory,
                   color: Colors.black, // "대표 카테고리"의 title 텍스트는 검은색으로 유지
-                  trailingColor: getCategoryColor(groupInfo.groupCategory), // trailing 텍스트에만 색상을 적용
+                  trailingColor: getCategoryColor(
+                      groupInfo.groupCategory), // trailing 텍스트에만 색상을 적용
                 ),
                 buildDrawerListTile("인원",
                     "${groupInfo.joinMemberCount} / ${groupInfo.maxMemberCount} 명"),
@@ -235,14 +239,15 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
     );
   }
 
-
-  ListTile buildDrawerListTile(String title, String trailing, {Color? color, Color? trailingColor}) {
+  ListTile buildDrawerListTile(String title, String trailing,
+      {Color? color, Color? trailingColor}) {
     return ListTile(
       trailing: Text(
         trailing,
         style: TextStyle(
           color: trailingColor ?? Colors.black, // trailing 텍스트 색상 설정
-          fontSize: 15,),
+          fontSize: 15,
+        ),
       ),
       title: Text(
         title,
@@ -253,7 +258,6 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
       ),
     );
   }
-
 
   ListTile buildSwitchListTile() {
     return ListTile(
@@ -310,12 +314,14 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
           // 그룹원 내보내기 기능 추가
         },
         style: ButtonStyle(
-          padding: MaterialStateProperty.all<EdgeInsets>(EdgeInsets.all(8.0)),
-          backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          padding: WidgetStateProperty.all<EdgeInsets>(
+              const EdgeInsets.all(8.0)),
+          backgroundColor:
+          WidgetStateProperty.all<Color>(Colors.transparent),
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(50.0),
-              side: BorderSide(color: Colors.black, width: 1.0),
+              side: const BorderSide(color: Colors.black, width: 1.0),
             ),
           ),
         ),
@@ -340,7 +346,10 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
       ),
       child: GestureDetector(
         onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => glgroupManagement()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const glgroupManagement()));
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.end, // 이미지가 오른쪽에 배치되도록 설정
@@ -355,8 +364,6 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
       ),
     );
   }
-
-
 }
 
 class RoutinePage extends StatelessWidget {
@@ -370,14 +377,16 @@ class RoutinePage extends StatelessWidget {
       itemCount: routineCategories.length,
       itemBuilder: (context, index) {
         final category = routineCategories[index];
-        final color = getCategoryColor(category.routineCategory);  // 카테고리 색상 설정
+        final color = getCategoryColor(category.routineCategory); // 카테고리 색상 설정
         return _buildCategorySection(
           category.routineCategory,
-          color,  // 여기에서 색상을 전달
+          color, // 여기에서 색상을 전달
           category.routines.map((routine) {
             return _buildRoutineItem(
+              context,
               routine.routineTitle,
               routine.repeatDay.join(", "),
+              routine.routineId,
             );
           }).toList(),
         );
@@ -385,7 +394,8 @@ class RoutinePage extends StatelessWidget {
     );
   }
 
-  Widget _buildCategorySection(String title, Color color, List<Widget> routines) {
+  Widget _buildCategorySection(
+      String title, Color color, List<Widget> routines) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -396,8 +406,9 @@ class RoutinePage extends StatelessWidget {
               color: Colors.grey[200],
               borderRadius: BorderRadius.circular(20.0),
             ),
-            margin: EdgeInsets.fromLTRB(30, 40, 0, 16),
-            padding: EdgeInsets.symmetric(horizontal: 20.0),  // 좌우 여백을 추가하여 텍스트 주변에 공간을 줍니다.
+            margin: const EdgeInsets.fromLTRB(30, 40, 0, 16),
+            padding: const EdgeInsets.symmetric(
+                horizontal: 20.0), // 좌우 여백을 추가하여 텍스트 주변에 공간을 줍니다.
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -420,39 +431,78 @@ class RoutinePage extends StatelessWidget {
     );
   }
 
-  Widget _buildRoutineItem(String title, String schedule) {
-    return Container(
-      margin: EdgeInsets.fromLTRB(20, 0, 0, 16),
-      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      child: Row(
-        children: [
-          Image.asset(
-            "assets/images/new-icons/group-check.png",
-            width: 30,
-            height: 30,
-          ),
-          SizedBox(width: 12),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: TextStyle(
-                  fontSize: 18,
+  Widget _buildRoutineItem(
+      BuildContext context, String title, String schedule, int routineId) {
+    return GestureDetector(
+      onTap: () => {_showRoutineDialog(context, title, routineId)},
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(20, 0, 0, 16),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        child: Row(
+          children: [
+            Image.asset(
+              "assets/images/new-icons/group-check.png",
+              width: 30,
+              height: 30,
+            ),
+            const SizedBox(width: 12),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 18,
+                  ),
                 ),
-              ),
-              SizedBox(height: 4),
-              Text(
-                schedule,
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey[600],
+                const SizedBox(height: 4),
+                Text(
+                  schedule,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey[600],
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
+}
+
+void _showRoutineDialog(
+    BuildContext context, String routineTitle, int routineId) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(routineTitle),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('수정'),
+            onPressed: () {
+              Navigator.of(context).pop(); // 다이얼로그 닫기
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => groupRoutineEditPage(
+                        groupId: 1,
+                        routineTitle: routineTitle,
+                        routineId: routineId,
+                        repeatDays: const [])),
+              );
+            },
+          ),
+          TextButton(
+            child: const Text('취소'),
+            onPressed: () {
+              Navigator.of(context).pop(); // 다이얼로그 닫기
+            },
+          ),
+        ],
+      );
+    },
+  );
 }

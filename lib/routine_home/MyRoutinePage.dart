@@ -213,14 +213,14 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                 height: 70,
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 decoration: BoxDecoration(
-                  color: Colors.white, // 하얀색 배경
-                  borderRadius: BorderRadius.circular(12), // 둥근 모서리
+                  color: Colors.white, // White background
+                  borderRadius: BorderRadius.circular(12), // Rounded corners
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.3), // 그림자 색상과 투명도
+                      color: Colors.grey.withOpacity(0.3), // Shadow color and opacity
                       spreadRadius: 2,
                       blurRadius: 5,
-                      offset: const Offset(0, 3), // 그림자의 위치
+                      offset: const Offset(0, 3), // Shadow position
                     ),
                   ],
                 ),
@@ -237,15 +237,45 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                         height: 50,
                       ),
                     const SizedBox(width: 10),
-                    Text(
-                      _getTextForEmotion(_userEmotion!), // 감정에 따른 텍스트 표시
-                      style: const TextStyle(fontSize: 18),
+                    Expanded(
+                      child: RichText(
+                        text: TextSpan(
+                          style: const TextStyle(fontSize: 18, color: Colors.black), // Default text style
+                          children: [
+                            TextSpan(text: '이 날은 기분이 '),
+                            if (_userEmotion == 'GOOD')
+                              TextSpan(
+                                text: '해피',
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.yellow), // Highlighted text style for GOOD
+                              ),
+                            if (_userEmotion == 'SAD')
+                              TextSpan(
+                                text: '우중충',
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue), // Highlighted text style for SAD
+                              ),
+                            if (_userEmotion == 'OK')
+                              TextSpan(
+                                text: '쏘쏘',
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green), // Highlighted text style for OK
+                              ),
+                            if (_userEmotion == 'ANGRY')
+                              TextSpan(
+                                text: '나쁜',
+                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent), // Highlighted text style for ANGRY
+                              ),
+                            TextSpan(text: _userEmotion == 'ANGRY' ? ' 날이에요' : '한 날이에요'),
+                          ],
+                        ),
+                      ),
                     ),
+
                   ],
                 ),
               ),
             ),
           ),
+
+
         Expanded(
           child: Container(
             color: const Color(0xFFF8F8EF),
