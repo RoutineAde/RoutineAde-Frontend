@@ -314,17 +314,18 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
           // 그룹원 내보내기 기능 추가
         },
         style: ButtonStyle(
-          padding: WidgetStateProperty.all<EdgeInsets>(
-              const EdgeInsets.all(8.0)),
-          backgroundColor:
-          WidgetStateProperty.all<Color>(Colors.transparent),
-          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+          padding: MaterialStateProperty.all<EdgeInsets>(
+              const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0)), // 패딩 설정
+          minimumSize: MaterialStateProperty.all<Size>(Size(0, 30)), // 버튼의 최소 높이 설정 (예: 36)
+          backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
+          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(50.0),
               side: const BorderSide(color: Colors.black, width: 1.0),
             ),
           ),
         ),
+
         child: const Text(
           '내보내기',
           style: TextStyle(
