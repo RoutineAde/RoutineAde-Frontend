@@ -9,6 +9,7 @@ import 'package:routine_ade/routine_group/groupManagement.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:http/http.dart' as http;
 import '../routine_group/GroupType.dart';
+import '../routine_group/groupIntroRule.dart';
 import '../routine_groupLeader/glAddRoutinePage.dart';
 import 'glgroupManagement.dart';
 import 'groupRoutineEditPage.dart';
@@ -374,24 +375,61 @@ class RoutinePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: routineCategories.length,
-      itemBuilder: (context, index) {
-        final category = routineCategories[index];
-        final color = getCategoryColor(category.routineCategory); // 카테고리 색상 설정
-        return _buildCategorySection(
-          category.routineCategory,
-          color, // 여기에서 색상을 전달
-          category.routines.map((routine) {
-            return _buildRoutineItem(
-              context,
-              routine.routineTitle,
-              routine.repeatDay.join(", "),
-              routine.routineId,
-            );
-          }).toList(),
-        );
-      },
+    return ListView(
+      children: [
+        // "규칙" 텍스트를 가진 컨테이너
+        Container(
+          height: 50,
+          alignment: Alignment.center,
+          padding: const EdgeInsets.all(8.0),
+          margin: const EdgeInsets.fromLTRB(30, 20, 30, 0),
+          decoration: BoxDecoration(
+            color: Colors.grey[200], // 배경색 설정
+            borderRadius: BorderRadius.circular(10.0), // 둥근 모서리 설정
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "그룹 소개 / 규칙",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              // 오른쪽에 화살표 버튼 추가
+              IconButton(
+                icon: const Icon(Icons.arrow_forward_ios, size: 16), // 화살표 아이콘
+                onPressed: () {
+                  // 버튼을 눌렀을 때의 동작을 여기에 작성
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const groupIntroRule()),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+
+        // 각 카테고리와 루틴 아이템을 동적으로 추가
+        ...routineCategories.map((category) {
+          final color = getCategoryColor(category.routineCategory); // 카테고리 색상 설정
+          return _buildCategorySection(
+            category.routineCategory,
+            color,
+            category.routines.map((routine) {
+              return _buildRoutineItem(
+                context,
+                routine.routineTitle,
+                routine.repeatDay.join(", "),
+                routine.routineId,
+              );
+            }).toList(),
+          );
+        }).toList(),
+      ],
     );
   }
 
