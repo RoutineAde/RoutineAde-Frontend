@@ -390,12 +390,24 @@ class RoutinePage extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
-                "그룹 소개 / 규칙",
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+              Row(
+                children: [
+                  // 왼쪽에 megaphone.png 이미지 추가
+                  SizedBox(width: 5,),
+                  Image.asset(
+                    'assets/images/new-icons/megaphone.png', // 이미지 경로
+                    width: 24, // 이미지 너비 설정
+                    height: 24, // 이미지 높이 설정
+                  ),
+                  const SizedBox(width: 15), // 이미지와 텍스트 사이 간격 설정
+                  const Text(
+                    "그룹 소개 / 규칙",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
               // 오른쪽에 화살표 버튼 추가
               IconButton(
@@ -405,7 +417,8 @@ class RoutinePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const groupIntroRule()),
+                      builder: (context) => const groupIntroRule(),
+                    ),
                   );
                 },
               ),
