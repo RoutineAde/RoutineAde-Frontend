@@ -10,10 +10,11 @@ import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:http/http.dart' as http;
 import '../routine_group/GroupType.dart';
 import '../routine_group/groupIntroRule.dart';
-import '../routine_groupLeader/glAddRoutinePage.dart';
 import 'glgroupManagement.dart';
 import 'groupRoutineEditPage.dart';
+import 'AddGroupRoutinePage.dart';
 import 'groupType.dart';
+import 'package:routine_ade/routine_user/token.dart';
 
 // 전역 함수로 getCategoryColor를 정의
 Color getCategoryColor(String category) {
@@ -66,8 +67,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
     final response = await http.get(
       Uri.parse('http://15.164.88.94:8080/groups/$groupId'),
       headers: {
-        'Authorization':
-        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw', // 필요 시 여기에 토큰을 추가
+        'Authorization': 'Bearer $token',
         'Accept': 'application/json', // JSON 응답을 기대하는 경우
       },
     );
@@ -167,20 +167,21 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
       endDrawerEnableOpenDragGesture: false,
       floatingActionButton: _tabController.index == 0
           ? FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const glAddRoutinePage()));
-        },
-        backgroundColor: const Color(0xffE6E288),
-        shape: const CircleBorder(),
-        child: Image.asset(
-          "assets/images/add-button.png",
-          width: 30,
-          height: 30,
-        ),
-      )
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            const AddGroupRoutinePage(groupId: 1)));
+              },
+              backgroundColor: const Color(0xffA1D1F9),
+              shape: const CircleBorder(),
+              child: Image.asset(
+                "assets/images/add-button.png",
+                width: 80,
+                height: 80,
+              ),
+            )
           : null,
     );
   }
@@ -311,30 +312,32 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
       trailing: isLeader
           ? null
           : TextButton(
-        onPressed: () {
-          // 그룹원 내보내기 기능 추가
-        },
-        style: ButtonStyle(
-          padding: MaterialStateProperty.all<EdgeInsets>(
-              const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0)), // 패딩 설정
-          minimumSize: MaterialStateProperty.all<Size>(Size(0, 30)), // 버튼의 최소 높이 설정 (예: 36)
-          backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(50.0),
-              side: const BorderSide(color: Colors.black, width: 1.0),
+              onPressed: () {
+                // 그룹원 내보내기 기능 추가
+              },
+              style: ButtonStyle(
+                padding: WidgetStateProperty.all<EdgeInsets>(
+                    const EdgeInsets.symmetric(
+                        vertical: 4.0, horizontal: 8.0)), // 패딩 설정
+                minimumSize: WidgetStateProperty.all<Size>(
+                    const Size(0, 30)), // 버튼의 최소 높이 설정 (예: 36)
+                backgroundColor:
+                    WidgetStateProperty.all<Color>(Colors.transparent),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50.0),
+                    side: const BorderSide(color: Colors.black, width: 1.0),
+                  ),
+                ),
+              ),
+              child: const Text(
+                '내보내기',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 13,
+                ),
+              ),
             ),
-          ),
-        ),
-
-        child: const Text(
-          '내보내기',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 13,
-          ),
-        ),
-      ),
     );
   }
 
@@ -393,7 +396,9 @@ class RoutinePage extends StatelessWidget {
               Row(
                 children: [
                   // 왼쪽에 megaphone.png 이미지 추가
-                  SizedBox(width: 5,),
+                  const SizedBox(
+                    width: 5,
+                  ),
                   Image.asset(
                     'assets/images/new-icons/megaphone.png', // 이미지 경로
                     width: 24, // 이미지 너비 설정
@@ -428,7 +433,8 @@ class RoutinePage extends StatelessWidget {
 
         // 각 카테고리와 루틴 아이템을 동적으로 추가
         ...routineCategories.map((category) {
-          final color = getCategoryColor(category.routineCategory); // 카테고리 색상 설정
+          final color =
+              getCategoryColor(category.routineCategory); // 카테고리 색상 설정
           return _buildCategorySection(
             category.routineCategory,
             color,
@@ -441,7 +447,7 @@ class RoutinePage extends StatelessWidget {
               );
             }).toList(),
           );
-        }).toList(),
+        }),
       ],
     );
   }

@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart'; //날짜 포맷팅 init 패키지
 import 'package:http/http.dart' as http;
+import 'package:routine_ade/routine_user/token.dart';
 
 class AddGroupRoutinePage extends StatefulWidget {
   final int groupId;
@@ -20,8 +21,6 @@ class AddGroupRoutinePage extends StatefulWidget {
 class _AddRoutinePageState extends State<AddGroupRoutinePage> {
   //텍스트필드
   final TextEditingController _controller = TextEditingController();
-  late final String _token =
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM'; // 토큰 입력
 
   int _currentLength = 0;
   final int _maxLength = 15;
@@ -83,8 +82,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
         'http://15.164.88.94:8080/groups/${widget.groupId}/group-routines');
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization':
-      'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjM3Mzk1MDQsImV4cCI6MTczOTI5MTUwNCwidXNlcklkIjoxfQ.e0oCQvOSkzG0VDy7CnGyORSwcNgLjG55iw3AApGa6fs',
+      'Authorization': 'Bearer $token',
     };
     final body = jsonEncode({
       'routineTitle': _controller.text,
@@ -256,7 +254,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                             _getWeekdayName(i),
                             style: TextStyle(
                               color:
-                              isSelected[i] ? Colors.white : Colors.black,
+                                  isSelected[i] ? Colors.white : Colors.black,
                             ),
                           ),
                         ),
@@ -297,7 +295,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(
                         5,
-                            (index) => GestureDetector(
+                        (index) => GestureDetector(
                           onTap: () {
                             setState(() {
                               selectedCategoryIndex = index;
@@ -399,7 +397,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                   onPressed: _addRoutine,
                   style: ButtonStyle(
                     backgroundColor:
-                    WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
+                        WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0), //테두리 둥글게

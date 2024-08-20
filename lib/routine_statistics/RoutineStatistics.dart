@@ -7,7 +7,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
-import 'package:routine_ade/routine_groupLeader/glAddRoutinePage.dart';
 import 'package:routine_ade/routine_groupLeader/glgroupManagement.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 
@@ -18,7 +17,8 @@ class GroupMember {
   final String avatarPath;
   final bool isLeader;
 
-  GroupMember({required this.name, required this.avatarPath, this.isLeader = false});
+  GroupMember(
+      {required this.name, required this.avatarPath, this.isLeader = false});
 }
 
 class RoutineStatistics extends StatefulWidget {
@@ -28,14 +28,18 @@ class RoutineStatistics extends StatefulWidget {
   State<RoutineStatistics> createState() => _RoutineStatisticsState();
 }
 
-class _RoutineStatisticsState extends State<RoutineStatistics> with SingleTickerProviderStateMixin {
+class _RoutineStatisticsState extends State<RoutineStatistics>
+    with SingleTickerProviderStateMixin {
   final List<String> categories = ["자기개발", "건강", "일상"];
 
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
   bool _isSwitchOn = false;
 
   List<GroupMember> members = [
-    GroupMember(name: '서현', avatarPath: "assets/images/new-icons/user01.png", isLeader: true),
+    GroupMember(
+        name: '서현',
+        avatarPath: "assets/images/new-icons/user01.png",
+        isLeader: true),
     GroupMember(name: '김외롭', avatarPath: "assets/images/new-icons/김외롭.png"),
     GroupMember(name: '채은', avatarPath: "assets/images/new-icons/user03.png"),
     GroupMember(name: '윤정', avatarPath: "assets/images/new-icons/user01.png"),
@@ -49,7 +53,7 @@ class _RoutineStatisticsState extends State<RoutineStatistics> with SingleTicker
   int selectedCategoryIndex = -1;
   List<String> isCategory = ["일상", "건강", "자기개발", "자기관리", "기타"];
 
-  DateTime _selectedDate = DateTime.now();
+  final DateTime _selectedDate = DateTime.now();
 
   String get formattedDate => DateFormat('yyyy.MM.dd').format(_selectedDate);
 
@@ -74,7 +78,7 @@ class _RoutineStatisticsState extends State<RoutineStatistics> with SingleTicker
         key: _scaffoldKey,
         bottomNavigationBar: _buildBottomAppBar(),
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(100),
+          preferredSize: const Size.fromHeight(100),
           child: AppBar(
             actions: [
               IconButton(
@@ -86,30 +90,35 @@ class _RoutineStatisticsState extends State<RoutineStatistics> with SingleTicker
             ],
             bottom: TabBar(
               controller: _tabControllers,
-              tabs: [
-                Tab(text: "캘린더",),
-                Tab(text: "통계",),
+              tabs: const [
+                Tab(
+                  text: "캘린더",
+                ),
+                Tab(
+                  text: "통계",
+                ),
               ],
-              labelStyle: TextStyle(
+              labelStyle: const TextStyle(
                 fontSize: 18,
               ),
               labelColor: Colors.black,
-              indicator: UnderlineTabIndicator(
-                  borderSide: BorderSide(width: 3.0, color: Color(0xffE6E288),),
-                  insets: EdgeInsets.symmetric(horizontal: 115.0)
-              ),
+              indicator: const UnderlineTabIndicator(
+                  borderSide: BorderSide(
+                    width: 3.0,
+                    color: Color(0xffE6E288),
+                  ),
+                  insets: EdgeInsets.symmetric(horizontal: 115.0)),
             ),
-            title: Text(
+            title: const Text(
               '통계',
               style: TextStyle(
                   fontSize: 20,
                   color: Colors.black,
-                  fontWeight: FontWeight.bold
-              ),
+                  fontWeight: FontWeight.bold),
             ),
             centerTitle: true,
             leading: IconButton(
-              icon: Icon(
+              icon: const Icon(
                 Icons.arrow_back,
                 size: 20,
               ),
@@ -121,51 +130,61 @@ class _RoutineStatisticsState extends State<RoutineStatistics> with SingleTicker
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              DrawerHeader(
+              const DrawerHeader(
                 padding: EdgeInsets.fromLTRB(25, 10, 10, 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text("꿈을 향해                           ", style: TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold,
-                    ),),
+                    Text(
+                      "꿈을 향해                           ",
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ],
                 ),
               ),
               Expanded(
                 child: ListView(
-                  padding: EdgeInsets.all(10.0),
+                  padding: const EdgeInsets.all(10.0),
                   children: <Widget>[
-                    ListTile(
+                    const ListTile(
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('#51', style: TextStyle(
-                              fontSize: 18
-                          ),),
+                          Text(
+                            '#51',
+                            style: TextStyle(fontSize: 18),
+                          ),
                         ],
                       ),
                       title: Text('그룹 코드'),
                     ),
-                    ListTile(
+                    const ListTile(
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('기타', style: TextStyle(
-                            fontSize: 18, color: Color(0xffF4A2D8),
-                          ),),
+                          Text(
+                            '기타',
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Color(0xffF4A2D8),
+                            ),
+                          ),
                         ],
                       ),
                       title: Text('대표 카테고리'),
                     ),
-                    ListTile(
+                    const ListTile(
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('6 / 30 명', style: TextStyle(
-                              fontSize: 18
-                          ),),
+                          Text(
+                            '6 / 30 명',
+                            style: TextStyle(fontSize: 18),
+                          ),
                         ],
                       ),
                       title: Text('인원'),
@@ -176,7 +195,7 @@ class _RoutineStatisticsState extends State<RoutineStatistics> with SingleTicker
                         children: [
                           CupertinoSwitch(
                             value: _isSwitchOn,
-                            activeColor: Color(0xffE6E288),
+                            activeColor: const Color(0xffE6E288),
                             onChanged: (value) {
                               setState(() {
                                 _isSwitchOn = value;
@@ -185,38 +204,46 @@ class _RoutineStatisticsState extends State<RoutineStatistics> with SingleTicker
                           ),
                         ],
                       ),
-                      title: Text('그룹 알림'),
+                      title: const Text('그룹 알림'),
                     ),
-                    Divider(),
+                    const Divider(),
                     ListTile(
-                      title: Text('그룹원', style: TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold
-                      ),),
+                      title: const Text(
+                        '그룹원',
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
                       onTap: () {},
                     ),
-                    for (var member in members) ListTile(
-                      leading: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image.asset(
-                            member.avatarPath,
-                            width: 40,
-                            height: 40,
-                          ),
-                          if (member.isLeader)
-                            SizedBox(width: 15,),
-                          if (member.isLeader)
+                    for (var member in members)
+                      ListTile(
+                        leading: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
                             Image.asset(
-                              "assets/images/new-icons/crown.png",
-                              width: 20,
-                              height: 20,
+                              member.avatarPath,
+                              width: 40,
+                              height: 40,
                             ),
-                        ],
+                            if (member.isLeader)
+                              const SizedBox(
+                                width: 15,
+                              ),
+                            if (member.isLeader)
+                              Image.asset(
+                                "assets/images/new-icons/crown.png",
+                                width: 20,
+                                height: 20,
+                              ),
+                          ],
+                        ),
+                        title: Text(
+                          member.name,
+                          style: const TextStyle(
+                            fontSize: 18,
+                          ),
+                        ),
                       ),
-                      title: Text(member.name, style: TextStyle(
-                        fontSize: 18,
-                      ),),
-                    ),
                   ],
                 ),
               ),
@@ -227,12 +254,17 @@ class _RoutineStatisticsState extends State<RoutineStatistics> with SingleTicker
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: Image.asset("assets/images/new-icons/setting.png",
+                        icon: Image.asset(
+                          "assets/images/new-icons/setting.png",
                           width: 30,
                           height: 30,
                         ),
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => groupManagement()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const groupManagement()));
                         },
                       ),
                     ],
@@ -247,21 +279,25 @@ class _RoutineStatisticsState extends State<RoutineStatistics> with SingleTicker
           children: [
             // 루틴 페이지
             ListView(
-              padding: EdgeInsets.fromLTRB(24, 30, 24, 16),
+              padding: const EdgeInsets.fromLTRB(24, 30, 24, 16),
               children: <Widget>[
-                _buildCategorySection('자기 개발', Color(0xff7BD7C6), [
+                _buildCategorySection('자기 개발', const Color(0xff7BD7C6), [
                   _buildRoutineItem('일기 쓰기', '매주 화, 목'),
                   _buildRoutineItem('1시간 독서하기', '매주 토, 일'),
                   _buildRoutineItem('1시간 공부하기', '매주 토, 일'),
                 ]),
-                SizedBox(height: 50,),
-                _buildCategorySection('건강', Color(0xff6ACBF3), [
+                const SizedBox(
+                  height: 50,
+                ),
+                _buildCategorySection('건강', const Color(0xff6ACBF3), [
                   _buildRoutineItem('아침 스트레칭 하기', '매주 월, 화, 수, 목, 금'),
                   _buildRoutineItem('1시간 독서하기', '매주 토, 일'),
                   _buildRoutineItem('1시간 운동하기', '매주 토, 일'),
                 ]),
-                SizedBox(height: 50,),
-                _buildCategorySection('일상', Color(0xffF4A2D8), [
+                const SizedBox(
+                  height: 50,
+                ),
+                _buildCategorySection('일상', const Color(0xffF4A2D8), [
                   _buildRoutineItem('아침 스트레칭 하기', '매주 월, 화, 수, 목, 금'),
                   _buildRoutineItem('1시간 독서하기', '매주 토, 일'),
                   _buildRoutineItem('1시간 공부하기', '매주 토, 일'),
@@ -275,6 +311,7 @@ class _RoutineStatisticsState extends State<RoutineStatistics> with SingleTicker
       ),
     );
   }
+
   Widget _buildBottomAppBar() {
     return BottomAppBar(
       color: Colors.white,
@@ -282,9 +319,12 @@ class _RoutineStatisticsState extends State<RoutineStatistics> with SingleTicker
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           _buildBottomAppBarItem("assets/images/tap-bar/routine02.png"),
-          _buildBottomAppBarItem("assets/images/tap-bar/group01.png", GroupMainPage()),
-          _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png", RoutineStatistics()),
-          _buildBottomAppBarItem("assets/images/tap-bar/more01.png", ChatScreen()),
+          _buildBottomAppBarItem(
+              "assets/images/tap-bar/group01.png", const GroupMainPage()),
+          _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png",
+              const RoutineStatistics()),
+          _buildBottomAppBarItem(
+              "assets/images/tap-bar/more01.png", ChatScreen()),
         ],
       ),
     );
@@ -294,10 +334,11 @@ class _RoutineStatisticsState extends State<RoutineStatistics> with SingleTicker
     return GestureDetector(
       onTap: () {
         if (page != null) {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => page));
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => page));
         }
       },
-      child: Container(
+      child: SizedBox(
         width: 50,
         height: 50,
         child: Image.asset(asset),
@@ -305,7 +346,8 @@ class _RoutineStatisticsState extends State<RoutineStatistics> with SingleTicker
     );
   }
 
-  Widget _buildCategorySection(String title, Color color, List<Widget> routines) {
+  Widget _buildCategorySection(
+      String title, Color color, List<Widget> routines) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -316,8 +358,9 @@ class _RoutineStatisticsState extends State<RoutineStatistics> with SingleTicker
               color: Colors.grey[200],
               borderRadius: BorderRadius.circular(20.0),
             ),
-            margin: EdgeInsets.fromLTRB(10, 0, 0, 16),
-            padding: EdgeInsets.symmetric(horizontal: 10.0),  // 좌우 여백을 추가하여 텍스트 주변에 공간을 줍니다.
+            margin: const EdgeInsets.fromLTRB(10, 0, 0, 16),
+            padding: const EdgeInsets.symmetric(
+                horizontal: 10.0), // 좌우 여백을 추가하여 텍스트 주변에 공간을 줍니다.
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -340,28 +383,40 @@ class _RoutineStatisticsState extends State<RoutineStatistics> with SingleTicker
     );
   }
 
-
   Widget _buildRoutineItem(String title, String schedule) {
     return Container(
-      margin: EdgeInsets.only(bottom: 16),
-      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       child: Row(
         children: [
-          Image.asset("assets/images/new-icons/group-check.png",
+          Image.asset(
+            "assets/images/new-icons/group-check.png",
             width: 30,
             height: 30,
           ),
-          SizedBox(width: 12,),
+          const SizedBox(
+            width: 12,
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(title, style: TextStyle(
-                fontSize: 18, fontWeight: FontWeight.bold,
-              ),),
-              SizedBox(height: 4,),
-              Text(schedule, style: TextStyle(
-                fontSize: 16, color: Colors.grey[600],
-              ),),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(
+                height: 4,
+              ),
+              Text(
+                schedule,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey[600],
+                ),
+              ),
             ],
           ),
         ],

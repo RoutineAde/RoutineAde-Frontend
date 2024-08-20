@@ -6,6 +6,7 @@ import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupType.dart';
 import 'package:routine_ade/routine_group/AddGroupPage.dart';
+import 'package:routine_ade/routine_user/token.dart';
 
 //전체화면 어둡게
 class DarkOverlay extends StatelessWidget {
@@ -15,9 +16,9 @@ class DarkOverlay extends StatelessWidget {
 
   const DarkOverlay(
       {super.key,
-        required this.child,
-        required this.isDark,
-        required this.onTap});
+      required this.child,
+      required this.isDark,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -59,8 +60,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
     final url = Uri.parse('http://15.164.88.94:8080/groups/my');
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
-      'Authorization':
-      'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+      'Authorization': 'Bearer $token',
     });
 
     if (response.statusCode == 200) {
@@ -116,7 +116,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
         ),
         centerTitle: true,
         backgroundColor:
-        isExpanded ? Colors.grey[600] : const Color(0xFF8DCCFF),
+            isExpanded ? Colors.grey[600] : const Color(0xFF8DCCFF),
         automaticallyImplyLeading: false, // 뒤로가기 제거
         actions: [
           Padding(
@@ -172,7 +172,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
                                     if (!group.isPublic)
                                       Padding(
                                         padding:
-                                        const EdgeInsets.only(left: 8.0),
+                                            const EdgeInsets.only(left: 8.0),
                                         child: Image.asset(
                                           "assets/images/lock.png",
                                           width: 20,
