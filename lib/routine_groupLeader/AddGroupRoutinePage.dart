@@ -21,7 +21,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
   //텍스트필드
   final TextEditingController _controller = TextEditingController();
   late final String _token =
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM'; // 토큰 입력
+      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw'; // 토큰 입력
 
   int _currentLength = 0;
   final int _maxLength = 15;

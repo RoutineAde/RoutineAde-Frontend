@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_group/groupManagement.dart';
+import 'package:routine_ade/routine_groupLeader/AddGroupRoutinePage.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:http/http.dart' as http;
 import '../routine_group/GroupType.dart';
@@ -171,7 +172,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const glAddRoutinePage()));
+                  builder: (context) => const AddGroupRoutinePage(groupId: 1)));
         },
         backgroundColor: const Color(0xffE6E288),
         shape: const CircleBorder(),
