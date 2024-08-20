@@ -13,7 +13,6 @@ import '../routine_group/groupIntroRule.dart';
 import 'glgroupManagement.dart';
 import 'groupRoutineEditPage.dart';
 import 'AddGroupRoutinePage.dart';
-import 'groupType.dart';
 import 'package:routine_ade/routine_user/token.dart';
 
 // 전역 함수로 getCategoryColor를 정의
@@ -422,7 +421,7 @@ class RoutinePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const groupIntroRule(),
+                      builder: (context) => const GroupIntroRule(groupId: 1),
                     ),
                   );
                 },

@@ -23,10 +23,10 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
   @override
   void initState() {
     super.initState();
-    _fetchGroups();
+    fetchGroups();
   }
 
-  Future<void> _fetchGroups({bool loadMore = false}) async {
+  Future<void> fetchGroups({bool loadMore = false}) async {
     setState(() {
       _isLoading = true;
       allGroups.clear();

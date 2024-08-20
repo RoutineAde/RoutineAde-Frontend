@@ -156,7 +156,8 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else {
                 final groupResponse = snapshot.data!;
-                return RoutinePage(groupResponse.groupRoutines);
+                return RoutinePage(groupResponse.groupRoutines,
+                    groupId: widget.groupId);
               }
             },
           ),
@@ -164,18 +165,6 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
         ],
       ),
       endDrawerEnableOpenDragGesture: false,
-
-      //+버튼
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context) {
-              return const AddGroupRoutinePage(groupId: 1);
-            }));
-          },
-          backgroundColor: const Color(0xffA1D1F9),
-          shape: const CircleBorder(),
-          child: Image.asset("images/add-button.png",
-              fit: BoxFit.cover)), //이미지의 크기를 버튼에 맞게 조정
     );
   }
 
@@ -335,8 +324,9 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
 
 class RoutinePage extends StatelessWidget {
   final List<RoutineCategory> routineCategories;
+  final int groupId;
 
-  const RoutinePage(this.routineCategories, {super.key});
+  const RoutinePage(this.routineCategories, {required this.groupId, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -384,7 +374,9 @@ class RoutinePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const groupIntroRule(),
+                      builder: (context) => GroupIntroRule(
+                        groupId: groupId,
+                      ),
                     ),
                   );
                 },
@@ -519,4 +511,24 @@ void _showRoutineDialog(BuildContext context, String routineTitle) {
       );
     },
   );
+}
+
+class GroupInfo {
+  final String groupTitle;
+  final String groupDescription;
+  final int groupId;
+
+  GroupInfo({
+    required this.groupTitle,
+    required this.groupDescription,
+    required this.groupId,
+  });
+
+  factory GroupInfo.fromJson(Map<String, dynamic> json) {
+    return GroupInfo(
+      groupTitle: json['groupTitle'] ?? 'No title',
+      groupDescription: json['groupDescription'] ?? 'No description',
+      groupId: json['groupId'] != null ? json['groupId'] as int : 0,
+    );
+  }
 }

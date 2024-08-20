@@ -1,3 +1,4 @@
+//루틴그룹  ui
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -29,10 +30,10 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
   @override
   void initState() {
     super.initState();
-    _fetchGroups();
+    fetchGroups();
   }
 
-  Future<void> _fetchGroups({bool loadMore = false, String? category}) async {
+  Future<void> fetchGroups({bool loadMore = false, String? category}) async {
     if (loadMore) {
       _currentPage++;
     } else {
@@ -101,7 +102,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
 
   void _showGroupDialog(EntireGroup Egroup) {
     if (Egroup.isJoined) {
-      _navigateToGroupPage(Egroup.groupId);
+      navigateToGroupPage(Egroup.groupId);
     } else {
       showDialog(
         context: context,
@@ -140,8 +141,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                       if (Egroup.isPublic) {
                         bool joinSuccess = await _joinGroup(Egroup.groupId);
                         if (joinSuccess) {
-                          _navigateToGroupPage(
-                              Egroup.groupId); // 가입 성공 시 페이지 이동
+                          navigateToGroupPage(Egroup.groupId); // 가입 성공 시 페이지 이동
                         } else {
                           print("그룹 참여 실패!");
                         }
@@ -165,8 +165,8 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     }
   }
 
-  Future<void> _navigateToGroupPage(int groupId) async {
-    final isAdmin = await _fetchIsGroupAdmin(groupId);
+  Future<void> navigateToGroupPage(int groupId) async {
+    final isAdmin = await fetchIsGroupAdmin(groupId);
 
     if (isAdmin) {
       Navigator.push(
@@ -185,7 +185,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     }
   }
 
-  Future<bool> _fetchIsGroupAdmin(int groupId) async {
+  Future<bool> fetchIsGroupAdmin(int groupId) async {
     final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId');
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -283,7 +283,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
 
                         if (joinSuccess) {
                           Navigator.of(context).pop(); // 다이얼로그 닫기
-                          _navigateToGroupPage(group.groupId); // 그룹 페이지로 이동
+                          navigateToGroupPage(group.groupId); // 그룹 페이지로 이동
                           _passwordController.clear(); // 비밀번호 필드 초기화
                           setState(() {
                             _isPasswordIncorrect = false;
@@ -376,7 +376,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                     setState(() {
                                       selectedCategory = category;
                                     });
-                                    _fetchGroups(category: category);
+                                    fetchGroups(category: category);
                                   },
                                   style: ButtonStyle(
                                     backgroundColor: WidgetStateProperty.all(
