@@ -82,7 +82,12 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
     final url = Uri.parse('http://15.164.88.94:8080/routines');
     final headers = {
       'Content-Type': 'application/json',
+<<<<<<< HEAD
       'Authorization': 'Bearer $token',
+=======
+      'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
     };
     final body = jsonEncode({
       'routineTitle': _controller.text,
@@ -240,6 +245,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                             } else {
                               selectedDays.remove(_getWeekdayName(i));
                             }
+
                           });
                         },
                         child: Container(
@@ -462,6 +468,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
       ),
     );
   }
+
 
   String _getWeekdayName(int index) {
     switch (index) {

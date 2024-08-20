@@ -122,7 +122,12 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     final url = Uri.parse("http://15.164.88.94:8080/users/emotion");
     final headers = {
       "Content-Type": "application/json",
+<<<<<<< HEAD
       "Authorization": "Bearer $token"
+=======
+      "Authorization":
+          "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw"
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
     };
 
     final body = jsonEncode({
@@ -210,6 +215,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                 child: Center(
                   child: Container(
                     width: 360,
+<<<<<<< HEAD
                     height: 70,
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                     decoration: BoxDecoration(
@@ -223,6 +229,18 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                           spreadRadius: 2,
                           blurRadius: 5,
                           offset: const Offset(0, 3), // Shadow position
+=======
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white, // 하얀색 배경
+                      borderRadius: BorderRadius.circular(12), // 둥근 모서리
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3), // 그림자 색상과 투명도
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3), // 그림자의 위치
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
                         ),
                       ],
                     ),
@@ -239,6 +257,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                             height: 50,
                           ),
                         const SizedBox(width: 10),
+<<<<<<< HEAD
                         Expanded(
                           child: RichText(
                             text: TextSpan(
@@ -286,6 +305,11 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                               ],
                             ),
                           ),
+=======
+                        Text(
+                          _getTextForEmotion(_userEmotion!), // 감정에 따른 텍스트 표시
+                          style: const TextStyle(fontSize: 18),
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
                         ),
                       ],
                     ),
@@ -317,9 +341,15 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                     return ListView(
                       padding: const EdgeInsets.fromLTRB(24, 10, 24, 16),
                       children: <Widget>[
+<<<<<<< HEAD
                         // const SizedBox(
                         //   height: 10,
                         // ), // 여백 추가
+=======
+                        const SizedBox(
+                          height: 10,
+                        ), // 여백 추가
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
                         Container(
                           padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                           decoration: BoxDecoration(
@@ -352,6 +382,10 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                 ),
               ),
             ),
+<<<<<<< HEAD
+=======
+
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
           ],
         ),
       );
@@ -377,7 +411,11 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                       context,
                       MaterialPageRoute(
                           builder: (context) => const AddRoutinePage()));
+<<<<<<< HEAD
                 }, 'assets/images/add-button.png'),
+=======
+                }, 'assets/images/add.png'),
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
                 const SizedBox(height: 20),
               ],
               _buildMainFAB(),
@@ -415,11 +453,19 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         FloatingActionButton(
           onPressed: _toggleExpand,
           backgroundColor:
+<<<<<<< HEAD
               _isExpanded ? const Color(0xfff7c7c7c) : const Color(0xffA1D1F9),
           shape: const CircleBorder(),
           child: Image.asset(_isExpanded
               ? 'assets/images/cancel.png'
               : 'assets/images/add-button.png'),
+=======
+              _isExpanded ? const Color(0xfff7c7c7c) : const Color(0xffF1E977),
+          shape: const CircleBorder(),
+          child: Image.asset(_isExpanded
+              ? 'assets/images/cancel.png'
+              : 'assets/images/add.png'),
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
         ),
       ],
     );
@@ -433,7 +479,11 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         children: [
           _buildBottomAppBarItem("assets/images/tap-bar/routine02.png"),
           _buildBottomAppBarItem(
+<<<<<<< HEAD
               "assets/images/tap-bar/group01.png", const GroupMainPage()),
+=======
+              "assets/images/tap-bar/group01.png", GroupMainPage()),
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
           _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png",
               const OnClickGroupPage(groupId: 1)),
           _buildBottomAppBarItem("assets/images/tap-bar/more01.png",
@@ -634,6 +684,10 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                 }),
               ),
             ),
+<<<<<<< HEAD
+=======
+            */
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
             onTap: () => _showDialog(context, routine),
           ),
         ],
@@ -696,7 +750,12 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         "http://15.164.88.94:8080/routines/$routineId/completion?date=$date");
     final headers = {
       "Content-Type": "application/json",
+<<<<<<< HEAD
       'Authorization': 'Bearer $token',
+=======
+      'Authorization':
+          'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
     };
     final body = jsonEncode({"date": date, "isCompletion": isCompletion});
 
@@ -718,7 +777,12 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     final response = await http.delete(
       Uri.parse('http://15.164.88.94:8080/routines/$routineId'),
       headers: {
+<<<<<<< HEAD
         'Authorization': 'Bearer $token',
+=======
+        'Authorization':
+            'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
       },
     );
 
@@ -735,7 +799,12 @@ Future<RoutineResponse> fetchRoutines(String date) async {
   final response = await http.get(
     Uri.parse('http://15.164.88.94:8080/routines/v2?routineDate=$date'),
     headers: {
+<<<<<<< HEAD
       'Authorization': 'Bearer $token',
+=======
+      'Authorization':
+          'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw', // 여기에 올바른 인증 토큰을 넣으세요
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
     },
   );
 
@@ -754,7 +823,12 @@ Future<void> _fetchRoutineDate(BuildContext context, int routineId) async {
   final url = Uri.parse("http://15.164.88.94:8080/routines/$routineId");
   final headers = {
     "Content-Type": "application/json",
+<<<<<<< HEAD
     "Authorization": "Bearer $token"
+=======
+    "Authorization":
+        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw"
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
   };
 
   try {
@@ -841,7 +915,10 @@ String _getTextForEmotion(String emotion) {
       return '기분을 추가해보세요!'; // 기본 텍스트
   }
 }
+<<<<<<< HEAD
 
+=======
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
 //루틴, 감정 조회 class
 class RoutineResponse {
   final List<Routine> personalRoutines;

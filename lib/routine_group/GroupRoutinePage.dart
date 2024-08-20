@@ -50,7 +50,12 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     final url = Uri.parse('http://15.164.88.94:8080/groups?$categoryQuery');
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
+<<<<<<< HEAD
       'Authorization': 'Bearer $token',
+=======
+      'Authorization':
+          'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
     });
 
     if (response.statusCode == 200) {
@@ -100,6 +105,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     filteredGroups.sort((a, b) => b.groupId.compareTo(a.groupId));
   }
 
+<<<<<<< HEAD
   void _showGroupDialog(EntireGroup Egroup) {
     if (Egroup.isJoined) {
       navigateToGroupPage(Egroup.groupId);
@@ -234,6 +240,119 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     }
   }
 
+=======
+  void filterGroups(String query) {
+    setState(() {
+      if (query.isNotEmpty) {
+        filteredGroups = allGroups
+            .where((group) =>
+                group.groupTitle.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      } else {
+        filteredGroups = allGroups;
+      }
+      _sortGroupsByGroupIdDescending(); // 필터 후 정렬 유지
+    });
+  }
+
+  void _showGroupDialog(EntireGroup Egroup) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18.0),
+          ),
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+          title: Center(
+            child: Column(
+              children: [
+                Text(Egroup.groupTitle,
+                    style: const TextStyle(color: Colors.black)),
+                const SizedBox(height: 1.0), //그룹 여백
+                Text("그룹 코드 #${Egroup.groupId}",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.grey, fontSize: 13)),
+              ],
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 0), //그룹 코드와 대표 카테고리 사이의 여백
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("대표 카테고리 ",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(Egroup.groupCategory,
+                      style: TextStyle(
+                          color: getCategoryColor(Egroup.groupCategory))),
+                ],
+              ),
+              const SizedBox(
+                height: 4.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("루틴장 ",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(Egroup.createdUserNickname),
+                  const Text("  인원 ",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("${Egroup.joinMemberCount}/${Egroup.maxMemberCount}명"),
+                ],
+              ),
+              const SizedBox(height: 12), // 추가 설명 텍스트를 위한 공간
+              const Divider(
+                height: 20,
+                thickness: 0.5,
+                color: Colors.black,
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              Text(Egroup.description),
+              const SizedBox(
+                height: 80.0,
+              ),
+            ],
+          ),
+          actions: [
+            ButtonBar(
+              alignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  child: const Text("그룹 가입",
+                      style: TextStyle(color: Color(0xff8DCCFF))),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    if (Egroup.isPublic) {
+                      print("참여 성공!");
+                    } else {
+                      _showPasswordDialog(Egroup);
+                    }
+                  },
+                ),
+                TextButton(
+                  child: const Text("취소", style: TextStyle(color: Colors.grey)),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
   void _showPasswordDialog(EntireGroup group) {
     showDialog(
       context: context,
@@ -241,8 +360,13 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
+<<<<<<< HEAD
               backgroundColor: Colors.white,
               title: const Center(child: Text("비공개 그룹")),
+=======
+              backgroundColor: Colors.white, // 배경색을 하얀색으로 설정
+              title: const Center(child: Text("비공개 그룹")), // 가운데 정렬
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -274,6 +398,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                     ),
                     TextButton(
                       child: const Text("확인"),
+<<<<<<< HEAD
                       onPressed: () async {
                         // 서버로 비밀번호 검증 요청
                         bool joinSuccess = await _joinGroup(
@@ -293,6 +418,12 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                             _isPasswordIncorrect = true; // 비밀번호 틀림 표시
                           });
                         }
+=======
+                      onPressed: () {
+                        setState(() {
+                          _checkPassword(group);
+                        });
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
                       },
                     ),
                   ],
@@ -323,15 +454,41 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+<<<<<<< HEAD
         title: const Text(
           "루틴 그룹",
           style: TextStyle(
               color: Colors.white, fontSize: 23, fontWeight: FontWeight.bold),
         ),
+=======
+        title: _isSearching
+            ? TextField(
+                controller: _searchController,
+                decoration: const InputDecoration(
+                  hintText: "  그룹명을 입력하세요",
+                  fillColor: Color(0xFFF8F8EF),
+                  filled: true,
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 12.0,
+                  ),
+                ),
+                onChanged: (value) {
+                  filterGroups(value);
+                },
+              )
+            : const Text(
+                "루틴 그룹",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 23,
+                    fontWeight: FontWeight.bold),
+              ),
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
         centerTitle: true,
         backgroundColor: const Color(0xFF8DCCFF),
         actions: [
           IconButton(
+<<<<<<< HEAD
               icon: Image.asset("assets/images/search.png",
                   width: 27, height: 27),
               onPressed: () {
@@ -341,6 +498,14 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                       builder: (context) => const GroupSearchPage()),
                 );
               }),
+=======
+            icon: _isSearching
+                ? const Icon(Icons.close)
+                : Image.asset("assets/images/search.png",
+                    width: 27, height: 27),
+            onPressed: toggleSearch,
+          ),
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
         ],
       ),
       body: Stack(
@@ -534,3 +699,7 @@ class EntireGroup {
     );
   }
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 07ffb48490d93365070db682fd8e045d75b4982c
