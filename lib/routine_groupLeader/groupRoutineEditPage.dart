@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart'; //날짜 포맷팅 init 패키지
 import 'package:http/http.dart' as http;
 import 'package:routine_ade/routine_groupLeader/glOnClickGroupPage.dart';
+import 'package:routine_ade/routine_user/token.dart';
 
 class groupRoutineEditPage extends StatefulWidget {
   final int groupId;
@@ -32,8 +33,6 @@ class groupRoutineEditPage extends StatefulWidget {
 
 class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
   final TextEditingController _controller = TextEditingController();
-  late final String _token =
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM';
 
   int _currentLength = 0;
   final int _maxLength = 15;
@@ -67,17 +66,6 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
     });
   }
 
-  // DateTime _parseDate(String date) {
-  //   try {
-  //     if (date.contains('.')) {
-  //       return DateFormat('yyyy.MM.dd').parse(date);
-  //     }
-  //     return DateTime.parse(date);
-  //   } catch (e) {
-  //     return DateTime.now();
-  //   }
-  // }
-
   int _getIndexFromCategory(String category) {
     return isCategory.indexOf(category);
   }
@@ -109,8 +97,7 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
 
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization':
-      'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+      'Authorization': 'Bearer $token',
     };
 
     final body = jsonEncode({
@@ -352,64 +339,6 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
               ),
             ),
 
-            // Container(
-            //   padding:
-            //   EdgeInsets.only(top: 20, bottom: 15, left: 10, right: 10),
-            //   margin: EdgeInsets.only(top: 30, left: 10, right: 10),
-            //   decoration: BoxDecoration(
-            //     color: Colors.white,
-            //     borderRadius: BorderRadius.circular(10),
-            //   ),
-            //   child: Row(
-            //     mainAxisAlignment: MainAxisAlignment.start,
-            //     children: [
-            //       Image.asset(
-            //         "assets/images/calendar.png",
-            //         width: 30,
-            //         height: 30,
-            //       ),
-            //       SizedBox(width: 10),
-            //       Text(
-            //         "루틴 시작일",
-            //         style: TextStyle(
-            //           fontSize: 18,
-            //           fontWeight: FontWeight.bold,
-            //         ),
-            //       ),
-            //       Container(
-            //         padding: EdgeInsets.only(left: 130),
-            //       ),
-            //       //시작일 선택
-            //       GestureDetector(
-            //         onTap: () async {
-            //           DateTime? pickedDate = await showDatePicker(
-            //             context: context,
-            //             initialDate: _selectedDate,
-            //             firstDate: DateTime.now(),
-            //             lastDate: DateTime(2100),
-            //           );
-            //           if (pickedDate != null && pickedDate != _selectedDate) {
-            //             setState(() {
-            //               _selectedDate = pickedDate;
-            //             });
-            //           }
-            //         },
-            //         child: Container(
-            //           padding:
-            //           EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-            //           decoration: BoxDecoration(
-            //             color: Colors.grey[100],
-            //             borderRadius: BorderRadius.circular(5),
-            //           ),
-            //           child: Text(
-            //             formattedDate,
-            //             style: TextStyle(fontSize: 16, color: Colors.black),
-            //           ),
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
             //루틴 추가 버튼
             Container(
               width: 400,

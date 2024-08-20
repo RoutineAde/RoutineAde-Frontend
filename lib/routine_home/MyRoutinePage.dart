@@ -14,6 +14,7 @@ import 'package:routine_ade/routine_home/ModifiedRoutinePage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:routine_ade/routine_user/token.dart';
 
 void main() async {
   await initializeDateFormatting();
@@ -121,8 +122,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     final url = Uri.parse("http://15.164.88.94:8080/users/emotion");
     final headers = {
       "Content-Type": "application/json",
-      "Authorization":
-      "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw"
+      "Authorization": "Bearer $token"
     };
 
     final body = jsonEncode({
@@ -214,10 +214,12 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                 decoration: BoxDecoration(
                   color: Colors.white, // White background
-                  borderRadius: BorderRadius.circular(12), // Rounded corners
+                  borderRadius:
+                  BorderRadius.circular(12), // Rounded corners
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.3), // Shadow color and opacity
+                      color: Colors.grey
+                          .withOpacity(0.3), // Shadow color and opacity
                       spreadRadius: 2,
                       blurRadius: 5,
                       offset: const Offset(0, 3), // Shadow position
@@ -240,42 +242,56 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                     Expanded(
                       child: RichText(
                         text: TextSpan(
-                          style: const TextStyle(fontSize: 18, color: Colors.black), // Default text style
+                          style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.black), // Default text style
                           children: [
-                            TextSpan(text: '이 날은 기분이 '),
+                            const TextSpan(text: '이 날은 기분이 '),
                             if (_userEmotion == 'GOOD')
-                              TextSpan(
+                              const TextSpan(
                                 text: '해피',
-                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.yellow), // Highlighted text style for GOOD
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors
+                                        .yellow), // Highlighted text style for GOOD
                               ),
                             if (_userEmotion == 'SAD')
-                              TextSpan(
+                              const TextSpan(
                                 text: '우중충',
-                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue), // Highlighted text style for SAD
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors
+                                        .blue), // Highlighted text style for SAD
                               ),
                             if (_userEmotion == 'OK')
-                              TextSpan(
+                              const TextSpan(
                                 text: '쏘쏘',
-                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green), // Highlighted text style for OK
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors
+                                        .green), // Highlighted text style for OK
                               ),
                             if (_userEmotion == 'ANGRY')
-                              TextSpan(
+                              const TextSpan(
                                 text: '나쁜',
-                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent), // Highlighted text style for ANGRY
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors
+                                        .redAccent), // Highlighted text style for ANGRY
                               ),
-                            TextSpan(text: _userEmotion == 'ANGRY' ? ' 날이에요' : '한 날이에요'),
+                            TextSpan(
+                                text: _userEmotion == 'ANGRY'
+                                    ? ' 날이에요'
+                                    : '한 날이에요'),
                           ],
                         ),
                       ),
                     ),
-
                   ],
                 ),
               ),
             ),
           ),
-
-
         Expanded(
           child: Container(
             color: const Color(0xFFF8F8EF),
@@ -399,7 +415,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         FloatingActionButton(
           onPressed: _toggleExpand,
           backgroundColor:
-          _isExpanded ? const Color(0xfff7c7c7c) : const Color(0xffF1E977),
+          _isExpanded ? const Color(0xfff7c7c7c) : const Color(0xffA1D1F9),
           shape: const CircleBorder(),
           child: Image.asset(_isExpanded
               ? 'assets/images/cancel.png'
@@ -417,7 +433,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         children: [
           _buildBottomAppBarItem("assets/images/tap-bar/routine02.png"),
           _buildBottomAppBarItem(
-              "assets/images/tap-bar/group01.png", GroupMainPage()),
+              "assets/images/tap-bar/group01.png", const GroupMainPage()),
           _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png",
               const OnClickGroupPage(groupId: 1)),
           _buildBottomAppBarItem("assets/images/tap-bar/more01.png",
@@ -680,8 +696,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         "http://15.164.88.94:8080/routines/$routineId/completion?date=$date");
     final headers = {
       "Content-Type": "application/json",
-      'Authorization':
-      'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+      'Authorization': 'Bearer $token',
     };
     final body = jsonEncode({"date": date, "isCompletion": isCompletion});
 
@@ -703,8 +718,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     final response = await http.delete(
       Uri.parse('http://15.164.88.94:8080/routines/$routineId'),
       headers: {
-        'Authorization':
-        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+        'Authorization': 'Bearer $token',
       },
     );
 
@@ -721,8 +735,7 @@ Future<RoutineResponse> fetchRoutines(String date) async {
   final response = await http.get(
     Uri.parse('http://15.164.88.94:8080/routines/v2?routineDate=$date'),
     headers: {
-      'Authorization':
-      'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw', // 여기에 올바른 인증 토큰을 넣으세요
+      'Authorization': 'Bearer $token',
     },
   );
 
@@ -741,8 +754,7 @@ Future<void> _fetchRoutineDate(BuildContext context, int routineId) async {
   final url = Uri.parse("http://15.164.88.94:8080/routines/$routineId");
   final headers = {
     "Content-Type": "application/json",
-    "Authorization":
-    "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw"
+    "Authorization": "Bearer $token"
   };
 
   try {

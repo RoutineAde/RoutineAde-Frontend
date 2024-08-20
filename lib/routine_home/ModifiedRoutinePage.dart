@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart'; //날짜 포맷팅 init 패키지
 import 'package:http/http.dart' as http;
 import 'MyRoutinePage.dart';
+import 'package:routine_ade/routine_user/token.dart';
 
 class ModifiedroutinePage extends StatefulWidget {
   final int routineId;
@@ -34,7 +35,7 @@ class ModifiedroutinePage extends StatefulWidget {
 
 class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
   final TextEditingController _controller = TextEditingController();
-  late final String _token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM';
+  // late final String _token = '$token';
 
   int _currentLength = 0;
   final int _maxLength = 15;
@@ -110,9 +111,8 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
   }
 
   void _ModifiedRoutine() async {
-
-    final url = Uri.parse(
-        'http://15.164.88.94:8080/routines/${widget.routineId}');
+    final url =
+    Uri.parse('http://15.164.88.94:8080/routines/${widget.routineId}');
     //   'routineTitle=${Uri.encodeComponent(_controller.text)}&'
     //   'routineCategory=${Uri.encodeComponent(_getCategoryFromIndex(selectedCategoryIndex))}&'
     //   'isAlarmEnabled=$_isAlarmOn&'
@@ -122,7 +122,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
 
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+      'Authorization': 'Bearer $token',
     };
 
     final body = jsonEncode({
@@ -158,7 +158,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
           content: Text(message),
           actions: <Widget>[
             TextButton(
-              child: Text('확인'),
+              child: const Text('확인'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -179,21 +179,19 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF8F8EF),
+      backgroundColor: const Color(0xFFF8F8EF),
       appBar: PreferredSize(
-        preferredSize: Size.fromHeight(50),
+        preferredSize: const Size.fromHeight(50),
         child: AppBar(
-          backgroundColor: Color(0xFF8DCCFF),
-          title: Text(
+          backgroundColor: const Color(0xFF8DCCFF),
+          title: const Text(
             '루틴 수정',
             style: TextStyle(
-                fontSize: 18,
-                color: Colors.white,
-                fontWeight: FontWeight.bold),
+                fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(
+            icon: const Icon(
               Icons.arrow_back,
               size: 20,
             ),
@@ -204,18 +202,20 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
-            SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
             Container(
               decoration: BoxDecoration(
-                color: Color(0xFFF8F8EF),
+                color: const Color(0xFFF8F8EF),
                 borderRadius: BorderRadius.circular(10),
               ),
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: TextField(
                 controller: _controller,
                 maxLength: _maxLength,
-                style: TextStyle(color: Colors.black, fontSize: 18),
-                decoration: InputDecoration(
+                style: const TextStyle(color: Colors.black, fontSize: 18),
+                decoration: const InputDecoration(
                   fillColor: Colors.white,
                   filled: true,
                   labelText: '루틴 이름을 입력해주세요',
@@ -226,7 +226,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
               ),
             ),
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(10),
@@ -240,7 +240,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                 bottom: 10,
               ),
               margin: const EdgeInsets.only(left: 10, right: 10, top: 10),
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Text(
@@ -254,13 +254,13 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
               ),
             ),
             Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(10),
                     bottomRight: Radius.circular(10)),
               ),
-              padding: EdgeInsets.only(left: 10, right: 10, bottom: 10),
+              padding: const EdgeInsets.only(left: 10, right: 10, bottom: 10),
               margin: const EdgeInsets.only(left: 10, right: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -282,7 +282,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                         height: 40,
                         decoration: BoxDecoration(
                           color: isSelected[i]
-                              ? Color(0xFF8DCCFF)
+                              ? const Color(0xFF8DCCFF)
                               : Colors.grey[200],
                           borderRadius: BorderRadius.circular(20),
                         ),
@@ -290,8 +290,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                         child: Text(
                           _getWeekdayName(i),
                           style: TextStyle(
-                            color:
-                            isSelected[i] ? Colors.white : Colors.black,
+                            color: isSelected[i] ? Colors.white : Colors.black,
                           ),
                         ),
                       ),
@@ -317,8 +316,8 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                         width: 30,
                         height: 30,
                       ),
-                      SizedBox(width: 10),
-                      Text(
+                      const SizedBox(width: 10),
+                      const Text(
                         "카테고리",
                         style: TextStyle(
                           fontSize: 18,
@@ -327,7 +326,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(
@@ -341,12 +340,12 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                         child: Container(
                           width: 70,
                           height: 35,
-                          margin: EdgeInsets.only(
+                          margin: const EdgeInsets.only(
                             bottom: 10,
                           ),
                           decoration: BoxDecoration(
                             color: selectedCategoryIndex == index
-                                ? Color(0xFF8DCCFF)
+                                ? const Color(0xFF8DCCFF)
                                 : Colors.white,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(color: Colors.grey),
@@ -372,9 +371,9 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
               ),
-              padding:
-              EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
-              margin: EdgeInsets.only(top: 30, left: 10, right: 10),
+              padding: const EdgeInsets.only(
+                  top: 10, bottom: 10, left: 10, right: 10),
+              margin: const EdgeInsets.only(top: 30, left: 10, right: 10),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -384,18 +383,18 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                     width: 30,
                     height: 30,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
-                  Text("알림",
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Text("알림",
+                      style:
+                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   Container(
-                    padding: EdgeInsets.only(left: 228),
+                    padding: const EdgeInsets.only(left: 228),
                   ),
                   CupertinoSwitch(
                     value: _isAlarmOn,
-                    activeColor: Color(0xFF8DCCFF),
+                    activeColor: const Color(0xFF8DCCFF),
                     onChanged: (value) {
                       setState(() {
                         _isAlarmOn = value;
@@ -406,9 +405,9 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
               ),
             ),
             Container(
-              padding:
-              EdgeInsets.only(top: 20, bottom: 15, left: 10, right: 10),
-              margin: EdgeInsets.only(top: 30, left: 10, right: 10),
+              padding: const EdgeInsets.only(
+                  top: 20, bottom: 15, left: 10, right: 10),
+              margin: const EdgeInsets.only(top: 30, left: 10, right: 10),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
@@ -421,8 +420,8 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                     width: 30,
                     height: 30,
                   ),
-                  SizedBox(width: 10),
-                  Text(
+                  const SizedBox(width: 10),
+                  const Text(
                     "루틴 시작일",
                     style: TextStyle(
                       fontSize: 18,
@@ -430,7 +429,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.only(left: 130),
+                    padding: const EdgeInsets.only(left: 130),
                   ),
                   //시작일 선택
                   GestureDetector(
@@ -448,15 +447,16 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                       }
                     },
                     child: Container(
-                      padding:
-                      EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8, horizontal: 12),
                       decoration: BoxDecoration(
                         color: Colors.grey[100],
                         borderRadius: BorderRadius.circular(5),
                       ),
                       child: Text(
                         formattedDate,
-                        style: TextStyle(fontSize: 16, color: Colors.black),
+                        style:
+                        const TextStyle(fontSize: 16, color: Colors.black),
                       ),
                     ),
                   ),
@@ -467,19 +467,19 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
             Container(
               width: 400,
               height: 80,
-              padding: EdgeInsets.only(top: 30),
+              padding: const EdgeInsets.only(top: 30),
               child: ElevatedButton(
                 onPressed: _ModifiedRoutine,
                 style: ButtonStyle(
                   backgroundColor:
-                  MaterialStateProperty.all<Color>(Color(0xFF8DCCFF)),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
+                  shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
                   ),
                 ),
-                child: Text(
+                child: const Text(
                   "수정하기",
                   style: TextStyle(
                     color: Colors.white,
@@ -488,7 +488,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
           ],
         ),
       ),

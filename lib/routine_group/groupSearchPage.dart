@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
-import '../routine_groupLeader/glOnClickGroupPage.dart';
 import 'GroupRoutinePage.dart';
-import 'OnClickGroupPage.dart';
+import 'package:routine_ade/routine_user/token.dart';
 
 class GroupSearchPage extends StatefulWidget {
   const GroupSearchPage({super.key});
@@ -16,10 +15,8 @@ class GroupSearchPage extends StatefulWidget {
 
 class _GroupSearchPageState extends State<GroupSearchPage> {
   final TextEditingController _searchController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
   List<EntireGroup> allGroups = [];
   List<EntireGroup> filteredGroups = [];
-  bool _isPasswordIncorrect = false;
   bool _isLoading = false;
   bool searchByGroupName = true;
 
@@ -40,8 +37,7 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
 
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
-      'Authorization':
-      'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+      'Authorization': 'Bearer $token',
     });
 
     if (response.statusCode == 200) {
@@ -117,241 +113,95 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
   }
 
   void _showGroupDialog(EntireGroup Egroup) {
-    if (Egroup.isJoined) {
-      _navigateToGroupPage(Egroup.groupId);
-    } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18.0),
-            ),
-            contentPadding:
-            const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-            title: Center(
-              child: Column(
-                children: [
-                  Text(Egroup.groupTitle,
-                      style: const TextStyle(color: Colors.black)),
-                  const SizedBox(height: 1.0), //그룹 여백
-                  Text("그룹 코드 #${Egroup.groupId}",
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.grey, fontSize: 13)),
-                ],
-              ),
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 0), //그룹 코드와 대표 카테고리 사이의 여백
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("대표 카테고리 ",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text(Egroup.groupCategory),
-                  ],
-                ),
-                const SizedBox(
-                  height: 4.0,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("루틴장 ",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text(Egroup.createdUserNickname),
-                    const Text("  인원 ",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text("${Egroup.joinMemberCount}/${Egroup.maxMemberCount}명"),
-                  ],
-                ),
-                const SizedBox(height: 12), // 추가 설명 텍스트를 위한 공간
-                const Divider(
-                  height: 20,
-                  thickness: 0.5,
-                  color: Colors.black,
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                Text(Egroup.description),
-                const SizedBox(
-                  height: 80.0,
-                ),
-              ],
-            ),
-            actions: [
-              ButtonBar(
-                alignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    child: const Text("그룹 가입",
-                        style: TextStyle(color: Color(0xff8DCCFF))),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      if (Egroup.isPublic) {
-                        print("참여 성공!");
-                      } else {
-                        _showPasswordDialog(Egroup);
-                      }
-                    },
-                  ),
-                  TextButton(
-                    child: const Text("취소", style: TextStyle(color: Colors.grey)),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-      );
-    }
-  }
-
-  Future<void> _navigateToGroupPage(int groupId) async {
-    final isAdmin = await _fetchIsGroupAdmin(groupId);
-
-    if (isAdmin) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => glOnClickGroupPage(groupId: groupId),
-        ),
-      );
-    } else {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => OnClickGroupPage(groupId: groupId),
-        ),
-      );
-    }
-  }
-
-  Future<bool> _fetchIsGroupAdmin(int groupId) async {
-    final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId');
-    final response = await http.get(url, headers: {
-      'Content-Type': 'application/json',
-      'Authorization':
-      'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
-    });
-
-    if (response.statusCode == 200) {
-      final decodedResponse = utf8.decode(response.bodyBytes);
-      final data = jsonDecode(decodedResponse);
-
-      if (data is Map<String, dynamic> && data.containsKey('isGroupAdmin')) {
-        return data['isGroupAdmin'] as bool;
-      } else {
-        return false;
-      }
-    } else {
-      print("Error fetching group admin status: ${response.statusCode}");
-      return false;
-    }
-  }
-
-  Future<bool> _joinGroup(int groupId, {String? password}) async {
-    final url = Uri.parse(
-      'http://15.164.88.94:8080/groups/$groupId/join?password=${Uri.encodeComponent(password ?? '')}',
-    );
-
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization':
-        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
-      },
-    );
-
-    final decodedResponseBody = utf8.decode(response.bodyBytes);
-
-    if (response.statusCode == 201) {
-      return true;
-    } else if (response.statusCode == 401) {
-      print("Error: 비밀번호가 틀렸습니다.");
-      return false;
-    } else {
-      print("Error: 서버 응답 에러 발생 (Status Code: ${response.statusCode})");
-      print("Response Body: $decodedResponseBody");
-      return false;
-    }
-  }
-
-  void _showPasswordDialog(EntireGroup group) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return StatefulBuilder(
-          builder: (BuildContext context, StateSetter setState) {
-            return AlertDialog(
-              backgroundColor: Colors.white,
-              title: Center(child: Text("비공개 그룹")),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18.0),
+          ),
+          contentPadding:
+          const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+          title: Center(
+            child: Column(
+              children: [
+                Text(Egroup.groupTitle,
+                    style: const TextStyle(color: Colors.black)),
+                const SizedBox(height: 1.0), //그룹 여백
+                Text("그룹 코드 #${Egroup.groupId}",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(color: Colors.grey, fontSize: 13)),
+              ],
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const SizedBox(height: 0), //그룹 코드와 대표 카테고리 사이의 여백
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: "비밀번호 4자리 입력",
-                      errorText: _isPasswordIncorrect ? "비밀번호가 틀렸습니다." : null,
-                    ),
-                  ),
+                  const Text("대표 카테고리 ",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(Egroup.groupCategory),
                 ],
               ),
-              actions: [
-                ButtonBar(
-                  alignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      child: Text("취소"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        _passwordController.clear();
-                        setState(() {
-                          _isPasswordIncorrect = false;
-                        });
-                      },
-                    ),
-                    TextButton(
-                      child: Text("확인"),
-                      onPressed: () async {
-                        // 서버로 비밀번호 검증 요청
-                        bool joinSuccess = await _joinGroup(
-                          group.groupId,
-                          password: _passwordController.text,
-                        );
-
-                        if (joinSuccess) {
-                          Navigator.of(context).pop(); // 다이얼로그 닫기
-                          _navigateToGroupPage(group.groupId); // 그룹 페이지로 이동
-                          _passwordController.clear(); // 비밀번호 필드 초기화
-                          setState(() {
-                            _isPasswordIncorrect = false;
-                          });
-                        } else {
-                          setState(() {
-                            _isPasswordIncorrect = true; // 비밀번호 틀림 표시
-                          });
-                        }
-                      },
-                    ),
-                  ],
+              const SizedBox(
+                height: 4.0,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text("루틴장 ",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(Egroup.createdUserNickname),
+                  const Text("  인원 ",
+                      style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text("${Egroup.joinMemberCount}/${Egroup.maxMemberCount}명"),
+                ],
+              ),
+              const SizedBox(height: 12), // 추가 설명 텍스트를 위한 공간
+              const Divider(
+                height: 20,
+                thickness: 0.5,
+                color: Colors.black,
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              Text(Egroup.description),
+              const SizedBox(
+                height: 80.0,
+              ),
+            ],
+          ),
+          actions: [
+            ButtonBar(
+              alignment: MainAxisAlignment.end,
+              children: [
+                TextButton(
+                  child: const Text("그룹 가입",
+                      style: TextStyle(color: Color(0xff8DCCFF))),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    if (Egroup.isPublic) {
+                      print("참여 성공!");
+                    } else {
+                      // _showPasswordDialog(Egroup);
+                    }
+                  },
+                ),
+                TextButton(
+                  child: const Text("취소", style: TextStyle(color: Colors.grey)),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                 ),
               ],
-            );
-          },
+            ),
+          ],
         );
       },
     );
@@ -561,38 +411,34 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
 class EntireGroup {
   final int groupId;
   final String groupTitle;
-  final String description;
   final String groupCategory;
   final String createdUserNickname;
-  final int maxMemberCount;
   final int joinMemberCount;
+  final int maxMemberCount;
+  final String description;
   final bool isPublic;
-  final bool isJoined;
 
   EntireGroup({
     required this.groupId,
     required this.groupTitle,
-    required this.description,
     required this.groupCategory,
     required this.createdUserNickname,
-    required this.maxMemberCount,
     required this.joinMemberCount,
+    required this.maxMemberCount,
+    required this.description,
     required this.isPublic,
-    required this.isJoined,
-
   });
 
   factory EntireGroup.fromJson(Map<String, dynamic> json) {
     return EntireGroup(
-      groupId: json['groupId'] ?? 0,
-      groupTitle: json['groupTitle'] ?? 'Unknown',
+      groupId: json['groupId'],
+      groupTitle: json['groupTitle'],
+      groupCategory: json['groupCategory'],
+      createdUserNickname: json['createdUserNickname'],
+      joinMemberCount: json['joinMemberCount'],
+      maxMemberCount: json['maxMemberCount'],
       description: json['description'],
-      groupCategory: json['groupCategory'] ?? '기타',
-      createdUserNickname: json['createdUserNickname'] ?? 'Unknown',
-      maxMemberCount: json['maxMemberCount'] ?? 0,
-      joinMemberCount: json['joinMemberCount'] ?? 0,
-      isPublic: json['isPublic'] ?? true,
-      isJoined: json['isJoined'] ?? true,
+      isPublic: json['isPublic'],
     );
   }
 }

@@ -6,15 +6,15 @@ import 'package:intl/intl.dart';
 import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_group/groupManagement.dart';
-import 'package:routine_ade/routine_groupLeader/AddGroupRoutinePage.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:http/http.dart' as http;
 import '../routine_group/GroupType.dart';
 import '../routine_group/groupIntroRule.dart';
-import '../routine_groupLeader/glAddRoutinePage.dart';
 import 'glgroupManagement.dart';
 import 'groupRoutineEditPage.dart';
+import 'AddGroupRoutinePage.dart';
 import 'groupType.dart';
+import 'package:routine_ade/routine_user/token.dart';
 
 // 전역 함수로 getCategoryColor를 정의
 Color getCategoryColor(String category) {
@@ -67,8 +67,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
     final response = await http.get(
       Uri.parse('http://15.164.88.94:8080/groups/$groupId'),
       headers: {
-        'Authorization':
-        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw', // 필요 시 여기에 토큰을 추가
+        'Authorization': 'Bearer $token',
         'Accept': 'application/json', // JSON 응답을 기대하는 경우
       },
     );
@@ -228,6 +227,8 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
                   return buildDrawerMemberTile(
                     member.nickname,
                     member.profileImage,
+                    groupInfo.groupId, // groupId를 groupInfo에서 가져옴
+                    member.userId, // userId 전달
                     isLeader: groupResponse.isGroupAdmin &&
                         member.nickname == groupInfo.createdUserNickname,
                   );
@@ -288,7 +289,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
     );
   }
 
-  ListTile buildDrawerMemberTile(String title, String imagePath,
+  ListTile buildDrawerMemberTile(String title, String imagePath, int groupId, int userId,
       {bool isLeader = false}) {
     return ListTile(
       leading: CircleAvatar(
@@ -313,7 +314,37 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
           ? null
           : TextButton(
         onPressed: () {
-          // 그룹원 내보내기 기능 추가
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: const Text('정말 내보내시겠습니까?'),
+                actions: <Widget>[
+                  TextButton(
+                    child: const Text('취소'),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // 다이얼로그 닫기
+                    },
+                  ),
+                  TextButton(
+                    child: const Text('내보내기'),
+                    onPressed: () async {
+                      Navigator.of(context).pop(); // 다이얼로그 닫기
+                      try {
+                        await deleteMember(groupId, userId);
+                        // 성공 시 추가 동작을 수행할 수 있습니다. 예: UI 업데이트
+                      } catch (error) {
+                        // 오류 처리
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('멤버 삭제 실패')),
+                        );
+                      }
+                    },
+                  ),
+                ],
+              );
+            },
+          );
         },
         style: ButtonStyle(
           padding: MaterialStateProperty.all<EdgeInsets>(
@@ -338,6 +369,23 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
       ),
     );
   }
+
+  Future<void> deleteMember(int groupId, int userId) async {
+    final url = 'http://15.164.88.94:8080/groups/$groupId/members/$userId';
+    final response = await http.delete(
+      Uri.parse(url),
+      headers: {
+        'Authorization':
+        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete member');
+    }
+  }
+
 
   Container buildLeaveGroupTile() {
     return Container(
@@ -534,7 +582,6 @@ void _showRoutineDialog(
         title: Text(routineTitle),
         actions: <Widget>[
           TextButton(
-            child: const Text('수정'),
             onPressed: () {
               Navigator.of(context).pop(); // 다이얼로그 닫기
               Navigator.push(
@@ -547,6 +594,17 @@ void _showRoutineDialog(
                         repeatDays: const [])),
               );
             },
+            child: Row(
+              children: [
+                Image.asset(
+                  "assets/images/edit.png",
+                  width: 20,
+                  height: 20,
+                ),
+                SizedBox(width: 20,),
+                Text('수정', style: TextStyle(fontSize: 18),),
+              ],
+            ),
           ),
           TextButton(
             child: const Text('취소'),

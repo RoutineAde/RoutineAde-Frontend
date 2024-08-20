@@ -3,9 +3,10 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'GroupType.dart';
+import 'package:routine_ade/routine_user/token.dart';
 
 class AddGroupPage extends StatefulWidget {
-  const AddGroupPage({Key? key}) : super(key: key);
+  const AddGroupPage({super.key});
 
   @override
   State<AddGroupPage> createState() => _AddGroupPageState();
@@ -14,7 +15,8 @@ class AddGroupPage extends StatefulWidget {
 class _AddGroupPageState extends State<AddGroupPage> {
   final TextEditingController _groupNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _groupDescriptionController = TextEditingController();
+  final TextEditingController _groupDescriptionController =
+  TextEditingController();
   int _selectedMemberCount = 0;
 
   // 카테고리 선택 (한번에 하나만)
@@ -46,13 +48,14 @@ class _AddGroupPageState extends State<AddGroupPage> {
     }
 
     // 비밀번호 값 설정
-    final groupPassword = _passwordController.text.isEmpty ? null : _passwordController.text;
+    final groupPassword =
+    _passwordController.text.isEmpty ? null : _passwordController.text;
 
     // 요청 바디 준비
     final url = Uri.parse('http://15.164.88.94:8080/groups');
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+      'Authorization': 'Bearer $token',
     };
     final body = jsonEncode({
       'groupTitle': _groupNameController.text,
@@ -87,7 +90,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
           content: Text(message),
           actions: <Widget>[
             TextButton(
-              child: Text('확인'),
+              child: const Text('확인'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -110,12 +113,12 @@ class _AddGroupPageState extends State<AddGroupPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(
+          title: const Text(
             '모집인원 선택',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
           ),
           content: Container(
-            padding: EdgeInsets.symmetric(vertical: 20),
+            padding: const EdgeInsets.symmetric(vertical: 20),
             width: double.maxFinite,
             height: 300,
             child: ListView.builder(
@@ -145,10 +148,10 @@ class _AddGroupPageState extends State<AddGroupPage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Color(0xFFF8F8EF),
+        backgroundColor: const Color(0xFFF8F8EF),
         appBar: AppBar(
-          backgroundColor: Color(0xFF8DCCFF),
-          title: Text(
+          backgroundColor: const Color(0xFF8DCCFF),
+          title: const Text(
             '그룹 만들기',
             style: TextStyle(
               fontSize: 25,
@@ -158,57 +161,62 @@ class _AddGroupPageState extends State<AddGroupPage> {
           ),
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context),
           ),
         ),
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              SizedBox(height: 10,),
+              const SizedBox(
+                height: 10,
+              ),
               Container(
-                color: Color(0xFFF8F8EF),
-                padding: EdgeInsets.all(10),
+                color: const Color(0xFFF8F8EF),
+                padding: const EdgeInsets.all(10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     TextField(
                       controller: _groupNameController,
                       maxLength: 10,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                      decoration: InputDecoration(
+                      style: const TextStyle(color: Colors.black, fontSize: 18),
+                      decoration: const InputDecoration(
                         fillColor: Colors.white,
                         filled: true,
                         labelText: '그룹명을 입력해주세요',
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
+                        contentPadding:
+                        EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
                         counterText: "", // 글자 수 표시 없애기
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     TextField(
                       controller: _passwordController,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                      decoration: InputDecoration(
+                      style: const TextStyle(color: Colors.black, fontSize: 18),
+                      decoration: const InputDecoration(
                         fillColor: Colors.white,
                         filled: true,
                         labelText: '비밀번호(선택사항)',
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
+                        contentPadding:
+                        EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
                       ),
                     ),
                     Container(
                       color: Colors.white,
-                      padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
+                      padding:
+                      const EdgeInsets.only(left: 10, right: 10, top: 10),
                       margin: const EdgeInsets.only(top: 30),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Row(
+                          const Row(
                             children: [
                               Text(
                                 "대표 카테고리",
@@ -219,7 +227,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: List.generate(
@@ -233,10 +241,10 @@ class _AddGroupPageState extends State<AddGroupPage> {
                                 child: Container(
                                   width: 70,
                                   height: 35,
-                                  margin: EdgeInsets.only(bottom: 10),
+                                  margin: const EdgeInsets.only(bottom: 10),
                                   decoration: BoxDecoration(
                                     color: selectedCategoryIndex == index
-                                        ? Color(0xffE6E288)
+                                        ? const Color(0xffE6E288)
                                         : Colors.white,
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(color: Colors.grey),
@@ -258,13 +266,14 @@ class _AddGroupPageState extends State<AddGroupPage> {
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                      margin: EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
+                      margin: const EdgeInsets.only(top: 20),
                       color: Colors.white,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             "모집인원",
                             style: TextStyle(
                               fontSize: 18,
@@ -274,14 +283,14 @@ class _AddGroupPageState extends State<AddGroupPage> {
                           GestureDetector(
                             onTap: _selectMemberCount,
                             child: Container(
-                              padding: EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 color: Colors.grey[100],
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Text(
                                 '$_selectedMemberCount명',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 16,
                                   color: Colors.black,
                                 ),
@@ -295,13 +304,14 @@ class _AddGroupPageState extends State<AddGroupPage> {
                 ),
               ),
               Container(
-                color: Color(0xFFF8F8EF),
-                padding: EdgeInsets.only(top: 20, bottom: 15, left: 10, right: 10),
+                color: const Color(0xFFF8F8EF),
+                padding: const EdgeInsets.only(
+                    top: 20, bottom: 15, left: 10, right: 10),
                 child: TextField(
                   controller: _groupDescriptionController,
                   maxLines: 6,
-                  style: TextStyle(color: Colors.black, fontSize: 18),
-                  decoration: InputDecoration(
+                  style: const TextStyle(color: Colors.black, fontSize: 18),
+                  decoration: const InputDecoration(
                     fillColor: Colors.white,
                     filled: true,
                     labelText: '그룹 소개를 입력해주세요',
@@ -314,18 +324,19 @@ class _AddGroupPageState extends State<AddGroupPage> {
               Container(
                 width: 400,
                 height: 80,
-                padding: EdgeInsets.only(top: 20),
+                padding: const EdgeInsets.only(top: 20),
                 child: ElevatedButton(
                   onPressed: _addGroup,
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF8DCCFF)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    backgroundColor:
+                    WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     "그룹 추가하기",
                     style: TextStyle(
                       color: Colors.white,
@@ -334,7 +345,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 20), // 버튼 아래 여백
+              const SizedBox(height: 20), // 버튼 아래 여백
             ],
           ),
         ),
