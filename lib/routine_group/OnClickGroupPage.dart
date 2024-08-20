@@ -512,23 +512,3 @@ void _showRoutineDialog(BuildContext context, String routineTitle) {
     },
   );
 }
-
-class GroupInfo {
-  final String groupTitle;
-  final String groupDescription;
-  final int groupId;
-
-  GroupInfo({
-    required this.groupTitle,
-    required this.groupDescription,
-    required this.groupId,
-  });
-
-  factory GroupInfo.fromJson(Map<String, dynamic> json) {
-    return GroupInfo(
-      groupTitle: json['groupTitle'] ?? 'No title',
-      groupDescription: json['groupDescription'] ?? 'No description',
-      groupId: json['groupId'] != null ? json['groupId'] as int : 0,
-    );
-  }
-}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:routine_ade/routine_groupLeader/groupEdit.dart';
 import 'package:routine_ade/routine_user/token.dart';
 
 // GroupInfo 모델 클래스 정의
@@ -107,12 +108,12 @@ class _GroupIntroRuleState extends State<GroupIntroRule> {
             const SizedBox(width: 30),
             GestureDetector(
               onTap: () {
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(
-                //     builder: (context) => GroupEdit(groupId: widget.groupId),
-                //   ),
-                // );
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => groupEdit(groupId: widget.groupId),
+                  ),
+                );
               },
               child: Image.asset(
                 'assets/images/settings-cog.png',

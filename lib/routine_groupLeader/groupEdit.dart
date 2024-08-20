@@ -25,6 +25,12 @@ class _groupEditState extends State<groupEdit> {
   List<String> isCategory = ["일상", "건강", "자기개발", "자기관리", "기타"];
 
   @override
+  void initState() {
+    super.initState();
+    _loadGroupInfo();
+  }
+
+  @override
   void dispose() {
     _groupNameController.dispose();
     _passwordController.dispose();
@@ -32,27 +38,54 @@ class _groupEditState extends State<groupEdit> {
     super.dispose();
   }
 
-  Future<bool> fetchIsGroupAdmin(int groupId) async {
-    final url = Uri.parse("http://15.164.88.94:8080/groups/$groupId");
+  Future<void> _loadGroupInfo() async {
+    final url = Uri.parse("http://15.164.88.94:8080/groups/${widget.groupId}");
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearere $token',
+      'Authorization': 'Bearer $token',
     });
 
     if (response.statusCode == 200) {
+      print("성공");
       final decodedResponse = utf8.decode(response.bodyBytes);
       final data = jsonDecode(decodedResponse);
 
-      if (data is Map<String, dynamic> && data.containsKey('isGroupAdmin')) {
-        return data['isGroupAdmin'] as bool;
-      } else {
-        return false;
-      }
+      // 그룹 정보 로드
+      final groupInfo = data['groupInfo'];
+      _groupNameController.text = groupInfo['groupTitle'] ?? '';
+      _passwordController.text = groupInfo['groupPassword'] ?? '';
+      _groupDescriptionController.text = groupInfo['description'] ?? '';
+      _selectedMemberCount = groupInfo['maxMember'] ?? 0;
+      selectedCategoryIndex =
+          isCategory.indexOf(groupInfo['groupCategory'] ?? '');
+
+      setState(() {});
     } else {
-      print("Error fetching group admin status: ${response.statusCode}");
-      return false;
+      print("Error fetching group info: ${response.statusCode}");
     }
   }
+
+  // Future<bool> fetchIsGroupAdmin(int groupId) async {
+  //   final url = Uri.parse("http://15.164.88.94:8080/groups/$groupId");
+  //   final response = await http.get(url, headers: {
+  //     'Content-Type': 'application/json',
+  //     'Authorization': 'Bearer $token',
+  //   });
+
+  //   if (response.statusCode == 200) {
+  //     final decodedResponse = utf8.decode(response.bodyBytes);
+  //     final data = jsonDecode(decodedResponse);
+
+  //     if (data is Map<String, dynamic> && data.containsKey('isGroupAdmin')) {
+  //       return data['isGroupAdmin'] as bool;
+  //     } else {
+  //       return false;
+  //     }
+  //   } else {
+  //     print("Error fetching group admin status: ${response.statusCode}");
+  //     return false;
+  //   }
+  // }
 
   // 그룹 수정 API 호출 함수
   void _editGroup() async {
