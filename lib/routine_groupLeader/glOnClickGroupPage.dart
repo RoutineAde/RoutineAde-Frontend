@@ -477,7 +477,8 @@ class RoutinePage extends StatelessWidget {
 
         // 각 카테고리와 루틴 아이템을 동적으로 추가
         ...routineCategories.map((category) {
-          final color = getCategoryColor(category.routineCategory); // 카테고리 색상 설정
+          final color = getCategoryColor(
+              category.routineCategory); // 카테고리 색상 설정
           return _buildCategorySection(
             category.routineCategory,
             color,
@@ -487,6 +488,7 @@ class RoutinePage extends StatelessWidget {
                 routine.routineTitle,
                 routine.repeatDay.join(", "),
                 routine.routineId,
+                category.routineCategory,
               );
             }).toList(),
           );
@@ -495,8 +497,8 @@ class RoutinePage extends StatelessWidget {
     );
   }
 
-  Widget _buildCategorySection(
-      String title, Color color, List<Widget> routines) {
+  Widget _buildCategorySection(String title, Color color,
+      List<Widget> routines) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -509,7 +511,8 @@ class RoutinePage extends StatelessWidget {
             ),
             margin: const EdgeInsets.fromLTRB(30, 40, 0, 16),
             padding: const EdgeInsets.symmetric(
-                horizontal: 20.0), // 좌우 여백을 추가하여 텍스트 주변에 공간을 줍니다.
+                horizontal: 20.0),
+            // 좌우 여백을 추가하여 텍스트 주변에 공간을 줍니다.
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -532,10 +535,13 @@ class RoutinePage extends StatelessWidget {
     );
   }
 
-  Widget _buildRoutineItem(
-      BuildContext context, String title, String schedule, int routineId) {
+  Widget _buildRoutineItem(BuildContext context, String title, String schedule,
+      int routineId, String routineCategory) {
     return GestureDetector(
-      onTap: () => {_showRoutineDialog(context, title, routineId)},
+      onTap: () =>
+      {
+        _showRoutineDialog(context, title, routineId, routineCategory)
+      },
       child: Container(
         margin: const EdgeInsets.fromLTRB(20, 0, 0, 16),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -574,24 +580,46 @@ class RoutinePage extends StatelessWidget {
 }
 
 void _showRoutineDialog(
-    BuildContext context, String routineTitle, int routineId) {
+    BuildContext context,
+    String routineTitle,
+    int routineId,
+    String routineCategory, // routineCategory 추가
+    ) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
+      final categoryColor = getCategoryColor(routineCategory); // 카테고리 색상 얻기
+
       return AlertDialog(
-        title: Text(routineTitle),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(routineTitle),
+            const SizedBox(height: 8),
+            // routineCategory를 추가하고 색상 적용
+            Text(
+              routineCategory,
+              style: TextStyle(
+                color: categoryColor, // 카테고리 색상 적용
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
         actions: <Widget>[
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop(); // 다이얼로그 닫기
+              Navigator.of(context).pop(); // Close dialog
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => groupRoutineEditPage(
-                        groupId: 1,
-                        routineTitle: routineTitle,
-                        routineId: routineId,
-                        repeatDays: const [])),
+                  builder: (context) => groupRoutineEditPage(
+                    groupId: 1,
+                    routineTitle: routineTitle,
+                    routineId: routineId,
+                    repeatDays: const [],
+                  ),
+                ),
               );
             },
             child: Row(
@@ -601,16 +629,43 @@ void _showRoutineDialog(
                   width: 20,
                   height: 20,
                 ),
-                SizedBox(width: 20,),
-                Text('수정', style: TextStyle(fontSize: 18),),
+                const SizedBox(width: 20),
+                const Text(
+                  '수정',
+                  style: TextStyle(fontSize: 18, color: Colors.black54),
+                ),
               ],
             ),
           ),
           TextButton(
-            child: const Text('취소'),
             onPressed: () {
-              Navigator.of(context).pop(); // 다이얼로그 닫기
+              Navigator.of(context).pop(); // Close dialog
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => groupRoutineEditPage(
+                    groupId: 1,
+                    routineTitle: routineTitle,
+                    routineId: routineId,
+                    repeatDays: const [],
+                  ),
+                ),
+              );
             },
+            child: Row(
+              children: [
+                Image.asset(
+                  "assets/images/delete.png",
+                  width: 20,
+                  height: 20,
+                ),
+                const SizedBox(width: 20),
+                const Text(
+                  '삭제',
+                  style: TextStyle(fontSize: 18, color: Color(0xFF8DCCFF)),
+                ),
+              ],
+            ),
           ),
         ],
       );
