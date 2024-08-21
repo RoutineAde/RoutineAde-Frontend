@@ -109,83 +109,49 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18.0),
-            ),
-            contentPadding:
-            const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-            title: Center(
-              child: Column(
-                children: [
-                  Text(Egroup.groupTitle,
-                      style: const TextStyle(color: Colors.black)),
-                  const SizedBox(height: 1.0), //그룹 여백
-                  Text("그룹 코드 #${Egroup.groupId}",
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(color: Colors.grey, fontSize: 13)),
-                ],
+            title: Center(child: Text(Egroup.groupTitle)),
+            content: SingleChildScrollView(
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.2,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("그룹 코드 #${Egroup.groupId}"),
+                    Text("대표 카테고리 ${Egroup.groupCategory}"),
+                    Text("루틴장 ${Egroup.createdUserNickname}"),
+                    Text(
+                        "인원 ${Egroup.joinMemberCount}/${Egroup.maxMemberCount}명"),
+                    const SizedBox(height: 20),
+                    const Divider(),
+                    const SizedBox(height: 20),
+                    Text(Egroup.description),
+                  ],
+                ),
               ),
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 0), //그룹 코드와 대표 카테고리 사이의 여백
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("대표 카테고리 ",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text(Egroup.groupCategory),
-                  ],
-                ),
-                const SizedBox(
-                  height: 4.0,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Text("루틴장 ",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text(Egroup.createdUserNickname),
-                    const Text("  인원 ",
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    Text("${Egroup.joinMemberCount}/${Egroup.maxMemberCount}명"),
-                  ],
-                ),
-                const SizedBox(height: 12), // 추가 설명 텍스트를 위한 공간
-                const Divider(
-                  height: 20,
-                  thickness: 0.5,
-                  color: Colors.black,
-                ),
-                const SizedBox(
-                  height: 12,
-                ),
-                Text(Egroup.description),
-                const SizedBox(
-                  height: 80.0,
-                ),
-              ],
             ),
             actions: [
               ButtonBar(
                 alignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    child: const Text("그룹 가입",
-                        style: TextStyle(color: Color(0xff8DCCFF))),
-                    onPressed: () {
-                      Navigator.of(context).pop();
+                    child: const Text("가입하기"),
+                    onPressed: () async {
+                      Navigator.of(context).pop(); // 다이얼로그 닫기
                       if (Egroup.isPublic) {
-                        print("참여 성공!");
+                        bool joinSuccess = await _joinGroup(Egroup.groupId);
+                        if (joinSuccess) {
+                          navigateToGroupPage(Egroup.groupId); // 가입 성공 시 페이지 이동
+                        } else {
+                          print("그룹 참여 실패!");
+                        }
                       } else {
-                        _showPasswordDialog(Egroup);
+                        _showPasswordDialog(Egroup); // 비밀번호 입력 필요 시 다이얼로그 표시
                       }
                     },
                   ),
                   TextButton(
-                    child: const Text("취소", style: TextStyle(color: Colors.grey)),
+                    child: const Text("취소"),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },

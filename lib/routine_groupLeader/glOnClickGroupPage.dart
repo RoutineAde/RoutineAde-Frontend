@@ -642,18 +642,8 @@ void _showRoutineDialog(
           ),
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop(); // Close dialog
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => groupRoutineEditPage(
-                    groupId: 1,
-                    routineTitle: routineTitle,
-                    routineId: routineId,
-                    repeatDays: const [],
-                  ),
-                ),
-              );
+              Navigator.of(context).pop(); // 현재 다이얼로그 닫기
+              _showDeleteConfirmationDialog(context, routineTitle, routineId); // 삭제 확인 다이얼로그 열기
             },
             child: Row(
               children: [
@@ -674,6 +664,110 @@ void _showRoutineDialog(
       );
     },
   );
+}
+
+// 삭제 확인 다이얼로그 함수
+void _showDeleteConfirmationDialog(BuildContext context, String routineTitle, int routineId) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center, // 수평 가운데 정렬
+          children: [
+            const SizedBox(height: 20),
+            Image.asset(
+              "assets/images/warning.png", // warning 이미지 경로
+              width: 60, // 원하는 크기로 이미지 조정
+              height: 60,
+            ),
+            const SizedBox(height: 16), // 이미지와 텍스트 사이의 간격
+            const Text(
+              "루틴 삭제",
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center, // 텍스트 가운데 정렬
+            ),
+          ],
+        ),
+        content: SizedBox(
+          height: 150, // 다이얼로그의 높이 조절
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center, // 모든 텍스트 가운데 정렬
+            mainAxisAlignment: MainAxisAlignment.center, // 텍스트들이 수직 가운데 정렬되도록 추가
+            children: const [
+              Text(
+                "루틴을 삭제하면 해당 루틴의",
+                style: TextStyle(fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                "모든 기록이 사라지며,",
+                style: TextStyle(fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+              Text(
+                "루틴원들에게도 삭제됩니다.",
+                style: TextStyle(fontSize: 16),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+        actions: <Widget>[
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center, // 버튼들을 가운데 정렬
+            children: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop(); // 다이얼로그 닫기
+                },
+                child: const Text("취소", style: TextStyle(fontSize: 16),),
+              ),
+              const SizedBox(width: 10), // 버튼 사이의 간격 조절
+              TextButton(
+                onPressed: () async {
+                  // Navigator.of(context).pop(); // 다이얼로그 닫기
+                  // try {t 
+                  //   await deleteGroupRoutine(groupId, routineId);
+                  //   // 성공 시 추가 동작을 수행할 수 있습니다. 예: UI 업데이트
+                  // } catch (error) {
+                  //   // 오류 처리
+                  //   ScaffoldMessenger.of(context).showSnackBar(
+                  //     const SnackBar(content: Text('그룹 루틴 삭제 실패')),
+                  //   );
+                  // }
+                },
+                child: const Text(
+                  "삭제",
+                  style: TextStyle(fontSize: 16, color: Color(0xFF8DCCFF)),
+                ),
+              ),
+            ],
+          ),
+        ],
+      );
+    },
+  );
+}
+
+Future<void> deleteGroupRoutine(int groupId, int routineId) async {
+  final url = 'http://15.164.88.94:8080/groups/$groupId/group-routines/$routineId';
+  final response = await http.delete(
+    Uri.parse(url),
+    headers: {
+      'Authorization':
+      'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM',
+      'Accept': 'application/json',
+    },
+  );
+
+  if (response.statusCode != 200) {
+    throw Exception('Failed to delete group routine');
+  }
 }
 
 class GroupInfo {
