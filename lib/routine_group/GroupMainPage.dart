@@ -1,6 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:routine_ade/routine_group/OnClickGroupPage.dart';
+import 'package:routine_ade/routine_groupLeader/glOnClickGroupPage.dart';
 import 'dart:convert';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
@@ -56,6 +58,14 @@ class _GroupMainPageState extends State<GroupMainPage> {
     _fetchGroups();
   }
 
+  //가입일자 계산
+  int calculateDaysSinceCreation(int joinDate) {
+    final now = DateTime.now();
+    final joinDateTime = DateTime.fromMicrosecondsSinceEpoch(joinDate);
+    return now.difference(joinDateTime).inDays + 1;
+  }
+
+  //내그룹 조회
   Future<void> _fetchGroups() async {
     final url = Uri.parse('http://15.164.88.94:8080/groups/my');
     final response = await http.get(url, headers: {
@@ -81,12 +91,46 @@ class _GroupMainPageState extends State<GroupMainPage> {
     }
   }
 
-  //가입일자 계산
+  Future<bool> fetchIsGroupAdmin(int groupId) async {
+    final url = Uri.parse("http://15.164.88.94:8080/groups/$groupId");
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
 
-  int calculateDaysSinceCreation(int joinDate) {
-    final now = DateTime.now();
-    final joinDateTime = DateTime.fromMicrosecondsSinceEpoch(joinDate);
-    return now.difference(joinDateTime).inDays + 1;
+    if (response.statusCode == 200) {
+      final decodedResponse = utf8.decode(response.bodyBytes);
+      final data = jsonDecode(decodedResponse);
+
+      if (data is Map<String, dynamic> && data.containsKey('isGroupAdmin')) {
+        return data['isGroupAdmin'] as bool;
+      } else {
+        return false;
+      }
+    } else {
+      print("Error fetching group admin status: ${response.statusCode}");
+      return false;
+    }
+  }
+
+  Future<void> navigateToGroupPage(int groupId) async {
+    final isAdmin = await fetchIsGroupAdmin(groupId);
+
+    if (isAdmin) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (ctx) => glOnClickGroupPage(groupId: groupId),
+        ),
+      );
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (ctx) => OnClickGroupPage(groupId: groupId),
+        ),
+      );
+    }
   }
 
   // 카테고리 색상 설정 함수
@@ -149,65 +193,73 @@ class _GroupMainPageState extends State<GroupMainPage> {
                   itemBuilder: (context, index) {
                     final group = groups[index];
                     Color categoryColor = getCategoryColor(group.groupCategory);
-                    return Card(
-                      margin: const EdgeInsets.all(8.0),
-                      color: const Color(0xFFE6F5F8),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      group.groupTitle,
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
+
+                    return InkWell(
+                      onTap: () {
+                        navigateToGroupPage(group.groupId);
+                      },
+                      child: Card(
+                        margin: const EdgeInsets.all(8.0),
+                        color: const Color(0xFFE6F5F8),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      Text(
+                                        group.groupTitle,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                    if (!group.isPublic)
-                                      Padding(
-                                        padding:
-                                        const EdgeInsets.only(left: 8.0),
-                                        child: Image.asset(
-                                          "assets/images/lock.png",
-                                          width: 20,
-                                          height: 20,
-                                        ), // 비밀번호 방 여부
-                                      ),
-                                  ],
-                                ),
-                                Text("가입 ${group.joinDate}일차"),
-                              ],
-                            ),
-                            const SizedBox(height: 8.0),
-                            Row(
-                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text("대표 카테고리 "),
-                                Text(group.groupCategory,
-                                    style: TextStyle(color: categoryColor)),
-                                Expanded(child: Container()), // 간격 조절
-                                Align(
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                      "인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8.0),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("루틴장 ${group.createdUserNickname}"),
-                                Text("그룹코드 ${group.groupId}"),
-                              ],
-                            ),
-                          ],
+                                      if (!group.isPublic)
+                                        Padding(
+                                          padding:
+                                          const EdgeInsets.only(left: 8.0),
+                                          child: Image.asset(
+                                            "assets/images/lock.png",
+                                            width: 20,
+                                            height: 20,
+                                          ), // 비밀번호 방 여부
+                                        ),
+                                    ],
+                                  ),
+                                  Text("가입 ${group.joinDate}일차"),
+                                ],
+                              ),
+                              const SizedBox(height: 8.0),
+                              Row(
+                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text("대표 카테고리 "),
+                                  Text(group.groupCategory,
+                                      style: TextStyle(color: categoryColor)),
+                                  Expanded(child: Container()), // 간격 조절
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                        "인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8.0),
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("루틴장 ${group.createdUserNickname}"),
+                                  Text("그룹코드 ${group.groupId}"),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     );

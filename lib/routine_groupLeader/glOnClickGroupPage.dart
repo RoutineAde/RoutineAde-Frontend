@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_group/groupManagement.dart';
+import 'package:routine_ade/routine_groupLeader/groupDelete.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:http/http.dart' as http;
 import '../routine_group/GroupType.dart';
@@ -13,7 +14,6 @@ import '../routine_group/groupIntroRule.dart';
 import 'glgroupManagement.dart';
 import 'groupRoutineEditPage.dart';
 import 'AddGroupRoutinePage.dart';
-import 'groupType.dart';
 import 'package:routine_ade/routine_user/token.dart';
 
 // 전역 함수로 getCategoryColor를 정의
@@ -157,7 +157,8 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else {
                 final groupResponse = snapshot.data!;
-                return RoutinePage(groupResponse.groupRoutines);
+                return RoutinePage(groupResponse.groupRoutines,
+                    groupId: widget.groupId);
               }
             },
           ),
@@ -171,14 +172,15 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const AddGroupRoutinePage(groupId: 1)));
+                  builder: (context) =>
+                  const AddGroupRoutinePage(groupId: 1)));
         },
-        backgroundColor: const Color(0xffE6E288),
+        backgroundColor: const Color(0xffA1D1F9),
         shape: const CircleBorder(),
         child: Image.asset(
           "assets/images/add-button.png",
-          width: 30,
-          height: 30,
+          width: 80,
+          height: 80,
         ),
       )
           : null,
@@ -400,13 +402,13 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const glgroupManagement()));
+                  builder: (context) => groupDelete(groupId: widget.groupId)));
         },
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end, // 이미지가 오른쪽에 배치되도록 설정
+          mainAxisAlignment: MainAxisAlignment.start, // 이미지가 오른쪽에 배치되도록 설정
           children: [
             Image.asset(
-              'assets/images/new-icons/setting.png',
+              'assets/images/sign-out.png',
               width: 30,
               height: 30,
             ),
@@ -419,8 +421,9 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
 
 class RoutinePage extends StatelessWidget {
   final List<RoutineCategory> routineCategories;
+  final int groupId;
 
-  const RoutinePage(this.routineCategories, {super.key});
+  const RoutinePage(this.routineCategories, {required this.groupId, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -466,7 +469,7 @@ class RoutinePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const groupIntroRule(),
+                      builder: (context) => const GroupIntroRule(groupId: 1,),
                     ),
                   );
                 },
@@ -671,4 +674,24 @@ void _showRoutineDialog(
       );
     },
   );
+}
+
+class GroupInfo {
+  final String groupTitle;
+  final String groupDescription;
+  final int groupId;
+
+  GroupInfo({
+    required this.groupTitle,
+    required this.groupDescription,
+    required this.groupId,
+  });
+
+  factory GroupInfo.fromJson(Map<String, dynamic> json) {
+    return GroupInfo(
+      groupTitle: json['groupTitle'] ?? 'No title',
+      groupDescription: json['groupDescription'] ?? 'No description',
+      groupId: json['groupId'] != null ? json['groupId'] as int : 0,
+    );
+  }
 }

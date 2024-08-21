@@ -1,3 +1,4 @@
+//루틴그룹  ui
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -29,10 +30,10 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
   @override
   void initState() {
     super.initState();
-    _fetchGroups();
+    fetchGroups();
   }
 
-  Future<void> _fetchGroups({bool loadMore = false, String? category}) async {
+  Future<void> fetchGroups({bool loadMore = false, String? category}) async {
     if (loadMore) {
       _currentPage++;
     } else {
@@ -101,57 +102,90 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
 
   void _showGroupDialog(EntireGroup Egroup) {
     if (Egroup.isJoined) {
-      _navigateToGroupPage(Egroup.groupId);
+      navigateToGroupPage(Egroup.groupId);
     } else {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Colors.white,
-            title: Center(child: Text(Egroup.groupTitle)),
-            content: SingleChildScrollView(
-              child: SizedBox(
-                height: MediaQuery.of(context).size.height * 0.2,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18.0),
+            ),
+            contentPadding:
+            const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+            title: Center(
+              child: Column(
+                children: [
+                  Text(Egroup.groupTitle,
+                      style: const TextStyle(color: Colors.black)),
+                  const SizedBox(height: 1.0), //그룹 여백
+                  Text("그룹 코드 #${Egroup.groupId}",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.grey, fontSize: 13)),
+                ],
+              ),
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 0), //그룹 코드와 대표 카테고리 사이의 여백
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("그룹 코드 #${Egroup.groupId}"),
-                    Text("대표 카테고리 ${Egroup.groupCategory}"),
-                    Text("루틴장 ${Egroup.createdUserNickname}"),
-                    Text(
-                        "인원 ${Egroup.joinMemberCount}/${Egroup.maxMemberCount}명"),
-                    const SizedBox(height: 20),
-                    const Divider(),
-                    const SizedBox(height: 20),
-                    Text(Egroup.description),
+                    const Text("대표 카테고리 ",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(Egroup.groupCategory),
                   ],
                 ),
-              ),
+                const SizedBox(
+                  height: 4.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("루틴장 ",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(Egroup.createdUserNickname),
+                    const Text("  인원 ",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text("${Egroup.joinMemberCount}/${Egroup.maxMemberCount}명"),
+                  ],
+                ),
+                const SizedBox(height: 12), // 추가 설명 텍스트를 위한 공간
+                const Divider(
+                  height: 20,
+                  thickness: 0.5,
+                  color: Colors.black,
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Text(Egroup.description),
+                const SizedBox(
+                  height: 80.0,
+                ),
+              ],
             ),
             actions: [
               ButtonBar(
                 alignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
-                    child: const Text("가입하기"),
-                    onPressed: () async {
-                      Navigator.of(context).pop(); // 다이얼로그 닫기
+                    child: const Text("그룹 가입",
+                        style: TextStyle(color: Color(0xff8DCCFF))),
+                    onPressed: () {
+                      Navigator.of(context).pop();
                       if (Egroup.isPublic) {
-                        bool joinSuccess = await _joinGroup(Egroup.groupId);
-                        if (joinSuccess) {
-                          _navigateToGroupPage(
-                              Egroup.groupId); // 가입 성공 시 페이지 이동
-                        } else {
-                          print("그룹 참여 실패!");
-                        }
+                        print("참여 성공!");
                       } else {
-                        _showPasswordDialog(Egroup); // 비밀번호 입력 필요 시 다이얼로그 표시
+                        _showPasswordDialog(Egroup);
                       }
                     },
                   ),
                   TextButton(
-                    child: const Text("취소"),
+                    child: const Text("취소", style: TextStyle(color: Colors.grey)),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -165,8 +199,8 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     }
   }
 
-  Future<void> _navigateToGroupPage(int groupId) async {
-    final isAdmin = await _fetchIsGroupAdmin(groupId);
+  Future<void> navigateToGroupPage(int groupId) async {
+    final isAdmin = await fetchIsGroupAdmin(groupId);
 
     if (isAdmin) {
       Navigator.push(
@@ -185,7 +219,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     }
   }
 
-  Future<bool> _fetchIsGroupAdmin(int groupId) async {
+  Future<bool> fetchIsGroupAdmin(int groupId) async {
     final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId');
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -283,7 +317,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
 
                         if (joinSuccess) {
                           Navigator.of(context).pop(); // 다이얼로그 닫기
-                          _navigateToGroupPage(group.groupId); // 그룹 페이지로 이동
+                          navigateToGroupPage(group.groupId); // 그룹 페이지로 이동
                           _passwordController.clear(); // 비밀번호 필드 초기화
                           setState(() {
                             _isPasswordIncorrect = false;
@@ -376,7 +410,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                     setState(() {
                                       selectedCategory = category;
                                     });
-                                    _fetchGroups(category: category);
+                                    fetchGroups(category: category);
                                   },
                                   style: ButtonStyle(
                                     backgroundColor: WidgetStateProperty.all(

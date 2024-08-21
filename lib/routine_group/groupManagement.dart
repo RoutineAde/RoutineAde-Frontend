@@ -67,10 +67,11 @@ class _groupManagementState extends State<groupManagement> {
                 ),
               ),
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const groupIntroRule()));
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) =>
+                //             const groupIntroRule(widget.groupId)));
               },
             ),
             const SizedBox(
