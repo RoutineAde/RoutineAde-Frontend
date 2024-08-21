@@ -173,7 +173,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            const AddGroupRoutinePage(groupId: 1)));
+                            AddGroupRoutinePage(groupId: widget.groupId)));
               },
               backgroundColor: const Color(0xffA1D1F9),
               shape: const CircleBorder(),
@@ -494,7 +494,7 @@ class RoutinePage extends StatelessWidget {
   Widget _buildRoutineItem(
       BuildContext context, String title, String schedule, int routineId) {
     return GestureDetector(
-      onTap: () => {_showRoutineDialog(context, title, routineId)},
+      onTap: () => {_showRoutineDialog(context, title, routineId, groupId)},
       child: Container(
         margin: const EdgeInsets.fromLTRB(20, 0, 0, 16),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -533,7 +533,7 @@ class RoutinePage extends StatelessWidget {
 }
 
 void _showRoutineDialog(
-    BuildContext context, String routineTitle, int routineId) {
+    BuildContext context, String routineTitle, int routineId, int groupId) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -548,7 +548,7 @@ void _showRoutineDialog(
                 context,
                 MaterialPageRoute(
                     builder: (context) => groupRoutineEditPage(
-                        groupId: 1,
+                        groupId: groupId,
                         routineTitle: routineTitle,
                         routineId: routineId,
                         repeatDays: const [])),
