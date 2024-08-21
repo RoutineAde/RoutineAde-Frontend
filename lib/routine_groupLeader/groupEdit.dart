@@ -5,14 +5,15 @@ import 'package:intl/intl.dart';
 import 'GroupType.dart';
 import 'package:routine_ade/routine_user/token.dart';
 
-class AddGroupPage extends StatefulWidget {
-  const AddGroupPage({super.key});
+class groupEdit extends StatefulWidget {
+  final int groupId;
+  const groupEdit({super.key, required this.groupId});
 
   @override
-  State<AddGroupPage> createState() => _AddGroupPageState();
+  State<groupEdit> createState() => _groupEditState();
 }
 
-class _AddGroupPageState extends State<AddGroupPage> {
+class _groupEditState extends State<groupEdit> {
   final TextEditingController _groupNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _groupDescriptionController =
@@ -24,6 +25,12 @@ class _AddGroupPageState extends State<AddGroupPage> {
   List<String> isCategory = ["일상", "건강", "자기개발", "자기관리", "기타"];
 
   @override
+  void initState() {
+    super.initState();
+    _loadGroupInfo();
+  }
+
+  @override
   void dispose() {
     _groupNameController.dispose();
     _passwordController.dispose();
@@ -31,8 +38,57 @@ class _AddGroupPageState extends State<AddGroupPage> {
     super.dispose();
   }
 
-  // 그룹 추가 API 호출 함수
-  void _addGroup() async {
+  Future<void> _loadGroupInfo() async {
+    final url = Uri.parse("http://15.164.88.94:8080/groups/${widget.groupId}");
+    final response = await http.get(url, headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    });
+
+    if (response.statusCode == 200) {
+      print("성공");
+      final decodedResponse = utf8.decode(response.bodyBytes);
+      final data = jsonDecode(decodedResponse);
+
+      // 그룹 정보 로드
+      final groupInfo = data['groupInfo'];
+      _groupNameController.text = groupInfo['groupTitle'] ?? '';
+      _passwordController.text = groupInfo['groupPassword'] ?? '';
+      _groupDescriptionController.text = groupInfo['description'] ?? '';
+      _selectedMemberCount = groupInfo['maxMember'] ?? 0;
+      selectedCategoryIndex =
+          isCategory.indexOf(groupInfo['groupCategory'] ?? '');
+
+      setState(() {});
+    } else {
+      print("Error fetching group info: ${response.statusCode}");
+    }
+  }
+
+  // Future<bool> fetchIsGroupAdmin(int groupId) async {
+  //   final url = Uri.parse("http://15.164.88.94:8080/groups/$groupId");
+  //   final response = await http.get(url, headers: {
+  //     'Content-Type': 'application/json',
+  //     'Authorization': 'Bearer $token',
+  //   });
+
+  //   if (response.statusCode == 200) {
+  //     final decodedResponse = utf8.decode(response.bodyBytes);
+  //     final data = jsonDecode(decodedResponse);
+
+  //     if (data is Map<String, dynamic> && data.containsKey('isGroupAdmin')) {
+  //       return data['isGroupAdmin'] as bool;
+  //     } else {
+  //       return false;
+  //     }
+  //   } else {
+  //     print("Error fetching group admin status: ${response.statusCode}");
+  //     return false;
+  //   }
+  // }
+
+  // 그룹 수정 API 호출 함수
+  void _editGroup() async {
     // 카테고리 선택 여부 확인
     if (selectedCategoryIndex == -1) {
       _showDialog("경고", "카테고리를 선택해주세요.");
@@ -52,7 +108,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
         _passwordController.text.isEmpty ? null : _passwordController.text;
 
     // 요청 바디 준비
-    final url = Uri.parse('http://15.164.88.94:8080/groups');
+    final url = Uri.parse('http://15.164.88.94:8080/groups/${widget.groupId}');
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -66,14 +122,14 @@ class _AddGroupPageState extends State<AddGroupPage> {
     });
 
     try {
-      final response = await http.post(url, headers: headers, body: body);
+      final response = await http.put(url, headers: headers, body: body);
       print('Response status: ${response.statusCode}');
       print('Response body: ${response.body}');
 
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        _showDialog('성공', '그룹이 성공적으로 추가되었습니다.');
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        _showDialog('성공', '그룹이 성공적으로 수정되었습니다.');
       } else {
-        _showDialog('오류', '그룹 추가에 실패했습니다: ${response.body}');
+        _showDialog('오류', '그룹 수정에 실패했습니다: ${response.body}');
       }
     } catch (e) {
       print('Error: $e');
@@ -147,12 +203,13 @@ class _AddGroupPageState extends State<AddGroupPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: const Color(0xFFF8F8EF),
         appBar: AppBar(
           backgroundColor: const Color(0xFF8DCCFF),
           title: const Text(
-            '그룹 만들기',
+            '그룹 수정',
             style: TextStyle(
               fontSize: 25,
               color: Colors.white,
@@ -244,7 +301,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                                   margin: const EdgeInsets.only(bottom: 10),
                                   decoration: BoxDecoration(
                                     color: selectedCategoryIndex == index
-                                        ? const Color(0xffE6E288)
+                                        ? const Color(0xffA1D1F9)
                                         : Colors.white,
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(color: Colors.grey),
@@ -326,7 +383,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                 height: 80,
                 padding: const EdgeInsets.only(top: 20),
                 child: ElevatedButton(
-                  onPressed: _addGroup,
+                  onPressed: _editGroup,
                   style: ButtonStyle(
                     backgroundColor:
                         WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
@@ -337,7 +394,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                     ),
                   ),
                   child: const Text(
-                    "그룹 추가하기",
+                    "그룹 수정하기",
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,

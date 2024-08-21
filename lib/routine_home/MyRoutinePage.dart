@@ -14,6 +14,7 @@ import 'package:routine_ade/routine_home/ModifiedRoutinePage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:routine_ade/routine_user/token.dart';
 
 void main() async {
   await initializeDateFormatting();
@@ -121,8 +122,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     final url = Uri.parse("http://15.164.88.94:8080/users/emotion");
     final headers = {
       "Content-Type": "application/json",
-      "Authorization":
-          "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw"
+      "Authorization": "Bearer $token"
     };
 
     final body = jsonEncode({
@@ -210,16 +210,19 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                 child: Center(
                   child: Container(
                     width: 360,
-                    padding: const EdgeInsets.all(16),
+                    height: 70,
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                     decoration: BoxDecoration(
-                      color: Colors.white, // 하얀색 배경
-                      borderRadius: BorderRadius.circular(12), // 둥근 모서리
+                      color: Colors.white, // White background
+                      borderRadius:
+                          BorderRadius.circular(12), // Rounded corners
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey.withOpacity(0.3), // 그림자 색상과 투명도
+                          color: Colors.grey
+                              .withOpacity(0.3), // Shadow color and opacity
                           spreadRadius: 2,
                           blurRadius: 5,
-                          offset: const Offset(0, 3), // 그림자의 위치
+                          offset: const Offset(0, 3), // Shadow position
                         ),
                       ],
                     ),
@@ -236,9 +239,53 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                             height: 50,
                           ),
                         const SizedBox(width: 10),
-                        Text(
-                          _getTextForEmotion(_userEmotion!), // 감정에 따른 텍스트 표시
-                          style: const TextStyle(fontSize: 18),
+                        Expanded(
+                          child: RichText(
+                            text: TextSpan(
+                              style: const TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black), // Default text style
+                              children: [
+                                const TextSpan(text: '이 날은 기분이 '),
+                                if (_userEmotion == 'GOOD')
+                                  const TextSpan(
+                                    text: '해피',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors
+                                            .yellow), // Highlighted text style for GOOD
+                                  ),
+                                if (_userEmotion == 'SAD')
+                                  const TextSpan(
+                                    text: '우중충',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors
+                                            .blue), // Highlighted text style for SAD
+                                  ),
+                                if (_userEmotion == 'OK')
+                                  const TextSpan(
+                                    text: '쏘쏘',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors
+                                            .green), // Highlighted text style for OK
+                                  ),
+                                if (_userEmotion == 'ANGRY')
+                                  const TextSpan(
+                                    text: '나쁜',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors
+                                            .redAccent), // Highlighted text style for ANGRY
+                                  ),
+                                TextSpan(
+                                    text: _userEmotion == 'ANGRY'
+                                        ? ' 날이에요'
+                                        : '한 날이에요'),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -270,9 +317,9 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                     return ListView(
                       padding: const EdgeInsets.fromLTRB(24, 10, 24, 16),
                       children: <Widget>[
-                        const SizedBox(
-                          height: 10,
-                        ), // 여백 추가
+                        // const SizedBox(
+                        //   height: 10,
+                        // ), // 여백 추가
                         Container(
                           padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                           decoration: BoxDecoration(
@@ -305,7 +352,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                 ),
               ),
             ),
-
           ],
         ),
       );
@@ -331,7 +377,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                       context,
                       MaterialPageRoute(
                           builder: (context) => const AddRoutinePage()));
-                }, 'assets/images/add.png'),
+                }, 'assets/images/add-button.png'),
                 const SizedBox(height: 20),
               ],
               _buildMainFAB(),
@@ -369,11 +415,11 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         FloatingActionButton(
           onPressed: _toggleExpand,
           backgroundColor:
-              _isExpanded ? const Color(0xfff7c7c7c) : const Color(0xffF1E977),
+              _isExpanded ? const Color(0xfff7c7c7c) : const Color(0xffA1D1F9),
           shape: const CircleBorder(),
           child: Image.asset(_isExpanded
               ? 'assets/images/cancel.png'
-              : 'assets/images/add.png'),
+              : 'assets/images/add-button.png'),
         ),
       ],
     );
@@ -387,7 +433,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         children: [
           _buildBottomAppBarItem("assets/images/tap-bar/routine02.png"),
           _buildBottomAppBarItem(
-              "assets/images/tap-bar/group01.png", GroupMainPage()),
+              "assets/images/tap-bar/group01.png", const GroupMainPage()),
           _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png",
               const OnClickGroupPage(groupId: 1)),
           _buildBottomAppBarItem("assets/images/tap-bar/more01.png",
@@ -588,7 +634,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                 }),
               ),
             ),
-            */
             onTap: () => _showDialog(context, routine),
           ),
         ],
@@ -651,8 +696,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         "http://15.164.88.94:8080/routines/$routineId/completion?date=$date");
     final headers = {
       "Content-Type": "application/json",
-      'Authorization':
-          'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+      'Authorization': 'Bearer $token',
     };
     final body = jsonEncode({"date": date, "isCompletion": isCompletion});
 
@@ -674,8 +718,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     final response = await http.delete(
       Uri.parse('http://15.164.88.94:8080/routines/$routineId'),
       headers: {
-        'Authorization':
-            'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+        'Authorization': 'Bearer $token',
       },
     );
 
@@ -692,8 +735,7 @@ Future<RoutineResponse> fetchRoutines(String date) async {
   final response = await http.get(
     Uri.parse('http://15.164.88.94:8080/routines/v2?routineDate=$date'),
     headers: {
-      'Authorization':
-          'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw', // 여기에 올바른 인증 토큰을 넣으세요
+      'Authorization': 'Bearer $token',
     },
   );
 
@@ -712,8 +754,7 @@ Future<void> _fetchRoutineDate(BuildContext context, int routineId) async {
   final url = Uri.parse("http://15.164.88.94:8080/routines/$routineId");
   final headers = {
     "Content-Type": "application/json",
-    "Authorization":
-        "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw"
+    "Authorization": "Bearer $token"
   };
 
   try {
@@ -789,17 +830,18 @@ String? _getImageEmotion2(String emotion) {
 String _getTextForEmotion(String emotion) {
   switch (emotion) {
     case 'GOOD':
-      return '기분굿';
+      return '이 날은 기분이 해피한 날이에요';
     case 'OK':
-      return '기분쏘쏘';
+      return '이 날은 기분이 쏘쏘한 날이에요';
     case 'SAD':
-      return '슬퍼요';
+      return '이 날은 기분이 우중충한 날이에요';
     case 'ANGRY':
-      return '화나요';
+      return '이 날은 기분이 나쁜 날이에요';
     default:
-      return '알 수 없음'; // 기본 텍스트
+      return '기분을 추가해보세요!'; // 기본 텍스트
   }
 }
+
 //루틴, 감정 조회 class
 class RoutineResponse {
   final List<Routine> personalRoutines;
