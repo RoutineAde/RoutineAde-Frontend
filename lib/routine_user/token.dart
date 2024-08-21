@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 String token =
-    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw';
+    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjQyMTkwNjEsImV4cCI6MTczOTc3MTA2MSwidXNlcklkIjoxfQ.Sg-0YxfAoKNaUesXlt6myQhWt-kLOXxtwgeQs1qqt0k';
 
 // Future<void> saveToken(String token) async {
 //   SharedPreferences prefs = await SharedPreferences.getInstance();
