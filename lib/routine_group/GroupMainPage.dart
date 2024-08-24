@@ -285,8 +285,8 @@ class _GroupMainPageState extends State<GroupMainPage> {
                 );
               },
               child: SizedBox(
-                width: 50,
-                height: 50,
+                width: 60,
+                height: 60,
                 child: Image.asset("assets/images/tap-bar/routine01.png"),
               ),
             ),
@@ -295,8 +295,8 @@ class _GroupMainPageState extends State<GroupMainPage> {
                 // 그룹 버튼 클릭 시 동작할 코드
               },
               child: SizedBox(
-                width: 50,
-                height: 50,
+                width: 60,
+                height: 60,
                 child: Image.asset("assets/images/tap-bar/group02.png"),
               ),
             ),
@@ -305,8 +305,8 @@ class _GroupMainPageState extends State<GroupMainPage> {
                 // 통계 버튼 클릭 시 동작할 코드
               },
               child: SizedBox(
-                width: 50,
-                height: 50,
+                width: 60,
+                height: 60,
                 child: Image.asset("assets/images/tap-bar/statistics01.png"),
               ),
             ),
@@ -315,8 +315,8 @@ class _GroupMainPageState extends State<GroupMainPage> {
                 // 더보기 버튼 클릭 시 동작할 코드
               },
               child: SizedBox(
-                width: 50,
-                height: 50,
+                width: 60,
+                height: 60,
                 child: Image.asset("assets/images/tap-bar/more01.png"),
               ),
             ),
@@ -324,7 +324,6 @@ class _GroupMainPageState extends State<GroupMainPage> {
         ),
       ),
 
-      // add 버튼
       // add 버튼
       floatingActionButton: Stack(
         alignment: Alignment.bottomRight,

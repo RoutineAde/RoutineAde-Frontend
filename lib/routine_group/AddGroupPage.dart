@@ -16,8 +16,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
   final TextEditingController _groupNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _groupDescriptionController =
-      TextEditingController();
-  int _selectedMemberCount = 0;
+  TextEditingController();
 
   // 카테고리 선택 (한번에 하나만)
   int selectedCategoryIndex = -1;
@@ -49,7 +48,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
 
     // 비밀번호 값 설정
     final groupPassword =
-        _passwordController.text.isEmpty ? null : _passwordController.text;
+    _passwordController.text.isEmpty ? null : _passwordController.text;
 
     // 요청 바디 준비
     final url = Uri.parse('http://15.164.88.94:8080/groups');
@@ -189,7 +188,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                           borderSide: BorderSide.none,
                         ),
                         contentPadding:
-                            EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
+                        EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
                         counterText: "", // 글자 수 표시 없애기
                       ),
                     ),
@@ -205,13 +204,13 @@ class _AddGroupPageState extends State<AddGroupPage> {
                           borderSide: BorderSide.none,
                         ),
                         contentPadding:
-                            EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
+                        EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
                       ),
                     ),
                     Container(
                       color: Colors.white,
                       padding:
-                          const EdgeInsets.only(left: 10, right: 10, top: 10),
+                      const EdgeInsets.only(left: 10, right: 10, top: 10),
                       margin: const EdgeInsets.only(top: 30),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -329,7 +328,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                   onPressed: _addGroup,
                   style: ButtonStyle(
                     backgroundColor:
-                        WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
+                    WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),

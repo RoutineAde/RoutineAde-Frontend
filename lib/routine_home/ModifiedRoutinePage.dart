@@ -112,7 +112,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
 
   void _ModifiedRoutine() async {
     final url =
-        Uri.parse('http://15.164.88.94:8080/routines/${widget.routineId}');
+    Uri.parse('http://15.164.88.94:8080/routines/${widget.routineId}');
     //   'routineTitle=${Uri.encodeComponent(_controller.text)}&'
     //   'routineCategory=${Uri.encodeComponent(_getCategoryFromIndex(selectedCategoryIndex))}&'
     //   'isAlarmEnabled=$_isAlarmOn&'
@@ -388,7 +388,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                   ),
                   const Text("알림",
                       style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                   Container(
                     padding: const EdgeInsets.only(left: 228),
                   ),
@@ -456,7 +456,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                       child: Text(
                         formattedDate,
                         style:
-                            const TextStyle(fontSize: 16, color: Colors.black),
+                        const TextStyle(fontSize: 16, color: Colors.black),
                       ),
                     ),
                   ),
@@ -472,7 +472,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                 onPressed: _ModifiedRoutine,
                 style: ButtonStyle(
                   backgroundColor:
-                      WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
+                  WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),

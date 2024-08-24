@@ -438,7 +438,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                   onPressed: _addRoutine,
                   style: ButtonStyle(
                     backgroundColor:
-                        WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
+                    WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0), //테두리 둥글게

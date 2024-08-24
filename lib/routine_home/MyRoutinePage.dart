@@ -452,8 +452,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         }
       },
       child: SizedBox(
-        width: 50,
-        height: 50,
+        width: 60,
+        height: 60,
         child: Image.asset(asset),
       ),
     );

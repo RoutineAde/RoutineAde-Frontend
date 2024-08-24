@@ -264,7 +264,7 @@ class _RoutineStatisticsState extends State<RoutineStatistics>
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      const groupManagement()));
+                                  const groupManagement()));
                         },
                       ),
                     ],

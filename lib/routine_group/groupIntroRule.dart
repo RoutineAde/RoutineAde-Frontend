@@ -59,7 +59,6 @@ class GroupIntroRule extends StatefulWidget {
 
 class _GroupIntroRuleState extends State<GroupIntroRule> {
   late Future<ApiResponse> futureGroupInfo;
-
   @override
   void initState() {
     super.initState();
@@ -68,23 +67,32 @@ class _GroupIntroRuleState extends State<GroupIntroRule> {
 
   Future<ApiResponse> fetchGroupInfo(int groupId) async {
     final url = Uri.parse("http://15.164.88.94:8080/groups/$groupId");
+
+    // 요청 전 로그 추가
+    print("Requesting group info for groupId: $groupId");
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     });
 
+    // 응답 후 로그 추가
     print("Response status: ${response.statusCode}");
     print("Response body: ${response.body}");
+
     if (response.statusCode == 200) {
       final decodedResponse = utf8.decode(response.bodyBytes);
       print("Decoded response: $decodedResponse");
       final data = jsonDecode(decodedResponse);
       return ApiResponse.fromJson(data);
+      
+    } else if (response.statusCode == 404) {
+      // 404 오류 처리
+      print("그룹이 존재하지 않습니다.");
+      throw Exception("그룹을 찾을 수 없습니다. 유효한 그룹 ID를 사용해 주세요.");
     } else {
-      // Print error details for debugging
+      // 기타 오류 처리
       print(
           "Failed to load group information. Status code: ${response.statusCode}");
-      print("Response body: ${response.body}");
       throw Exception("Failed to load group information");
     }
   }
@@ -157,10 +165,7 @@ class _GroupIntroRuleState extends State<GroupIntroRule> {
                     style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 20),
-                  const Text(
-                    "* 목표 *",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
+
                 ],
               ),
             );

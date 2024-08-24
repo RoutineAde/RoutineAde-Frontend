@@ -42,13 +42,15 @@ class Group {
 }
 
 class GroupMember {
+  final int userId;
   final String nickname;
   final String profileImage;
 
-  GroupMember({required this.nickname, required this.profileImage});
+  GroupMember({required this.userId, required this.nickname, required this.profileImage});
 
   factory GroupMember.fromJson(Map<String, dynamic> json) {
     return GroupMember(
+      userId: json['userId'],
       nickname: json['nickname'],
       profileImage: json['profileImage'],
     );
