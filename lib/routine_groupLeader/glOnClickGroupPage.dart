@@ -173,7 +173,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                  const AddGroupRoutinePage(groupId: 1)));
+                      AddGroupRoutinePage(groupId: widget.groupId)));
         },
         backgroundColor: const Color(0xffA1D1F9),
         shape: const CircleBorder(),
@@ -337,9 +337,6 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
                         // 성공 시 추가 동작을 수행할 수 있습니다. 예: UI 업데이트
                       } catch (error) {
                         // 오류 처리
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('멤버 삭제 실패')),
-                        );
                       }
                     },
                   ),
@@ -378,7 +375,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
       Uri.parse(url),
       headers: {
         'Authorization':
-        'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw',
+        'Bearer $token',
         'Accept': 'application/json',
       },
     );
@@ -387,7 +384,6 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
       throw Exception('Failed to delete member');
     }
   }
-
 
   Container buildLeaveGroupTile() {
     return Container(
@@ -445,7 +441,9 @@ class RoutinePage extends StatelessWidget {
               Row(
                 children: [
                   // 왼쪽에 megaphone.png 이미지 추가
-                  SizedBox(width: 5,),
+                  const SizedBox(
+                    width: 5,
+                  ),
                   Image.asset(
                     'assets/images/new-icons/megaphone.png', // 이미지 경로
                     width: 24, // 이미지 너비 설정
@@ -469,7 +467,7 @@ class RoutinePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const GroupIntroRule(groupId: 1,),
+                      builder: (context) => GroupIntroRule(groupId: groupId),
                     ),
                   );
                 },
@@ -480,8 +478,8 @@ class RoutinePage extends StatelessWidget {
 
         // 각 카테고리와 루틴 아이템을 동적으로 추가
         ...routineCategories.map((category) {
-          final color = getCategoryColor(
-              category.routineCategory); // 카테고리 색상 설정
+          final color =
+          getCategoryColor(category.routineCategory); // 카테고리 색상 설정
           return _buildCategorySection(
             category.routineCategory,
             color,
@@ -491,17 +489,16 @@ class RoutinePage extends StatelessWidget {
                 routine.routineTitle,
                 routine.repeatDay.join(", "),
                 routine.routineId,
-                category.routineCategory,
               );
             }).toList(),
           );
-        }).toList(),
+        }),
       ],
     );
   }
 
-  Widget _buildCategorySection(String title, Color color,
-      List<Widget> routines) {
+  Widget _buildCategorySection(
+      String title, Color color, List<Widget> routines) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -514,8 +511,7 @@ class RoutinePage extends StatelessWidget {
             ),
             margin: const EdgeInsets.fromLTRB(30, 40, 0, 16),
             padding: const EdgeInsets.symmetric(
-                horizontal: 20.0),
-            // 좌우 여백을 추가하여 텍스트 주변에 공간을 줍니다.
+                horizontal: 20.0), // 좌우 여백을 추가하여 텍스트 주변에 공간을 줍니다.
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -538,13 +534,10 @@ class RoutinePage extends StatelessWidget {
     );
   }
 
-  Widget _buildRoutineItem(BuildContext context, String title, String schedule,
-      int routineId, String routineCategory) {
+  Widget _buildRoutineItem(
+      BuildContext context, String title, String schedule, int routineId) {
     return GestureDetector(
-      onTap: () =>
-      {
-        _showRoutineDialog(context, title, routineId, routineCategory)
-      },
+      onTap: () => {_showRoutineDialog(context, title, routineId, groupId)},
       child: Container(
         margin: const EdgeInsets.fromLTRB(20, 0, 0, 16),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -586,12 +579,13 @@ void _showRoutineDialog(
     BuildContext context,
     String routineTitle,
     int routineId,
-    String routineCategory, // routineCategory 추가
+    int groupId,
+    //String routineCategory, // routineCategory 추가
     ) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      final categoryColor = getCategoryColor(routineCategory); // 카테고리 색상 얻기
+      //final categoryColor = getCategoryColor(routineCategory); // 카테고리 색상 얻기
 
       return AlertDialog(
         title: Column(
@@ -600,13 +594,13 @@ void _showRoutineDialog(
             Text(routineTitle),
             const SizedBox(height: 8),
             // routineCategory를 추가하고 색상 적용
-            Text(
-              routineCategory,
-              style: TextStyle(
-                color: categoryColor, // 카테고리 색상 적용
-                fontSize: 16,
-              ),
-            ),
+            // Text(
+            //   routineCategory,
+            //   style: TextStyle(
+            //     color: categoryColor, // 카테고리 색상 적용
+            //     fontSize: 16,
+            //   ),
+            // ),
           ],
         ),
         actions: <Widget>[
@@ -617,7 +611,7 @@ void _showRoutineDialog(
                 context,
                 MaterialPageRoute(
                   builder: (context) => groupRoutineEditPage(
-                    groupId: 1,
+                    groupId: groupId,
                     routineTitle: routineTitle,
                     routineId: routineId,
                     repeatDays: const [],
@@ -643,7 +637,7 @@ void _showRoutineDialog(
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(); // 현재 다이얼로그 닫기
-              _showDeleteConfirmationDialog(context, routineTitle, routineId); // 삭제 확인 다이얼로그 열기
+              _showDeleteConfirmationDialog(context, routineTitle, groupId, routineId); // 삭제 확인 다이얼로그 열기
             },
             child: Row(
               children: [
@@ -667,7 +661,7 @@ void _showRoutineDialog(
 }
 
 // 삭제 확인 다이얼로그 함수
-void _showDeleteConfirmationDialog(BuildContext context, String routineTitle, int routineId) {
+void _showDeleteConfirmationDialog(BuildContext context, String routineTitle, int groupId, int routineId) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -730,16 +724,13 @@ void _showDeleteConfirmationDialog(BuildContext context, String routineTitle, in
               const SizedBox(width: 10), // 버튼 사이의 간격 조절
               TextButton(
                 onPressed: () async {
-                  // Navigator.of(context).pop(); // 다이얼로그 닫기
-                  // try {t 
-                  //   await deleteGroupRoutine(groupId, routineId);
-                  //   // 성공 시 추가 동작을 수행할 수 있습니다. 예: UI 업데이트
-                  // } catch (error) {
-                  //   // 오류 처리
-                  //   ScaffoldMessenger.of(context).showSnackBar(
-                  //     const SnackBar(content: Text('그룹 루틴 삭제 실패')),
-                  //   );
-                  // }
+                  Navigator.of(context).pop(); // 다이얼로그 닫기
+                  try {
+                    await deleteGroupRoutine(groupId, routineId);
+                    // 성공 시 추가 동작을 수행할 수 있습니다. 예: UI 업데이트
+                  } catch (error) {
+                    // 오류 처리
+                  }
                 },
                 child: const Text(
                   "삭제",
@@ -754,13 +745,14 @@ void _showDeleteConfirmationDialog(BuildContext context, String routineTitle, in
   );
 }
 
+
 Future<void> deleteGroupRoutine(int groupId, int routineId) async {
   final url = 'http://15.164.88.94:8080/groups/$groupId/group-routines/$routineId';
   final response = await http.delete(
     Uri.parse(url),
     headers: {
       'Authorization':
-      'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM',
+      'Bearer $token',
       'Accept': 'application/json',
     },
   );
@@ -769,6 +761,8 @@ Future<void> deleteGroupRoutine(int groupId, int routineId) async {
     throw Exception('Failed to delete group routine');
   }
 }
+
+
 
 class GroupInfo {
   final String groupTitle;
