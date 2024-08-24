@@ -355,17 +355,6 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
               borderRadius: BorderRadius.circular(50.0),
               side: const BorderSide(color: Colors.black, width: 1.0),
             ),
-          ),
-        ),
-
-        child: const Text(
-          '내보내기',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 13,
-          ),
-        ),
-      ),
     );
   }
 
@@ -746,6 +735,7 @@ void _showDeleteConfirmationDialog(BuildContext context, String routineTitle, in
 }
 
 
+
 Future<void> deleteGroupRoutine(int groupId, int routineId) async {
   final url = 'http://15.164.88.94:8080/groups/$groupId/group-routines/$routineId';
   final response = await http.delete(
@@ -761,7 +751,6 @@ Future<void> deleteGroupRoutine(int groupId, int routineId) async {
     throw Exception('Failed to delete group routine');
   }
 }
-
 
 
 class GroupInfo {
@@ -782,4 +771,5 @@ class GroupInfo {
       groupId: json['groupId'] != null ? json['groupId'] as int : 0,
     );
   }
+
 }

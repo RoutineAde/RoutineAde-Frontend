@@ -254,7 +254,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                             _getWeekdayName(i),
                             style: TextStyle(
                               color:
-                              isSelected[i] ? Colors.white : Colors.black,
+                                  isSelected[i] ? Colors.white : Colors.black,
                             ),
                           ),
                         ),
@@ -295,7 +295,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(
                         5,
-                            (index) => GestureDetector(
+                        (index) => GestureDetector(
                           onTap: () {
                             setState(() {
                               selectedCategoryIndex = index;
@@ -397,7 +397,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                   onPressed: _addRoutine,
                   style: ButtonStyle(
                     backgroundColor:
-                    WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
+                        WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0), //테두리 둥글게

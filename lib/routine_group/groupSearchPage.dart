@@ -6,8 +6,8 @@ import 'package:http/http.dart' as http;
 import '../routine_groupLeader/glOnClickGroupPage.dart';
 import 'GroupRoutinePage.dart';
 import 'package:routine_ade/routine_user/token.dart';
-
 import 'OnClickGroupPage.dart';
+
 
 class GroupSearchPage extends StatefulWidget {
   const GroupSearchPage({super.key});
@@ -29,10 +29,10 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
   @override
   void initState() {
     super.initState();
-    _fetchGroups();
+    fetchGroups();
   }
 
-  Future<void> _fetchGroups({bool loadMore = false}) async {
+  Future<void> fetchGroups({bool loadMore = false}) async {
     setState(() {
       _isLoading = true;
       allGroups.clear();
