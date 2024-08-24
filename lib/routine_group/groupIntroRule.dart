@@ -166,11 +166,6 @@ class _GroupIntroRuleState extends State<GroupIntroRule> {
                     style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 20),
-                  const Text(
-                    "* 목표 *",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  // 그룹 목표와 관련된 내용이 여기 추가될 수 있습니다.
                 ],
               ),
             );
