@@ -59,7 +59,6 @@ class GroupIntroRule extends StatefulWidget {
 
 class _GroupIntroRuleState extends State<GroupIntroRule> {
   late Future<ApiResponse> futureGroupInfo;
-
   @override
   void initState() {
     super.initState();
@@ -71,7 +70,6 @@ class _GroupIntroRuleState extends State<GroupIntroRule> {
 
     // 요청 전 로그 추가
     print("Requesting group info for groupId: $groupId");
-
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -86,6 +84,7 @@ class _GroupIntroRuleState extends State<GroupIntroRule> {
       print("Decoded response: $decodedResponse");
       final data = jsonDecode(decodedResponse);
       return ApiResponse.fromJson(data);
+      
     } else if (response.statusCode == 404) {
       // 404 오류 처리
       print("그룹이 존재하지 않습니다.");
@@ -166,6 +165,7 @@ class _GroupIntroRuleState extends State<GroupIntroRule> {
                     style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 20),
+
                 ],
               ),
             );

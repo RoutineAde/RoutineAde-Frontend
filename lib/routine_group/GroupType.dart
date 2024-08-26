@@ -128,7 +128,7 @@ class GroupResponse {
           .toList(),
       groupRoutines: (json['groupRoutines'] as List)
           .map((routineCategoryJson) =>
-          RoutineCategory.fromJson(routineCategoryJson))
+              RoutineCategory.fromJson(routineCategoryJson))
           .toList(),
     );
   }

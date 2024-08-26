@@ -304,7 +304,7 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(
                       5,
-                          (index) => GestureDetector(
+                      (index) => GestureDetector(
                         onTap: () {
                           setState(() {
                             selectedCategoryIndex = index;
@@ -348,7 +348,7 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                 onPressed: _ModifiedRoutine,
                 style: ButtonStyle(
                   backgroundColor:
-                  WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
+                      WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),

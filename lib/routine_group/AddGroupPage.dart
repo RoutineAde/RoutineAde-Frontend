@@ -17,7 +17,6 @@ class _AddGroupPageState extends State<AddGroupPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _groupDescriptionController =
   TextEditingController();
-  int _selectedMemberCount = 0;
 
   // 카테고리 선택 (한번에 하나만)
   int selectedCategoryIndex = -1;
@@ -232,7 +231,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: List.generate(
                               5,
-                                  (index) => GestureDetector(
+                              (index) => GestureDetector(
                                 onTap: () {
                                   setState(() {
                                     selectedCategoryIndex = index;

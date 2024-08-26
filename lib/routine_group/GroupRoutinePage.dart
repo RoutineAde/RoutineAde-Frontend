@@ -370,7 +370,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                               bool isSelected = selectedCategory == category;
                               return Padding(
                                 padding:
-                                const EdgeInsets.symmetric(horizontal: 3.0),
+                                    const EdgeInsets.symmetric(horizontal: 3.0),
                                 child: ElevatedButton(
                                   onPressed: () {
                                     setState(() {
@@ -403,88 +403,88 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                       child: _isLoading
                           ? const Center(child: CircularProgressIndicator())
                           : ListView.builder(
-                        itemCount: filteredGroups.length,
-                        itemBuilder: (context, index) {
-                          final group = filteredGroups[index];
-                          Color textColor =
-                          getCategoryColor(group.groupCategory);
-                          return InkWell(
-                            onTap: () {
-                              _showGroupDialog(group);
-                            },
-                            child: Card(
-                              margin: const EdgeInsets.all(8.0),
-                              color: const Color(0xFFE6F5F8),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              group.groupTitle,
-                                              style: const TextStyle(
-                                                fontSize: 18,
-                                                fontWeight:
-                                                FontWeight.bold,
+                              itemCount: filteredGroups.length,
+                              itemBuilder: (context, index) {
+                                final group = filteredGroups[index];
+                                Color textColor =
+                                    getCategoryColor(group.groupCategory);
+                                return InkWell(
+                                  onTap: () {
+                                    _showGroupDialog(group);
+                                  },
+                                  child: Card(
+                                    margin: const EdgeInsets.all(8.0),
+                                    color: const Color(0xFFE6F5F8),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    group.groupTitle,
+                                                    style: const TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  if (!group.isPublic)
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 8.0),
+                                                      child: Image.asset(
+                                                        "assets/images/lock.png",
+                                                        color: const Color(
+                                                            0xFF8DCCFF),
+                                                        width: 20,
+                                                        height: 20,
+                                                      ),
+                                                    ),
+                                                ],
                                               ),
-                                            ),
-                                            if (!group.isPublic)
-                                              Padding(
-                                                padding:
-                                                const EdgeInsets.only(
-                                                    left: 8.0),
-                                                child: Image.asset(
-                                                  "assets/images/lock.png",
-                                                  color: const Color(
-                                                      0xFF8DCCFF),
-                                                  width: 20,
-                                                  height: 20,
-                                                ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 8.0),
+                                          Row(
+                                            children: [
+                                              const Text("대표 카테고리 "),
+                                              Text(group.groupCategory,
+                                                  style: TextStyle(
+                                                      color: textColor)),
+                                              Expanded(child: Container()),
+                                              Align(
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                child: Text(
+                                                    "인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),
                                               ),
-                                          ],
-                                        ),
-                                      ],
+                                            ],
+                                          ),
+                                          const SizedBox(height: 8.0),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                  "루틴장 ${group.createdUserNickname}"),
+                                              Text("그룹코드 ${group.groupId}"),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    const SizedBox(height: 8.0),
-                                    Row(
-                                      children: [
-                                        const Text("대표 카테고리 "),
-                                        Text(group.groupCategory,
-                                            style: TextStyle(
-                                                color: textColor)),
-                                        Expanded(child: Container()),
-                                        Align(
-                                          alignment:
-                                          Alignment.centerRight,
-                                          child: Text(
-                                              "인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                            "루틴장 ${group.createdUserNickname}"),
-                                        Text("그룹코드 ${group.groupId}"),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
                     ),
                   ],
                 ),

@@ -3,6 +3,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'routine_home/MyRoutinePage.dart';
 import 'package:http/http.dart' as http;
 import 'routine_group/GroupMainPage.dart';
+import 'routine_group/OnClickGroupPage.dart';
 
 void main() async {
   await initializeDateFormatting();
