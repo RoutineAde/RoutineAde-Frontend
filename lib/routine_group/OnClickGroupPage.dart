@@ -480,3 +480,36 @@ class RoutinePage extends StatelessWidget {
     );
   }
 }
+<<<<<<< HEAD
+=======
+
+void _showRoutineDialog(BuildContext context, String routineTitle) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text(routineTitle),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('수정'),
+            onPressed: () {
+              Navigator.of(context).pop(); // 다이얼로그 닫기
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const GroupRoutinePage()),
+              );
+            },
+          ),
+          TextButton(
+            child: const Text('취소'),
+            onPressed: () {
+              Navigator.of(context).pop(); // 다이얼로그 닫기
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+>>>>>>> 5cf26521056d0aaa04caaea37e72abc838b18299
