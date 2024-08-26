@@ -100,7 +100,7 @@ class _groupDeleteState extends State<groupDelete> {
         child: ListView(
           children: <Widget>[
             const Text(
-              "그룹 루틴을 삭제하면,",
+              "그룹을 삭제하면,",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -167,7 +167,7 @@ class _groupDeleteState extends State<groupDelete> {
               padding: const EdgeInsets.fromLTRB(0, 30, 30, 0),
               child: ElevatedButton(
                 onPressed:
-                _isChecked ? _deleteGroup : null, // 체크박스가 체크되어야만 버튼 활성화
+                    _isChecked ? _deleteGroup : null, // 체크박스가 체크되어야만 버튼 활성화
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all<Color>(
                     _isChecked ? const Color(0xffA1D1F9) : Colors.grey,

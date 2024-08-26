@@ -48,16 +48,16 @@ class ApiResponse {
   }
 }
 
-class GroupIntroRule extends StatefulWidget {
+class glGroupIntroRule extends StatefulWidget {
   final int groupId;
 
-  const GroupIntroRule({required this.groupId, super.key});
+  const glGroupIntroRule({required this.groupId, super.key});
 
   @override
-  State<GroupIntroRule> createState() => _GroupIntroRuleState();
+  State<glGroupIntroRule> createState() => _glGroupIntroRuleState();
 }
 
-class _GroupIntroRuleState extends State<GroupIntroRule> {
+class _glGroupIntroRuleState extends State<glGroupIntroRule> {
   late Future<ApiResponse> futureGroupInfo;
 
   @override
@@ -103,10 +103,10 @@ class _GroupIntroRuleState extends State<GroupIntroRule> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: const Row(
+        title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               '그룹 소개/규칙',
               style: TextStyle(
                 fontSize: 20,
@@ -114,22 +114,22 @@ class _GroupIntroRuleState extends State<GroupIntroRule> {
                 color: Colors.white,
               ),
             ),
-            SizedBox(width: 30),
-            // GestureDetector(
-            //   onTap: () {
-            //     Navigator.push(
-            //       context,
-            //       MaterialPageRoute(
-            //         builder: (context) => groupEdit(groupId: widget.groupId),
-            //       ),
-            //     );
-            //   },
-            //   child: Image.asset(
-            //     '',
-            //     width: 24,
-            //     height: 24,
-            //   ),
-            // ),
+            const SizedBox(width: 30),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => groupEdit(groupId: widget.groupId),
+                  ),
+                );
+              },
+              child: Image.asset(
+                'assets/images/settings-cog.png',
+                width: 24,
+                height: 24,
+              ),
+            ),
           ],
         ),
         backgroundColor: const Color(0xffA1D1F9),

@@ -8,7 +8,6 @@ import 'package:routine_ade/routine_groupLeader/AddGroupRoutinePage.dart';
 import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
-import 'package:routine_ade/routine_group/groupManagement.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import '../routine_groupLeader/groupRoutineEditPage.dart';
 import 'package:http/http.dart' as http;
@@ -207,12 +206,11 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
                 const Divider(),
                 buildDrawerHeaderTile("그룹원"),
                 ...groupResponse.groupMembers.map((member) {
+                  bool isLeader =
+                      member.nickname == groupInfo.createdUserNickname;
                   return buildDrawerMemberTile(
-                    member.nickname,
-                    member.profileImage,
-                    isLeader: groupResponse.isGroupAdmin &&
-                        member.nickname == groupInfo.createdUserNickname,
-                  );
+                      member.nickname, member.profileImage,
+                      isLeader: isLeader);
                 }),
               ],
             ),
@@ -304,14 +302,14 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
       ),
       child: GestureDetector(
         onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const groupManagement()));
+          // Navigator.push(context,
+          //     MaterialPageRoute(builder: (context) => const groupManagement()));
         },
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end, // 이미지가 오른쪽에 배치되도록 설정
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Image.asset(
-              'assets/images/new-icons/setting.png',
+              'assets/images/sign-out.png',
               width: 30,
               height: 30,
             ),
@@ -388,7 +386,7 @@ class RoutinePage extends StatelessWidget {
         // 각 카테고리와 루틴 아이템을 동적으로 추가
         ...routineCategories.map((category) {
           final color =
-          getCategoryColor(category.routineCategory); // 카테고리 색상 설정
+              getCategoryColor(category.routineCategory); // 카테고리 색상 설정
           return _buildCategorySection(
             category.routineCategory,
             color,
@@ -445,7 +443,7 @@ class RoutinePage extends StatelessWidget {
   Widget _buildRoutineItem(
       BuildContext context, String title, String schedule) {
     return GestureDetector(
-      onTap: () => {_showRoutineDialog(context, title)},
+      onTap: () => {},
       child: Container(
         margin: const EdgeInsets.fromLTRB(20, 0, 0, 16),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -481,34 +479,4 @@ class RoutinePage extends StatelessWidget {
       ),
     );
   }
-}
-
-void _showRoutineDialog(BuildContext context, String routineTitle) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(routineTitle),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('수정'),
-            onPressed: () {
-              Navigator.of(context).pop(); // 다이얼로그 닫기
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const GroupRoutinePage()),
-              );
-            },
-          ),
-          TextButton(
-            child: const Text('취소'),
-            onPressed: () {
-              Navigator.of(context).pop(); // 다이얼로그 닫기
-            },
-          ),
-        ],
-      );
-    },
-  );
 }

@@ -162,16 +162,16 @@ class _GroupMainPageState extends State<GroupMainPage> {
         backgroundColor:
             isExpanded ? Colors.grey[600] : const Color(0xFF8DCCFF),
         automaticallyImplyLeading: false, // 뒤로가기 제거
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Image.asset(
-              "assets/images/bell.png",
-              width: 35,
-              height: 35,
-            ),
-          ),
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: const EdgeInsets.only(right: 16.0),
+        //     child: Image.asset(
+        //       "assets/images/bell.png",
+        //       width: 35,
+        //       height: 35,
+        //     ),
+        //   ),
+        // ],
       ),
       body: DarkOverlay(
         isDark: isExpanded, // 눌렀을때만 어둡게
