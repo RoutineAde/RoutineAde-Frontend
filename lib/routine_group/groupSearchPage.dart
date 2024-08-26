@@ -6,8 +6,8 @@ import 'package:http/http.dart' as http;
 import '../routine_groupLeader/glOnClickGroupPage.dart';
 import 'GroupRoutinePage.dart';
 import 'package:routine_ade/routine_user/token.dart';
-
 import 'OnClickGroupPage.dart';
+
 
 class GroupSearchPage extends StatefulWidget {
   const GroupSearchPage({super.key});
@@ -24,14 +24,15 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
   bool _isPasswordIncorrect = false;
   bool _isLoading = false;
   bool searchByGroupName = true;
+  bool _hasSearched = false; //검색 수행 여부
 
   @override
   void initState() {
     super.initState();
-    _fetchGroups();
+    fetchGroups();
   }
 
-  Future<void> _fetchGroups({bool loadMore = false}) async {
+  Future<void> fetchGroups({bool loadMore = false}) async {
     setState(() {
       _isLoading = true;
       allGroups.clear();
@@ -77,6 +78,7 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
 
   void filterGroups(String query) {
     setState(() {
+      _hasSearched = query.isNotEmpty; // 검색어가 있으면 검색된 것으로 간주
       if (query.isNotEmpty) {
         filteredGroups = allGroups.where((group) {
           if (searchByGroupName) {
@@ -86,7 +88,8 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
           }
         }).toList();
       } else {
-        filteredGroups = allGroups;
+        // filteredGroups = allGroups;
+        filteredGroups = [];
       }
       _sortGroupsByGroupIdDescending(); // 필터 후 정렬 유지
     });
@@ -202,7 +205,8 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
                     },
                   ),
                   TextButton(
-                    child: const Text("취소", style: TextStyle(color: Colors.grey)),
+                    child:
+                    const Text("취소", style: TextStyle(color: Colors.grey)),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
@@ -394,7 +398,7 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
                           color: Colors.grey, //선택되지 않았을 때 글자 색
                           selectedColor: Colors.white, //선택 글자 색
                           fillColor: const Color(0xFF8DCCFF), // 선택 배경
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(10),
                           constraints: const BoxConstraints(
                               minHeight: 40.0, maxWidth: 90.0),
                           borderWidth: 0,
@@ -461,7 +465,8 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
                   Expanded(
                     child: _isLoading
                         ? const Center(child: CircularProgressIndicator())
-                        : ListView.builder(
+                        : _hasSearched
+                        ? ListView.builder(
                       itemCount: filteredGroups.length,
                       itemBuilder: (context, index) {
                         final group = filteredGroups[index];
@@ -484,7 +489,8 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
                                 children: [
                                   Row(
                                     mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment
+                                        .spaceBetween,
                                     children: [
                                       Row(
                                         children: [
@@ -492,13 +498,15 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
                                             group.groupTitle,
                                             style: const TextStyle(
                                               fontSize: 18,
-                                              fontWeight: FontWeight.bold,
+                                              fontWeight:
+                                              FontWeight.bold,
                                             ),
                                           ),
                                           if (!group.isPublic)
                                             Padding(
                                               padding:
-                                              const EdgeInsets.only(
+                                              const EdgeInsets
+                                                  .only(
                                                   left: 8.0),
                                               child: Image.asset(
                                                 "assets/images/lock.png",
@@ -523,7 +531,8 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
                                           child:
                                           Container()), // Spacer to push text to the right
                                       Align(
-                                        alignment: Alignment.centerRight,
+                                        alignment:
+                                        Alignment.centerRight,
                                         child: Text(
                                             "인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),
                                       ),
@@ -532,7 +541,8 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
                                   const SizedBox(height: 8.0),
                                   Row(
                                     mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment
+                                        .spaceBetween,
                                     children: [
                                       Text(
                                           "루틴장 ${group.createdUserNickname}"),
@@ -545,7 +555,8 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
                           ),
                         );
                       },
-                    ),
+                    )
+                        : const Center(child: Text("")),
                   ),
                 ],
               ),

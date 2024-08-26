@@ -1,61 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-const String _name = "김외롭";
-
-
-
-void main() => runApp(FriendlychatApp());
-
-class FriendlychatApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: '꿈을 향해',
-      home: ChatScreen(),
-      // defaultTargetPlatform을 사용하기 위해서는 foundation.dart 패키지의 추가 필요
-
-    );
-  }
-}
+// void main() => runApp(FriendlychatApp());
+//
+// class FriendlychatApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: '꿈을 향해',
+//       home: ChatScreen(),
+//     );
+//   }
+// }
 
 class ChatScreen extends StatefulWidget {
   ChatScreenState createState() => ChatScreenState();
 }
 
-// 화면 구성용 상태 위젯. 애니메이션 효과를 위해 TickerProviderStateMixin를 가짐
 class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
-  // 입력한 메시지를 저장하는 리스트
-  final List<ChatMessage> _message = <ChatMessage>[];
-
-  // 텍스트필드 제어용 컨트롤러
+  final List<ChatMessage> _messages = <ChatMessage>[];
   final TextEditingController _textController = TextEditingController();
-
-  // 텍스트필드에 입력된 데이터의 존재 여부
   bool _isComposing = false;
+  late final int groupId;  // 그룹 ID를 설정
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchChatMessages(); // 초기화 시 채팅 메시지 불러오기
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: Container(
         child: Column(
           children: <Widget>[
-            // 리스트뷰를 Flexible로 추가.
             Flexible(
-              // 리스트뷰 추가
               child: ListView.builder(
                 padding: const EdgeInsets.all(8.0),
-                // 리스트뷰의 스크롤 방향을 반대로 변경. 최신 메시지가 하단에 추가됨
                 reverse: true,
-                itemCount: _message.length,
-                itemBuilder: (_, index) => _message[index],
+                itemCount: _messages.length,
+                itemBuilder: (_, index) => _messages[index],
               ),
             ),
-            // 구분선
             Divider(height: 1.0),
-            // 메시지 입력을 받은 위젯(_buildTextCompose)추가
             Container(
               decoration: BoxDecoration(
                 color: Theme.of(context).cardColor,
@@ -64,13 +55,10 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
             )
           ],
         ),
-        // iOS의 경우 데코레이션 효과 적용
-
       ),
     );
   }
 
-  // 사용자로부터 메시지를 입력받는 위젯 선언
   Widget _buildTextComposer() {
     return IconTheme(
       data: IconThemeData(color: Colors.blue),
@@ -78,35 +66,27 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(
           children: <Widget>[
-            // 사진 아이콘 버튼 추가
             IconButton(
               icon: Icon(Icons.photo),
               onPressed: () {
                 // 이미지 추가 기능을 넣을 곳
-                // 예: 이미지 선택 다이얼로그를 띄우거나, 카메라를 여는 기능
               },
             ),
-            // 텍스트 입력 필드
             Flexible(
               child: TextField(
                 controller: _textController,
-                // 입력된 텍스트에 변화가 있을 때 마다
                 onChanged: (text) {
                   setState(() {
                     _isComposing = text.length > 0;
                   });
                 },
-                // 키보드상에서 확인을 누를 경우. 입력값이 있을 때에만 _handleSubmitted 호출
                 onSubmitted: _isComposing ? _handleSubmitted : null,
-                // 텍스트 필드에 힌트 텍스트 추가
                 decoration:
                 InputDecoration.collapsed(hintText: "Send a message"),
               ),
             ),
-            // 전송 버튼
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 4.0),
-              // 플랫폼 종류에 따라 적당한 버튼 추가
               child: Theme.of(context).platform == TargetPlatform.iOS
                   ? CupertinoButton(
                 child: Text("send"),
@@ -115,9 +95,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                     : null,
               )
                   : IconButton(
-                // 아이콘 버튼에 전송 아이콘 추가
                 icon: Icon(Icons.send),
-                // 입력된 텍스트가 존재할 경우에만 _handleSubmitted 호출
                 onPressed: _isComposing
                     ? () => _handleSubmitted(_textController.text)
                     : null,
@@ -129,37 +107,95 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     );
   }
 
-  // 메시지 전송 버튼이 클릭될 때 호출
-  void _handleSubmitted(String text) {
-    // 텍스트 필드의 내용 삭제
+  void _handleSubmitted(String text) async {
     _textController.clear();
-    // _isComposing을 false로 설정
     setState(() {
       _isComposing = false;
     });
-    // 입력받은 텍스트를 이용해서 리스트에 추가할 메시지 생성
+
+    String userNickname = "사용자닉네임"; // 실제 닉네임을 여기에 설정
+    String profileImage = "default.png"; // 기본 프로필 이미지
+
     ChatMessage message = ChatMessage(
-      text: text,
-      // animationController 항목에 애니메이션 효과 설정
-      // ChatMessage은 UI를 가지는 위젯으로 새로운 message가 리스트뷰에 추가될 때
-      // 발생할 애니메이션 효과를 위젯에 직접 부여함
+      content: text,
+      nickname: userNickname,
+      profileImagePath: profileImage,
+      isMine: true,  // 사용자가 보낸 메시지는 isMine이 true
+      createdDate: DateTime.now().toString(), // 현재 시간
       animationController: AnimationController(
         duration: Duration(milliseconds: 700),
         vsync: this,
       ),
     );
-    // 리스트에 메시지 추가
+
     setState(() {
-      _message.insert(0, message);
+      _messages.insert(0, message);
     });
-    // 위젯의 애니메이션 효과 발생
     message.animationController.forward();
+
+    await _sendMessageToServer(text, null); // 이미지는 null로 처리
+  }
+
+  Future<void> _sendMessageToServer(String content, String? image) async {
+    final String url = "http://15.164.88.94:8080/groups/$groupId/chatting";
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "content": content,
+          "image": image ?? "",  // 이미지가 없으면 빈 문자열을 보냄
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        print('Message sent successfully');
+      } else {
+        print('Failed to send message: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error occurred while sending message: $e');
+    }
+  }
+
+  Future<void> _fetchChatMessages() async {
+    final String url = "http://15.164.88.94:8080/groups/$groupId/chatting";
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        List<dynamic> jsonResponse = jsonDecode(response.body);
+        List<groupChatting> messages = jsonResponse
+            .map((data) => groupChatting.fromJson(data))
+            .toList();
+
+        setState(() {
+          _messages.addAll(messages.map((groupChatting) => ChatMessage(
+            content: groupChatting.content,
+            image: groupChatting.image,  // 이미지도 추가
+            nickname: groupChatting.nickname,
+            profileImagePath: groupChatting.profileImage,
+            createdDate: groupChatting.createdDate,
+            isMine: groupChatting.isMine,
+            animationController: AnimationController(
+              duration: Duration(milliseconds: 700),
+              vsync: this,
+            )..forward(),
+          )));
+        });
+      } else {
+        print('Failed to load messages: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error occurred while fetching messages: $e');
+    }
   }
 
   @override
   void dispose() {
-    // 메시지가 생성될 때마다 animationController가 생성/부여 되었으므로 모든 메시지로부터 animationController 해제
-    for (ChatMessage message in _message) {
+    for (ChatMessage message in _messages) {
       message.animationController.dispose();
     }
     super.dispose();
@@ -168,51 +204,104 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
 // 리스브뷰에 추가될 메시지 위젯
 class ChatMessage extends StatelessWidget {
-  final String text; // 출력할 메시지
-  final AnimationController animationController; // 리스트뷰에 등록될 때 보여질 효과
+  final String content;
+  final String? image;
+  final String nickname;
+  final String profileImagePath;
+  final String createdDate;
+  final bool isMine;  // isMine에 따라 레이아웃 변경
+  final AnimationController animationController;
 
-  ChatMessage({required this.text, required this.animationController});
+  ChatMessage({
+    required this.content,
+    this.image,
+    required this.nickname,
+    required this.profileImagePath,
+    required this.createdDate,
+    required this.isMine,
+    required this.animationController,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // 위젯에 애니메이션을 발생하기 위해 SizeTransition을 추가
     return SizeTransition(
-      // 사용할 애니메이션 효과 설정
       sizeFactor:
       CurvedAnimation(parent: animationController, curve: Curves.easeOut),
       axisAlignment: 0.0,
-      // 리스트뷰에 추가될 컨테이너 위젯
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 10.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-
-            Expanded(
-              // 컬럼 추가
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  // 사용자명을 subhead 테마로 출력
-                  Text(_name),
-                  // 입력받은 메시지 출력
-                  Container(
-                    margin: const EdgeInsets.only(top: 5.0),
-                    child: Text(text),
-                  ),
-                ],
-              ),
+        child: Column(
+          crossAxisAlignment: isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+          children: [
+            Text(
+              createdDate,
+              style: TextStyle(fontSize: 12.0, color: Colors.grey),
             ),
-            SizedBox(width: 20,),
-            Container(
-
-              margin: const EdgeInsets.only(right: 16.0),
-              // 사용자 프로필 사진
-              child: CircleAvatar(child: Image.asset("assets/images/new-icons/김외롭.png")),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                if (!isMine) _buildProfileImage(),  // 상대방 메시지는 왼쪽에 프로필 이미지
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(nickname),  // 닉네임 표시
+                      Container(
+                        margin: const EdgeInsets.only(top: 5.0),
+                        child: image != null && image!.isNotEmpty
+                            ? Image.network(image!)  // 이미지가 있을 경우 표시
+                            : Text(content),  // 이미지가 없으면 텍스트 표시
+                      ),
+                    ],
+                  ),
+                ),
+                if (isMine) _buildProfileImage(),  // 내 메시지는 오른쪽에 프로필 이미지
+              ],
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildProfileImage() {
+    return Container(
+      margin: const EdgeInsets.only(right: 16.0, left: 16.0),
+      child: CircleAvatar(
+        backgroundImage: AssetImage("assets/images/profile/$profileImagePath"),
+      ),
+    );
+  }
+}
+
+class groupChatting {
+  final bool isMine;
+  final int userId;
+  final String nickname;
+  final String profileImage;
+  final String content;
+  final String image;
+  final String createdDate;
+
+  groupChatting({
+    required this.isMine,
+    required this.userId,
+    required this.nickname,
+    required this.profileImage,
+    required this.content,
+    required this.image,
+    required this.createdDate,
+  });
+
+  factory groupChatting.fromJson(Map<String, dynamic> json) {
+    return groupChatting(
+      isMine: json['isMine'] ?? true,
+      userId: json['userId'] ?? 0,
+      nickname: json['nickname'] ?? '',
+      profileImage: json['profileImage'] ?? 'default.png',
+      content: json['content'] ?? '',
+      image: json['image'] ?? '',
+      createdDate: json['createdDate'] ?? '',
     );
   }
 }

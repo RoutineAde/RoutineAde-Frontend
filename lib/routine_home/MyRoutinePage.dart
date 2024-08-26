@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_calendar_week/flutter_calendar_week.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:routine_ade/routine_groupLeader/glOnClickGroupPage.dart';
+import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
 import 'AddRoutinePage.dart';
 import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
@@ -435,7 +436,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
           _buildBottomAppBarItem(
               "assets/images/tap-bar/group01.png", const GroupMainPage()),
           _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png",
-              const OnClickGroupPage(groupId: 1)),
+              StaticsCalendar()),
           _buildBottomAppBarItem("assets/images/tap-bar/more01.png",
               const glOnClickGroupPage(groupId: 1)),
         ],
@@ -452,8 +453,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         }
       },
       child: SizedBox(
-        width: 50,
-        height: 50,
+        width: 60,
+        height: 60,
         child: Image.asset(asset),
       ),
     );

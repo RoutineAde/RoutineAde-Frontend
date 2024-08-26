@@ -100,7 +100,7 @@ class _groupDeleteState extends State<groupDelete> {
         child: ListView(
           children: <Widget>[
             const Text(
-              "그룹 루틴을 삭제하면,",
+              "그룹을 삭제하면,",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,

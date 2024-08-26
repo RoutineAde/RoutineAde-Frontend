@@ -162,16 +162,16 @@ class _GroupMainPageState extends State<GroupMainPage> {
         backgroundColor:
         isExpanded ? Colors.grey[600] : const Color(0xFF8DCCFF),
         automaticallyImplyLeading: false, // 뒤로가기 제거
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Image.asset(
-              "assets/images/bell.png",
-              width: 35,
-              height: 35,
-            ),
-          ),
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: const EdgeInsets.only(right: 16.0),
+        //     child: Image.asset(
+        //       "assets/images/bell.png",
+        //       width: 35,
+        //       height: 35,
+        //     ),
+        //   ),
+        // ],
       ),
       body: DarkOverlay(
         isDark: isExpanded, // 눌렀을때만 어둡게
@@ -285,8 +285,8 @@ class _GroupMainPageState extends State<GroupMainPage> {
                 );
               },
               child: SizedBox(
-                width: 50,
-                height: 50,
+                width: 60,
+                height: 60,
                 child: Image.asset("assets/images/tap-bar/routine01.png"),
               ),
             ),
@@ -295,8 +295,8 @@ class _GroupMainPageState extends State<GroupMainPage> {
                 // 그룹 버튼 클릭 시 동작할 코드
               },
               child: SizedBox(
-                width: 50,
-                height: 50,
+                width: 60,
+                height: 60,
                 child: Image.asset("assets/images/tap-bar/group02.png"),
               ),
             ),
@@ -305,8 +305,8 @@ class _GroupMainPageState extends State<GroupMainPage> {
                 // 통계 버튼 클릭 시 동작할 코드
               },
               child: SizedBox(
-                width: 50,
-                height: 50,
+                width: 60,
+                height: 60,
                 child: Image.asset("assets/images/tap-bar/statistics01.png"),
               ),
             ),
@@ -315,8 +315,8 @@ class _GroupMainPageState extends State<GroupMainPage> {
                 // 더보기 버튼 클릭 시 동작할 코드
               },
               child: SizedBox(
-                width: 50,
-                height: 50,
+                width: 60,
+                height: 60,
                 child: Image.asset("assets/images/tap-bar/more01.png"),
               ),
             ),
@@ -324,7 +324,6 @@ class _GroupMainPageState extends State<GroupMainPage> {
         ),
       ),
 
-      // add 버튼
       // add 버튼
       floatingActionButton: Stack(
         alignment: Alignment.bottomRight,

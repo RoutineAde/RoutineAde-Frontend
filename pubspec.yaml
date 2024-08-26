@@ -22,6 +22,8 @@ dependencies:
   shelf_swagger_ui: ^1.0.0+2
   http: ^0.13.3
   shared_preferences: ^2.0.8
+  table_calendar: ^3.0.0
+  fl_chart: ^0.40.6
   # flutter_localizations:
   #   sdk: flutter
 

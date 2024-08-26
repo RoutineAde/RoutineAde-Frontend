@@ -5,16 +5,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
-import 'package:routine_ade/routine_group/groupManagement.dart';
 import 'package:routine_ade/routine_groupLeader/groupDelete.dart';
-import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:http/http.dart' as http;
 import '../routine_group/GroupType.dart';
-import '../routine_group/groupIntroRule.dart';
-import 'glgroupManagement.dart';
 import 'groupRoutineEditPage.dart';
 import 'AddGroupRoutinePage.dart';
 import 'package:routine_ade/routine_user/token.dart';
+import 'glGroupIntroRule.dart';
 
 // 전역 함수로 getCategoryColor를 정의
 Color getCategoryColor(String category) {
@@ -291,7 +288,8 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
     );
   }
 
-  ListTile buildDrawerMemberTile(String title, String imagePath, int groupId, int userId,
+  ListTile buildDrawerMemberTile(
+      String title, String imagePath, int groupId, int userId,
       {bool isLeader = false}) {
     return ListTile(
       leading: CircleAvatar(
@@ -346,18 +344,20 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
           );
         },
         style: ButtonStyle(
-          padding: MaterialStateProperty.all<EdgeInsets>(
-              const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0)), // 패딩 설정
-          minimumSize: MaterialStateProperty.all<Size>(Size(0, 30)), // 버튼의 최소 높이 설정 (예: 36)
-          backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          padding: WidgetStateProperty.all<EdgeInsets>(
+              const EdgeInsets.symmetric(
+                  vertical: 4.0, horizontal: 8.0)), // 패딩 설정
+          minimumSize: WidgetStateProperty.all<Size>(
+              const Size(0, 30)), // 버튼의 최소 높이 설정 (예: 36)
+          backgroundColor:
+          WidgetStateProperty.all<Color>(Colors.transparent),
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(50.0),
               side: const BorderSide(color: Colors.black, width: 1.0),
             ),
           ),
         ),
-
         child: const Text(
           '내보내기',
           style: TextStyle(
@@ -374,8 +374,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
     final response = await http.delete(
       Uri.parse(url),
       headers: {
-        'Authorization':
-        'Bearer $token',
+        'Authorization': 'Bearer $token',
         'Accept': 'application/json',
       },
     );
@@ -467,7 +466,7 @@ class RoutinePage extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => GroupIntroRule(groupId: groupId),
+                      builder: (context) => glGroupIntroRule(groupId: groupId),
                     ),
                   );
                 },
@@ -637,7 +636,8 @@ void _showRoutineDialog(
           TextButton(
             onPressed: () {
               Navigator.of(context).pop(); // 현재 다이얼로그 닫기
-              _showDeleteConfirmationDialog(context, routineTitle, groupId, routineId); // 삭제 확인 다이얼로그 열기
+              _showDeleteConfirmationDialog(
+                  context, routineTitle, groupId, routineId); // 삭제 확인 다이얼로그 열기
             },
             child: Row(
               children: [
@@ -661,7 +661,8 @@ void _showRoutineDialog(
 }
 
 // 삭제 확인 다이얼로그 함수
-void _showDeleteConfirmationDialog(BuildContext context, String routineTitle, int groupId, int routineId) {
+void _showDeleteConfirmationDialog(
+    BuildContext context, String routineTitle, int groupId, int routineId) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -687,12 +688,13 @@ void _showDeleteConfirmationDialog(BuildContext context, String routineTitle, in
             ),
           ],
         ),
-        content: SizedBox(
+        content: const SizedBox(
           height: 150, // 다이얼로그의 높이 조절
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center, // 모든 텍스트 가운데 정렬
-            mainAxisAlignment: MainAxisAlignment.center, // 텍스트들이 수직 가운데 정렬되도록 추가
-            children: const [
+            mainAxisAlignment:
+            MainAxisAlignment.center, // 텍스트들이 수직 가운데 정렬되도록 추가
+            children: [
               Text(
                 "루틴을 삭제하면 해당 루틴의",
                 style: TextStyle(fontSize: 16),
@@ -719,7 +721,10 @@ void _showDeleteConfirmationDialog(BuildContext context, String routineTitle, in
                 onPressed: () {
                   Navigator.of(context).pop(); // 다이얼로그 닫기
                 },
-                child: const Text("취소", style: TextStyle(fontSize: 16),),
+                child: const Text(
+                  "취소",
+                  style: TextStyle(fontSize: 16),
+                ),
               ),
               const SizedBox(width: 10), // 버튼 사이의 간격 조절
               TextButton(
@@ -745,14 +750,13 @@ void _showDeleteConfirmationDialog(BuildContext context, String routineTitle, in
   );
 }
 
-
 Future<void> deleteGroupRoutine(int groupId, int routineId) async {
-  final url = 'http://15.164.88.94:8080/groups/$groupId/group-routines/$routineId';
+  final url =
+      'http://15.164.88.94:8080/groups/$groupId/group-routines/$routineId';
   final response = await http.delete(
     Uri.parse(url),
     headers: {
-      'Authorization':
-      'Bearer $token',
+      'Authorization': 'Bearer $token',
       'Accept': 'application/json',
     },
   );
@@ -761,8 +765,6 @@ Future<void> deleteGroupRoutine(int groupId, int routineId) async {
     throw Exception('Failed to delete group routine');
   }
 }
-
-
 
 class GroupInfo {
   final String groupTitle;
