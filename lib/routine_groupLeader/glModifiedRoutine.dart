@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 class glModifiedRoutine extends StatefulWidget {
-  const glModifiedRoutine({Key? key}) : super(key: key);
+  const glModifiedRoutine({super.key});
 
   @override
   State<glModifiedRoutine> createState() => _glModifiedRoutineState();
@@ -13,9 +13,9 @@ class _glModifiedRoutineState extends State<glModifiedRoutine> {
   final TextEditingController _groupNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isObscured = true; //텍스트를 가리는 초기 상태
-  IconData _icon = Icons.visibility_off;  // 초기 아이콘
+  IconData _icon = Icons.visibility_off; // 초기 아이콘
   final TextEditingController _groupDescriptionController =
-  TextEditingController();
+      TextEditingController();
   int _selectedMemberCount = 0;
 
   //카테고리 선택 (한번에 하나만)
@@ -35,12 +35,12 @@ class _glModifiedRoutineState extends State<glModifiedRoutine> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(
+          title: const Text(
             '모집인원 선택',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
           ),
           content: Container(
-            padding: EdgeInsets.symmetric(vertical: 20),
+            padding: const EdgeInsets.symmetric(vertical: 20),
             width: double.maxFinite,
             height: 300,
             child: ListView.builder(
@@ -73,7 +73,7 @@ class _glModifiedRoutineState extends State<glModifiedRoutine> {
         backgroundColor: Colors.grey[200],
         appBar: AppBar(
           backgroundColor: Colors.grey[200],
-          title: Text(
+          title: const Text(
             '그룹 수정',
             style: TextStyle(
               fontSize: 25,
@@ -83,7 +83,7 @@ class _glModifiedRoutineState extends State<glModifiedRoutine> {
           ),
           centerTitle: true,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context),
           ),
         ),
@@ -92,45 +92,50 @@ class _glModifiedRoutineState extends State<glModifiedRoutine> {
             children: <Widget>[
               Container(
                 color: Colors.grey[200],
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     TextField(
                       controller: _groupNameController,
                       maxLength: 10,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                      decoration: InputDecoration(
+                      style: const TextStyle(color: Colors.black, fontSize: 18),
+                      decoration: const InputDecoration(
                         fillColor: Colors.white,
                         filled: true,
                         labelText: '그룹명을 입력해주세요',
                         border: OutlineInputBorder(
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding: EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
+                        contentPadding:
+                            EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
                         counterText: "", // 글자 수 표시 없애기
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     // Divider(),
                     TextField(
                       controller: _passwordController,
-                      style: TextStyle(color: Colors.black, fontSize: 18),
-                      obscureText: _isObscured,  // 텍스트가 가려지는지 여부 제어
+                      style: const TextStyle(color: Colors.black, fontSize: 18),
+                      obscureText: _isObscured, // 텍스트가 가려지는지 여부 제어
                       decoration: InputDecoration(
                         fillColor: Colors.white,
                         filled: true,
                         labelText: '비밀번호(선택사항)',
-                        border: OutlineInputBorder(
+                        border: const OutlineInputBorder(
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding: EdgeInsets.symmetric(vertical:15), // 세로 여백 조정
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 15), // 세로 여백 조정
                         suffixIcon: IconButton(
-                          icon: Icon(_icon),  // Icon changes based on _isObscured state
+                          icon: Icon(
+                              _icon), // Icon changes based on _isObscured state
                           onPressed: () {
                             setState(() {
                               _isObscured = !_isObscured;
-                              _icon = _isObscured ? Icons.visibility_off : Icons.visibility;
+                              _icon = _isObscured
+                                  ? Icons.visibility_off
+                                  : Icons.visibility;
                             });
                           },
                         ),
@@ -139,12 +144,13 @@ class _glModifiedRoutineState extends State<glModifiedRoutine> {
                     // SizedBox(height: 10),
                     Container(
                       color: Colors.white,
-                      padding: const EdgeInsets.only(left:10, right: 10, top: 10 ),
+                      padding:
+                          const EdgeInsets.only(left: 10, right: 10, top: 10),
                       margin: const EdgeInsets.only(top: 30),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Row(
+                          const Row(
                             children: [
                               Text(
                                 "대표 카테고리",
@@ -155,12 +161,12 @@ class _glModifiedRoutineState extends State<glModifiedRoutine> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: List.generate(
                               5,
-                                  (index) => GestureDetector(
+                              (index) => GestureDetector(
                                 onTap: () {
                                   setState(() {
                                     selectedCategoryIndex = index;
@@ -169,12 +175,12 @@ class _glModifiedRoutineState extends State<glModifiedRoutine> {
                                 child: Container(
                                   width: 70,
                                   height: 35,
-                                  margin: EdgeInsets.only(
+                                  margin: const EdgeInsets.only(
                                     bottom: 10,
                                   ),
                                   decoration: BoxDecoration(
                                     color: selectedCategoryIndex == index
-                                        ? Color(0xffE6E288)
+                                        ? const Color(0xffE6E288)
                                         : Colors.white,
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(color: Colors.grey),
@@ -196,13 +202,14 @@ class _glModifiedRoutineState extends State<glModifiedRoutine> {
                       ),
                     ),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                      margin: EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
+                      margin: const EdgeInsets.only(top: 20),
                       color: Colors.white,
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
+                          const Text(
                             "모집인원",
                             style: TextStyle(
                               fontSize: 18,
@@ -212,15 +219,14 @@ class _glModifiedRoutineState extends State<glModifiedRoutine> {
                           GestureDetector(
                             onTap: _selectMemberCount,
                             child: Container(
-                              padding: EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
                                 color: Colors.grey[100],
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Text(
                                 '$_selectedMemberCount명',
-
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 16,
                                   color: Colors.black,
                                 ),
@@ -236,12 +242,13 @@ class _glModifiedRoutineState extends State<glModifiedRoutine> {
               //그룹 소개
               Container(
                 color: Colors.grey[200],
-                padding: EdgeInsets.only(top: 20, bottom: 15, left: 10, right: 10),
+                padding: const EdgeInsets.only(
+                    top: 20, bottom: 15, left: 10, right: 10),
                 child: TextField(
                   controller: _groupDescriptionController,
                   maxLines: 6,
-                  style: TextStyle(color: Colors.black, fontSize: 18),
-                  decoration: InputDecoration(
+                  style: const TextStyle(color: Colors.black, fontSize: 18),
+                  decoration: const InputDecoration(
                     fillColor: Colors.white,
                     filled: true,
                     labelText: '그룹 소개를 입력해주세요',
@@ -255,19 +262,19 @@ class _glModifiedRoutineState extends State<glModifiedRoutine> {
               Container(
                 width: 400,
                 height: 80,
-                padding: EdgeInsets.only(top: 20),
+                padding: const EdgeInsets.only(top: 20),
                 child: ElevatedButton(
                   onPressed: () {},
                   style: ButtonStyle(
                     backgroundColor:
-                    MaterialStateProperty.all<Color>(Color(0xffE6E288)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        WidgetStateProperty.all<Color>(const Color(0xffE6E288)),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                     ),
                   ),
-                  child: Text(
+                  child: const Text(
                     "수정 완료",
                     style: TextStyle(
                       color: Colors.white,
@@ -276,7 +283,7 @@ class _glModifiedRoutineState extends State<glModifiedRoutine> {
                   ),
                 ),
               ),
-              SizedBox(height: 20), //버튼 아래 여백
+              const SizedBox(height: 20), //버튼 아래 여백
             ],
           ),
         ),

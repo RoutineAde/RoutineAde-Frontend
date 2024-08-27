@@ -750,7 +750,6 @@ void _showDeleteConfirmationDialog(
   );
 }
 
-
 Future<void> deleteGroupRoutine(int groupId, int routineId) async {
   final url =
       'http://15.164.88.94:8080/groups/$groupId/group-routines/$routineId';
@@ -766,8 +765,6 @@ Future<void> deleteGroupRoutine(int groupId, int routineId) async {
     throw Exception('Failed to delete group routine');
   }
 }
-
-
 
 class GroupInfo {
   final String groupTitle;
@@ -787,5 +784,4 @@ class GroupInfo {
       groupId: json['groupId'] != null ? json['groupId'] as int : 0,
     );
   }
-
 }

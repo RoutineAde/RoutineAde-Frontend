@@ -8,7 +8,6 @@ import 'GroupRoutinePage.dart';
 import 'package:routine_ade/routine_user/token.dart';
 import 'OnClickGroupPage.dart';
 
-
 class GroupSearchPage extends StatefulWidget {
   const GroupSearchPage({super.key});
 
