@@ -15,6 +15,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:routine_ade/routine_user/token.dart';
+import 'package:routine_ade/routine_group/GroupType.dart';
 
 void main() async {
   await initializeDateFormatting();
@@ -434,10 +435,17 @@ class _MyRoutinePageState extends State<MyRoutinePage>
           _buildBottomAppBarItem("assets/images/tap-bar/routine02.png"),
           _buildBottomAppBarItem(
               "assets/images/tap-bar/group01.png", const GroupMainPage()),
-          _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png",
-              const OnClickGroupPage(groupId: 1)),
-          _buildBottomAppBarItem("assets/images/tap-bar/more01.png",
-              const glOnClickGroupPage(groupId: 1)),
+          _buildBottomAppBarItem(
+            "assets/images/tap-bar/statistics01.png",
+            // const OnClickGroupPage(
+            //     groupId: group.go,
+            //     nickname: widget.nickname,
+            //     userId: widget.userId)
+          ),
+          _buildBottomAppBarItem(
+            "assets/images/tap-bar/more01.png",
+            // const glOnClickGroupPage(groupId: 1)
+          ),
         ],
       ),
     );

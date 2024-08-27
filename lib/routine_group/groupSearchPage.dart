@@ -233,7 +233,9 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => OnClickGroupPage(groupId: groupId),
+          builder: (context) => OnClickGroupPage(
+            groupId: groupId,
+          ),
         ),
       );
     }

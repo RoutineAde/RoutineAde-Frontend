@@ -13,6 +13,7 @@ import '../routine_groupLeader/groupRoutineEditPage.dart';
 import 'package:http/http.dart' as http;
 import 'groupType.dart';
 import 'package:routine_ade/routine_user/token.dart';
+import 'group-unjoin.dart';
 
 // 전역 함수로 getCategoryColor를 정의
 Color getCategoryColor(String category) {
@@ -160,7 +161,9 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
               }
             },
           ),
-          ChatScreen(),
+          ChatScreen(
+            groupId: widget.groupId,
+          ),
         ],
       ),
       endDrawerEnableOpenDragGesture: false,
@@ -302,8 +305,10 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
       ),
       child: GestureDetector(
         onTap: () {
-          // Navigator.push(context,
-          //     MaterialPageRoute(builder: (context) => const groupManagement()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Groupunjoin(groupId: widget.groupId)));
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,

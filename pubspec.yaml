@@ -19,6 +19,9 @@ dependencies:
   shelf_swagger_ui: ^1.0.0+2
   http: ^0.13.3
   shared_preferences: ^2.0.8
+  image_picker: ^0.8.9 #이미지 선택
+  path: ^1.8.0
+  http_parser: ^4.0.0
   # flutter_localizations:
   #   sdk: flutter
 
