@@ -52,6 +52,7 @@ class GroupMember {
       required this.profileImage});
 
   factory GroupMember.fromJson(Map<String, dynamic> json) {
+    //
     return GroupMember(
       userId: json['userId'],
       nickname: json['nickname'],
@@ -107,6 +108,7 @@ class Routine {
 }
 
 class GroupResponse {
+  //
   final bool isGroupAdmin;
   final bool isGroupAlarmEnabled;
   final Group groupInfo;
