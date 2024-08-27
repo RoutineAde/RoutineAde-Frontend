@@ -750,11 +750,7 @@ void _showDeleteConfirmationDialog(
   );
 }
 
-<<<<<<< HEAD
-=======
 
-
->>>>>>> 5cf26521056d0aaa04caaea37e72abc838b18299
 Future<void> deleteGroupRoutine(int groupId, int routineId) async {
   final url =
       'http://15.164.88.94:8080/groups/$groupId/group-routines/$routineId';
@@ -771,10 +767,8 @@ Future<void> deleteGroupRoutine(int groupId, int routineId) async {
   }
 }
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 5cf26521056d0aaa04caaea37e72abc838b18299
+
 class GroupInfo {
   final String groupTitle;
   final String groupDescription;
@@ -793,8 +787,5 @@ class GroupInfo {
       groupId: json['groupId'] != null ? json['groupId'] as int : 0,
     );
   }
-<<<<<<< HEAD
-=======
 
->>>>>>> 5cf26521056d0aaa04caaea37e72abc838b18299
 }

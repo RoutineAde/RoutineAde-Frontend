@@ -1,9 +1,8 @@
-import 'package:shared_preferences/shared_preferences.dart';
-
 String token =
-    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjQ2Nzk3MDQsImV4cCI6MTc0MDIzMTcwNCwidXNlcklkIjoyfQ.QdmpR0fPluKi8efVY7IJuZ6ABBZfOi_TimgSphJPz0w';
+    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjQ3NDY3NDQsImV4cCI6MTc0MDI5ODc0NCwidXNlcklkIjoxfQ.DCvucO_77JoVAH6hF03rw9HtWqNo5_nt_gGYyFCjsG0';
 
-// Future<void> saveToken(String token) async {
-//   SharedPreferences prefs = await SharedPreferences.getInstance();
-//   await prefs.setString('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM', token);
-// }
+// 테스트 계정1
+// eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjQ3NDY3NDQsImV4cCI6MTc0MDI5ODc0NCwidXNlcklkIjoxfQ.DCvucO_77JoVAH6hF03rw9HtWqNo5_nt_gGYyFCjsG0
+
+// 테스트 계정2
+// eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjQ3NDY4MzQsImV4cCI6MTc0MDI5ODgzNCwidXNlcklkIjoyfQ.emhuxcUZRCeGqAAPcv5f3EbGX2a23dCerryAxkKlStI
