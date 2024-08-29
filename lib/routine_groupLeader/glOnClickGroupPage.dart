@@ -159,7 +159,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
               }
             },
           ),
-          // const ChatScreen(),
+          ChatScreen(groupId: widget.groupId),
         ],
       ),
       endDrawerEnableOpenDragGesture: false,

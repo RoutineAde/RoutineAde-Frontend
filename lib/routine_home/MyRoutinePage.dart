@@ -4,18 +4,14 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_calendar_week/flutter_calendar_week.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:routine_ade/routine_groupLeader/glOnClickGroupPage.dart';
 import 'AddRoutinePage.dart';
-import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
-import 'package:routine_ade/routine_group/OnClickGroupPage.dart';
 import 'package:routine_ade/routine_home/AlarmListPage.dart';
 import 'package:routine_ade/routine_home/ModifiedRoutinePage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:routine_ade/routine_user/token.dart';
-import 'package:routine_ade/routine_group/GroupType.dart';
 
 void main() async {
   await initializeDateFormatting();
@@ -159,9 +155,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 30),
-            // child: Text(
-            //   '${_controller.selectedDate.year ?? DateTime.now().year}년 ${_controller.selectedDate.month?? DateTime.now().month}월 ${_controller.selectedDate.day?? DateTime.now().day}일',
-            //   style: TextStyle(fontSize: 20),
             child: Text(
               '${date.year}년 ${date.month}월 ${date.day}일',
               style: const TextStyle(fontSize: 20),
@@ -318,9 +311,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                     return ListView(
                       padding: const EdgeInsets.fromLTRB(24, 10, 24, 16),
                       children: <Widget>[
-                        // const SizedBox(
-                        //   height: 10,
-                        // ), // 여백 추가
                         Container(
                           padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                           decoration: BoxDecoration(
@@ -566,12 +556,12 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     }
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      // margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
+      decoration: const BoxDecoration(
+          // color: Colors.white,
+          // borderRadius: BorderRadius.circular(10),
+          ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
-import 'package:routine_ade/routine_user/token.dart'; // 토큰 경로에 맞게 수정
+import 'package:mime/mime.dart'; // MIME 타입 가져오기
+import 'package:http_parser/http_parser.dart';
+import 'package:routine_ade/routine_user/token.dart';
 
 class ChatScreen extends StatefulWidget {
   final int groupId;
@@ -29,11 +31,11 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     _loadChatMessages(); // 채팅 메시지 로드
   }
 
-  Future<Map<String, dynamic>> fetchUserInfo(int groupId) async {
-    final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId/userInfo');
+  Future<void> fetchUserInfo(int groupId) async {
+    final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId');
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token', // 토큰을 적절히 설정
+      'Authorization': 'Bearer $token',
     };
 
     try {
@@ -41,25 +43,25 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       if (response.statusCode == 200) {
         final decodedResponse = utf8.decode(response.bodyBytes);
         final data = json.decode(decodedResponse);
-        return {
-          'userId': data['userId'],
-          'nickname': data['nickname'],
-        };
+
+        setState(() {
+          _userId = data['groupMembers'][0]
+              ['userId']; // Assuming the user is the first group member
+          _nickname = data['groupMembers'][0]['nickname'];
+        });
+
+        print('Fetched user info: $_nickname');
       } else {
         throw Exception('Failed to load user info');
       }
     } catch (e) {
-      throw Exception('Error fetching user info: $e');
+      print('Error fetching user info: $e');
     }
   }
 
   Future<void> _loadUserInfo() async {
     try {
-      final userInfo = await fetchUserInfo(widget.groupId);
-      setState(() {
-        _userId = userInfo['userId'];
-        _nickname = userInfo['nickname'];
-      });
+      await fetchUserInfo(widget.groupId);
     } catch (e) {
       print("Error loading user info: $e");
     }
@@ -69,7 +71,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId/chatting');
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token', // 토큰을 적절히 설정
+      'Authorization': 'Bearer $token',
     };
 
     try {
@@ -82,26 +84,30 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         throw Exception('Failed to load chat messages');
       }
     } catch (e) {
-      throw Exception('Error fetching chat messages: $e');
+      print('Error fetching chat messages: $e');
+      return [];
     }
   }
 
   Future<void> _loadChatMessages() async {
     try {
       final chatMessages = await fetchChatMessages(widget.groupId);
-      for (var chatData in chatMessages) {
-        _addMessageFromApi(chatData);
-      }
+      setState(() {
+        _messages.clear(); // Clear the old messages
+        for (var chatData in chatMessages) {
+          _addMessageFromApi(chatData);
+        }
+      });
     } catch (e) {
       print("Error loading chat messages: $e");
     }
   }
 
   void _addMessageFromApi(dynamic chatData) {
-    ChatMessage message = ChatMessage(
+    final message = ChatMessage(
       text: chatData['content'] ?? '',
       isMine: chatData['isMine'] ?? false,
-      nickname: chatData['nickname'],
+      nickname: chatData['nickname'] ?? _nickname,
       profileImage: chatData['profileImage'],
       image: chatData['image'],
       createdDate: chatData['createdDate'] ?? '',
@@ -122,43 +128,49 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       int groupId, String content, File? imageFile) async {
     final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId/chatting');
 
-    // 이미지 파일을 Base64로 인코딩
-    String? base64Image;
+    final request = http.MultipartRequest('POST', url);
+    request.headers['Authorization'] = 'Bearer $token';
+    request.fields['content'] = content;
+
     if (imageFile != null) {
-      final imageBytes = await imageFile.readAsBytes();
-      base64Image = base64Encode(imageBytes);
+      final mimeTypeData =
+          lookupMimeType(imageFile.path, headerBytes: [0xFF, 0xD8])?.split('/');
+      final multipartFile = await http.MultipartFile.fromPath(
+        'image',
+        imageFile.path,
+        contentType: mimeTypeData != null
+            ? MediaType(mimeTypeData[0], mimeTypeData[1])
+            : null,
+      );
+
+      request.files.add(multipartFile);
     }
 
-    // JSON 데이터 생성
-    final jsonData = jsonEncode({
-      'content': content,
-      'image': base64Image,
-    });
-
-    final headers = {
-      'Authorization': 'Bearer $token', // 토큰을 적절히 설정
-      'Content-Type': 'application/json',
-    };
-
     try {
-      final response = await http.post(url, headers: headers, body: jsonData);
-      print('Response status: ${response.statusCode}');
-      print('Response body: ${response.body}');
-
+      final response = await request.send();
       if (response.statusCode == 200) {
-        print('Chat message created successfully!');
-        _textController.clear();
+        final responseData = await http.Response.fromStream(response);
+        final responseBody = json.decode(responseData.body);
+
+        print('Message sent successfully');
+
+        await _loadChatMessages(); // Load new messages
+
         setState(() {
           _isComposing = false;
-          _imageFile = null; // 이미지 파일 초기화
+          _imageFile = null;
+          _textController.clear();
         });
       } else {
         print(
             'Failed to create chat message. Status code: ${response.statusCode}');
-        print('Response body: ${response.body}');
+        print('Response body: ${await response.stream.bytesToString()}');
       }
     } catch (e) {
-      print('Error creating chat message: $e');
+      print('Failed to send message: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to send message.')),
+      );
     }
   }
 
@@ -169,24 +181,31 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     if (pickedFile != null) {
       setState(() {
         _imageFile = File(pickedFile.path);
+        _isComposing = true;
       });
+    } else {
+      print('No image selected.');
     }
   }
 
   void _handleSubmitted(String text) async {
-    _textController.clear();
+    if (text.isEmpty && _imageFile == null) return;
+
     setState(() {
       _isComposing = false;
     });
 
     if (_nickname != null) {
       await createChatMessage(widget.groupId, text, _imageFile);
+    } else {
+      print('Nickname is null');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white, // 전체 배경색을 하얀색으로 설정
       body: Column(
         children: <Widget>[
           Flexible(
@@ -211,7 +230,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   Widget _buildTextComposer() {
     return IconTheme(
-      data: const IconThemeData(color: Colors.blue),
+      data: const IconThemeData(color: Color.fromARGB(255, 190, 226, 255)),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(
@@ -225,16 +244,12 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                 controller: _textController,
                 onChanged: (text) {
                   setState(() {
-                    _isComposing = text.isNotEmpty;
+                    _isComposing = text.isNotEmpty || _imageFile != null;
                   });
                 },
-                onSubmitted: (text) {
-                  if (_isComposing) {
-                    _handleSubmitted(text);
-                  }
-                },
-                decoration:
-                    const InputDecoration.collapsed(hintText: "Send a message"),
+                decoration: const InputDecoration.collapsed(
+                  hintText: "Send a message",
+                ),
               ),
             ),
             IconButton(
@@ -294,14 +309,14 @@ class ChatMessage extends StatelessWidget {
             if (!isMine)
               Container(
                 margin: const EdgeInsets.only(right: 8.0),
-                child: CircleAvatar(
-                  backgroundImage:
-                      profileImage != null && profileImage!.isNotEmpty
-                          ? NetworkImage(profileImage!)
-                          : null,
-                  child: profileImage == null || profileImage!.isEmpty
-                      ? const Icon(Icons.person)
-                      : null,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (profileImage != null && profileImage!.isNotEmpty)
+                      CircleAvatar(
+                        backgroundImage: NetworkImage(profileImage!),
+                      ),
+                  ],
                 ),
               ),
             Expanded(
@@ -309,12 +324,12 @@ class ChatMessage extends StatelessWidget {
                 crossAxisAlignment:
                     isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: <Widget>[
-                  if (nickname != null)
+                  if (nickname != null && !isMine)
                     Text(
                       nickname!,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Colors.black, // 검정색으로 변경
+                        color: Colors.black,
                       ),
                     ),
                   if (image != null && image!.isNotEmpty)
@@ -325,26 +340,41 @@ class ChatMessage extends StatelessWidget {
                       fit: BoxFit.cover,
                     ),
                   if (text.isNotEmpty)
-                    Text(
-                      text,
-                      style: const TextStyle(
-                        color: Colors.black, // 검정색으로 변경
+                    Container(
+                      margin: const EdgeInsets.only(top: 4.0),
+                      padding: const EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[200], // 회색 배경
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      child: Text(
+                        text,
+                        style: const TextStyle(color: Colors.black),
+                        softWrap: true,
+                        overflow: TextOverflow.visible,
                       ),
                     ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      Text(
+                  if (!isMine)
+                    Container(
+                      margin: const EdgeInsets.only(top: 4.0),
+                      child: Text(
                         createdDate,
                         style:
                             const TextStyle(fontSize: 10, color: Colors.grey),
                       ),
-                    ],
-                  ),
+                    ),
+                  if (isMine)
+                    Container(
+                      margin: const EdgeInsets.only(left: 8.0),
+                      child: Text(
+                        createdDate,
+                        style:
+                            const TextStyle(fontSize: 10, color: Colors.grey),
+                      ),
+                    ),
                 ],
               ),
             ),
-            if (isMine) const SizedBox(width: 16.0),
           ],
         ),
       ),

@@ -1,7 +1,7 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 String token =
-    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjQ3NDY3NDQsImV4cCI6MTc0MDI5ODc0NCwidXNlcklkIjoxfQ.DCvucO_77JoVAH6hF03rw9HtWqNo5_nt_gGYyFCjsG0';
+    'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjQ3NDY4MzQsImV4cCI6MTc0MDI5ODgzNCwidXNlcklkIjoyfQ.emhuxcUZRCeGqAAPcv5f3EbGX2a23dCerryAxkKlStI';
 
 // 테스트 계정1
 // eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjQ3NDY3NDQsImV4cCI6MTc0MDI5ODc0NCwidXNlcklkIjoxfQ.DCvucO_77JoVAH6hF03rw9HtWqNo5_nt_gGYyFCjsG0
