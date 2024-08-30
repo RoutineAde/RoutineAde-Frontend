@@ -96,7 +96,7 @@ class _groupDeleteState extends State<groupDelete> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(40, 20, 10, 10),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
         child: ListView(
           children: <Widget>[
             const Text(
@@ -151,7 +151,7 @@ class _groupDeleteState extends State<groupDelete> {
                   },
                   checkColor: Colors.white,
                   activeColor: _isChecked
-                      ? const Color(0xffA1D1F9)
+                      ? const Color(0xffB4DDFF)
                       : Colors.grey, // 체크박스 색상
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(50.0), // 원형으로 만들기
@@ -163,14 +163,14 @@ class _groupDeleteState extends State<groupDelete> {
             ),
             Container(
               width: 400,
-              height: 80,
-              padding: const EdgeInsets.fromLTRB(0, 30, 30, 0),
+              height: 90,
+              padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
               child: ElevatedButton(
                 onPressed:
                     _isChecked ? _deleteGroup : null, // 체크박스가 체크되어야만 버튼 활성화
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all<Color>(
-                    _isChecked ? const Color(0xffA1D1F9) : Colors.grey,
+                    _isChecked ? const Color(0xffB4DDFF) : Colors.grey,
                   ),
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
@@ -181,9 +181,9 @@ class _groupDeleteState extends State<groupDelete> {
                 child: const Text(
                   "그룹 삭제",
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                  ),
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ),

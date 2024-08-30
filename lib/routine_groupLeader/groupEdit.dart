@@ -55,7 +55,7 @@ class _groupEditState extends State<groupEdit> {
       _groupNameController.text = groupInfo['groupTitle'] ?? '';
       _passwordController.text = groupInfo['groupPassword'] ?? '';
       _groupDescriptionController.text = groupInfo['description'] ?? '';
-      _selectedMemberCount = groupInfo['maxMember'] ?? 0;
+      _selectedMemberCount = groupInfo['maxMemberCount'] ?? 0;
       selectedCategoryIndex =
           isCategory.indexOf(groupInfo['groupCategory'] ?? '');
 
@@ -64,28 +64,6 @@ class _groupEditState extends State<groupEdit> {
       print("Error fetching group info: ${response.statusCode}");
     }
   }
-
-  // Future<bool> fetchIsGroupAdmin(int groupId) async {
-  //   final url = Uri.parse("http://15.164.88.94:8080/groups/$groupId");
-  //   final response = await http.get(url, headers: {
-  //     'Content-Type': 'application/json',
-  //     'Authorization': 'Bearer $token',
-  //   });
-
-  //   if (response.statusCode == 200) {
-  //     final decodedResponse = utf8.decode(response.bodyBytes);
-  //     final data = jsonDecode(decodedResponse);
-
-  //     if (data is Map<String, dynamic> && data.containsKey('isGroupAdmin')) {
-  //       return data['isGroupAdmin'] as bool;
-  //     } else {
-  //       return false;
-  //     }
-  //   } else {
-  //     print("Error fetching group admin status: ${response.statusCode}");
-  //     return false;
-  //   }
-  // }
 
   // 그룹 수정 API 호출 함수
   void _editGroup() async {

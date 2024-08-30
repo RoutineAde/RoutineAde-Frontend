@@ -147,6 +147,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: const Color(0xFFF8F8EF),
         appBar: AppBar(
@@ -244,7 +245,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                                   margin: const EdgeInsets.only(bottom: 10),
                                   decoration: BoxDecoration(
                                     color: selectedCategoryIndex == index
-                                        ? const Color(0xffE6E288)
+                                        ? const Color(0xffB4DDFF)
                                         : Colors.white,
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(color: Colors.grey),
@@ -321,6 +322,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                   ),
                 ),
               ),
+              const SizedBox(height: 90),
               Container(
                 width: 400,
                 height: 80,
@@ -329,7 +331,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                   onPressed: _addGroup,
                   style: ButtonStyle(
                     backgroundColor:
-                        WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
+                        WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
@@ -340,7 +342,8 @@ class _AddGroupPageState extends State<AddGroupPage> {
                     "그룹 추가하기",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 18,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),

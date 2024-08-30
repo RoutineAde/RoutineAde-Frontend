@@ -406,7 +406,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         FloatingActionButton(
           onPressed: _toggleExpand,
           backgroundColor:
-              _isExpanded ? const Color(0xfff7c7c7c) : const Color(0xffA1D1F9),
+              _isExpanded ? const Color(0xfff7c7c7c) : const Color(0xffB4DDFF),
           shape: const CircleBorder(),
           child: Image.asset(_isExpanded
               ? 'assets/images/cancel.png'

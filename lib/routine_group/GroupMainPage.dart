@@ -376,9 +376,9 @@ class _GroupMainPageState extends State<GroupMainPage> {
                             },
                           ));
                         },
-                        backgroundColor: const Color(0xffF1E977),
+                        backgroundColor: const Color(0xffB4DDFF),
                         shape: const CircleBorder(),
-                        child: Image.asset('assets/images/add.png'),
+                        child: Image.asset('assets/images/add-button.png'),
                       ),
                     ],
                   ),
@@ -398,11 +398,11 @@ class _GroupMainPageState extends State<GroupMainPage> {
                       },
                       backgroundColor: isExpanded
                           ? const Color(0xfff7c7c7c)
-                          : const Color(0xffF1E977),
+                          : const Color(0xffB4DDFF),
                       shape: const CircleBorder(),
                       child: isExpanded
                           ? Image.asset('assets/images/cancel.png')
-                          : Image.asset('assets/images/add.png'),
+                          : Image.asset('assets/images/add-button.png'),
                     ),
                   ],
                 ),

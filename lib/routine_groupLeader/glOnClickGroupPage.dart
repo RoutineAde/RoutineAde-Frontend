@@ -46,18 +46,30 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
   bool _isSwitchOn = false;
   late TabController _tabController;
   late Future<GroupResponse> futureGroupResponse;
+  bool _isFloatingActionButtonVisible = true;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(_handleTabChange);
     futureGroupResponse = fetchGroupResponse(widget.groupId);
   }
 
   @override
   void dispose() {
+    _tabController.removeListener(_handleTabChange);
     _tabController.dispose();
     super.dispose();
+  }
+
+  //탭바 여부
+  void _handleTabChange() {
+    if (_tabController.indexIsChanging) {
+      setState(() {
+        _isFloatingActionButtonVisible = _tabController.index == 0;
+      });
+    }
   }
 
   Future<GroupResponse> fetchGroupResponse(int groupId) async {
@@ -81,8 +93,10 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       key: _scaffoldKey,
       appBar: AppBar(
+        backgroundColor: const Color(0xff8DCCFF),
         title: FutureBuilder<GroupResponse>(
           future: futureGroupResponse,
           builder: (context, snapshot) {
@@ -96,7 +110,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
                 groupResponse.groupInfo.groupTitle,
                 style: const TextStyle(
                     fontSize: 20,
-                    color: Colors.black,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold),
               );
             }
@@ -110,17 +124,23 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
             },
           ),
         ],
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: "루틴"),
-            Tab(text: "채팅"),
-          ],
-          labelStyle: const TextStyle(fontSize: 18),
-          labelColor: Colors.black,
-          indicator: const UnderlineTabIndicator(
-            borderSide: BorderSide(width: 3.0, color: Color(0xffE6E288)),
-            insets: EdgeInsets.symmetric(horizontal: 115.0),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight),
+          child: Container(
+            color: Colors.white,
+            child: TabBar(
+              controller: _tabController,
+              tabs: const [
+                Tab(text: "루틴"),
+                Tab(text: "채팅"),
+              ],
+              labelStyle: const TextStyle(fontSize: 18),
+              labelColor: Colors.black,
+              indicator: const UnderlineTabIndicator(
+                borderSide: BorderSide(width: 3.0, color: Color(0xffB4DDFF)),
+                insets: EdgeInsets.symmetric(horizontal: 115.0),
+              ),
+            ),
           ),
         ),
         centerTitle: true,
@@ -264,7 +284,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
   ListTile buildSwitchListTile() {
     return ListTile(
       trailing: CupertinoSwitch(
-        activeColor: const Color(0xffE6E288),
+        activeColor: const Color(0xffB4DDFF),
         value: _isSwitchOn,
         onChanged: (bool value) {
           setState(() {
@@ -431,7 +451,7 @@ class RoutinePage extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           margin: const EdgeInsets.fromLTRB(30, 20, 30, 0),
           decoration: BoxDecoration(
-            color: Colors.grey[200], // 배경색 설정
+            color: const Color(0xffF6F6F6), // 배경색 설정
             borderRadius: BorderRadius.circular(10.0), // 둥근 모서리 설정
           ),
           child: Row(
@@ -452,9 +472,9 @@ class RoutinePage extends StatelessWidget {
                   const Text(
                     "그룹 소개 / 규칙",
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 70, 70, 70)),
                   ),
                 ],
               ),
@@ -505,7 +525,7 @@ class RoutinePage extends StatelessWidget {
           child: Container(
             height: 40,
             decoration: BoxDecoration(
-              color: Colors.grey[200],
+              color: const Color(0xffF6F6F6),
               borderRadius: BorderRadius.circular(20.0),
             ),
             margin: const EdgeInsets.fromLTRB(30, 40, 0, 16),
