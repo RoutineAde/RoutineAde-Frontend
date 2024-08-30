@@ -106,7 +106,7 @@ class _GroupunjoinState extends State<Groupunjoin> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.fromLTRB(40, 20, 10, 10),
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
         child: isLoading
             ? const Center(child: CircularProgressIndicator())
             : ListView(
@@ -118,7 +118,7 @@ class _GroupunjoinState extends State<Groupunjoin> {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   const Text(
                     "● 루틴 그룹 방에서 나가게 되고, 모든 정보가 즉시 삭제되어, 해당 그룹에 다시 가입 가능하나 이전 기록들을 복구할 수 없습니다.",
                     style: TextStyle(
@@ -126,7 +126,7 @@ class _GroupunjoinState extends State<Groupunjoin> {
                       fontSize: 18,
                     ),
                   ),
-                  const SizedBox(height: 270),
+                  const SizedBox(height: 400),
                   Row(
                     children: [
                       Checkbox(
@@ -138,7 +138,7 @@ class _GroupunjoinState extends State<Groupunjoin> {
                         },
                         checkColor: Colors.white,
                         activeColor:
-                            _isChecked ? const Color(0xffA1D1F9) : Colors.grey,
+                            _isChecked ? const Color(0xffB4DDFF) : Colors.grey,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(50.0),
                         ),
@@ -146,15 +146,16 @@ class _GroupunjoinState extends State<Groupunjoin> {
                       const Text("그룹을 탈퇴합니다.", style: TextStyle(fontSize: 16)),
                     ],
                   ),
+                  // const SizedBox(height: 90),
                   Container(
                     width: 400,
-                    height: 80,
-                    padding: const EdgeInsets.fromLTRB(0, 30, 30, 0),
+                    height: 90,
+                    padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
                     child: ElevatedButton(
                       onPressed: _isChecked ? _deleteGroup : null,
                       style: ButtonStyle(
                         backgroundColor: WidgetStateProperty.all<Color>(
-                          _isChecked ? const Color(0xffA1D1F9) : Colors.grey,
+                          _isChecked ? const Color(0xffB4DDFF) : Colors.grey,
                         ),
                         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
@@ -165,9 +166,9 @@ class _GroupunjoinState extends State<Groupunjoin> {
                       child: const Text(
                         "그룹 탈퇴",
                         style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
