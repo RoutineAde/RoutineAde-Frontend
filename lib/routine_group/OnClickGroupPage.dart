@@ -120,7 +120,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
           labelStyle: const TextStyle(fontSize: 18),
           labelColor: Colors.black,
           indicator: const UnderlineTabIndicator(
-            borderSide: BorderSide(width: 3.0, color: Color(0xffE6E288)),
+            borderSide: BorderSide(width: 3.0, color: Color(0xFF8DCCFF)),
             insets: EdgeInsets.symmetric(horizontal: 115.0),
           ),
         ),
@@ -244,7 +244,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
   ListTile buildSwitchListTile() {
     return ListTile(
       trailing: CupertinoSwitch(
-        activeColor: const Color(0xffE6E288),
+        activeColor: const Color(0xFF8DCCFF),
         value: _isSwitchOn,
         onChanged: (bool value) {
           setState(() {

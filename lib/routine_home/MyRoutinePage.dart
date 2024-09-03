@@ -4,6 +4,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_calendar_week/flutter_calendar_week.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:routine_ade/RoutineAdeIntro/RoutineAde1.dart';
 import 'package:routine_ade/routine_groupLeader/glOnClickGroupPage.dart';
 import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
 import 'AddRoutinePage.dart';
@@ -438,7 +439,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
           _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png",
               StaticsCalendar()),
           _buildBottomAppBarItem("assets/images/tap-bar/more01.png",
-              const glOnClickGroupPage(groupId: 1)),
+              RoutineAde1()),
         ],
       ),
     );

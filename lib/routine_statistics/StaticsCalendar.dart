@@ -96,7 +96,11 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
             ),
             GestureDetector(
               onTap: () {
-                // 그룹 버튼 클릭 시 동작할 코드
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const GroupMainPage()),
+                );
               },
               child: SizedBox(
                 width: 60,
@@ -136,7 +140,7 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          _buildCalendarHeader(), // Calendar header moved here
+          _buildCalendarHeader(), // 캘린더 헤더
           SizedBox(height: 20),
           Row(
             children: [
@@ -156,7 +160,7 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
               ),
             ],
           ),
-          SizedBox(height: 40),
+          SizedBox(height: 30),
           Row(
             children: [
               SizedBox(width: 10),
@@ -212,73 +216,150 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.grey,  // Set the color of the border
-          width: 2.0,  // Set the width of the border
+          color: Colors.grey,
+          width: 2.0,
         ),
-        borderRadius: BorderRadius.circular(10.0), // Optional: Add rounded corners
+        borderRadius: BorderRadius.circular(10.0),
       ),
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(10, 40, 10, 60),  // Add padding between calendar and border
-        child: TableCalendar(
-          firstDay: DateTime.utc(2020, 1, 1),
-          lastDay: DateTime.utc(2030, 12, 31),
-          focusedDay: _focusedDay,
-          selectedDayPredicate: (day) {
-            return isSameDay(_selectedDay, day);
-          },
-          onDaySelected: (selectedDay, focusedDay) {
-            setState(() {
-              _selectedDay = selectedDay;
-              _focusedDay = focusedDay;
-            });
-          },
-          calendarFormat: _calendarFormat,
-          onFormatChanged: (format) {
-            setState(() {
-              _calendarFormat = format;
-            });
-          },
-          onPageChanged: (focusedDay) {
-            _focusedDay = focusedDay;
-          },
-          calendarStyle: CalendarStyle(
-            todayDecoration: BoxDecoration(
-              color: Colors.blue,
-              shape: BoxShape.circle,
-            ),
-            selectedDecoration: BoxDecoration(
-              color: Colors.blueAccent,
-              shape: BoxShape.circle,
-            ),
-            defaultTextStyle: TextStyle(
-              fontSize: 16.0, // Increase the font size of day numbers
-            ),
-            weekendTextStyle: TextStyle(
-              fontSize: 16.0, // Increase the font size of weekend numbers
-              color: Colors.black, // Optional: Change weekend color if needed
-            ),
-            outsideTextStyle: TextStyle(
-              fontSize: 16.0, // Increase the font size of outside month day numbers
-              color: Colors.grey, // Optional: Set a color for outside month days
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 30, 10, 5),
+            child: TableCalendar(
+              firstDay: DateTime.utc(2020, 1, 1),
+              lastDay: DateTime.utc(2030, 12, 31),
+              focusedDay: _focusedDay,
+              selectedDayPredicate: (day) {
+                return false;
+              },
+              calendarFormat: _calendarFormat,
+              onFormatChanged: (format) {
+                setState(() {
+                  _calendarFormat = format;
+                });
+              },
+              onPageChanged: (focusedDay) {
+                _focusedDay = focusedDay;
+              },
+              calendarBuilders: CalendarBuilders(
+                defaultBuilder: (context, date, _) {
+                  return _buildDayCell(date);
+                },
+              ),
+              calendarStyle: CalendarStyle(
+                todayDecoration: BoxDecoration(),
+                todayTextStyle: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16.0,
+                ),
+                selectedDecoration: BoxDecoration(),
+                defaultTextStyle: TextStyle(
+                  fontSize: 16.0,
+                ),
+                weekendTextStyle: TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.black,
+                ),
+                outsideTextStyle: TextStyle(
+                  fontSize: 16.0,
+                  color: Colors.grey,
+                ),
+              ),
+              daysOfWeekStyle: DaysOfWeekStyle(
+                dowTextFormatter: (date, locale) {
+                  const days = ['월', '화', '수', '목', '금', '토', '일'];
+                  return days[date.weekday - 1];
+                },
+                weekdayStyle: TextStyle(
+                  fontSize: 14.0,
+                  color: Colors.black,
+                ),
+                weekendStyle: TextStyle(
+                  fontSize: 14.0,
+                  color: Colors.black,
+                ),
+              ),
+              headerVisible: false,
             ),
           ),
-          daysOfWeekStyle: DaysOfWeekStyle(
-            dowTextFormatter: (date, locale) {
-              const days = ['월', '화', '수', '목', '금', '토', '일'];
-              return days[date.weekday - 1];
-            },
-            weekdayStyle: TextStyle(
-              fontSize: 14.0, // Increase the font size of weekday labels (Mon-Fri)
-              color: Colors.black,
-            ),
-            weekendStyle: TextStyle(
-              fontSize: 14.0, // Increase the font size of weekend labels (Sat-Sun)
-              color: Colors.black,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(180, 5, 10, 5),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text("Less"),
+                SizedBox(width: 8.0),
+                CircleAvatar(
+                  radius: 5.0,
+                  backgroundColor: Colors.white,
+                ),
+                SizedBox(width: 8.0),
+                CircleAvatar(
+                  radius: 5.0,
+                  backgroundColor: Color(0xFF8DCCFF),
+                ),
+                SizedBox(width: 8.0),
+                CircleAvatar(
+                  radius: 5.0,
+                  backgroundColor: Colors.lightBlue,
+                ),
+                SizedBox(width: 8.0),
+                CircleAvatar(
+                  radius: 5.0,
+                  backgroundColor: Colors.blue,
+                ),
+                SizedBox(width: 8.0),
+                Text("More"),
+              ],
             ),
           ),
-          headerVisible: false, // Keep the custom header outside of the calendar
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDayCell(DateTime date) {
+    Color circleColor;
+
+    int completionRate = getCompletionRate(date);
+
+    if (completionRate == 0) {
+      circleColor = Colors.transparent;
+    } else if (completionRate == 1) {
+      circleColor = Colors.white;
+    } else if (completionRate == 2) {
+      circleColor = Color(0xFF8DCCFF);
+    } else if (completionRate == 3) {
+      circleColor = Colors.lightBlue;
+    } else {
+      circleColor = Colors.blue;
+    }
+
+    // 텍스트 색상 설정: 동그라미가 흰색이면 검정색 텍스트, 그 외엔 흰색 텍스트
+    Color textColor = circleColor == Colors.white ? Colors.black : Colors.white;
+
+    return Center(
+      child: Container(
+        decoration: BoxDecoration(
+          color: circleColor,
+          shape: BoxShape.circle,
+        ),
+        width: 40.0,
+        height: 40.0,
+        child: Center(
+          child: Text(
+            date.day.toString(),
+            style: TextStyle(
+              color: circleColor == Colors.transparent ? Colors.black : textColor,
+            ),
+          ),
         ),
       ),
     );
+  }
+
+  int getCompletionRate(DateTime date) {
+    // Example logic to determine completion rate, replace with your actual logic
+    return (date.day % 4) + 1; // Example logic: you should replace it with actual logic
   }
 }

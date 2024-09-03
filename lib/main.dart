@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'RoutineAdeIntro/RoutineAde1.dart';
 import 'routine_home/MyRoutinePage.dart';
 import 'package:http/http.dart' as http;
 import 'routine_group/GroupMainPage.dart';
@@ -14,7 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: MyRoutinePage(),
+      home: RoutineAde1(),
     );
   }
 }
