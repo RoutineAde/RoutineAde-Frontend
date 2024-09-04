@@ -13,6 +13,7 @@ import '../routine_groupLeader/groupRoutineEditPage.dart';
 import 'package:http/http.dart' as http;
 import 'groupType.dart';
 import 'package:routine_ade/routine_user/token.dart';
+import 'group-unjoin.dart';
 
 // 전역 함수로 getCategoryColor를 정의
 Color getCategoryColor(String category) {
@@ -83,7 +84,9 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: const Color(0xff8DCCFF),
         title: FutureBuilder<GroupResponse>(
           future: futureGroupResponse,
           builder: (context, snapshot) {
@@ -97,7 +100,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
                 groupResponse.groupInfo.groupTitle,
                 style: const TextStyle(
                     fontSize: 20,
-                    color: Colors.black,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold),
               );
             }
@@ -111,17 +114,23 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
             },
           ),
         ],
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: "루틴"),
-            Tab(text: "채팅"),
-          ],
-          labelStyle: const TextStyle(fontSize: 18),
-          labelColor: Colors.black,
-          indicator: const UnderlineTabIndicator(
-            borderSide: BorderSide(width: 3.0, color: Color(0xFF8DCCFF)),
-            insets: EdgeInsets.symmetric(horizontal: 115.0),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight),
+          child: Container(
+            color: Colors.white,
+            child: TabBar(
+              controller: _tabController,
+              tabs: const [
+                Tab(text: "루틴"),
+                Tab(text: "채팅"),
+              ],
+              labelStyle: const TextStyle(fontSize: 18),
+              labelColor: Colors.black,
+              indicator: const UnderlineTabIndicator(
+                borderSide: BorderSide(width: 3.0, color: Color(0xffB4DDFF)),
+                insets: EdgeInsets.symmetric(horizontal: 115.0),
+              ),
+            ),
           ),
         ),
         centerTitle: true,
@@ -160,7 +169,9 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
               }
             },
           ),
-          ChatScreen(),
+          ChatScreen(
+            groupId: widget.groupId,
+          ),
         ],
       ),
       endDrawerEnableOpenDragGesture: false,
@@ -244,7 +255,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
   ListTile buildSwitchListTile() {
     return ListTile(
       trailing: CupertinoSwitch(
-        activeColor: const Color(0xFF8DCCFF),
+        activeColor: const Color(0xffB4DDFF),
         value: _isSwitchOn,
         onChanged: (bool value) {
           setState(() {
@@ -302,8 +313,10 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
       ),
       child: GestureDetector(
         onTap: () {
-          // Navigator.push(context,
-          //     MaterialPageRoute(builder: (context) => const groupManagement()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Groupunjoin(groupId: widget.groupId)));
         },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -337,7 +350,7 @@ class RoutinePage extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           margin: const EdgeInsets.fromLTRB(30, 20, 30, 0),
           decoration: BoxDecoration(
-            color: Colors.grey[200], // 배경색 설정
+            color: const Color(0xffF6F6F6), // 배경색 설정
             borderRadius: BorderRadius.circular(10.0), // 둥근 모서리 설정
           ),
           child: Row(
@@ -412,7 +425,7 @@ class RoutinePage extends StatelessWidget {
           child: Container(
             height: 40,
             decoration: BoxDecoration(
-              color: Colors.grey[200],
+              color: const Color(0xffF6F6F6),
               borderRadius: BorderRadius.circular(20.0),
             ),
             margin: const EdgeInsets.fromLTRB(30, 40, 0, 16),

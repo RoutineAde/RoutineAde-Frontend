@@ -104,8 +104,9 @@ class _glGroupIntroRuleState extends State<glGroupIntroRule> {
       appBar: AppBar(
         centerTitle: true,
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
+            const SizedBox(width: 60),
             const Text(
               '그룹 소개/규칙',
               style: TextStyle(
@@ -114,7 +115,7 @@ class _glGroupIntroRuleState extends State<glGroupIntroRule> {
                 color: Colors.white,
               ),
             ),
-            const SizedBox(width: 30),
+            const SizedBox(width: 100),
             GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -130,6 +131,7 @@ class _glGroupIntroRuleState extends State<glGroupIntroRule> {
                 height: 24,
               ),
             ),
+            // const SizedBox(width: 40),
           ],
         ),
         backgroundColor: const Color(0xffA1D1F9),
@@ -150,20 +152,20 @@ class _glGroupIntroRuleState extends State<glGroupIntroRule> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    "그룹 아이디: ${groupInfo.groupId}",
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
+                  // Text(
+                  //   "그룹 아이디: ${groupInfo.groupId}",
+                  //   style: const TextStyle(
+                  //       fontSize: 18, fontWeight: FontWeight.bold),
+                  // ),
                   const SizedBox(height: 20),
-                  const Text(
-                    "그룹 소개",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
+                  // const Text(
+                  //   "그룹 소개",
+                  //   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  // ),
+                  // const SizedBox(height: 10),
                   Text(
                     groupInfo.groupDescription,
-                    style: const TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 18),
                   ),
                   const SizedBox(height: 20),
                 ],

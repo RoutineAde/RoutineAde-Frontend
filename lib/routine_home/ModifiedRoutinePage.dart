@@ -187,7 +187,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
           title: const Text(
             '루틴 수정',
             style: TextStyle(
-                fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+                fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
           leading: IconButton(
@@ -282,7 +282,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                         height: 40,
                         decoration: BoxDecoration(
                           color: isSelected[i]
-                              ? const Color(0xFF8DCCFF)
+                              ? const Color(0xFFB4DDFF)
                               : Colors.grey[200],
                           borderRadius: BorderRadius.circular(20),
                         ),
@@ -345,7 +345,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                           ),
                           decoration: BoxDecoration(
                             color: selectedCategoryIndex == index
-                                ? const Color(0xFF8DCCFF)
+                                ? const Color(0xFFB4DDFF)
                                 : Colors.white,
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(color: Colors.grey),
@@ -394,7 +394,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                   ),
                   CupertinoSwitch(
                     value: _isAlarmOn,
-                    activeColor: const Color(0xFF8DCCFF),
+                    activeColor: const Color(0xFFB4DDFF),
                     onChanged: (value) {
                       setState(() {
                         _isAlarmOn = value;
@@ -463,16 +463,17 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                 ],
               ),
             ),
+            const SizedBox(height: 120),
             //루틴 추가 버튼
             Container(
               width: 400,
-              height: 80,
+              height: 90,
               padding: const EdgeInsets.only(top: 30),
               child: ElevatedButton(
                 onPressed: _ModifiedRoutine,
                 style: ButtonStyle(
                   backgroundColor:
-                  WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
+                  WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -482,9 +483,9 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                 child: const Text(
                   "수정하기",
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                  ),
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ),

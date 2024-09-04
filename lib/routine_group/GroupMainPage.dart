@@ -8,7 +8,6 @@ import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupType.dart';
 import 'package:routine_ade/routine_group/AddGroupPage.dart';
-import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
 import 'package:routine_ade/routine_user/token.dart';
 
 //전체화면 어둡게
@@ -303,11 +302,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
             ),
             GestureDetector(
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => StaticsCalendar()),
-                );
+                // 통계 버튼 클릭 시 동작할 코드
               },
               child: SizedBox(
                 width: 60,
@@ -381,9 +376,9 @@ class _GroupMainPageState extends State<GroupMainPage> {
                             },
                           ));
                         },
-                        backgroundColor: const Color(0xffF1E977),
+                        backgroundColor: const Color(0xffB4DDFF),
                         shape: const CircleBorder(),
-                        child: Image.asset('assets/images/add.png'),
+                        child: Image.asset('assets/images/add-button.png'),
                       ),
                     ],
                   ),
@@ -403,13 +398,11 @@ class _GroupMainPageState extends State<GroupMainPage> {
                       },
                       backgroundColor: isExpanded
                           ? const Color(0xfff7c7c7c)
-                          : const Color(0xffA1D1F9),
+                          : const Color(0xffB4DDFF),
                       shape: const CircleBorder(),
                       child: isExpanded
                           ? Image.asset('assets/images/cancel.png')
-                          : Image.asset("assets/images/add-button.png",
-                        width: 80,
-                        height: 80,),
+                          : Image.asset('assets/images/add-button.png'),
                     ),
                   ],
                 ),

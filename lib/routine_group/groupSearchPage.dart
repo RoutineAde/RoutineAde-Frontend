@@ -8,7 +8,6 @@ import 'GroupRoutinePage.dart';
 import 'package:routine_ade/routine_user/token.dart';
 import 'OnClickGroupPage.dart';
 
-
 class GroupSearchPage extends StatefulWidget {
   const GroupSearchPage({super.key});
 
@@ -193,6 +192,14 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
                 alignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
+                    child: const Text("취소",
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 128, 121, 121))),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
                     child: const Text("그룹 가입",
                         style: TextStyle(color: Color(0xff8DCCFF))),
                     onPressed: () {
@@ -202,13 +209,6 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
                       } else {
                         _showPasswordDialog(Egroup);
                       }
-                    },
-                  ),
-                  TextButton(
-                    child:
-                    const Text("취소", style: TextStyle(color: Colors.grey)),
-                    onPressed: () {
-                      Navigator.of(context).pop();
                     },
                   ),
                 ],
@@ -234,7 +234,9 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => OnClickGroupPage(groupId: groupId),
+          builder: (context) => OnClickGroupPage(
+            groupId: groupId,
+          ),
         ),
       );
     }

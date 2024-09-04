@@ -136,6 +136,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: const Color(0xFFF8F8EF),
         appBar: PreferredSize(
@@ -145,7 +146,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
             title: const Text(
               '루틴 추가',
               style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 25,
                   color: Colors.white,
                   fontWeight: FontWeight.bold),
             ),
@@ -245,7 +246,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                           height: 40,
                           decoration: BoxDecoration(
                             color: isSelected[i]
-                                ? const Color(0xFF8DCCFF)
+                                ? const Color(0xFFB4DDFF)
                                 : Colors.grey[200],
                             borderRadius: BorderRadius.circular(20),
                           ),
@@ -309,7 +310,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                             ),
                             decoration: BoxDecoration(
                               color: selectedCategoryIndex == index
-                                  ? const Color(0xFF8DCCFF)
+                                  ? const Color(0xFFB4DDFF)
                                   : Colors.white,
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(color: Colors.grey),
@@ -389,15 +390,16 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                 ),
               ),
               //루틴 추가 버튼
+              const SizedBox(height: 210),
               Container(
                 width: 400,
-                height: 80,
+                height: 90,
                 padding: const EdgeInsets.only(top: 30),
                 child: ElevatedButton(
                   onPressed: _addRoutine,
                   style: ButtonStyle(
                     backgroundColor:
-                    WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
+                    WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0), //테두리 둥글게
@@ -409,7 +411,8 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                     "루틴 추가하기",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 18,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),

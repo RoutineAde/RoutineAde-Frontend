@@ -5,12 +5,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_calendar_week/flutter_calendar_week.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:routine_ade/RoutineAdeIntro/RoutineAde1.dart';
-import 'package:routine_ade/routine_groupLeader/glOnClickGroupPage.dart';
 import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
 import 'AddRoutinePage.dart';
-import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
-import 'package:routine_ade/routine_group/OnClickGroupPage.dart';
 import 'package:routine_ade/routine_home/AlarmListPage.dart';
 import 'package:routine_ade/routine_home/ModifiedRoutinePage.dart';
 import 'dart:convert';
@@ -160,9 +157,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 30),
-            // child: Text(
-            //   '${_controller.selectedDate.year ?? DateTime.now().year}년 ${_controller.selectedDate.month?? DateTime.now().month}월 ${_controller.selectedDate.day?? DateTime.now().day}일',
-            //   style: TextStyle(fontSize: 20),
             child: Text(
               '${date.year}년 ${date.month}월 ${date.day}일',
               style: const TextStyle(fontSize: 20),
@@ -319,9 +313,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                 return ListView(
                   padding: const EdgeInsets.fromLTRB(24, 10, 24, 16),
                   children: <Widget>[
-                    // const SizedBox(
-                    //   height: 10,
-                    // ), // 여백 추가
                     Container(
                       padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                       decoration: BoxDecoration(
@@ -417,7 +408,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         FloatingActionButton(
           onPressed: _toggleExpand,
           backgroundColor:
-          _isExpanded ? const Color(0xfff7c7c7c) : const Color(0xffA1D1F9),
+          _isExpanded ? const Color(0xfff7c7c7c) : const Color(0xffB4DDFF),
           shape: const CircleBorder(),
           child: Image.asset(_isExpanded
               ? 'assets/images/cancel.png'
@@ -436,10 +427,14 @@ class _MyRoutinePageState extends State<MyRoutinePage>
           _buildBottomAppBarItem("assets/images/tap-bar/routine02.png"),
           _buildBottomAppBarItem(
               "assets/images/tap-bar/group01.png", const GroupMainPage()),
-          _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png",
-              StaticsCalendar()),
-          _buildBottomAppBarItem("assets/images/tap-bar/more01.png",
-              RoutineAde1()),
+          _buildBottomAppBarItem(
+            "assets/images/tap-bar/statistics01.png",
+              StaticsCalendar()
+          ),
+          _buildBottomAppBarItem(
+            "assets/images/tap-bar/more01.png",
+            RoutineAde1()
+          ),
         ],
       ),
     );
@@ -560,11 +555,11 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     }
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 10),
+      // margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
+      decoration: const BoxDecoration(
+        // color: Colors.white,
+        // borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

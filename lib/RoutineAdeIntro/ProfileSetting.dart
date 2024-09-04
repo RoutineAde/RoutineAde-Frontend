@@ -5,7 +5,6 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../routine_home/MyRoutinePage.dart';
 
-
 class ProfileSetting extends StatefulWidget {
   @override
   _ProfileSettingState createState() => _ProfileSettingState();
@@ -16,38 +15,15 @@ class _ProfileSettingState extends State<ProfileSetting> {
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async {
-    var status = await Permission.photos.status;
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-    // Check if permission is granted
-    if (status.isGranted) {
-      try {
-        final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-        if (image != null) {
-          setState(() {
-            _imageFile = image;
-          });
-        }
-      } catch (e) {
-        print("Error picking image: $e");
-      }
-    }
-    // Request permission if it is denied or restricted
-    else if (status.isDenied || status.isRestricted) {
-      status = await Permission.photos.request();
-      if (status.isGranted) {
-        final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-        if (image != null) {
-          setState(() {
-            _imageFile = image;
-          });
-        }
-      } else {
-        print("갤러리 접근 권한이 거부되었습니다.");
-      }
-    }
-    // Handle case where permission is permanently denied
-    else if (status.isPermanentlyDenied) {
-      openAppSettings();
+    if (pickedFile != null) {
+      setState(() {
+        _imageFile = File(pickedFile.path) as XFile?;
+      });
+    } else {
+      print('No image selected.');
     }
   }
 
@@ -96,7 +72,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
               children: [
                 SizedBox(height: 20),
                 GestureDetector(
-                  onTap: _pickImage,
+                  onTap: _pickImage, // 프로필 사진을 클릭했을 때 이미지 선택 기능 실행
                   child: Stack(
                     children: [
                       CircleAvatar(
@@ -109,10 +85,13 @@ class _ProfileSettingState extends State<ProfileSetting> {
                       Positioned(
                         bottom: 0,
                         right: 0,
-                        child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          radius: 16,
-                          child: Icon(Icons.camera_alt, color: Colors.grey),
+                        child: GestureDetector(
+                          onTap: _pickImage, // 카메라 아이콘 클릭 시 이미지 선택 기능 실행
+                          child: CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 16,
+                            child: Icon(Icons.camera_alt, color: Colors.grey),
+                          ),
                         ),
                       ),
                     ],
