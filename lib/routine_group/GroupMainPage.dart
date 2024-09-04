@@ -19,9 +19,9 @@ class DarkOverlay extends StatelessWidget {
 
   const DarkOverlay(
       {super.key,
-        required this.child,
-        required this.isDark,
-        required this.onTap});
+      required this.child,
+      required this.isDark,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +161,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
         ),
         centerTitle: true,
         backgroundColor:
-        isExpanded ? Colors.grey[600] : const Color(0xFF8DCCFF),
+            isExpanded ? Colors.grey[600] : const Color(0xFF8DCCFF),
         automaticallyImplyLeading: false, // 뒤로가기 제거
         // actions: [
         //   Padding(
@@ -209,7 +209,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
                             children: [
                               Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
@@ -223,7 +223,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
                                       if (!group.isPublic)
                                         Padding(
                                           padding:
-                                          const EdgeInsets.only(left: 8.0),
+                                              const EdgeInsets.only(left: 8.0),
                                           child: Image.asset(
                                             "assets/images/lock.png",
                                             width: 20,
@@ -253,7 +253,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
                               const SizedBox(height: 8.0),
                               Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("루틴장 ${group.createdUserNickname}"),
                                   Text("그룹코드 ${group.groupId}"),

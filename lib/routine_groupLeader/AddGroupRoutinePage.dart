@@ -255,7 +255,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                             _getWeekdayName(i),
                             style: TextStyle(
                               color:
-                              isSelected[i] ? Colors.white : Colors.black,
+                                  isSelected[i] ? Colors.white : Colors.black,
                             ),
                           ),
                         ),
@@ -296,7 +296,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(
                         5,
-                            (index) => GestureDetector(
+                        (index) => GestureDetector(
                           onTap: () {
                             setState(() {
                               selectedCategoryIndex = index;

@@ -47,8 +47,7 @@ class GroupMember {
   final String profileImage;
 
   GroupMember(
-      {required this.userId,
-        required this.nickname,
+      {required this.userId,        required this.nickname,
         required this.profileImage});
 
   factory GroupMember.fromJson(Map<String, dynamic> json) {
@@ -133,7 +132,7 @@ class GroupResponse {
           .toList(),
       groupRoutines: (json['groupRoutines'] as List)
           .map((routineCategoryJson) =>
-          RoutineCategory.fromJson(routineCategoryJson))
+              RoutineCategory.fromJson(routineCategoryJson))
           .toList(),
     );
   }
