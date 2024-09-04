@@ -3,6 +3,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../routine_group/GroupMainPage.dart';
 import '../routine_home/MyRoutinePage.dart';
+import 'StaticsCategory.dart';
 
 class StaticsCalendar extends StatefulWidget {
   @override
@@ -72,7 +73,7 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
         controller: _tabController,
         children: [
           _buildCalendarTab(),
-          // StaticsCategory(),
+           StaticsCategory(),
         ],
       ),
       bottomNavigationBar: BottomAppBar(

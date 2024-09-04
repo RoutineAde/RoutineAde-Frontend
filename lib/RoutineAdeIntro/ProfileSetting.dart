@@ -5,37 +5,20 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../routine_home/MyRoutinePage.dart';
 
+
 class ProfileSetting extends StatefulWidget {
   @override
   _ProfileSettingState createState() => _ProfileSettingState();
 }
 
 class _ProfileSettingState extends State<ProfileSetting> {
-  XFile? _image; //이미지를 담을 변수 선언
-  final ImagePicker picker = ImagePicker(); //ImagePicker 초기화
-
-  //이미지를 가져오는 함수
-  Future getImage(ImageSource imageSource) async {
-    //pickedFile에 ImagePicker로 가져온 이미지가 담긴다.
-    final XFile? pickedFile = await picker.pickImage(source: imageSource);
-    if (pickedFile != null) {
-      setState(() {
-        _image = XFile(pickedFile.path); //가져온 이미지를 _image에 저장
-      });
-    }
-  }
-  final TextEditingController _nicknameController = TextEditingController();
-  final TextEditingController _bioController = TextEditingController();
-  bool _isNicknameValid = true;
-  String _nicknameErrorMessage = '';
   XFile? _imageFile;
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async {
-    // 권한 상태를 확인하고 로그로 출력
     var status = await Permission.photos.status;
-    print("Gallery permission status: $status");
 
+    // Check if permission is granted
     if (status.isGranted) {
       try {
         final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
@@ -47,9 +30,11 @@ class _ProfileSettingState extends State<ProfileSetting> {
       } catch (e) {
         print("Error picking image: $e");
       }
-    } else if (status.isDenied) {
-      // 권한 요청
-      if (await Permission.photos.request().isGranted) {
+    }
+    // Request permission if it is denied or restricted
+    else if (status.isDenied || status.isRestricted) {
+      status = await Permission.photos.request();
+      if (status.isGranted) {
         final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
         if (image != null) {
           setState(() {
@@ -60,8 +45,16 @@ class _ProfileSettingState extends State<ProfileSetting> {
         print("갤러리 접근 권한이 거부되었습니다.");
       }
     }
+    // Handle case where permission is permanently denied
+    else if (status.isPermanentlyDenied) {
+      openAppSettings();
+    }
   }
 
+  final TextEditingController _nicknameController = TextEditingController();
+  final TextEditingController _bioController = TextEditingController();
+  bool _isNicknameValid = true;
+  String _nicknameErrorMessage = '';
 
   void _validateNickname(String value) {
     setState(() {
@@ -104,23 +97,25 @@ class _ProfileSettingState extends State<ProfileSetting> {
                 SizedBox(height: 20),
                 GestureDetector(
                   onTap: _pickImage,
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: _imageFile != null
-                        ? FileImage(File(_imageFile!.path))
-                        : AssetImage('assets/images/default_profile.png')
-                    as ImageProvider,
-                    child: Align(
-                      alignment: Alignment.bottomRight,
-                      child: GestureDetector(
-                        onTap: _pickImage,
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundImage: _imageFile != null
+                            ? FileImage(File(_imageFile!.path))
+                            : AssetImage('assets/images/default_profile.png')
+                        as ImageProvider,
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
                         child: CircleAvatar(
                           backgroundColor: Colors.white,
                           radius: 16,
                           child: Icon(Icons.camera_alt, color: Colors.grey),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
                 SizedBox(height: 50),
