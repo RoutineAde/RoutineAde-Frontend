@@ -4,6 +4,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_calendar_week/flutter_calendar_week.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:routine_ade/RoutineAdeIntro/RoutineAde1.dart';
+import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
 import 'AddRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_home/AlarmListPage.dart';
@@ -305,34 +307,22 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                         '\n\t\t\t\t\t\t\t\t 아래 + 버튼을 눌러 \n 새로운 루틴을 추가해보세요',
                         style: TextStyle(fontSize: 20, color: Colors.grey),
                       ));
-                    }
-                    _userEmotion = snapshot.data!.userEmotion; // 감정 상태를 업데이트
+                }
+                _userEmotion = snapshot.data!.userEmotion; // 감정 상태를 업데이트
 
-                    return ListView(
-                      padding: const EdgeInsets.fromLTRB(24, 10, 24, 16),
-                      children: <Widget>[
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFE6F5F8), // 배경색 설정
-                            borderRadius:
-                                BorderRadius.circular(12), // 둥근 모서리 설정
-                          ),
-                          child: Theme(
-                            data: Theme.of(context).copyWith(
-                              dividerColor: Colors.transparent,
-                            ),
-                            child: ExpansionTile(
-                              title: const Text("개인 루틴",
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.black)), // 텍스트 색상 변경
-                              initiallyExpanded: _isTileExpanded,
-                              children: snapshot.data!.personalRoutines
-                                  .map((routine) => _buildRoutineTile(routine))
-                                  .toList(),
-                            ),
-                          ),
+                return ListView(
+                  padding: const EdgeInsets.fromLTRB(24, 10, 24, 16),
+                  children: <Widget>[
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE6F5F8), // 배경색 설정
+                        borderRadius:
+                        BorderRadius.circular(12), // 둥근 모서리 설정
+                      ),
+                      child: Theme(
+                        data: Theme.of(context).copyWith(
+                          dividerColor: Colors.transparent,
                         ),
                         const SizedBox(
                           height: 10,
@@ -406,7 +396,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         FloatingActionButton(
           onPressed: _toggleExpand,
           backgroundColor:
-              _isExpanded ? const Color(0xfff7c7c7c) : const Color(0xffB4DDFF),
+          _isExpanded ? const Color(0xfff7c7c7c) : const Color(0xffB4DDFF),
           shape: const CircleBorder(),
           child: Image.asset(_isExpanded
               ? 'assets/images/cancel.png'
@@ -427,14 +417,11 @@ class _MyRoutinePageState extends State<MyRoutinePage>
               "assets/images/tap-bar/group01.png", const GroupMainPage()),
           _buildBottomAppBarItem(
             "assets/images/tap-bar/statistics01.png",
-            // const OnClickGroupPage(
-            //     groupId: group.go,
-            //     nickname: widget.nickname,
-            //     userId: widget.userId)
+              StaticsCalendar()
           ),
           _buildBottomAppBarItem(
             "assets/images/tap-bar/more01.png",
-            // const glOnClickGroupPage(groupId: 1)
+            RoutineAde1()
           ),
         ],
       ),
@@ -559,9 +546,9 @@ class _MyRoutinePageState extends State<MyRoutinePage>
       // margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(5),
       decoration: const BoxDecoration(
-          // color: Colors.white,
-          // borderRadius: BorderRadius.circular(10),
-          ),
+        // color: Colors.white,
+        // borderRadius: BorderRadius.circular(10),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

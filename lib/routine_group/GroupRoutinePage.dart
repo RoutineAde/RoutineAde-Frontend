@@ -113,7 +113,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
               borderRadius: BorderRadius.circular(18.0),
             ),
             contentPadding:
-                const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+            const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
             title: Center(
               child: Column(
                 children: [

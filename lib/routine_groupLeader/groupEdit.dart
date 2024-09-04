@@ -17,7 +17,8 @@ class _groupEditState extends State<groupEdit> {
   final TextEditingController _groupNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _groupDescriptionController =
-      TextEditingController();
+
+  TextEditingController();
   int _selectedMemberCount = 0; //선택 할 인원 수
 
   // 카테고리 선택 (한번에 하나만)
