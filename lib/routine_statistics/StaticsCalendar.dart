@@ -73,7 +73,7 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
         controller: _tabController,
         children: [
           _buildCalendarTab(),
-           StaticsCategory(),
+          StaticsCategory(),
         ],
       ),
       bottomNavigationBar: BottomAppBar(
@@ -135,8 +135,9 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
     );
   }
 
-
   Widget _buildCalendarTab() {
+    final totalCompletedRoutines = _calculateTotalCompletedRoutines(_focusedDay);
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -152,7 +153,7 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
               ),
               SizedBox(width: 180,),
               Text(
-                '20개',
+                '$totalCompletedRoutines개',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -240,7 +241,9 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
                 });
               },
               onPageChanged: (focusedDay) {
-                _focusedDay = focusedDay;
+                setState(() {
+                  _focusedDay = focusedDay;
+                });
               },
               calendarBuilders: CalendarBuilders(
                 defaultBuilder: (context, date, _) {
@@ -336,7 +339,6 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
       circleColor = Colors.blue;
     }
 
-    // 텍스트 색상 설정: 동그라미가 흰색이면 검정색 텍스트, 그 외엔 흰색 텍스트
     Color textColor = circleColor == Colors.white ? Colors.black : Colors.white;
 
     return Center(
@@ -362,5 +364,15 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
   int getCompletionRate(DateTime date) {
     // Example logic to determine completion rate, replace with your actual logic
     return (date.day % 4) + 1; // Example logic: you should replace it with actual logic
+  }
+
+  int _calculateTotalCompletedRoutines(DateTime focusedDay) {
+    int totalRoutines = 0;
+
+    for (int day = 1; day <= DateTime(focusedDay.year, focusedDay.month + 1, 0).day; day++) {
+      totalRoutines += getCompletionRate(DateTime(focusedDay.year, focusedDay.month, day));
+    }
+
+    return totalRoutines;
   }
 }

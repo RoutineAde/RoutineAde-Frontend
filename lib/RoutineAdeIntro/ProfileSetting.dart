@@ -11,16 +11,15 @@ class ProfileSetting extends StatefulWidget {
 }
 
 class _ProfileSettingState extends State<ProfileSetting> {
-  XFile? _imageFile;
+  File? _imageFile;
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
       setState(() {
-        _imageFile = File(pickedFile.path) as XFile?;
+        _imageFile = File(pickedFile.path);
       });
     } else {
       print('No image selected.');
@@ -78,7 +77,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                       CircleAvatar(
                         radius: 50,
                         backgroundImage: _imageFile != null
-                            ? FileImage(File(_imageFile!.path))
+                            ? FileImage(_imageFile!)
                             : AssetImage('assets/images/default_profile.png')
                         as ImageProvider,
                       ),
