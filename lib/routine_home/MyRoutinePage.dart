@@ -5,6 +5,8 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_calendar_week/flutter_calendar_week.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:routine_ade/RoutineAdeIntro/RoutineAde1.dart';
+import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
 import 'AddRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_home/AlarmListPage.dart';
@@ -595,9 +597,9 @@ class _MyRoutinePageState extends State<MyRoutinePage>
       // margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(5),
       decoration: const BoxDecoration(
-          // color: Colors.white,
-          // borderRadius: BorderRadius.circular(10),
-          ),
+        // color: Colors.white,
+        // borderRadius: BorderRadius.circular(10),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

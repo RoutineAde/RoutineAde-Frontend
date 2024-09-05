@@ -46,7 +46,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
         setState(() {
           _userId = data['groupMembers'][0]
-              ['userId']; // Assuming the user is the first group member
+          ['userId']; // Assuming the user is the first group member
           _nickname = data['groupMembers'][0]['nickname'];
         });
 
@@ -134,7 +134,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
     if (imageFile != null) {
       final mimeTypeData =
-          lookupMimeType(imageFile.path, headerBytes: [0xFF, 0xD8])?.split('/');
+      lookupMimeType(imageFile.path, headerBytes: [0xFF, 0xD8])?.split('/');
       final multipartFile = await http.MultipartFile.fromPath(
         'image',
         imageFile.path,
@@ -304,7 +304,7 @@ class ChatMessage extends StatelessWidget {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment:
-              isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+          isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: <Widget>[
             if (!isMine)
               Container(
@@ -322,7 +322,7 @@ class ChatMessage extends StatelessWidget {
             Expanded(
               child: Column(
                 crossAxisAlignment:
-                    isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
                 children: <Widget>[
                   if (nickname != null && !isMine)
                     Text(
@@ -360,7 +360,7 @@ class ChatMessage extends StatelessWidget {
                       child: Text(
                         createdDate,
                         style:
-                            const TextStyle(fontSize: 10, color: Colors.grey),
+                        const TextStyle(fontSize: 10, color: Colors.grey),
                       ),
                     ),
                   if (isMine)
@@ -369,7 +369,7 @@ class ChatMessage extends StatelessWidget {
                       child: Text(
                         createdDate,
                         style:
-                            const TextStyle(fontSize: 10, color: Colors.grey),
+                        const TextStyle(fontSize: 10, color: Colors.grey),
                       ),
                     ),
                 ],

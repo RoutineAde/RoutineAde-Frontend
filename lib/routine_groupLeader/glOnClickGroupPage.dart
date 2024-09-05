@@ -376,16 +376,46 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
                     borderRadius: BorderRadius.circular(50.0),
                     side: const BorderSide(color: Colors.black, width: 1.0),
                   ),
-                ),
-              ),
-              child: const Text(
-                '내보내기',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 13,
-                ),
-              ),
+                  TextButton(
+                    child: const Text('내보내기'),
+                    onPressed: () async {
+                      Navigator.of(context).pop(); // 다이얼로그 닫기
+                      try {
+                        await deleteMember(groupId, userId);
+                        // 성공 시 추가 동작을 수행할 수 있습니다. 예: UI 업데이트
+                      } catch (error) {
+                        // 오류 처리
+                      }
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        style: ButtonStyle(
+          padding: WidgetStateProperty.all<EdgeInsets>(
+              const EdgeInsets.symmetric(
+                  vertical: 4.0, horizontal: 8.0)), // 패딩 설정
+          minimumSize: WidgetStateProperty.all<Size>(
+              const Size(0, 30)), // 버튼의 최소 높이 설정 (예: 36)
+          backgroundColor:
+          WidgetStateProperty.all<Color>(Colors.transparent),
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50.0),
+              side: const BorderSide(color: Colors.black, width: 1.0),
             ),
+          ),
+        ),
+        child: const Text(
+          '내보내기',
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 13,
+          ),
+        ),
+      ),
     );
   }
 
@@ -713,7 +743,7 @@ void _showDeleteConfirmationDialog(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center, // 모든 텍스트 가운데 정렬
             mainAxisAlignment:
-                MainAxisAlignment.center, // 텍스트들이 수직 가운데 정렬되도록 추가
+            MainAxisAlignment.center, // 텍스트들이 수직 가운데 정렬되도록 추가
             children: [
               Text(
                 "루틴을 삭제하면 해당 루틴의",
