@@ -1,8 +1,11 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:table_calendar/table_calendar.dart';
 
 import '../routine_group/GroupMainPage.dart';
 import '../routine_home/MyRoutinePage.dart';
+import '../routine_user/token.dart';
 import 'StaticsCategory.dart';
 
 class StaticsCalendar extends StatefulWidget {
@@ -17,10 +20,13 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
+  RoutineStatistics? routineStatistics; // API에서 불러온 데이터 저장 변수
+
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _fetchRoutineStatistics(); // 통계 데이터 가져오기
   }
 
   @override
@@ -28,6 +34,35 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
     _tabController.dispose();
     super.dispose();
   }
+
+  // API 호출 함수
+  Future<void> _fetchRoutineStatistics() async {
+    final String url = 'http://15.164.88.94:8080/users/statistics/calender?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
+
+    try {
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {
+          'Authorization': 'Bearer $token', // 인증 토큰 헤더 추가
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        setState(() {
+          routineStatistics = RoutineStatistics.fromJson(data);
+        });
+      } else {
+        print('Failed to load routine statistics: ${response.statusCode}');
+        throw Exception('Failed to load routine statistics: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error fetching routine statistics: $e');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +78,7 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
         ),
         centerTitle: true,
         backgroundColor: const Color(0xFF8DCCFF),
-        automaticallyImplyLeading: false,
-        // 뒤로가기 제거
+        automaticallyImplyLeading: false, // 뒤로가기 제거
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(90.0),
           child: Container(
@@ -69,6 +103,7 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
           ),
         ),
       ),
+      backgroundColor: Colors.white,
       body: TabBarView(
         controller: _tabController,
         children: [
@@ -85,8 +120,7 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const MyRoutinePage()),
+                  MaterialPageRoute(builder: (context) => const MyRoutinePage()),
                 );
               },
               child: SizedBox(
@@ -99,8 +133,7 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const GroupMainPage()),
+                  MaterialPageRoute(builder: (context) => const GroupMainPage()),
                 );
               },
               child: SizedBox(
@@ -136,13 +169,13 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
   }
 
   Widget _buildCalendarTab() {
-    final totalCompletedRoutines = _calculateTotalCompletedRoutines(_focusedDay);
+    final totalCompletedRoutines = routineStatistics?.completedRoutinesCount ?? 0;
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          _buildCalendarHeader(), // 캘린더 헤더
+          _buildCalendarHeader(),
           SizedBox(height: 20),
           Row(
             children: [
@@ -151,15 +184,16 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
                 '이번 달 완료 루틴',
                 style: TextStyle(fontSize: 18),
               ),
-              SizedBox(width: 180,),
+              Spacer(),
               Text(
-                '$totalCompletedRoutines개',
+                '${routineStatistics?.completedRoutinesCount ?? 0}개', // null 체크 추가
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF8DCCFF),
                 ),
               ),
+
             ],
           ),
           SizedBox(height: 30),
@@ -190,6 +224,7 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
             onPressed: () {
               setState(() {
                 _focusedDay = DateTime(_focusedDay.year, _focusedDay.month - 1);
+                _fetchRoutineStatistics(); // 월을 변경할 때 데이터 갱신
               });
             },
           ),
@@ -206,6 +241,7 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
             onPressed: () {
               setState(() {
                 _focusedDay = DateTime(_focusedDay.year, _focusedDay.month + 1);
+                _fetchRoutineStatistics(); // 월을 변경할 때 데이터 갱신
               });
             },
           ),
@@ -243,11 +279,15 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
               onPageChanged: (focusedDay) {
                 setState(() {
                   _focusedDay = focusedDay;
+                  _fetchRoutineStatistics(); // 페이지 변경 시 데이터 갱신
                 });
               },
               calendarBuilders: CalendarBuilders(
                 defaultBuilder: (context, date, _) {
-                  return _buildDayCell(date);
+                  final dayInfo = routineStatistics?.userRoutineCompletionStatistics.routineCompletionInfos
+                      .firstWhere((element) => element.day == date.day, orElse: () => RoutineCompletionInfo(day: 0, level: 0));
+
+                  return _buildDayCell(date, dayInfo?.level ?? 0);
                 },
               ),
               calendarStyle: CalendarStyle(
@@ -293,86 +333,121 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
               children: [
                 Text("Less"),
                 SizedBox(width: 8.0),
-                CircleAvatar(
-                  radius: 5.0,
-                  backgroundColor: Colors.white,
+                Container(
+                  width: 10.0,
+                  height: 10.0,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                  ),
                 ),
                 SizedBox(width: 8.0),
-                CircleAvatar(
-                  radius: 5.0,
-                  backgroundColor: Color(0xFF8DCCFF),
+                Container(
+                  width: 10.0,
+                  height: 10.0,
+                  decoration: BoxDecoration(
+                    color: Color(0xffCAF4FF),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                  ),
                 ),
                 SizedBox(width: 8.0),
-                CircleAvatar(
-                  radius: 5.0,
-                  backgroundColor: Colors.lightBlue,
+                Container(
+                  width: 10.0,
+                  height: 10.0,
+                  decoration: BoxDecoration(
+                    color: Color(0xffA0DEFF),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                  ),
                 ),
                 SizedBox(width: 8.0),
-                CircleAvatar(
-                  radius: 5.0,
-                  backgroundColor: Colors.blue,
+                Container(
+                  width: 10.0,
+                  height: 10.0,
+                  decoration: BoxDecoration(
+                    color: Color(0xff5AB2FF),
+                    shape: BoxShape.circle,
+                    border: Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                  ),
                 ),
                 SizedBox(width: 8.0),
                 Text("More"),
               ],
             ),
-          ),
+          )
+
         ],
       ),
     );
   }
 
-  Widget _buildDayCell(DateTime date) {
-    Color circleColor;
+  Widget _buildDayCell(DateTime date, int level) {
+    final colorMap = {
+      0: Colors.white, // 완료 안 됨
+      1: Color(0xffCAF4FF), // 낮은 달성도
+      2: Color(0xffA0DEFF), // 중간 달성도
+      3: Color(0xff5AB2FF), // 높은 달성도
+    };
 
-    int completionRate = getCompletionRate(date);
-
-    if (completionRate == 0) {
-      circleColor = Colors.transparent;
-    } else if (completionRate == 1) {
-      circleColor = Colors.white;
-    } else if (completionRate == 2) {
-      circleColor = Color(0xFF8DCCFF);
-    } else if (completionRate == 3) {
-      circleColor = Colors.lightBlue;
-    } else {
-      circleColor = Colors.blue;
-    }
-
-    Color textColor = circleColor == Colors.white ? Colors.black : Colors.white;
-
-    return Center(
-      child: Container(
-        decoration: BoxDecoration(
-          color: circleColor,
-          shape: BoxShape.circle,
-        ),
-        width: 40.0,
-        height: 40.0,
-        child: Center(
-          child: Text(
-            date.day.toString(),
-            style: TextStyle(
-              color: circleColor == Colors.transparent ? Colors.black : textColor,
-            ),
+    return Container(
+      margin: EdgeInsets.all(2.0),
+      decoration: BoxDecoration(
+        color: colorMap[level] ?? Colors.grey[300],
+        shape: BoxShape.circle,
+      ),
+      child: Center(
+        child: Text(
+          '${date.day}',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
     );
   }
+}
 
-  int getCompletionRate(DateTime date) {
-    // Example logic to determine completion rate, replace with your actual logic
-    return (date.day % 4) + 1; // Example logic: you should replace it with actual logic
+// RoutineStatistics 데이터 모델
+class RoutineStatistics {
+  final int completedRoutinesCount;
+  final UserRoutineCompletionStatistics userRoutineCompletionStatistics;
+
+  RoutineStatistics({required this.completedRoutinesCount, required this.userRoutineCompletionStatistics});
+
+  factory RoutineStatistics.fromJson(Map<String, dynamic> json) {
+    return RoutineStatistics(
+      completedRoutinesCount: json['completedRoutinesCount'],
+      userRoutineCompletionStatistics: UserRoutineCompletionStatistics.fromJson(json['userRoutineCompletionStatistics']),
+    );
   }
+}
 
-  int _calculateTotalCompletedRoutines(DateTime focusedDay) {
-    int totalRoutines = 0;
+class UserRoutineCompletionStatistics {
+  final List<RoutineCompletionInfo> routineCompletionInfos;
 
-    for (int day = 1; day <= DateTime(focusedDay.year, focusedDay.month + 1, 0).day; day++) {
-      totalRoutines += getCompletionRate(DateTime(focusedDay.year, focusedDay.month, day));
-    }
+  UserRoutineCompletionStatistics({required this.routineCompletionInfos});
 
-    return totalRoutines;
+  factory UserRoutineCompletionStatistics.fromJson(Map<String, dynamic> json) {
+    var list = json['routineCompletionInfos'] as List;
+    List<RoutineCompletionInfo> completionInfoList =
+    list.map((completionInfo) => RoutineCompletionInfo.fromJson(completionInfo)).toList();
+    return UserRoutineCompletionStatistics(routineCompletionInfos: completionInfoList);
+  }
+}
+
+class RoutineCompletionInfo {
+  final int day;
+  final int level;
+
+  RoutineCompletionInfo({required this.day, required this.level});
+
+  factory RoutineCompletionInfo.fromJson(Map<String, dynamic> json) {
+    return RoutineCompletionInfo(
+      day: json['day'],
+      level: json['level'],
+    );
   }
 }

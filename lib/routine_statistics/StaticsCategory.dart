@@ -44,6 +44,7 @@ class _StaticsCategoryState extends State<StaticsCategory> {
     int totalCount = dailyCount + healthCount + selfDevelopmentCount + selfCareCount + othersCount;
 
     return Scaffold(
+      //backgroundColor: Colors.white,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

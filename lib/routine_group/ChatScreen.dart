@@ -247,9 +247,9 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                     _isComposing = text.isNotEmpty || _imageFile != null;
                   });
                 },
-                decoration: const InputDecoration.collapsed(
-                  hintText: "Send a message",
-                ),
+                // decoration: const InputDecoration.collapsed(
+                //   hintText: "Send a message",
+                // ),
               ),
             ),
             IconButton(
