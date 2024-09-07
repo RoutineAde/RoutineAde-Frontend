@@ -15,6 +15,14 @@ import 'groupType.dart';
 import 'package:routine_ade/routine_user/token.dart';
 import 'group-unjoin.dart';
 
+class GroupMember {
+  final String profileImage;
+  final String name;
+  final bool isLeader;
+
+  GroupMember({required this.profileImage, required this.name, this.isLeader = false});
+}
+
 // 전역 함수로 getCategoryColor를 정의
 Color getCategoryColor(String category) {
   switch (category) {
@@ -217,12 +225,19 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
                 const Divider(),
                 buildDrawerHeaderTile("그룹원"),
                 ...groupResponse.groupMembers.map((member) {
-                  bool isLeader =
-                      member.nickname == groupInfo.createdUserNickname;
+                  bool isLeader = member.nickname == groupInfo.createdUserNickname;
                   return buildDrawerMemberTile(
-                      member.nickname, member.profileImage,
-                      isLeader: isLeader);
+                    GroupMember(
+                      name: member.nickname,
+                      profileImage: member.profileImage,
+                      isLeader: isLeader,
+                    ),
+                    member.profileImage,
+                    isLeader: isLeader,
+                  );
                 }),
+
+
               ],
             ),
           ),
@@ -279,17 +294,16 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
     );
   }
 
-  ListTile buildDrawerMemberTile(String title, String imagePath,
-      {bool isLeader = false}) {
+  ListTile buildDrawerMemberTile(GroupMember member, String profileImage, {required bool isLeader}) {
     return ListTile(
       leading: CircleAvatar(
         radius: 25,
-        backgroundImage: AssetImage("assets/images/profile/$imagePath"),
+        backgroundImage: NetworkImage(member.profileImage),
       ),
       title: Row(
         children: <Widget>[
-          Text(title),
-          if (isLeader)
+          Text(member.name),
+          if (member.isLeader)
             const Padding(
               padding: EdgeInsets.only(left: 8.0),
               child: Image(

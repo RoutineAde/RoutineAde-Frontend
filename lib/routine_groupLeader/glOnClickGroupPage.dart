@@ -244,13 +244,15 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
                 buildDrawerHeaderTile("그룹원"),
                 ...groupResponse.groupMembers.map((member) {
                   return buildDrawerMemberTile(
-                    member.nickname,
-                    member.profileImage,
-                    groupInfo.groupId, // groupId를 groupInfo에서 가져옴
-                    member.userId, // userId 전달
-                    isLeader: groupResponse.isGroupAdmin &&
-                        member.nickname == groupInfo.createdUserNickname,
+                      member,                             // Pass the full member object as GroupMember
+                      member.nickname,                    // member.nickname as String (title)
+                      member.profileImage,                // member.profileImage as String (profileImage)
+                      groupInfo.groupId,       // Convert groupId to int (groupId should be an int)
+                      member.userId,                      // member.userId as int
+                      isLeader: groupResponse.isGroupAdmin &&
+                          member.nickname == groupInfo.createdUserNickname // isLeader flag
                   );
+
                 }),
               ],
             ),
@@ -309,12 +311,12 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
   }
 
   ListTile buildDrawerMemberTile(
-      String title, String imagePath, int groupId, int userId,
+      GroupMember member, String title, String profileImage, int groupId, int userId,
       {bool isLeader = false}) {
     return ListTile(
       leading: CircleAvatar(
         radius: 25,
-        backgroundImage: AssetImage("assets/images/profile/$imagePath"),
+        backgroundImage: NetworkImage(member.profileImage),
       ),
       title: Row(
         children: <Widget>[
