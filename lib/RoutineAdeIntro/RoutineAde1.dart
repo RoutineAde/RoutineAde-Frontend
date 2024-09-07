@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:routine_ade/RoutineAdeIntro/ProfileSetting.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 
-import 'ProfileSetting2.dart';
 
 class RoutineAde1 extends StatelessWidget {
   @override
