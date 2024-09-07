@@ -10,6 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
   google_fonts: ^2.0.0
+  image_picker: ^0.8.7
+  permission_handler: ^10.2.0
+
 
   #추가한 패키지
   flutter_calendar_week: ^3.0.1

@@ -623,9 +623,9 @@ class _MyRoutinePageState extends State<MyRoutinePage>
       // margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(5),
       decoration: const BoxDecoration(
-          // color: Colors.white,
-          // borderRadius: BorderRadius.circular(10),
-          ),
+        // color: Colors.white,
+        // borderRadius: BorderRadius.circular(10),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

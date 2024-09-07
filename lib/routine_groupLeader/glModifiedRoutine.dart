@@ -108,7 +108,7 @@ class _glModifiedRoutineState extends State<glModifiedRoutine> {
                           borderSide: BorderSide.none,
                         ),
                         contentPadding:
-                            EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
+                        EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
                         counterText: "", // 글자 수 표시 없애기
                       ),
                     ),
@@ -145,7 +145,7 @@ class _glModifiedRoutineState extends State<glModifiedRoutine> {
                     Container(
                       color: Colors.white,
                       padding:
-                          const EdgeInsets.only(left: 10, right: 10, top: 10),
+                      const EdgeInsets.only(left: 10, right: 10, top: 10),
                       margin: const EdgeInsets.only(top: 30),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -267,7 +267,7 @@ class _glModifiedRoutineState extends State<glModifiedRoutine> {
                   onPressed: () {},
                   style: ButtonStyle(
                     backgroundColor:
-                        WidgetStateProperty.all<Color>(const Color(0xffE6E288)),
+                    WidgetStateProperty.all<Color>(const Color(0xffE6E288)),
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
