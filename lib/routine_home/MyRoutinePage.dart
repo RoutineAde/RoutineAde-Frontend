@@ -5,8 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_calendar_week/flutter_calendar_week.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:routine_ade/RoutineAdeIntro/RoutineAde1.dart';
-import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
+import 'package:routine_ade/routine_group/GroupType.dart';
 import 'AddRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_home/AlarmListPage.dart';
@@ -203,7 +202,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
           },
           backgroundColor: const Color(0xffB4DDFF),
           shape: const CircleBorder(),
-          child: Image.asset("images/add-button.png"),
+          child: Image.asset("images/add-button.png", width: 25, height: 25),
         ),
         body: Column(
           children: [
@@ -421,6 +420,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     }
   }
 
+//그룹 루틴
   Widget _buildRoutineTile2(GroupRoutine routine) {
     Color categoryColor = _getCategoryColor(routine.routineCategory);
     return Container(
@@ -452,7 +452,33 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                   routine.routineTitle,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
+                const SizedBox(width: 3),
               ],
+            ),
+            trailing: Transform.scale(
+              scale: 1.5, // Checkbox size increased by 1.5 times
+              child: Checkbox(
+                value: routine.isCompletion,
+                onChanged: (bool? value) {
+                  if (value != null) {
+                    print("Checkbox changed: $value");
+                    setState(() {
+                      routine.isCompletion = value;
+                    });
+                    updateRoutineCompletion(
+                        routine.routineId, value, selectedDate);
+                  }
+                },
+                activeColor: const Color(0xFF8DCCFF),
+                checkColor: Colors.white,
+                fillColor: WidgetStateProperty.resolveWith<Color>(
+                    (Set<WidgetState> states) {
+                  if (states.contains(WidgetState.selected)) {
+                    return const Color(0xFF8DCCFF);
+                  }
+                  return Colors.transparent;
+                }),
+              ),
             ),
           ),
         ],
@@ -592,7 +618,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         categoryColor = const Color(0xffF4A2D8);
         break;
     }
-
+//개인 루틴
     return Container(
       // margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(5),
@@ -655,18 +681,14 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                         routine.routineId, value, selectedDate);
                   }
                 },
-                activeColor: const Color(
-                    0xFF8DCCFF), // Color when the checkbox is checked
-                checkColor:
-                    Colors.white, // The check mark color inside the checkbox
+                activeColor: const Color(0xFF8DCCFF),
+                checkColor: Colors.white,
                 fillColor: WidgetStateProperty.resolveWith<Color>(
                     (Set<WidgetState> states) {
                   if (states.contains(WidgetState.selected)) {
-                    return const Color(
-                        0xFF8DCCFF); // Checkbox fill color when checked
+                    return const Color(0xFF8DCCFF);
                   }
-                  return Colors
-                      .transparent; // Checkbox fill color when unchecked
+                  return Colors.transparent;
                 }),
               ),
             ),
@@ -942,13 +964,13 @@ class GroupRoutine {
   final int routineId;
   final String routineTitle;
   final String routineCategory;
-  final bool isCompletion;
+  bool isCompletion;
 
   GroupRoutine({
     required this.routineId,
     required this.routineTitle,
     required this.routineCategory,
-    required this.isCompletion,
+    this.isCompletion = false,
   });
 
   factory GroupRoutine.fromJson(Map<String, dynamic> json) {
