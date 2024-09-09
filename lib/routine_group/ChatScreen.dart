@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart'; // MIME 타입 가져오기
 import 'package:http_parser/http_parser.dart';
 import 'package:routine_ade/routine_user/token.dart';
+import 'dart:async';
 
 class ChatScreen extends StatefulWidget {
   final int groupId;
@@ -23,13 +24,27 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   int? _userId;
   String? _nickname;
   File? _imageFile;
+  Timer? _timer;
 
   @override
   void initState() {
     super.initState();
     _loadUserInfo(); // 사용자 정보 로드
     _loadChatMessages(); // 채팅 메시지 로드
+
+    // _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
+    //   _loadChatMessages(); // 주기적으로 채팅 메시지를 불러옴
+    // });
   }
+
+  // @override
+  // void dispose() {
+  //   _timer?.cancel(); // 타이머 해제
+  //   for (ChatMessage message in _messages) {
+  //     message.animationController.dispose();
+  //   }
+  //   super.dispose();
+  // }
 
   Future<void> fetchUserInfo(int groupId) async {
     final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId');
@@ -149,11 +164,22 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     try {
       final response = await request.send();
       if (response.statusCode == 200) {
+        print('Message sent successfully');
         final responseData = await http.Response.fromStream(response);
         final responseBody = json.decode(responseData.body);
 
         print('Message sent successfully');
 
+        // 서버 응답에 상관없이 메시지 화면에 바로 추가
+        _addMessageFromApi({
+          'content': content,
+          'isMine': true,
+          'nickname': _nickname,
+          'createdDate': DateTime.now().toString(),
+          'image': imageFile?.path,
+        });
+
+        // 나중에 서버에서 채팅 데이터 다시 불러와서 동기화
         await _loadChatMessages(); // Load new messages
 
         setState(() {
@@ -196,6 +222,22 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     });
 
     if (_nickname != null) {
+      // 메시지 전송 후 메시지를 UI에 즉시 추가
+      _addMessageFromApi({
+        'content': text,
+        'isMine': true,
+        'nickname': _nickname,
+        'createdDate': DateTime.now().toString(),
+        'image': _imageFile?.path, // 선택된 이미지 파일이 있다면 추가
+      });
+
+      // 메시지 필드 및 이미지 초기화
+      _textController.clear();
+      setState(() {
+        _imageFile = null;
+      });
+
+      //서버로 메시지 전송
       await createChatMessage(widget.groupId, text, _imageFile);
     } else {
       print('Nickname is null');
@@ -266,6 +308,8 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    // _timer?.cancel();
+
     for (ChatMessage message in _messages) {
       message.animationController.dispose();
     }

@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_calendar_week/flutter_calendar_week.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:routine_ade/rotuine_myInfo/MyInfo.dart';
 import 'package:routine_ade/routine_group/GroupType.dart';
 import 'AddRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
@@ -369,31 +370,57 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                           ),
                         ),
                         const SizedBox(height: 10),
-                        ...snapshot.data!.groupRoutines.map((group) => Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: Container(
-                                padding:
-                                    const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFE6F5F8),
-                                  borderRadius: BorderRadius.circular(12),
+                        ...snapshot.data!.groupRoutines.map((group) {
+                          // 카테고리별로 그룹화
+                          final groupedRoutines = _groupRoutinesByCategory(
+                              group.groupRoutines.cast<GroupRoutine>());
+
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Container(
+                              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE6F5F8),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Theme(
+                                data: Theme.of(context).copyWith(
+                                  dividerColor: Colors.transparent,
                                 ),
-                                child: Theme(
-                                  data: Theme.of(context).copyWith(
-                                    dividerColor: Colors.transparent,
-                                  ),
-                                  child: ExpansionTile(
-                                    title: Text(group.groupTitle,
-                                        style: const TextStyle(
-                                            fontSize: 20, color: Colors.black)),
-                                    children: group.groupRoutines
-                                        .map((routine) =>
-                                            _buildRoutineTile2(routine))
-                                        .toList(),
-                                  ),
+                                child: ExpansionTile(
+                                  title: Text(group.groupTitle,
+                                      style: const TextStyle(
+                                          fontSize: 20, color: Colors.black)),
+                                  children:
+                                      groupedRoutines.entries.map((entry) {
+                                    return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 10, bottom: 5),
+                                          child: Text(
+                                            entry.key, // 카테고리 이름
+                                            style: TextStyle(
+                                              color:
+                                                  _getCategoryColor(entry.key),
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                        ),
+                                        ...entry.value.map((routine) =>
+                                            _buildRoutineTile2(
+                                                routine)), // 루틴 목록
+                                      ],
+                                    );
+                                  }).toList(),
                                 ),
                               ),
-                            )),
+                            ),
+                          );
+                        }),
                         const SizedBox(height: 10),
                       ],
                     );
@@ -420,70 +447,88 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     }
   }
 
+// 그룹 루틴을 카테고리별로 그룹화하는 함수
+  Map<String, List<GroupRoutine>> _groupRoutinesByCategory(
+      List<GroupRoutine> routines) {
+    Map<String, List<GroupRoutine>> groupedRoutines = {};
+
+    for (var routine in routines) {
+      final category = routine.routineCategory ?? '기타'; // null 체크 및 기본값 설정
+      if (!groupedRoutines.containsKey(routine.routineCategory)) {
+        groupedRoutines[routine.routineCategory] = [];
+      }
+      groupedRoutines[routine.routineCategory]!.add(routine);
+    }
+
+    return groupedRoutines;
+  }
+
 //그룹 루틴
   Widget _buildRoutineTile2(GroupRoutine routine) {
     Color categoryColor = _getCategoryColor(routine.routineCategory);
-    return Container(
-      padding: const EdgeInsets.all(5),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+
+    // return Container(
+    //   padding: const EdgeInsets.all(5),
+    //   child: Column(
+    //     crossAxisAlignment: CrossAxisAlignment.start,
+    //     children: [
+    //       const SizedBox(
+    //         height: 3,
+    //       ),
+    //       // 카테고리 텍스트
+    //       Container(
+    //         padding: const EdgeInsets.only(left: 10),
+    //         child: Text(
+    //           ' ${routine.routineCategory}',
+    //           style: TextStyle(
+    //               color: categoryColor, // 카테고리 색상 적용
+    //               fontWeight: FontWeight.bold,
+    //               fontSize: 18),
+    //         ),
+    //       ),
+
+    // 루틴 이름
+    return ListTile(
+      title: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          const SizedBox(
-            height: 3,
+          Text(
+            routine.routineTitle,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          // 카테고리 텍스트
-          Container(
-            padding: const EdgeInsets.only(left: 10),
-            child: Text(
-              ' ${routine.routineCategory}',
-              style: TextStyle(
-                  color: categoryColor, // 카테고리 색상 적용
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18),
-            ),
-          ),
-          // 루틴 이름
-          ListTile(
-            title: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  routine.routineTitle,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(width: 3),
-              ],
-            ),
-            trailing: Transform.scale(
-              scale: 1.5, // Checkbox size increased by 1.5 times
-              child: Checkbox(
-                value: routine.isCompletion,
-                onChanged: (bool? value) {
-                  if (value != null) {
-                    print("Checkbox changed: $value");
-                    setState(() {
-                      routine.isCompletion = value;
-                    });
-                    updateRoutineCompletion(
-                        routine.routineId, value, selectedDate);
-                  }
-                },
-                activeColor: const Color(0xFF8DCCFF),
-                checkColor: Colors.white,
-                fillColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
-                  if (states.contains(WidgetState.selected)) {
-                    return const Color(0xFF8DCCFF);
-                  }
-                  return Colors.transparent;
-                }),
-              ),
-            ),
-          ),
+          const SizedBox(width: 3),
         ],
       ),
+      trailing: Transform.scale(
+        scale: 1.5, // Checkbox size increased by 1.5 times
+        child: Checkbox(
+          value: routine.isCompletion,
+          onChanged: (bool? value) {
+            if (value != null) {
+              print("Checkbox changed: $value");
+              setState(() {
+                routine.isCompletion = value;
+              });
+              updateRoutineCompletion(routine.routineId, value, selectedDate);
+            }
+          },
+          activeColor: const Color(0xFF8DCCFF),
+          checkColor: Colors.white,
+          fillColor:
+              WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
+            if (states.contains(WidgetState.selected)) {
+              return const Color(0xFF8DCCFF);
+            }
+            return Colors.transparent;
+          }),
+        ),
+      ),
     );
+    //       ),
+    //     ],
+    //   ),
+    // );
   }
 
   Widget _buildBottomAppBar() {
@@ -498,8 +543,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
           _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png",
               const StaticsCalendar()),
           _buildBottomAppBarItem(
-            "assets/images/tap-bar/more01.png",
-          ),
+              "assets/images/tap-bar/more01.png", const MyInfo()),
         ],
       ),
     );
@@ -907,11 +951,16 @@ class RoutineResponse {
   final List<Routine> personalRoutines;
   final List<Group2> groupRoutines;
   final String userEmotion;
+  final List<String> personalRoutineCategories;
+  final List<String> groupRoutineCategories;
 
-  RoutineResponse(
-      {required this.personalRoutines,
-      required this.groupRoutines,
-      required this.userEmotion});
+  RoutineResponse({
+    required this.personalRoutines,
+    required this.groupRoutines,
+    required this.userEmotion,
+    required this.personalRoutineCategories,
+    required this.groupRoutineCategories,
+  });
 
   factory RoutineResponse.fromJson(Map<String, dynamic> json) {
     return RoutineResponse(
@@ -922,6 +971,10 @@ class RoutineResponse {
           .map((item) => Group2.fromJson(item))
           .toList(),
       userEmotion: json['userEmotion'] ?? 'null',
+      personalRoutineCategories:
+          List<String>.from(json['personalRoutineCategories'] ?? []),
+      groupRoutineCategories:
+          List<String>.from(json['groupRoutineCategories'] ?? []),
     );
   }
 }
@@ -931,7 +984,7 @@ class Routine {
   final int routineId;
   final String routineTitle;
   final String? routineCategory;
-  final bool isAlarmEnabled; // isAlarmEnabled를 mutable로 변경
+  bool isAlarmEnabled; // isAlarmEnabled를 mutable로 변경
   final String startDate;
   final List<String> repeatDays;
   bool isCompletion;
@@ -975,10 +1028,30 @@ class GroupRoutine {
 
   factory GroupRoutine.fromJson(Map<String, dynamic> json) {
     return GroupRoutine(
-      routineId: json['routineId'],
-      routineTitle: json['routineTitle'],
-      routineCategory: json['routineCategory'],
-      isCompletion: json['isCompletion'],
+      routineId: json['routineId'] ?? 0,
+      routineTitle: json['routineTitle'] ?? '',
+      routineCategory: json['routineCategory'] ?? '',
+      isCompletion: json['isCompletion'] ?? false,
+    );
+  }
+}
+
+// 루틴 카테고리 그룹
+class RoutineCategoryGroup {
+  final String routineCategory;
+  final List<Routine> routines;
+
+  RoutineCategoryGroup({
+    required this.routineCategory,
+    required this.routines,
+  });
+
+  factory RoutineCategoryGroup.fromJson(Map<String, dynamic> json) {
+    return RoutineCategoryGroup(
+      routineCategory: json['routineCategory'] ?? '',
+      routines: (json['routines'] as List)
+          .map((item) => Routine.fromJson(item))
+          .toList(),
     );
   }
 }
@@ -987,7 +1060,7 @@ class GroupRoutine {
 class Group2 {
   final int groupId;
   final String groupTitle;
-  final List<GroupRoutine> groupRoutines;
+  final List<RoutineCategoryGroup> groupRoutines;
 
   Group2({
     required this.groupId,
@@ -997,10 +1070,10 @@ class Group2 {
 
   factory Group2.fromJson(Map<String, dynamic> json) {
     return Group2(
-      groupId: json['groupId'],
-      groupTitle: json['groupTitle'],
+      groupId: json['groupId'] ?? 0,
+      groupTitle: json['groupTitle'] ?? '',
       groupRoutines: (json['groupRoutines'] as List)
-          .map((item) => GroupRoutine.fromJson(item))
+          .map((item) => RoutineCategoryGroup.fromJson(item))
           .toList(),
     );
   }
