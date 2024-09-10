@@ -662,7 +662,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
   Widget _buildRoutineTile(Routine routine) {
     Color categoryColor = _getCategoryColor(routine.routineCategory);
 
-//개인르틴
+//개인틴
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: ListTile(
