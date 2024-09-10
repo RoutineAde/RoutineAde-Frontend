@@ -362,19 +362,47 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                   style: TextStyle(
                                       fontSize: 20,
                                       color: Colors.black)), // 텍스트 색상 변경
-                              initiallyExpanded: _isTileExpanded,
                               children: snapshot.data!.personalRoutines
-                                  .map((routine) => _buildRoutineTile(routine))
-                                  .toList(),
+                                  .map((category) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 10, top: 5),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: const Color.fromARGB(
+                                              255, 255, 255, 255),
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 1),
+                                        child: Text(
+                                          category.routineCategory,
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: _getCategoryColor(
+                                                category.routineCategory),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    // 카테고리 밑에 루틴 추가
+                                    ...category.routines.map((routine) {
+                                      return _buildRoutineTile(
+                                          routine); // 기존 _buildRoutineTile 메서드 사용
+                                    }),
+                                  ],
+                                );
+                              }).toList(),
                             ),
                           ),
                         ),
                         const SizedBox(height: 10),
                         ...snapshot.data!.groupRoutines.map((group) {
-                          // 카테고리별로 그룹화
-                          final groupedRoutines = _groupRoutinesByCategory(
-                              group.groupRoutines.cast<GroupRoutine>());
-
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 10),
                             child: Container(
@@ -392,26 +420,46 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                       style: const TextStyle(
                                           fontSize: 20, color: Colors.black)),
                                   children:
-                                      groupedRoutines.entries.map((entry) {
+                                      group.groupRoutines.map((categoryGroup) {
                                     return Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
                                         Padding(
                                           padding: const EdgeInsets.only(
-                                              left: 10, bottom: 5),
-                                          child: Text(
-                                            entry.key, // 카테고리 이름
-                                            style: TextStyle(
-                                              color:
-                                                  _getCategoryColor(entry.key),
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 18,
+                                            left: 10,
+                                          ),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: const Color.fromARGB(
+                                                  255, 255, 255, 255),
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            // margin: const EdgeInsets.fromLTRB(
+                                            //     30, 40, 0, 16),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10.0, vertical: 1),
+                                            child: Column(
+                                              children: [
+                                                // const SizedBox(height: 5),
+                                                Text(
+                                                  categoryGroup
+                                                      .routineCategory, // 카테고리 이름
+                                                  style: TextStyle(
+                                                    color: _getCategoryColor(
+                                                        categoryGroup
+                                                            .routineCategory),
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
                                         ),
-                                        ...entry.value.map((routine) =>
-                                            _buildRoutineTile2(
+                                        ...categoryGroup.routines.map(
+                                            (routine) => _buildRoutineTile2(
                                                 routine)), // 루틴 목록
                                       ],
                                     );
@@ -447,88 +495,58 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     }
   }
 
-// 그룹 루틴을 카테고리별로 그룹화하는 함수
-  Map<String, List<GroupRoutine>> _groupRoutinesByCategory(
-      List<GroupRoutine> routines) {
-    Map<String, List<GroupRoutine>> groupedRoutines = {};
-
-    for (var routine in routines) {
-      final category = routine.routineCategory ?? '기타'; // null 체크 및 기본값 설정
-      if (!groupedRoutines.containsKey(routine.routineCategory)) {
-        groupedRoutines[routine.routineCategory] = [];
-      }
-      groupedRoutines[routine.routineCategory]!.add(routine);
-    }
-
-    return groupedRoutines;
-  }
-
 //그룹 루틴
   Widget _buildRoutineTile2(GroupRoutine routine) {
     Color categoryColor = _getCategoryColor(routine.routineCategory);
 
-    // return Container(
-    //   padding: const EdgeInsets.all(5),
-    //   child: Column(
-    //     crossAxisAlignment: CrossAxisAlignment.start,
-    //     children: [
-    //       const SizedBox(
-    //         height: 3,
-    //       ),
-    //       // 카테고리 텍스트
-    //       Container(
-    //         padding: const EdgeInsets.only(left: 10),
-    //         child: Text(
-    //           ' ${routine.routineCategory}',
-    //           style: TextStyle(
-    //               color: categoryColor, // 카테고리 색상 적용
-    //               fontWeight: FontWeight.bold,
-    //               fontSize: 18),
-    //         ),
-    //       ),
-
     // 루틴 이름
-    return ListTile(
-      title: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Text(
-            routine.routineTitle,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 0),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20), // 좌우 여백 조절
+        minLeadingWidth: 0,
+        leading: const Icon(
+          Icons.brightness_1,
+          size: 8,
+          color: Colors.black,
+        ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              routine.routineTitle,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            // const SizedBox(width: 3),
+          ],
+        ),
+        trailing: Transform.scale(
+          scale: 1.2, // Checkbox size increased by 1.5 times
+          child: Checkbox(
+            value: routine.isCompletion,
+            onChanged: (bool? value) {
+              if (value != null) {
+                print("Checkbox changed: $value");
+                setState(() {
+                  routine.isCompletion = value;
+                });
+                updateRoutineCompletion(routine.routineId, value, selectedDate);
+              }
+            },
+            activeColor: const Color(0xFF8DCCFF),
+            checkColor: Colors.white,
+            fillColor: WidgetStateProperty.resolveWith<Color>(
+                (Set<WidgetState> states) {
+              if (states.contains(WidgetState.selected)) {
+                return const Color(0xFF8DCCFF);
+              }
+              return Colors.transparent;
+            }),
           ),
-          const SizedBox(width: 3),
-        ],
-      ),
-      trailing: Transform.scale(
-        scale: 1.5, // Checkbox size increased by 1.5 times
-        child: Checkbox(
-          value: routine.isCompletion,
-          onChanged: (bool? value) {
-            if (value != null) {
-              print("Checkbox changed: $value");
-              setState(() {
-                routine.isCompletion = value;
-              });
-              updateRoutineCompletion(routine.routineId, value, selectedDate);
-            }
-          },
-          activeColor: const Color(0xFF8DCCFF),
-          checkColor: Colors.white,
-          fillColor:
-              WidgetStateProperty.resolveWith<Color>((Set<WidgetState> states) {
-            if (states.contains(WidgetState.selected)) {
-              return const Color(0xFF8DCCFF);
-            }
-            return Colors.transparent;
-          }),
         ),
       ),
     );
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 
   Widget _buildBottomAppBar() {
@@ -642,105 +660,70 @@ class _MyRoutinePageState extends State<MyRoutinePage>
   }
 
   Widget _buildRoutineTile(Routine routine) {
-    Color categoryColor;
+    Color categoryColor = _getCategoryColor(routine.routineCategory);
 
-    // 카테고리 색상
-    switch (routine.routineCategory) {
-      case "건강":
-        categoryColor = const Color(0xff6ACBF3);
-        break;
-      case "자기개발":
-        categoryColor = const Color(0xff7BD7C6);
-        break;
-      case "일상":
-        categoryColor = const Color(0xffF5A77B);
-        break;
-      case "자기관리":
-        categoryColor = const Color(0xffC69FEC);
-        break;
-      default:
-        categoryColor = const Color(0xffF4A2D8);
-        break;
-    }
-//개인 루틴
-    return Container(
-      // margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(5),
-      decoration: const BoxDecoration(
-          // color: Colors.white,
-          // borderRadius: BorderRadius.circular(10),
-          ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 3,
-          ),
-          // 카테고리 텍스트
-          Container(
-            padding: const EdgeInsets.only(left: 10), // 왼쪽에 10의 간격 추가
-            child: Text(
-              ' ${routine.routineCategory}',
-              style: TextStyle(
-                  color: categoryColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18),
+//개인르틴
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 0),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20), // 좌우 여백 조절
+        minLeadingWidth: 0,
+        leading: const Icon(
+          Icons.brightness_1,
+          size: 8,
+          color: Colors.black,
+        ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment:
+              MainAxisAlignment.start, // Align elements to the start of the row
+          children: [
+            GestureDetector(
+              onTap: () => _showDialog(context, routine),
+              child: Text(routine.routineTitle,
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
             ),
-          ),
-          // 루틴 이름
-          ListTile(
-            title: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment
-                  .start, // Align elements to the start of the row
-              children: [
-                GestureDetector(
-                  onTap: () => _showDialog(context, routine),
-                  child: Text(routine.routineTitle,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                ),
-                const SizedBox(width: 3), // Adjust the width as needed
-                if (routine
-                    .isAlarmEnabled) // Conditionally display the bell icon
-                  GestureDetector(
-                    onTap: () {
-                      // Do nothing when the image is tapped3
-                    },
-                    child: Image.asset('assets/images/bell.png',
-                        width: 20, height: 20),
-                  ),
-              ],
-            ),
-            trailing: Transform.scale(
-              scale: 1.5, // Checkbox size increased by 1.5 times
-              child: Checkbox(
-                value: routine.isCompletion,
-                onChanged: (bool? value) {
-                  if (value != null) {
-                    print("Checkbox changed: $value");
-                    setState(() {
-                      routine.isCompletion = value;
-                    });
-                    updateRoutineCompletion(
-                        routine.routineId, value, selectedDate);
-                  }
+            const SizedBox(width: 3), // Adjust the width as needed
+            if (routine.isAlarmEnabled) // Conditionally display the bell icon
+              GestureDetector(
+                onTap: () {
+                  // Do nothing when the image is tapped3
                 },
-                activeColor: const Color(0xFF8DCCFF),
-                checkColor: Colors.white,
-                fillColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
-                  if (states.contains(WidgetState.selected)) {
-                    return const Color(0xFF8DCCFF);
-                  }
-                  return Colors.transparent;
-                }),
+                child: Image.asset('assets/images/bell.png',
+                    width: 20, height: 20),
               ),
-            ),
-            onTap: () => _showDialog(context, routine),
+          ],
+        ),
+        trailing: Transform.scale(
+          scale: 1.2, // Checkbox size increased by 1.5 times
+          child: Checkbox(
+            value: routine.isCompletion,
+            onChanged: (bool? value) {
+              if (value != null) {
+                print("Checkbox changed: $value");
+                setState(() {
+                  routine.isCompletion = value;
+                });
+                updateRoutineCompletion(routine.routineId, value, selectedDate);
+              }
+            },
+            activeColor: const Color(0xFF8DCCFF),
+            checkColor: Colors.white,
+            fillColor: WidgetStateProperty.resolveWith<Color>(
+                (Set<WidgetState> states) {
+              if (states.contains(WidgetState.selected)) {
+                return const Color(0xFF8DCCFF);
+              }
+              return Colors.transparent;
+            }),
           ),
-        ],
+        ),
+        onTap: () => _showDialog(context, routine),
       ),
     );
+    // ],
+    //   ),
+    // );
   }
 
   void _showDialog(BuildContext context, Routine routine) {
@@ -948,33 +931,37 @@ String getTextForEmotion(String emotion) {
 
 //루틴, 감정 조회 class
 class RoutineResponse {
-  final List<Routine> personalRoutines;
+  final List<UserRoutineCategory> personalRoutines;
   final List<Group2> groupRoutines;
   final String userEmotion;
-  final List<String> personalRoutineCategories;
-  final List<String> groupRoutineCategories;
+  final List<UserRoutineCategory> routines;
+  // final List<String> groupRoutineCategories;
 
   RoutineResponse({
     required this.personalRoutines,
     required this.groupRoutines,
     required this.userEmotion,
-    required this.personalRoutineCategories,
-    required this.groupRoutineCategories,
+    required this.routines,
+    // required this.groupRoutineCategories,
   });
 
   factory RoutineResponse.fromJson(Map<String, dynamic> json) {
     return RoutineResponse(
-      personalRoutines: (json['personalRoutines'] as List)
-          .map((item) => Routine.fromJson(item))
-          .toList(),
-      groupRoutines: (json['groupRoutines'] as List)
-          .map((item) => Group2.fromJson(item))
-          .toList(),
+      personalRoutines: (json['personalRoutines'] as List<dynamic>?)
+              ?.map((item) =>
+                  UserRoutineCategory.fromJson(item as Map<String, dynamic>))
+              .toList() ??
+          [],
+      groupRoutines: (json['groupRoutines'] as List<dynamic>?)
+              ?.map((item) => Group2.fromJson(item as Map<String, dynamic>))
+              .toList() ??
+          [],
       userEmotion: json['userEmotion'] ?? 'null',
-      personalRoutineCategories:
-          List<String>.from(json['personalRoutineCategories'] ?? []),
-      groupRoutineCategories:
-          List<String>.from(json['groupRoutineCategories'] ?? []),
+      routines: (json['routines'] as List<dynamic>?)
+              ?.map((item) =>
+                  UserRoutineCategory.fromJson(item as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
   }
 }
@@ -983,7 +970,7 @@ class RoutineResponse {
 class Routine {
   final int routineId;
   final String routineTitle;
-  final String? routineCategory;
+  final String routineCategory;
   bool isAlarmEnabled; // isAlarmEnabled를 mutable로 변경
   final String startDate;
   final List<String> repeatDays;
@@ -1008,6 +995,27 @@ class Routine {
           json["startDate"] ?? DateFormat('yyyy.MM.dd').format(DateTime.now()),
       repeatDays: List<String>.from(json["repeatDays"] ?? []),
       isCompletion: json['isCompletion'] ?? false,
+    );
+  }
+}
+
+// 개인 카테고리 그룹
+class UserRoutineCategory {
+  final String routineCategory;
+  final List<Routine> routines;
+
+  UserRoutineCategory({
+    required this.routineCategory,
+    required this.routines,
+  });
+
+  factory UserRoutineCategory.fromJson(Map<String, dynamic> json) {
+    return UserRoutineCategory(
+      routineCategory: json['routineCategory'] ?? '',
+      routines: (json['routines'] as List)
+              .map((item) => Routine.fromJson(item))
+              .toList() ??
+          [],
     );
   }
 }
@@ -1039,7 +1047,7 @@ class GroupRoutine {
 // 루틴 카테고리 그룹
 class RoutineCategoryGroup {
   final String routineCategory;
-  final List<Routine> routines;
+  final List<GroupRoutine> routines;
 
   RoutineCategoryGroup({
     required this.routineCategory,
@@ -1050,7 +1058,7 @@ class RoutineCategoryGroup {
     return RoutineCategoryGroup(
       routineCategory: json['routineCategory'] ?? '',
       routines: (json['routines'] as List)
-          .map((item) => Routine.fromJson(item))
+          .map((item) => GroupRoutine.fromJson(item))
           .toList(),
     );
   }
