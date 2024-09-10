@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:routine_ade/routine_myInfo/MyInfo.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 import '../routine_group/GroupMainPage.dart';
@@ -155,6 +156,11 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
             GestureDetector(
               onTap: () {
                 // 더보기 버튼 클릭 시 동작할 코드
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MyInfo()),
+                );
               },
               child: SizedBox(
                 width: 60,

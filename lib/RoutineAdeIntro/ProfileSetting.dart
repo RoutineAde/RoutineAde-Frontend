@@ -62,6 +62,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
           },
         ),
       ),
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           Padding(

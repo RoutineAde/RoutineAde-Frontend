@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:routine_ade/RoutineAdeIntro/ProfileSetting.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 
-
 class RoutineAde1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -42,27 +41,21 @@ class RoutineAde1 extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: SizedBox(
                 width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF8DCCFF),  // Button color
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),  // Rounded corners
-                    ),
-                  ),
-                  onPressed: () {
+                height: 150,  // Increased the size here
+                child: GestureDetector(
+                  onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ProfileSetting()),
+                        builder: (context) => ProfileSetting(),
+                      ),
                     );
                   },
-                  child: Text(
-                    '시작하기',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.white,
-                    ),
+                  child: Image.asset(
+                    "assets/images/new-icons/kakaoTalk.png",
+                    width: 200,
+                    height: 200,
+                    fit: BoxFit.contain,  // Ensures the image fits properly within the constraints
                   ),
                 ),
               ),
