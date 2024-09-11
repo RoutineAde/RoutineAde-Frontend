@@ -8,8 +8,8 @@ import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupType.dart';
 import 'package:routine_ade/routine_group/AddGroupPage.dart';
-import 'package:routine_ade/routine_myInfo/MyInfo.dart';
 import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
+import 'package:routine_ade/routine_myInfo/MyInfo.dart';
 import 'package:routine_ade/routine_user/token.dart';
 
 //전체화면 어둡게

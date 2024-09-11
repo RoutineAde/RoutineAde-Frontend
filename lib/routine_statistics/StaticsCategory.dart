@@ -6,6 +6,8 @@ import 'dart:convert';
 import '../routine_user/token.dart';
 
 class StaticsCategory extends StatefulWidget {
+  const StaticsCategory({super.key});
+
   @override
   _StaticsCategoryState createState() => _StaticsCategoryState();
 }
@@ -23,7 +25,8 @@ class _StaticsCategoryState extends State<StaticsCategory> {
   }
 
   Future<void> _fetchCategoryStatistics() async {
-    String url = 'http://15.164.88.94:8080/users/statistics?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
+    String url =
+        'http://15.164.88.94:8080/users/statistics?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
 
     try {
       final response = await http.get(
@@ -46,9 +49,11 @@ class _StaticsCategoryState extends State<StaticsCategory> {
           var statistics = CategoryStatistics.fromJson(data);
           setState(() {
             completedRoutinesCount = statistics.completedRoutinesCount;
-            routineCategoryStatistics = statistics.routineCategoryStatistics; // 필드 수정
+            routineCategoryStatistics =
+                statistics.routineCategoryStatistics; // 필드 수정
           });
-          print("Data loaded successfully: ${routineCategoryStatistics.length} categories");
+          print(
+              "Data loaded successfully: ${routineCategoryStatistics.length} categories");
         } else {
           print('Received null or invalid data');
           setState(() {
@@ -78,14 +83,19 @@ class _StaticsCategoryState extends State<StaticsCategory> {
         child: Column(
           children: [
             _buildCalendarHeader(),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             _buildPieChart(),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             routineCategoryStatistics.isNotEmpty
                 ? Column(
-              children: routineCategoryStatistics.map((stat) => _buildCategoryList(stat.category, stat.completedCount, _getCategoryColor(stat.category))).toList(),
+              children: routineCategoryStatistics
+                  .map((stat) => _buildCategoryList(
+                  stat.category,
+                  stat.completedCount,
+                  _getCategoryColor(stat.category)))
+                  .toList(),
             )
-                : Center(
+                : const Center(
               child: Text(
                 'No categories available for this month.',
                 style: TextStyle(fontSize: 16, color: Colors.grey),
@@ -104,7 +114,7 @@ class _StaticsCategoryState extends State<StaticsCategory> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
-            icon: Icon(Icons.chevron_left),
+            icon: const Icon(Icons.chevron_left),
             onPressed: () {
               setState(() {
                 _focusedDay = DateTime(_focusedDay.year, _focusedDay.month - 1);
@@ -114,14 +124,14 @@ class _StaticsCategoryState extends State<StaticsCategory> {
           ),
           Text(
             '${_focusedDay.year}년 ${_focusedDay.month}월',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
           ),
           IconButton(
-            icon: Icon(Icons.chevron_right),
+            icon: const Icon(Icons.chevron_right),
             onPressed: () {
               setState(() {
                 _focusedDay = DateTime(_focusedDay.year, _focusedDay.month + 1);
@@ -135,7 +145,7 @@ class _StaticsCategoryState extends State<StaticsCategory> {
   }
 
   Widget _buildPieChart() {
-    return Container(
+    return SizedBox(
       height: 150,
       child: Stack(
         children: [
@@ -150,7 +160,8 @@ class _StaticsCategoryState extends State<StaticsCategory> {
                   radius: 30,
                 );
               }).toList()
-                  : [ // 기본 섹션을 추가하여 빈 차트 처리
+                  : [
+                // 기본 섹션을 추가하여 빈 차트 처리
                 PieChartSectionData(
                   color: Colors.grey,
                   radius: 30,
@@ -164,13 +175,19 @@ class _StaticsCategoryState extends State<StaticsCategory> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
+                const Text(
                   '이번 달 완료 루틴',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.grey),
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey),
                 ),
                 Text(
                   '$completedRoutinesCount개',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
+                  style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey),
                 ),
               ],
             ),
@@ -192,7 +209,7 @@ class _StaticsCategoryState extends State<StaticsCategory> {
               color: Colors.grey.withOpacity(0.2),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: Offset(0, 3),
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -202,7 +219,8 @@ class _StaticsCategoryState extends State<StaticsCategory> {
             backgroundColor: color,
           ),
           title: Text(category),
-          trailing: Text('$completedCount 개', style: TextStyle(fontSize: 16)),
+          trailing:
+          Text('$completedCount 개', style: const TextStyle(fontSize: 16)),
         ),
       ),
     );
@@ -211,15 +229,15 @@ class _StaticsCategoryState extends State<StaticsCategory> {
   Color _getCategoryColor(String category) {
     switch (category) {
       case '일상':
-        return Color(0xffFDA598);
+        return const Color(0xffFDA598);
       case '건강':
-        return Color(0xff80CAFF);
+        return const Color(0xff80CAFF);
       case '자기개발':
-        return Color(0xff85E0A3);
+        return const Color(0xff85E0A3);
       case '자기관리':
-        return Color(0xffFFDE7A);
+        return const Color(0xffFFDE7A);
       case '기타':
-        return Color(0xffFFB2E5);
+        return const Color(0xffFFB2E5);
       default:
         return Colors.grey;
     }
@@ -236,11 +254,13 @@ class CategoryStatistics {
   });
 
   factory CategoryStatistics.fromJson(Map<String, dynamic> json) {
-    var list = json['routineCategoryStatistics'] as List? ?? []; // API 응답의 필드명 사용
+    var list =
+        json['routineCategoryStatistics'] as List? ?? []; // API 응답의 필드명 사용
     List<RoutineCategoryStatistics> categoryStatisticsList =
     list.map((stat) => RoutineCategoryStatistics.fromJson(stat)).toList();
     return CategoryStatistics(
-      completedRoutinesCount: json['completedRoutinesCount'] ?? 0, // null일 경우 기본값 설정
+      completedRoutinesCount:
+      json['completedRoutinesCount'] ?? 0, // null일 경우 기본값 설정
       routineCategoryStatistics: categoryStatisticsList, // 필드명 수정
     );
   }

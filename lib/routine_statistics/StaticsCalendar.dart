@@ -1,20 +1,22 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:routine_ade/routine_myInfo/MyInfo.dart';
 import 'package:table_calendar/table_calendar.dart';
-
+import '../routine_myInfo/MyInfo.dart';
 import '../routine_group/GroupMainPage.dart';
 import '../routine_home/MyRoutinePage.dart';
 import '../routine_user/token.dart';
 import 'StaticsCategory.dart';
 
 class StaticsCalendar extends StatefulWidget {
+  const StaticsCalendar({super.key});
+
   @override
   _StaticsCalendarState createState() => _StaticsCalendarState();
 }
 
-class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProviderStateMixin {
+class _StaticsCalendarState extends State<StaticsCalendar>
+    with SingleTickerProviderStateMixin {
   bool isExpanded = false;
   late TabController _tabController;
   CalendarFormat _calendarFormat = CalendarFormat.month;
@@ -38,7 +40,8 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
 
   // API 호출 함수
   Future<void> _fetchRoutineStatistics() async {
-    final String url = 'http://15.164.88.94:8080/users/statistics/calender?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
+    final String url =
+        'http://15.164.88.94:8080/users/statistics/calender?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
 
     try {
       final response = await http.get(
@@ -57,13 +60,13 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
         });
       } else {
         print('Failed to load routine statistics: ${response.statusCode}');
-        throw Exception('Failed to load routine statistics: ${response.statusCode}');
+        throw Exception(
+            'Failed to load routine statistics: ${response.statusCode}');
       }
     } catch (e) {
       print('Error fetching routine statistics: $e');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +124,8 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const MyRoutinePage()),
+                  MaterialPageRoute(
+                      builder: (context) => const MyRoutinePage()),
                 );
               },
               child: SizedBox(
@@ -134,7 +138,8 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const GroupMainPage()),
+                  MaterialPageRoute(
+                      builder: (context) => const GroupMainPage()),
                 );
               },
               child: SizedBox(
@@ -175,35 +180,35 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
   }
 
   Widget _buildCalendarTab() {
-    final totalCompletedRoutines = routineStatistics?.completedRoutinesCount ?? 0;
+    final totalCompletedRoutines =
+        routineStatistics?.completedRoutinesCount ?? 0;
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
           _buildCalendarHeader(),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Row(
             children: [
-              SizedBox(width: 10),
-              Text(
+              const SizedBox(width: 10),
+              const Text(
                 '이번 달 완료 루틴',
                 style: TextStyle(fontSize: 18),
               ),
-              Spacer(),
+              const Spacer(),
               Text(
                 '${routineStatistics?.completedRoutinesCount ?? 0}개', // null 체크 추가
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
                   color: Color(0xFF8DCCFF),
                 ),
               ),
-
             ],
           ),
-          SizedBox(height: 30),
-          Row(
+          const SizedBox(height: 30),
+          const Row(
             children: [
               SizedBox(width: 10),
               Text(
@@ -212,7 +217,7 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
               ),
             ],
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           _buildCalendar(),
         ],
       ),
@@ -226,7 +231,7 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
-            icon: Icon(Icons.chevron_left),
+            icon: const Icon(Icons.chevron_left),
             onPressed: () {
               setState(() {
                 _focusedDay = DateTime(_focusedDay.year, _focusedDay.month - 1);
@@ -236,14 +241,14 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
           ),
           Text(
             '${_focusedDay.year}년 ${_focusedDay.month}월',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
           ),
           IconButton(
-            icon: Icon(Icons.chevron_right),
+            icon: const Icon(Icons.chevron_right),
             onPressed: () {
               setState(() {
                 _focusedDay = DateTime(_focusedDay.year, _focusedDay.month + 1);
@@ -290,13 +295,16 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
               },
               calendarBuilders: CalendarBuilders(
                 defaultBuilder: (context, date, _) {
-                  final dayInfo = routineStatistics?.userRoutineCompletionStatistics.routineCompletionInfos
-                      .firstWhere((element) => element.day == date.day, orElse: () => RoutineCompletionInfo(day: 0, level: 0));
+                  final dayInfo = routineStatistics
+                      ?.userRoutineCompletionStatistics.routineCompletionInfos
+                      .firstWhere((element) => element.day == date.day,
+                      orElse: () =>
+                          RoutineCompletionInfo(day: 0, level: 0));
 
                   return _buildDayCell(date, dayInfo?.level ?? 0);
                 },
               ),
-              calendarStyle: CalendarStyle(
+              calendarStyle: const CalendarStyle(
                 todayDecoration: BoxDecoration(),
                 todayTextStyle: TextStyle(
                   color: Colors.black,
@@ -320,11 +328,11 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
                   const days = ['월', '화', '수', '목', '금', '토', '일'];
                   return days[date.weekday - 1];
                 },
-                weekdayStyle: TextStyle(
+                weekdayStyle: const TextStyle(
                   fontSize: 14.0,
                   color: Colors.black,
                 ),
-                weekendStyle: TextStyle(
+                weekendStyle: const TextStyle(
                   fontSize: 14.0,
                   color: Colors.black,
                 ),
@@ -337,53 +345,56 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Less"),
-                SizedBox(width: 8.0),
+                const Text("Less"),
+                const SizedBox(width: 8.0),
                 Container(
                   width: 10.0,
                   height: 10.0,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                    border:
+                    Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
                   ),
                 ),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
                 Container(
                   width: 10.0,
                   height: 10.0,
                   decoration: BoxDecoration(
-                    color: Color(0xffCAF4FF),
+                    color: const Color(0xffCAF4FF),
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                    border:
+                    Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
                   ),
                 ),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
                 Container(
                   width: 10.0,
                   height: 10.0,
                   decoration: BoxDecoration(
-                    color: Color(0xffA0DEFF),
+                    color: const Color(0xffA0DEFF),
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                    border:
+                    Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
                   ),
                 ),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
                 Container(
                   width: 10.0,
                   height: 10.0,
                   decoration: BoxDecoration(
-                    color: Color(0xff5AB2FF),
+                    color: const Color(0xff5AB2FF),
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                    border:
+                    Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
                   ),
                 ),
-                SizedBox(width: 8.0),
-                Text("More"),
+                const SizedBox(width: 8.0),
+                const Text("More"),
               ],
             ),
           )
-
         ],
       ),
     );
@@ -392,13 +403,13 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
   Widget _buildDayCell(DateTime date, int level) {
     final colorMap = {
       0: Colors.white, // 완료 안 됨
-      1: Color(0xffCAF4FF), // 낮은 달성도
-      2: Color(0xffA0DEFF), // 중간 달성도
-      3: Color(0xff5AB2FF), // 높은 달성도
+      1: const Color(0xffCAF4FF), // 낮은 달성도
+      2: const Color(0xffA0DEFF), // 중간 달성도
+      3: const Color(0xff5AB2FF), // 높은 달성도
     };
 
     return Container(
-      margin: EdgeInsets.all(2.0),
+      margin: const EdgeInsets.all(2.0),
       decoration: BoxDecoration(
         color: colorMap[level] ?? Colors.grey[300],
         shape: BoxShape.circle,
@@ -406,7 +417,7 @@ class _StaticsCalendarState extends State<StaticsCalendar> with SingleTickerProv
       child: Center(
         child: Text(
           '${date.day}',
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
@@ -421,12 +432,15 @@ class RoutineStatistics {
   final int completedRoutinesCount;
   final UserRoutineCompletionStatistics userRoutineCompletionStatistics;
 
-  RoutineStatistics({required this.completedRoutinesCount, required this.userRoutineCompletionStatistics});
+  RoutineStatistics(
+      {required this.completedRoutinesCount,
+        required this.userRoutineCompletionStatistics});
 
   factory RoutineStatistics.fromJson(Map<String, dynamic> json) {
     return RoutineStatistics(
       completedRoutinesCount: json['completedRoutinesCount'],
-      userRoutineCompletionStatistics: UserRoutineCompletionStatistics.fromJson(json['userRoutineCompletionStatistics']),
+      userRoutineCompletionStatistics: UserRoutineCompletionStatistics.fromJson(
+          json['userRoutineCompletionStatistics']),
     );
   }
 }
@@ -438,9 +452,11 @@ class UserRoutineCompletionStatistics {
 
   factory UserRoutineCompletionStatistics.fromJson(Map<String, dynamic> json) {
     var list = json['routineCompletionInfos'] as List;
-    List<RoutineCompletionInfo> completionInfoList =
-    list.map((completionInfo) => RoutineCompletionInfo.fromJson(completionInfo)).toList();
-    return UserRoutineCompletionStatistics(routineCompletionInfos: completionInfoList);
+    List<RoutineCompletionInfo> completionInfoList = list
+        .map((completionInfo) => RoutineCompletionInfo.fromJson(completionInfo))
+        .toList();
+    return UserRoutineCompletionStatistics(
+        routineCompletionInfos: completionInfoList);
   }
 }
 
