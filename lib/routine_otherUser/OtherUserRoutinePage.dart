@@ -203,7 +203,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
                   child: personalRoutines.isEmpty && groupRoutines.isEmpty
                       ? const Center(
                     child: Text(
-                      '\n\t\t\t\t\t\t\t\t 아래 + 버튼을 눌러 \n 새로운 루틴을 추가해보세요',
+                      '\n\t\t\t 사용자가 새로운 루틴을 \n \t\t\t\t\t\t추가하지 않았어요',
                       style: TextStyle(fontSize: 20, color: Colors.grey),
                     ),
                   )
@@ -269,7 +269,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
       default:
         return [
           const TextSpan(
-            text: '오늘의 기분을 추가해보세요',
+            text: '사용자가 기분을 추가하지 않았어요',
             style: TextStyle(fontSize: 18, color: Colors.black),
           ),
         ];
