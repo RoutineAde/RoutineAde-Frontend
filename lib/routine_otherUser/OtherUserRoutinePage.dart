@@ -366,7 +366,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
       ),
     );
   }
-  
+
   Color _getCategoryColor(String category) {
     switch (category) {
       case "건강":

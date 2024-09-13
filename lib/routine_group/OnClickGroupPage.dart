@@ -314,7 +314,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => OtherUserRoutinePage(userId:2),
+              builder: (context) => OtherUserRoutinePage(userId: groupmember.userId),
             ),
           );
         },
@@ -339,6 +339,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
       ),
     );
   }
+
 
 
   Container buildLeaveGroupTile() {
