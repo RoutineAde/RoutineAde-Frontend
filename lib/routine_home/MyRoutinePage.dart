@@ -33,7 +33,7 @@ class MyRoutinePage extends StatefulWidget {
 class _MyRoutinePageState extends State<MyRoutinePage>
     with SingleTickerProviderStateMixin {
   Future<RoutineResponse>?
-  futureRoutineResponse; // late 키워드를 사용하여 초기화를 나중에 하도록 설정
+      futureRoutineResponse; // late 키워드를 사용하여 초기화를 나중에 하도록 설정
   String selectedDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
   late CalendarWeekController _controller;
   String? userEmotion;
@@ -314,9 +314,83 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                             ),
                           ],
                         ),
-                      ),
+                        userEmotion != null &&
+                                getImageEmotion(userEmotion!) != null
+                            ? Image.asset(
+                                getImageEmotion(userEmotion!)!,
+                                fit: BoxFit.cover,
+                                width: 50,
+                                height: 50,
+                              )
+                            : Image.asset("assets/images/new-icons/김외롭.png",
+                                width: 50, height: 50),
+                        const SizedBox(width: 10),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: RichText(
+                            text: TextSpan(
+                              style: const TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black), // Default text style
+                              children: userEmotion != null &&
+                                      (userEmotion == 'GOOD' ||
+                                          userEmotion == 'SAD' ||
+                                          userEmotion == 'OK' ||
+                                          userEmotion == 'ANGRY')
+                                  ? [
+                                      const TextSpan(text: '이 날은 기분이 '),
+                                      if (userEmotion == 'GOOD')
+                                        const TextSpan(
+                                          text: '해피',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors
+                                                  .yellow), // Highlighted text style for GOOD
+                                        ),
+                                      if (userEmotion == 'SAD')
+                                        const TextSpan(
+                                          text: '우중충',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors
+                                                  .blue), // Highlighted text style for SAD
+                                        ),
+                                      if (userEmotion == 'OK')
+                                        const TextSpan(
+                                          text: '쏘쏘',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors
+                                                  .green), // Highlighted text style for OK
+                                        ),
+                                      if (userEmotion == 'ANGRY')
+                                        const TextSpan(
+                                          text: '나쁜',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors
+                                                  .redAccent), // Highlighted text style for ANGRY
+                                        ),
+                                      TextSpan(
+                                          text: userEmotion == 'ANGRY'
+                                              ? ' 날이에요'
+                                              : '한 날이에요')
+                                    ]
+                                  : [
+                                      const TextSpan(
+                                        text: '오늘의 기분을 추가해보세요',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color:
+                                                Colors.black), // Italicize text
+                                      ),
+                                    ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
@@ -474,12 +548,11 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                   ],
                 );
               },
+
             ),
-          ),
+          ],
         ),
-      ],
-    ),
-  );
+      );
 
   Color _getCategoryColor(String category) {
     switch (category) {
@@ -563,6 +636,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
               StaticsCalendar()),
           _buildBottomAppBarItem(
               "assets/images/tap-bar/more01.png", MyInfo()),
+
         ],
       ),
     );
@@ -744,13 +818,13 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                   context,
                   MaterialPageRoute(
                       builder: (context) => ModifiedroutinePage(
-                        routineId: routine.routineId,
-                        routineTitle: routine.routineTitle,
-                        routineCategory: routine.routineCategory,
-                        isAlarmEnabled: routine.isAlarmEnabled,
-                        startDate: routine.startDate,
-                        repeatDays: routine.repeatDays,
-                      )),
+                            routineId: routine.routineId,
+                            routineTitle: routine.routineTitle,
+                            routineCategory: routine.routineCategory,
+                            isAlarmEnabled: routine.isAlarmEnabled,
+                            startDate: routine.startDate,
+                            repeatDays: routine.repeatDays,
+                          )),
                 );
               },
               child: const Text('수정'),
@@ -979,12 +1053,12 @@ class Routine {
 
   Routine(
       {required this.routineId,
-        required this.routineTitle,
-        required this.routineCategory,
-        required this.isAlarmEnabled,
-        required this.startDate,
-        required this.repeatDays,
-        this.isCompletion = false});
+      required this.routineTitle,
+      required this.routineCategory,
+      required this.isAlarmEnabled,
+      required this.startDate,
+      required this.repeatDays,
+      this.isCompletion = false});
 
   factory Routine.fromJson(Map<String, dynamic> json) {
     return Routine(
@@ -993,7 +1067,7 @@ class Routine {
       routineCategory: json['routineCategory'] ?? '기타',
       isAlarmEnabled: json['isAlarmEnabled'] ?? false,
       startDate:
-      json["startDate"] ?? DateFormat('yyyy.MM.dd').format(DateTime.now()),
+          json["startDate"] ?? DateFormat('yyyy.MM.dd').format(DateTime.now()),
       repeatDays: List<String>.from(json["repeatDays"] ?? []),
       isCompletion: json['isCompletion'] ?? false,
     );
@@ -1087,3 +1161,4 @@ class Group2 {
     );
   }
 }
+
