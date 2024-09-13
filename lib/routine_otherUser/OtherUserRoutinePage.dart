@@ -13,9 +13,10 @@ import 'package:routine_ade/routine_home/ModifiedRoutinePage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:routine_ade/routine_otherUser/OtherUserCalender.dart';
+import 'package:routine_ade/routine_otherUser/OtherUserCategory.dart';
 import 'package:routine_ade/routine_user/token.dart';
 import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
-
 
 class OtherUserRoutinePage extends StatefulWidget {
   final int userId;
@@ -35,7 +36,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
   String? nickname;
   String? intro;
 
-  bool _isTileExpanded = false;
+  final bool _isTileExpanded = false;
 
   late TabController _tabController;
   bool _isExpanded = false;
@@ -51,7 +52,6 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
     _tabController = TabController(length: 3, vsync: this);
   }
 
-
   @override
   void dispose() {
     _tabController.dispose();
@@ -64,13 +64,12 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
     });
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
+        // bottom:
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(0.0),
           child: Container(
@@ -81,14 +80,15 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
           ),
         ),
       ),
-      backgroundColor: Colors.white,
+      // backgroundColor: Colors.white,
       body: FutureBuilder<RoutineResponse2>(
         future: futureRoutineResponse2, // 루틴 데이터를 비동기로 가져옴
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(child: Text('루틴을 불러오는 중 오류가 발생했습니다: ${snapshot.error}'));
+            return Center(
+                child: Text('루틴을 불러오는 중 오류가 발생했습니다: ${snapshot.error}'));
           } else if (!snapshot.hasData) {
             return const Center(child: Text('루틴 데이터를 찾을 수 없습니다.'));
           }
@@ -103,121 +103,155 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
 
           return Column(
             children: [
-              Row(
-                children: [
-                  const SizedBox(width: 20),
-                  CircleAvatar(
-                    radius: 30,
-                    backgroundImage: profileImage.isNotEmpty
-                        ? NetworkImage(profileImage)
-                        : const AssetImage('assets/profile_placeholder.png') as ImageProvider,
-                  ),
-                  const SizedBox(width: 20),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        nickname,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        intro,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              TabBar(
-                controller: _tabController,
-                tabs: const [
-                  Tab(text: "루틴"),
-                  Tab(text: "캘린더"),
-                  Tab(text: "카테고리"),
-                ],
-                labelStyle: const TextStyle(fontSize: 18),
-                labelColor: Colors.black,
-                unselectedLabelColor: Colors.grey,
-                indicator: const UnderlineTabIndicator(
-                  borderSide: BorderSide(width: 3.0, color: Color(0xFF8DCCFF)),
-                  insets: EdgeInsets.symmetric(horizontal: 90.0),
-                ),
-              ),
-              _buildMonthView(),
               Container(
                 padding: const EdgeInsets.all(16),
-                color: const Color(0xFFF8F8EF),
-                child: Center(
-                  child: Container(
-                    width: 360,
-                    height: 70,
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
+                color: Colors.white,
+                child: Row(
+                  children: [
+                    const SizedBox(width: 20),
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundImage: profileImage.isNotEmpty
+                          ? NetworkImage(profileImage)
+                          : const AssetImage('assets/profile_placeholder.png')
+                              as ImageProvider,
                     ),
-                    child: Row(
+                    const SizedBox(width: 20),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const SizedBox(width: 10),
-                        userEmotion.isNotEmpty && getImageEmotion(userEmotion) != null
-                            ? Image.asset(
-                          getImageEmotion(userEmotion)!,
-                          fit: BoxFit.cover,
-                          width: 50,
-                          height: 50,
-                        )
-                            : Image.asset("assets/images/new-icons/김외롭.png",
-                            width: 50, height: 50),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: RichText(
-                            text: TextSpan(
-                              style: const TextStyle(fontSize: 18, color: Colors.black),
-                              children: _buildEmotionText(userEmotion),
-                            ),
+                        Text(
+                          nickname,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text(
+                          intro,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey,
                           ),
                         ),
                       ],
                     ),
+                  ],
+                ),
+              ),
+              // const SizedBox(height: 20),
+              Container(
+                color: Colors.white,
+                child: TabBar(
+                  controller: _tabController,
+                  tabs: const [
+                    Tab(text: "루틴"),
+                    Tab(text: "캘린더"),
+                    Tab(text: "카테고리"),
+                  ],
+                  labelStyle: const TextStyle(fontSize: 18),
+                  labelColor: Colors.black,
+                  unselectedLabelColor: Colors.grey,
+                  indicator: const UnderlineTabIndicator(
+                    borderSide:
+                        BorderSide(width: 3.0, color: Color(0xFF8DCCFF)),
+                    insets: EdgeInsets.symmetric(horizontal: 90.0),
                   ),
                 ),
               ),
               Expanded(
-                child: Container(
-                  color: const Color(0xFFF8F8EF),
-                  child: personalRoutines.isEmpty && groupRoutines.isEmpty
-                      ? const Center(
-                    child: Text(
-                      '\n\t\t\t\t\t\t\t\t 아래 + 버튼을 눌러 \n 새로운 루틴을 추가해보세요',
-                      style: TextStyle(fontSize: 20, color: Colors.grey),
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    Column(
+                      children: [
+                        _buildMonthView(),
+                        Container(
+                          padding: const EdgeInsets.all(16),
+                          color: const Color(0xFFF8F8EF),
+                          child: Center(
+                            child: Container(
+                              width: 360,
+                              height: 70,
+                              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.3),
+                                    spreadRadius: 2,
+                                    blurRadius: 5,
+                                    offset: const Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: Row(
+                                children: [
+                                  const SizedBox(width: 10),
+                                  userEmotion.isNotEmpty &&
+                                          getImageEmotion(userEmotion) != null
+                                      ? Image.asset(
+                                          getImageEmotion(userEmotion)!,
+                                          fit: BoxFit.cover,
+                                          width: 50,
+                                          height: 50,
+                                        )
+                                      : Image.asset(
+                                          "assets/images/new-icons/김외롭.png",
+                                          width: 50,
+                                          height: 50),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: RichText(
+                                      text: TextSpan(
+                                        style: const TextStyle(
+                                            fontSize: 18, color: Colors.black),
+                                        children:
+                                            _buildEmotionText(userEmotion),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            color: const Color(0xFFF8F8EF),
+                            child: personalRoutines.isEmpty &&
+                                    groupRoutines.isEmpty
+                                ? const Center(
+                                    child: Text(
+                                      ' 등록된 루틴이 없습니다.',
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.grey),
+                                    ),
+                                  )
+                                : ListView(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        24, 10, 24, 16),
+                                    children: [
+                                      _buildRoutineSection(
+                                          "개인 루틴", personalRoutines),
+                                      const SizedBox(height: 10),
+                                      ...groupRoutines.map((group) {
+                                        return _buildGroupRoutineSection(group);
+                                      }),
+                                      const SizedBox(height: 10),
+                                    ],
+                                  ),
+                          ),
+                        ),
+                      ],
                     ),
-                  )
-                      : ListView(
-                    padding: const EdgeInsets.fromLTRB(24, 10, 24, 16),
-                    children: [
-                      _buildRoutineSection("개인 루틴", personalRoutines),
-                      const SizedBox(height: 10),
-                      ...groupRoutines.map((group) {
-                        return _buildGroupRoutineSection(group);
-                      }).toList(),
-                      const SizedBox(height: 10),
-                    ],
-                  ),
+
+                    // 캘린더 탭
+                    Otherusercalender(userId: widget.userId), // 캘린더 페이지
+                    // 카테고리 탭
+                    Otherusercategory(userId: widget.userId), // 카테고리 페이지'
+                  ],
                 ),
               ),
             ],
@@ -262,14 +296,15 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
           const TextSpan(text: '이 날은 기분이 '),
           const TextSpan(
             text: '나쁜',
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent),
+            style:
+                TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent),
           ),
           const TextSpan(text: ' 날이에요')
         ];
       default:
         return [
           const TextSpan(
-            text: '오늘의 기분을 추가해보세요',
+            text: '등록된 기분이 없습니다.',
             style: TextStyle(fontSize: 18, color: Colors.black),
           ),
         ];
@@ -277,50 +312,55 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
   }
 
 // 개인 루틴 섹션 빌드
-  Widget _buildRoutineSection(String title, List<UserRoutineCategory> routines) {
+  Widget _buildRoutineSection(
+      String title, List<UserRoutineCategory> routines) {
     return routines.isNotEmpty
         ? Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: const Color(0xFFE6F5F8),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Theme(
-        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
-          title: Text(
-            title,
-            style: const TextStyle(fontSize: 20, color: Colors.black),
-          ),
-          children: routines.map((category) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 10, top: 5),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
-                    child: Text(
-                      category.routineCategory,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: _getCategoryColor(category.routineCategory),
-                      ),
-                    ),
-                  ),
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: const Color(0xFFE6F5F8),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Theme(
+              data:
+                  Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                title: Text(
+                  title,
+                  style: const TextStyle(fontSize: 20, color: Colors.black),
                 ),
-                ...category.routines.map((routine) => _buildRoutineTile(routine)),
-              ],
-            );
-          }).toList(),
-        ),
-      ),
-    )
+                children: routines.map((category) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, top: 5),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 1),
+                          child: Text(
+                            category.routineCategory,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  _getCategoryColor(category.routineCategory),
+                            ),
+                          ),
+                        ),
+                      ),
+                      ...category.routines
+                          .map((routine) => _buildRoutineTile(routine)),
+                    ],
+                  );
+                }).toList(),
+              ),
+            ),
+          )
         : Container(); // 빈 루틴 섹션 처리
   }
 
@@ -335,7 +375,8 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
       child: Theme(
         data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
         child: ExpansionTile(
-          title: Text(group.groupTitle, style: const TextStyle(fontSize: 20, color: Colors.black)),
+          title: Text(group.groupTitle,
+              style: const TextStyle(fontSize: 20, color: Colors.black)),
           children: group.groupRoutines.map((categoryGroup) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -347,7 +388,8 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
                     child: Text(
                       categoryGroup.routineCategory,
                       style: TextStyle(
@@ -358,7 +400,8 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
                     ),
                   ),
                 ),
-                ...categoryGroup.routines.map((routine) => _buildRoutineTile2(routine)),
+                ...categoryGroup.routines
+                    .map((routine) => _buildRoutineTile2(routine)),
               ],
             );
           }).toList(),
@@ -413,29 +456,27 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
           child: Checkbox(
             value: routine.isCompletion,
             onChanged: (bool? value) {
-              if (value != null) {
-                print("Checkbox changed: $value");
-                setState(() {
-                  routine.isCompletion = value;
-                });
-              }
+              // if (value != null) {
+              //   print("Checkbox changed: $value");
+              //   setState(() {
+              //     routine.isCompletion = value;
+              //   });
+              // }
             },
             activeColor: const Color(0xFF8DCCFF),
             checkColor: Colors.white,
             fillColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
-                  if (states.contains(WidgetState.selected)) {
-                    return const Color(0xFF8DCCFF);
-                  }
-                  return Colors.transparent;
-                }),
+                (Set<WidgetState> states) {
+              if (states.contains(WidgetState.selected)) {
+                return const Color(0xFF8DCCFF);
+              }
+              return Colors.transparent;
+            }),
           ),
         ),
       ),
     );
   }
-
-
 
   Widget _buildMonthView() {
     return Align(
@@ -461,7 +502,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
               ],
             ),
           ),
-          const SizedBox(height: 10),
+          // const SizedBox(height: 10), 날짜 여백
         ],
       ),
     );
@@ -484,7 +525,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
         title: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment:
-          MainAxisAlignment.start, // Align elements to the start of the row
+              MainAxisAlignment.start, // Align elements to the start of the row
           children: [
             Text(routine.routineTitle,
                 style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -503,17 +544,16 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
           scale: 1.2, // Checkbox size increased by 1.5 times
           child: Checkbox(
             value: routine.isCompletion,
-            onChanged: (bool? value) {
-            },
+            onChanged: (bool? value) {},
             activeColor: const Color(0xFF8DCCFF),
             checkColor: Colors.white,
             fillColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
-                  if (states.contains(WidgetState.selected)) {
-                    return const Color(0xFF8DCCFF);
-                  }
-                  return Colors.transparent;
-                }),
+                (Set<WidgetState> states) {
+              if (states.contains(WidgetState.selected)) {
+                return const Color(0xFF8DCCFF);
+              }
+              return Colors.transparent;
+            }),
           ),
         ),
       ),
@@ -527,7 +567,8 @@ Future<RoutineResponse2> fetchRoutinesByUserId(int userId) async {
 
   try {
     final response = await http.get(
-      Uri.parse('http://15.164.88.94:8080/users/$userId/routines'), // userId로 조회
+      Uri.parse(
+          'http://15.164.88.94:8080/users/$userId/routines'), // userId로 조회
       headers: {
         'Authorization': 'Bearer $token', // 적절한 토큰 사용
         'Content-Type': 'application/json; charset=UTF-8', // UTF-8 설정
@@ -542,7 +583,8 @@ Future<RoutineResponse2> fetchRoutinesByUserId(int userId) async {
       print('Parsed data: $responseBody'); // 성공한 경우 응답 데이터 출력
       return RoutineResponse2.fromJson(responseBody);
     } else {
-      print('Failed to load routines: ${response.statusCode}'); // 실패한 경우 상태 코드 출력
+      print(
+          'Failed to load routines: ${response.statusCode}'); // 실패한 경우 상태 코드 출력
       print('Response body: ${response.body}'); // 추가로 응답 본문 출력
       throw Exception('Failed to load routines');
     }
@@ -568,7 +610,6 @@ String? getImageEmotion(String emotion) {
   }
 }
 
-
 //기분 텍스트
 String getTextForEmotion(String emotion) {
   switch (emotion) {
@@ -580,8 +621,8 @@ String getTextForEmotion(String emotion) {
       return '이 날은 기분이 우중충한 날이에요';
     case 'ANGRY':
       return '이 날은 기분이 나쁜 날이에요';
-  // case 'null':
-  //   return '기분을 추가해보세요!';
+    // case 'null':
+    //   return '기분을 추가해보세요!';
     default:
       return '기분을 추가해보세요!'; // 기본 텍스트
   }
@@ -618,19 +659,19 @@ class RoutineResponse2 {
       nickname: json['nickname'] ?? '기타',
       intro: json['intro'] ?? '기타',
       personalRoutines: (json['personalRoutines'] as List<dynamic>?)
-          ?.map((item) =>
-          UserRoutineCategory.fromJson(item as Map<String, dynamic>))
-          .toList() ??
+              ?.map((item) =>
+                  UserRoutineCategory.fromJson(item as Map<String, dynamic>))
+              .toList() ??
           [],
       groupRoutines: (json['groupRoutines'] as List<dynamic>?)
-          ?.map((item) => Group2.fromJson(item as Map<String, dynamic>))
-          .toList() ??
+              ?.map((item) => Group2.fromJson(item as Map<String, dynamic>))
+              .toList() ??
           [],
       userEmotion: json['userEmotion'] ?? 'null',
       routines: (json['routines'] as List<dynamic>?)
-          ?.map((item) =>
-          UserRoutineCategory.fromJson(item as Map<String, dynamic>))
-          .toList() ??
+              ?.map((item) =>
+                  UserRoutineCategory.fromJson(item as Map<String, dynamic>))
+              .toList() ??
           [],
     );
   }
@@ -648,12 +689,12 @@ class Routine {
 
   Routine(
       {required this.routineId,
-        required this.routineTitle,
-        required this.routineCategory,
-        required this.isAlarmEnabled,
-        required this.startDate,
-        required this.repeatDays,
-        this.isCompletion = false});
+      required this.routineTitle,
+      required this.routineCategory,
+      required this.isAlarmEnabled,
+      required this.startDate,
+      required this.repeatDays,
+      this.isCompletion = false});
 
   factory Routine.fromJson(Map<String, dynamic> json) {
     return Routine(
@@ -662,7 +703,7 @@ class Routine {
       routineCategory: json['routineCategory'] ?? '기타',
       isAlarmEnabled: json['isAlarmEnabled'] ?? false,
       startDate:
-      json["startDate"] ?? DateFormat('yyyy.MM.dd').format(DateTime.now()),
+          json["startDate"] ?? DateFormat('yyyy.MM.dd').format(DateTime.now()),
       repeatDays: List<String>.from(json["repeatDays"] ?? []),
       isCompletion: json['isCompletion'] ?? false,
     );
@@ -683,8 +724,8 @@ class UserRoutineCategory {
     return UserRoutineCategory(
       routineCategory: json['routineCategory'] ?? '',
       routines: (json['routines'] as List)
-          .map((item) => Routine.fromJson(item))
-          .toList() ??
+              .map((item) => Routine.fromJson(item))
+              .toList() ??
           [],
     );
   }

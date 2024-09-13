@@ -14,7 +14,6 @@ import 'package:routine_ade/routine_user/token.dart';
 import 'glGroupIntroRule.dart';
 import 'package:routine_ade/routine_otherUser/OtherUserRoutinePage.dart';
 
-
 // 전역 함수로 getCategoryColor를 정의
 Color getCategoryColor(String category) {
   switch (category) {
@@ -187,21 +186,21 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
       endDrawerEnableOpenDragGesture: false,
       floatingActionButton: _tabController.index == 0
           ? FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      AddGroupRoutinePage(groupId: widget.groupId)));
-        },
-        backgroundColor: const Color(0xffA1D1F9),
-        shape: const CircleBorder(),
-        child: Image.asset(
-          "assets/images/add-button.png",
-          width: 80,
-          height: 80,
-        ),
-      )
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            AddGroupRoutinePage(groupId: widget.groupId)));
+              },
+              backgroundColor: const Color(0xffA1D1F9),
+              shape: const CircleBorder(),
+              child: Image.asset(
+                "assets/images/add-button.png",
+                width: 80,
+                height: 80,
+              ),
+            )
           : null,
     );
   }
@@ -210,57 +209,79 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
     final groupInfo = groupResponse.groupInfo;
 
     return Drawer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          DrawerHeader(
-            padding: const EdgeInsets.fromLTRB(25, 10, 10, 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  groupInfo.groupTitle,
-                  style: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-              ],
+      child: Container(
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              color: Colors.white, // DrawerHeader의 배경색
+              padding:
+                  const EdgeInsets.only(top: 120.0), // DrawerHeader 위쪽 여백 추가
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(30, 10, 0, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          groupInfo.groupTitle,
+                          style: const TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8.0), // Title과 구분선 사이 간격
+                        const Padding(
+                          padding: EdgeInsets.only(left: 5.0), // 구분선 왼쪽 공백
+                          child: Divider(color: Colors.grey), // 구분선 색상 조정
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(10.0),
-              children: <Widget>[
-                buildDrawerListTile("그룹 코드", "#${groupInfo.groupId}"),
-                buildDrawerListTile(
-                  "대표 카테고리",
-                  groupInfo.groupCategory,
-                  color: Colors.black, // "대표 카테고리"의 title 텍스트는 검은색으로 유지
-                  trailingColor: getCategoryColor(
-                      groupInfo.groupCategory), // trailing 텍스트에만 색상을 적용
-                ),
-                buildDrawerListTile("인원",
-                    "${groupInfo.joinMemberCount} / ${groupInfo.maxMemberCount} 명"),
-                buildSwitchListTile(),
-                const Divider(),
-                buildDrawerHeaderTile("그룹원"),
-                ...groupResponse.groupMembers.map((member) {
-                  return buildDrawerMemberTile(
-                      member,                             // Pass the full member object as GroupMember
-                      member.nickname,                    // member.nickname as String (title)
-                      member.profileImage,                // member.profileImage as String (profileImage)
-                      groupInfo.groupId,       // Convert groupId to int (groupId should be an int)
-                      member.userId,                      // member.userId as int
-                      isLeader: groupResponse.isGroupAdmin &&
-                          member.nickname == groupInfo.createdUserNickname // isLeader flag
-                  );
-
-                }),
-              ],
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.only(left: 20.0),
+                children: <Widget>[
+                  buildDrawerListTile("그룹 코드", "#${groupInfo.groupId}"),
+                  buildDrawerListTile(
+                    "대표 카테고리",
+                    groupInfo.groupCategory,
+                    color: Colors.black, // "대표 카테고리"의 title 텍스트는 검은색으로 유지
+                    trailingColor: getCategoryColor(
+                        groupInfo.groupCategory), // trailing 텍스트에만 색상을 적용
+                  ),
+                  buildDrawerListTile("인원",
+                      "${groupInfo.joinMemberCount} / ${groupInfo.maxMemberCount} 명"),
+                  buildSwitchListTile(),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20.0),
+                    child: Divider(),
+                  ),
+                  buildDrawerHeaderTile("그룹원"),
+                  ...groupResponse.groupMembers.map((member) {
+                    return buildDrawerMemberTile(
+                        member, // Pass the full member object as GroupMember
+                        member.nickname, // member.nickname as String (title)
+                        member
+                            .profileImage, // member.profileImage as String (profileImage)
+                        groupInfo
+                            .groupId, // Convert groupId to int (groupId should be an int)
+                        member.userId, // member.userId as int
+                        isLeader: groupResponse.isGroupAdmin &&
+                            member.nickname ==
+                                groupInfo.createdUserNickname // isLeader flag
+                        );
+                  }),
+                ],
+              ),
             ),
-          ),
-          buildLeaveGroupTile(),
-        ],
+            buildLeaveGroupTile(),
+          ],
+        ),
       ),
     );
   }
@@ -312,8 +333,8 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
     );
   }
 
-  ListTile buildDrawerMemberTile(
-      GroupMember member, String title, String profileImage, int groupId, int userId,
+  ListTile buildDrawerMemberTile(GroupMember member, String title,
+      String profileImage, int groupId, int userId,
       {bool isLeader = false}) {
     return ListTile(
       leading: GestureDetector(
@@ -347,59 +368,59 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
       trailing: isLeader
           ? null
           : TextButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('정말 내보내시겠습니까?'),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text('취소'),
-                    onPressed: () {
-                      Navigator.of(context).pop(); // 다이얼로그 닫기
-                    },
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('정말 내보내시겠습니까?'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('취소'),
+                          onPressed: () {
+                            Navigator.of(context).pop(); // 다이얼로그 닫기
+                          },
+                        ),
+                        TextButton(
+                          child: const Text('내보내기'),
+                          onPressed: () async {
+                            Navigator.of(context).pop(); // 다이얼로그 닫기
+                            try {
+                              await deleteMember(groupId, userId);
+                              // 성공 시 추가 동작을 수행할 수 있습니다. 예: UI 업데이트
+                            } catch (error) {
+                              // 오류 처리
+                            }
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              style: ButtonStyle(
+                padding: WidgetStateProperty.all<EdgeInsets>(
+                    const EdgeInsets.symmetric(
+                        vertical: 4.0, horizontal: 8.0)), // 패딩 설정
+                minimumSize: WidgetStateProperty.all<Size>(
+                    const Size(0, 30)), // 버튼의 최소 높이 설정 (예: 36)
+                backgroundColor:
+                    WidgetStateProperty.all<Color>(Colors.transparent),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50.0),
+                    side: const BorderSide(color: Colors.black, width: 1.0),
                   ),
-                  TextButton(
-                    child: const Text('내보내기'),
-                    onPressed: () async {
-                      Navigator.of(context).pop(); // 다이얼로그 닫기
-                      try {
-                        await deleteMember(groupId, userId);
-                        // 성공 시 추가 동작을 수행할 수 있습니다. 예: UI 업데이트
-                      } catch (error) {
-                        // 오류 처리
-                      }
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        },
-        style: ButtonStyle(
-          padding: WidgetStateProperty.all<EdgeInsets>(
-              const EdgeInsets.symmetric(
-                  vertical: 4.0, horizontal: 8.0)), // 패딩 설정
-          minimumSize: WidgetStateProperty.all<Size>(
-              const Size(0, 30)), // 버튼의 최소 높이 설정 (예: 36)
-          backgroundColor:
-          WidgetStateProperty.all<Color>(Colors.transparent),
-          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(50.0),
-              side: const BorderSide(color: Colors.black, width: 1.0),
+                ),
+              ),
+              child: const Text(
+                '내보내기',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 13,
+                ),
+              ),
             ),
-          ),
-        ),
-        child: const Text(
-          '내보내기',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 13,
-          ),
-        ),
-      ),
     );
   }
 
@@ -512,7 +533,7 @@ class RoutinePage extends StatelessWidget {
         // 각 카테고리와 루틴 아이템을 동적으로 추가
         ...routineCategories.map((category) {
           final color =
-          getCategoryColor(category.routineCategory); // 카테고리 색상 설정
+              getCategoryColor(category.routineCategory); // 카테고리 색상 설정
           return _buildCategorySection(
             category.routineCategory,
             color,
@@ -609,12 +630,12 @@ class RoutinePage extends StatelessWidget {
 }
 
 void _showRoutineDialog(
-    BuildContext context,
-    String routineTitle,
-    int routineId,
-    int groupId,
-    //String routineCategory, // routineCategory 추가
-    ) {
+  BuildContext context,
+  String routineTitle,
+  int routineId,
+  int groupId,
+  //String routineCategory, // routineCategory 추가
+) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -727,7 +748,7 @@ void _showDeleteConfirmationDialog(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center, // 모든 텍스트 가운데 정렬
             mainAxisAlignment:
-            MainAxisAlignment.center, // 텍스트들이 수직 가운데 정렬되도록 추가
+                MainAxisAlignment.center, // 텍스트들이 수직 가운데 정렬되도록 추가
             children: [
               Text(
                 "루틴을 삭제하면 해당 루틴의",

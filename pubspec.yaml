@@ -1,12 +1,10 @@
 name: routine_ade
 description: "A new Flutter project."
 
-
 version: 1.0.0+1
 
 environment:
-  sdk: '3.4.4'
-
+  sdk: ">=3.4.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -15,8 +13,6 @@ dependencies:
   image_picker: ^0.8.7
   image: ^3.0.1
   permission_handler: ^10.2.0
-
-
 
   #추가한 패키지
   flutter_calendar_week: ^3.0.1
