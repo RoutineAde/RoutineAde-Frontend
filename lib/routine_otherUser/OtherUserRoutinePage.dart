@@ -554,7 +554,6 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
 }
 
 //루틴, 감정 조회
-<<<<<<< HEAD
 Future<RoutineResponse2> fetchRoutinesByUserId(int userId) async {
   print('API 요청 사용자 ID: $userId'); // 요청할 사용자 ID를 출력하여 확인
 
@@ -584,28 +583,6 @@ Future<RoutineResponse2> fetchRoutinesByUserId(int userId) async {
     throw Exception('Failed to load routines');
   }
 }
-=======
-Future<RoutineResponse2> fetchRoutines(String date) async {
-  print('API 요청 날짜: $date'); // 요청할 날짜를 출력하여 확인
-
-  final response = await http.get(
-    Uri.parse('http://15.164.88.94:8080/routines/v3?routineDate=$date'),
-    headers: {
-      'Authorization': 'Bearer $token',
-    },
-  );
-
-  if (response.statusCode == 200) {
-    final responseBody = json.decode(utf8.decode(response.bodyBytes));
-
-    print('Parsed data: $responseBody'); // 데이터를 출력하여 확인
-    return RoutineResponse2.fromJson(responseBody);
-  } else {
-    throw Exception('Failed to load routines');
-  }
-}
-
->>>>>>> 821681a119097f10f096b61d81f861a03559ec3b
 
 //기분 조회
 String? getImageEmotion(String emotion) {
