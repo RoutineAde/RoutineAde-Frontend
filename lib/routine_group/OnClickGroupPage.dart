@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import 'groupType.dart';
 import 'package:routine_ade/routine_user/token.dart';
 import 'group-unjoin.dart';
+import 'package:routine_ade/routine_otherUser/OtherUserRoutinePage.dart';
 
 // 전역 함수로 getCategoryColor를 정의
 Color getCategoryColor(String category) {
@@ -197,54 +198,74 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
     final groupInfo = groupResponse.groupInfo;
 
     return Drawer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          DrawerHeader(
-            padding: const EdgeInsets.fromLTRB(25, 10, 10, 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  groupInfo.groupTitle,
-                  style: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-              ],
+      child: Container(
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              color: Colors.white, // DrawerHeader의 배경색
+              padding:
+                  const EdgeInsets.only(top: 120.0), // DrawerHeader 위쪽 여백 추가
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(30, 10, 0, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          groupInfo.groupTitle,
+                          style: const TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8.0), // Title과 구분선 사이 간격
+                        const Padding(
+                          padding: EdgeInsets.only(left: 5.0), // 구분선 왼쪽 공백
+                          child: Divider(color: Colors.grey), // 구분선 색상 조정
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(10.0),
-              children: <Widget>[
-                buildDrawerListTile("그룹 코드", "#${groupInfo.groupId}"),
-                buildDrawerListTile(
-                  "대표 카테고리",
-                  groupInfo.groupCategory,
-                  color: Colors.black, // "대표 카테고리"의 title 텍스트는 검은색으로 유지
-                  trailingColor: getCategoryColor(
-                      groupInfo.groupCategory), // trailing 텍스트에만 색상을 적용
-                ),
-                buildDrawerListTile("인원",
-                    "${groupInfo.joinMemberCount} / ${groupInfo.maxMemberCount} 명"),
-                buildSwitchListTile(groupResponse),
-                const Divider(),
-                buildDrawerHeaderTile("그룹원"),
-                ...groupResponse.groupMembers.map((member) {
-                  bool isLeader =
-                      member.nickname == groupInfo.createdUserNickname;
-                  return buildDrawerMemberTile(
-                      member.nickname, member.profileImage,
-                      groupmember: member,
-                      groupResponse: groupResponse,
-                      isLeader: isLeader);
-                }),
-              ],
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.only(left: 20.0),
+                children: <Widget>[
+                  buildDrawerListTile("그룹 코드", "#${groupInfo.groupId}"),
+                  buildDrawerListTile(
+                    "대표 카테고리",
+                    groupInfo.groupCategory,
+                    color: Colors.black, // "대표 카테고리"의 title 텍스트는 검은색으로 유지
+                    trailingColor: getCategoryColor(
+                        groupInfo.groupCategory), // trailing 텍스트에만 색상을 적용
+                  ),
+                  buildDrawerListTile("인원",
+                      "${groupInfo.joinMemberCount} / ${groupInfo.maxMemberCount} 명"),
+                  buildSwitchListTile(groupResponse),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20.0),
+                    child: Divider(),
+                  ),
+                  buildDrawerHeaderTile("그룹원"),
+                  ...groupResponse.groupMembers.map((member) {
+                    bool isLeader =
+                        member.nickname == groupInfo.createdUserNickname;
+                    return buildDrawerMemberTile(
+                        member.nickname, member.profileImage,
+                        groupmember: member,
+                        groupResponse: groupResponse,
+                        isLeader: isLeader);
+                  }),
+                ],
+              ),
             ),
-          ),
-          buildLeaveGroupTile(),
-        ],
+            buildLeaveGroupTile(),
+          ],
+        ),
       ),
     );
   }
@@ -308,9 +329,20 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
       required GroupMember groupmember,
       bool isLeader = false}) {
     return ListTile(
-      leading: CircleAvatar(
-        radius: 25,
-        backgroundImage: NetworkImage(groupmember.profileImage),
+      leading: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  OtherUserRoutinePage(userId: groupmember.userId),
+            ),
+          );
+        },
+        child: CircleAvatar(
+          radius: 25,
+          backgroundImage: NetworkImage(groupmember.profileImage),
+        ),
       ),
       title: Row(
         children: <Widget>[

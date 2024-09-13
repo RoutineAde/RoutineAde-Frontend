@@ -258,10 +258,9 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
               itemBuilder: (_, index) => _messages[index],
             ),
           ),
-          const Divider(height: 1.0),
           Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).cardColor,
+              color: Colors.white, // 텍스트 필드 배경색을 하얀색으로 설정
             ),
             child: _buildTextComposer(),
           ),
@@ -272,15 +271,29 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   Widget _buildTextComposer() {
     return IconTheme(
-      data: const IconThemeData(color: Color.fromARGB(255, 190, 226, 255)),
+      data: const IconThemeData(color: Colors.blueAccent),
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+        margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0), // 상하 좌우 여백 설정
+        padding: const EdgeInsets.symmetric(horizontal: 12.0), // 내부 패딩 설정
+        decoration: BoxDecoration(
+          color: Colors.white, // 배경 흰색 (전체 배경과 일치)
+          borderRadius: BorderRadius.circular(30.0), // 모서리를 둥글게 설정
+          border: Border.all(
+            color: Colors.grey, // 테두리 색상 설정
+            width: 1.0, // 테두리 두께 설정
+          ),
+        ),
         child: Row(
           children: <Widget>[
             IconButton(
-              icon: const Icon(Icons.image),
+              icon: const Icon(
+                Icons.image,
+                color: Colors.grey,
+                size: 30.0, // 아이콘 크기 조정
+              ),
               onPressed: _pickImage,
             ),
+            const SizedBox(width: 8.0), // 아이콘과 텍스트필드 사이 간격
             Flexible(
               child: TextField(
                 controller: _textController,
@@ -289,22 +302,32 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                     _isComposing = text.isNotEmpty || _imageFile != null;
                   });
                 },
-                decoration: const InputDecoration.collapsed(
-                  hintText: "Send a message",
-                ),
               ),
             ),
-            IconButton(
-              icon: const Icon(Icons.send),
-              onPressed: _isComposing
+            const SizedBox(width: 8.0), // 텍스트필드와 전송 버튼 사이 간격
+            GestureDetector(
+              onTap: _isComposing
                   ? () => _handleSubmitted(_textController.text)
                   : null,
+              child: Container(
+                padding: const EdgeInsets.all(8.0), // 전송 버튼 크기 조정
+                decoration: BoxDecoration(
+                  color: Colors.amber[200], // 배경색 노란색
+                  shape: BoxShape.circle, // 원형으로 설정
+                ),
+                child: const Icon(
+                  Icons.arrow_upward,
+                  color: Colors.white, // 아이콘 색상 흰색
+                  size: 20.0, // 아이콘 크기 축소
+                ),
+              ),
             ),
           ],
         ),
       ),
     );
   }
+
 
   @override
   void dispose() {

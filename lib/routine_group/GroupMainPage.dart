@@ -9,6 +9,7 @@ import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupType.dart';
 import 'package:routine_ade/routine_group/AddGroupPage.dart';
 import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
+import 'package:routine_ade/routine_myInfo/MyInfo.dart';
 import 'package:routine_ade/routine_user/token.dart';
 
 //전체화면 어둡게
@@ -307,7 +308,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => StaticsCalendar()),
+                      builder: (context) => const StaticsCalendar()),
                 );
               },
               child: SizedBox(
@@ -319,6 +320,10 @@ class _GroupMainPageState extends State<GroupMainPage> {
             GestureDetector(
               onTap: () {
                 // 더보기 버튼 클릭 시 동작할 코드
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyInfo()),
+                );
               },
               child: SizedBox(
                 width: 60,
