@@ -314,7 +314,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => OtherUserRoutinePage(),
+              builder: (context) => OtherUserRoutinePage(userId:1),
             ),
           );
         },

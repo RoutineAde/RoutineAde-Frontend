@@ -12,7 +12,6 @@ import 'groupRoutineEditPage.dart';
 import 'AddGroupRoutinePage.dart';
 import 'package:routine_ade/routine_user/token.dart';
 import 'glGroupIntroRule.dart';
-import 'package:routine_ade/routine_otherUser/OtherUserRoutinePage.dart';
 
 // 전역 함수로 getCategoryColor를 정의
 Color getCategoryColor(String category) {
@@ -315,19 +314,9 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
       GroupMember member, String title, String profileImage, int groupId, int userId,
       {bool isLeader = false}) {
     return ListTile(
-      leading: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => OtherUserRoutinePage(),
-            ),
-          );
-        },
-        child: CircleAvatar(
-          radius: 25,
-          backgroundImage: NetworkImage(member.profileImage),
-        ),
+      leading: CircleAvatar(
+        radius: 25,
+        backgroundImage: NetworkImage(member.profileImage),
       ),
       title: Row(
         children: <Widget>[

@@ -16,13 +16,10 @@ import 'package:intl/intl.dart';
 import 'package:routine_ade/routine_user/token.dart';
 import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
 
-void main() async {
-  await initializeDateFormatting();
-  runApp(const OtherUserRoutinePage());
-}
 
 class OtherUserRoutinePage extends StatefulWidget {
-  const OtherUserRoutinePage({super.key});
+  final int userId;
+  const OtherUserRoutinePage({required this.userId, super.key});
 
   @override
   State<OtherUserRoutinePage> createState() => _OtherUserRoutinePageState();
@@ -30,11 +27,13 @@ class OtherUserRoutinePage extends StatefulWidget {
 
 class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
     with SingleTickerProviderStateMixin {
-  Future<RoutineResponse2>?
-  futureRoutineResponse2; // late 키워드를 사용하여 초기화를 나중에 하도록 설정
+  Future<RoutineResponse2>? futureRoutineResponse2;
   String selectedDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
   late CalendarWeekController _controller;
   String? userEmotion;
+  String? profileImage;
+  String? nickname;
+  String? intro;
 
   bool _isTileExpanded = false;
 
@@ -46,7 +45,9 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
   void initState() {
     super.initState();
     _controller = CalendarWeekController();
-    futureRoutineResponse2 = fetchRoutines(selectedDate);
+
+    // 여기서 widget.userId로 접근해야 함
+    futureRoutineResponse2 = fetchRoutinesByUserId(widget.userId);
     _tabController = TabController(length: 3, vsync: this);
   }
 
@@ -89,21 +90,24 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
             SizedBox(width: 20),
             CircleAvatar(
               radius: 30,
-              backgroundImage: AssetImage('assets/profile_placeholder.png'), // 사용자의 프로필 이미지
+              backgroundImage: (profileImage != null)
+                  ? NetworkImage(profileImage!) // The '!' operator asserts that profileImage is non-null
+                  : AssetImage('assets/profile_placeholder.png') as ImageProvider, // Fallback to local asset
             ),
+
             SizedBox(width: 20),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '냥이', // 사용자 이름
+                  nickname ?? 'No nickname available', // 사용자 이름
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 Text(
-                  '등록된 한 줄 소개가 없습니다.',
+                  intro ?? 'No intro available',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.grey,
@@ -498,7 +502,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
   Widget _buildRoutineTile(Routine routine) {
     Color categoryColor = _getCategoryColor(routine.routineCategory);
 
-//개인틴
+//개인루틴
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: ListTile(
@@ -546,78 +550,37 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
         ),
       ),
     );
-    // ],
-    //   ),
-    // );
   }
-
-
-
 }
 
 //루틴, 감정 조회
-Future<RoutineResponse2> fetchRoutines(String date) async {
-  print('API 요청 날짜: $date'); // 요청할 날짜를 출력하여 확인
-
-  final response = await http.get(
-    Uri.parse('http://15.164.88.94:8080/routines/v3?routineDate=$date'),
-    headers: {
-      'Authorization': 'Bearer $token',
-    },
-  );
-
-  if (response.statusCode == 200) {
-    final responseBody = json.decode(utf8.decode(response.bodyBytes));
-
-    print('Parsed data: $responseBody'); // 데이터를 출력하여 확인
-    return RoutineResponse2.fromJson(responseBody);
-  } else {
-    throw Exception('Failed to load routines');
-  }
-}
-
-//루틴 조회 및 수정
-Future<void> _fetchRoutineDate(BuildContext context, int routineId) async {
-  final url = Uri.parse("http://15.164.88.94:8080/routines/$routineId");
-  final headers = {
-    "Content-Type": "application/json",
-    "Authorization": "Bearer $token"
-  };
+Future<RoutineResponse2> fetchRoutinesByUserId(int userId) async {
+  print('API 요청 사용자 ID: $userId'); // 요청할 사용자 ID를 출력하여 확인
 
   try {
-    final response = await http.get(url, headers: headers);
-    print("Response status: ${response.statusCode}");
-    print("Response body: ${response.body}");
+    final response = await http.get(
+      Uri.parse('http://15.164.88.94:8080/users/$userId/routines'), // userId로 조회
+      headers: {
+        'Authorization': 'Bearer $token', // 적절한 토큰 사용
+        'Content-Type': 'application/json; charset=UTF-8', // UTF-8 설정
+      },
+    );
+
+    print('응답 코드: ${response.statusCode}');
+    print('응답 본문: ${utf8.decode(response.bodyBytes)}');
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      print("Decoded date: $data");
-
-      String routineTitle = data['routineTitle'];
-      String routineCategory = data['routineCategory'] as String ?? '기타';
-      bool isAlarmEnabled = data['isAlarmEnabled'];
-      String startDate = data['startDate'];
-      List<String> repeatDays = List<String>.from(data['repeatDays']);
-
-      //수정 페이지 이동
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ModifiedroutinePage(
-            routineId: routineId,
-            routineTitle: routineTitle,
-            routineCategory: routineCategory,
-            isAlarmEnabled: isAlarmEnabled,
-            startDate: startDate,
-            repeatDays: repeatDays,
-          ),
-        ),
-      );
+      final responseBody = json.decode(utf8.decode(response.bodyBytes));
+      print('Parsed data: $responseBody'); // 성공한 경우 응답 데이터 출력
+      return RoutineResponse2.fromJson(responseBody);
     } else {
-      throw Exception("루틴이 없습니다.");
+      print('Failed to load routines: ${response.statusCode}'); // 실패한 경우 상태 코드 출력
+      print('Response body: ${response.body}'); // 추가로 응답 본문 출력
+      throw Exception('Failed to load routines');
     }
   } catch (e) {
-    print("에러");
+    print('Exception occurred: $e');
+    throw Exception('Failed to load routines');
   }
 }
 
@@ -637,21 +600,6 @@ String? getImageEmotion(String emotion) {
   }
 }
 
-//기분 등록
-String? getImageEmotion2(String emotion) {
-  switch (emotion) {
-    case 'assets/images/emotion/happy.png':
-      return 'GOOD';
-    case 'assets/images/emotion/depressed.png':
-      return 'OK';
-    case 'assets/images/emotion/sad.png':
-      return 'SAD';
-    case 'assets/images/emotion/angry.png':
-      return 'ANGRY';
-    default:
-      return "assets/images/new-icons/김외롭.png"; // 기본 이미지
-  }
-}
 
 //기분 텍스트
 String getTextForEmotion(String emotion) {
