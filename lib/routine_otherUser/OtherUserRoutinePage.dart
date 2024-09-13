@@ -498,7 +498,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
   Widget _buildRoutineTile(Routine routine) {
     Color categoryColor = _getCategoryColor(routine.routineCategory);
 
-//개인틴
+//개인루틴
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: ListTile(
@@ -546,13 +546,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
         ),
       ),
     );
-    // ],
-    //   ),
-    // );
   }
-
-
-
 }
 
 //루틴, 감정 조회
@@ -576,50 +570,6 @@ Future<RoutineResponse2> fetchRoutines(String date) async {
   }
 }
 
-//루틴 조회 및 수정
-Future<void> _fetchRoutineDate(BuildContext context, int routineId) async {
-  final url = Uri.parse("http://15.164.88.94:8080/routines/$routineId");
-  final headers = {
-    "Content-Type": "application/json",
-    "Authorization": "Bearer $token"
-  };
-
-  try {
-    final response = await http.get(url, headers: headers);
-    print("Response status: ${response.statusCode}");
-    print("Response body: ${response.body}");
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      print("Decoded date: $data");
-
-      String routineTitle = data['routineTitle'];
-      String routineCategory = data['routineCategory'] as String ?? '기타';
-      bool isAlarmEnabled = data['isAlarmEnabled'];
-      String startDate = data['startDate'];
-      List<String> repeatDays = List<String>.from(data['repeatDays']);
-
-      //수정 페이지 이동
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ModifiedroutinePage(
-            routineId: routineId,
-            routineTitle: routineTitle,
-            routineCategory: routineCategory,
-            isAlarmEnabled: isAlarmEnabled,
-            startDate: startDate,
-            repeatDays: repeatDays,
-          ),
-        ),
-      );
-    } else {
-      throw Exception("루틴이 없습니다.");
-    }
-  } catch (e) {
-    print("에러");
-  }
-}
 
 //기분 조회
 String? getImageEmotion(String emotion) {
@@ -637,21 +587,6 @@ String? getImageEmotion(String emotion) {
   }
 }
 
-//기분 등록
-String? getImageEmotion2(String emotion) {
-  switch (emotion) {
-    case 'assets/images/emotion/happy.png':
-      return 'GOOD';
-    case 'assets/images/emotion/depressed.png':
-      return 'OK';
-    case 'assets/images/emotion/sad.png':
-      return 'SAD';
-    case 'assets/images/emotion/angry.png':
-      return 'ANGRY';
-    default:
-      return "assets/images/new-icons/김외롭.png"; // 기본 이미지
-  }
-}
 
 //기분 텍스트
 String getTextForEmotion(String emotion) {
