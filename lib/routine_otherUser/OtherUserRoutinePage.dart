@@ -67,65 +67,65 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
 
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(
-      backgroundColor: Colors.white,
-      bottom: PreferredSize(
-        preferredSize: const Size.fromHeight(0.0),
-        child: Container(
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 20.0),
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(0.0),
+          child: Container(
+            color: Colors.white,
+            child: const Padding(
+              padding: EdgeInsets.only(top: 20.0),
+            ),
           ),
         ),
       ),
-    ),
-    backgroundColor: Colors.white,
-
-    body:
-      FutureBuilder<RoutineResponse2>(
-        future: futureRoutineResponse2,
+      backgroundColor: Colors.white,
+      body: FutureBuilder<RoutineResponse2>(
+        future: futureRoutineResponse2, // 루틴 데이터를 비동기로 가져옴
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
-            return Center(
-                child: Text('루틴을 불러오는 중 오류가 발생했습니다: ${snapshot.error}')
-            );
+            return Center(child: Text('루틴을 불러오는 중 오류가 발생했습니다: ${snapshot.error}'));
+          } else if (!snapshot.hasData) {
+            return const Center(child: Text('루틴 데이터를 찾을 수 없습니다.'));
           }
 
-          // 받은 데이터를 변수에 저장 (이 부분에서 setState 호출 필요 없음, FutureBuilder가 자동 갱신)
-          final profileImage = snapshot.data!.profileImage;
-          final nickname = snapshot.data!.nickname;
-          final intro = snapshot.data!.intro;
-          final userEmotion = snapshot.data!.userEmotion;
+          // 받은 데이터를 변수에 저장
+          final profileImage = snapshot.data?.profileImage ?? '';
+          final nickname = snapshot.data?.nickname ?? 'No nickname available';
+          final intro = snapshot.data?.intro ?? 'No intro available';
+          final userEmotion = snapshot.data?.userEmotion ?? 'null';
+          final personalRoutines = snapshot.data?.personalRoutines ?? [];
+          final groupRoutines = snapshot.data?.groupRoutines ?? [];
 
           return Column(
             children: [
               Row(
                 children: [
-                  SizedBox(width: 20),
+                  const SizedBox(width: 20),
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage: (profileImage != null)
-                        ? NetworkImage(profileImage!) // The '!' operator asserts that profileImage is non-null
-                        : AssetImage('assets/profile_placeholder.png') as ImageProvider, // Fallback to local asset
+                    backgroundImage: profileImage.isNotEmpty
+                        ? NetworkImage(profileImage)
+                        : const AssetImage('assets/profile_placeholder.png') as ImageProvider,
                   ),
-
-                  SizedBox(width: 20),
+                  const SizedBox(width: 20),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        nickname ?? 'No nickname available', // 사용자 이름
-                        style: TextStyle(
+                        nickname,
+                        style: const TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(
-                        intro ?? 'No intro available',
-                        style: TextStyle(
+                        intro,
+                        style: const TextStyle(
                           fontSize: 14,
                           color: Colors.grey,
                         ),
@@ -134,7 +134,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               TabBar(
                 controller: _tabController,
                 tabs: const [
@@ -160,28 +160,23 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
                     height: 70,
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                     decoration: BoxDecoration(
-                      color: Colors.white, // White background
-                      borderRadius:
-                      BorderRadius.circular(12), // Rounded corners
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey
-                              .withOpacity(0.3), // Shadow color and opacity
+                          color: Colors.grey.withOpacity(0.3),
                           spreadRadius: 2,
                           blurRadius: 5,
-                          offset: const Offset(0, 3), // Shadow position
+                          offset: const Offset(0, 3),
                         ),
                       ],
                     ),
                     child: Row(
                       children: [
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        userEmotion != null &&
-                            getImageEmotion(userEmotion!) != null
+                        const SizedBox(width: 10),
+                        userEmotion.isNotEmpty && getImageEmotion(userEmotion) != null
                             ? Image.asset(
-                          getImageEmotion(userEmotion!)!,
+                          getImageEmotion(userEmotion)!,
                           fit: BoxFit.cover,
                           width: 50,
                           height: 50,
@@ -189,66 +184,11 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
                             : Image.asset("assets/images/new-icons/김외롭.png",
                             width: 50, height: 50),
                         const SizedBox(width: 10),
-                        const SizedBox(width: 10),
                         Expanded(
                           child: RichText(
                             text: TextSpan(
-                              style: const TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.black), // Default text style
-                              children: userEmotion != null &&
-                                  (userEmotion == 'GOOD' ||
-                                      userEmotion == 'SAD' ||
-                                      userEmotion == 'OK' ||
-                                      userEmotion == 'ANGRY')
-                                  ? [
-                                const TextSpan(text: '이 날은 기분이 '),
-                                if (userEmotion == 'GOOD')
-                                  const TextSpan(
-                                    text: '해피',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors
-                                            .yellow), // Highlighted text style for GOOD
-                                  ),
-                                if (userEmotion == 'SAD')
-                                  const TextSpan(
-                                    text: '우중충',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors
-                                            .blue), // Highlighted text style for SAD
-                                  ),
-                                if (userEmotion == 'OK')
-                                  const TextSpan(
-                                    text: '쏘쏘',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors
-                                            .green), // Highlighted text style for OK
-                                  ),
-                                if (userEmotion == 'ANGRY')
-                                  const TextSpan(
-                                    text: '나쁜',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors
-                                            .redAccent), // Highlighted text style for ANGRY
-                                  ),
-                                TextSpan(
-                                    text: userEmotion == 'ANGRY'
-                                        ? ' 날이에요'
-                                        : '한 날이에요')
-                              ]
-                                  : [
-                                const TextSpan(
-                                  text: '오늘의 기분을 추가해보세요',
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      color:
-                                      Colors.black), // Italicize text
-                                ),
-                              ],
+                              style: const TextStyle(fontSize: 18, color: Colors.black),
+                              children: _buildEmotionText(userEmotion),
                             ),
                           ),
                         ),
@@ -260,164 +200,173 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
               Expanded(
                 child: Container(
                   color: const Color(0xFFF8F8EF),
-                  child: FutureBuilder<RoutineResponse2>(
-                    future: futureRoutineResponse2,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(child: CircularProgressIndicator());
-                      } else if (snapshot.hasError) {
-                        return Center(
-                            child:
-                            Text('루틴을 불러오는 중 오류가 발생했습니다: ${snapshot.error}'));
-                      } else if (!snapshot.hasData ||
-                          snapshot.data!.personalRoutines.isEmpty) {
-                        return const Center(
-                            child: Text(
-                              '\n\t\t\t\t\t\t\t\t 아래 + 버튼을 눌러 \n 새로운 루틴을 추가해보세요',
-                              style: TextStyle(fontSize: 20, color: Colors.grey),
-                            ));
-                      }
-                      //userEmotion = snapshot.data!.userEmotion; // 감정 상태를 업데이트
-
-                      return ListView(
-                        padding: const EdgeInsets.fromLTRB(24, 10, 24, 16),
-                        children: <Widget>[
-                          Container(
-                            padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFE6F5F8), // 배경색 설정
-                              borderRadius:
-                              BorderRadius.circular(12), // 둥근 모서리 설정
-                            ),
-                            child: Theme(
-                              data: Theme.of(context).copyWith(
-                                dividerColor: Colors.transparent,
-                              ),
-                              child: ExpansionTile(
-                                title: const Text("개인 루틴",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        color: Colors.black)), // 텍스트 색상 변경
-                                children: snapshot.data!.personalRoutines
-                                    .map((category) {
-                                  return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 10, top: 5),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: const Color.fromARGB(
-                                                255, 255, 255, 255),
-                                            borderRadius:
-                                            BorderRadius.circular(20.0),
-                                          ),
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 1),
-                                          child: Text(
-                                            category.routineCategory,
-                                            style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold,
-                                              color: _getCategoryColor(
-                                                  category.routineCategory),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      // 카테고리 밑에 루틴 추가
-                                      ...category.routines.map((routine) {
-                                        return _buildRoutineTile(
-                                            routine); // 기존 _buildRoutineTile 메서드 사용
-                                      }),
-                                    ],
-                                  );
-                                }).toList(),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          ...snapshot.data!.groupRoutines.map((group) {
-                            return Padding(
-                              padding: const EdgeInsets.only(bottom: 10),
-                              child: Container(
-                                padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFE6F5F8),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Theme(
-                                  data: Theme.of(context).copyWith(
-                                    dividerColor: Colors.transparent,
-                                  ),
-                                  child: ExpansionTile(
-                                    title: Text(group.groupTitle,
-                                        style: const TextStyle(
-                                            fontSize: 20, color: Colors.black)),
-                                    children:
-                                    group.groupRoutines.map((categoryGroup) {
-                                      return Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                              left: 10,
-                                            ),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: const Color.fromARGB(
-                                                    255, 255, 255, 255),
-                                                borderRadius:
-                                                BorderRadius.circular(20.0),
-                                              ),
-                                              // margin: const EdgeInsets.fromLTRB(
-                                              //     30, 40, 0, 16),
-                                              padding: const EdgeInsets.symmetric(
-                                                  horizontal: 10.0, vertical: 1),
-                                              child: Column(
-                                                children: [
-                                                  // const SizedBox(height: 5),
-                                                  Text(
-                                                    categoryGroup
-                                                        .routineCategory, // 카테고리 이름
-                                                    style: TextStyle(
-                                                      color: _getCategoryColor(
-                                                          categoryGroup
-                                                              .routineCategory),
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 18,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          ...categoryGroup.routines.map(
-                                                  (routine) => _buildRoutineTile2(
-                                                  routine)), // 루틴 목록
-                                        ],
-                                      );
-                                    }).toList(),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }),
-                          const SizedBox(height: 10),
-                        ],
-                      );
-                    },
+                  child: personalRoutines.isEmpty && groupRoutines.isEmpty
+                      ? const Center(
+                    child: Text(
+                      '\n\t\t\t\t\t\t\t\t 아래 + 버튼을 눌러 \n 새로운 루틴을 추가해보세요',
+                      style: TextStyle(fontSize: 20, color: Colors.grey),
+                    ),
+                  )
+                      : ListView(
+                    padding: const EdgeInsets.fromLTRB(24, 10, 24, 16),
+                    children: [
+                      _buildRoutineSection("개인 루틴", personalRoutines),
+                      const SizedBox(height: 10),
+                      ...groupRoutines.map((group) {
+                        return _buildGroupRoutineSection(group);
+                      }).toList(),
+                      const SizedBox(height: 10),
+                    ],
                   ),
                 ),
               ),
-            ]
+            ],
           );
-        }
-      )
+        },
+      ),
+    );
+  }
 
-  );
+// 감정 텍스트를 빌드하는 메서드
+  List<TextSpan> _buildEmotionText(String userEmotion) {
+    switch (userEmotion) {
+      case 'GOOD':
+        return [
+          const TextSpan(text: '이 날은 기분이 '),
+          const TextSpan(
+            text: '해피',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.yellow),
+          ),
+          const TextSpan(text: '한 날이에요')
+        ];
+      case 'SAD':
+        return [
+          const TextSpan(text: '이 날은 기분이 '),
+          const TextSpan(
+            text: '우중충',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+          ),
+          const TextSpan(text: '한 날이에요')
+        ];
+      case 'OK':
+        return [
+          const TextSpan(text: '이 날은 기분이 '),
+          const TextSpan(
+            text: '쏘쏘',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.green),
+          ),
+          const TextSpan(text: '한 날이에요')
+        ];
+      case 'ANGRY':
+        return [
+          const TextSpan(text: '이 날은 기분이 '),
+          const TextSpan(
+            text: '나쁜',
+            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent),
+          ),
+          const TextSpan(text: ' 날이에요')
+        ];
+      default:
+        return [
+          const TextSpan(
+            text: '오늘의 기분을 추가해보세요',
+            style: TextStyle(fontSize: 18, color: Colors.black),
+          ),
+        ];
+    }
+  }
+
+// 개인 루틴 섹션 빌드
+  Widget _buildRoutineSection(String title, List<UserRoutineCategory> routines) {
+    return routines.isNotEmpty
+        ? Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE6F5F8),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          title: Text(
+            title,
+            style: const TextStyle(fontSize: 20, color: Colors.black),
+          ),
+          children: routines.map((category) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 10, top: 5),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+                    child: Text(
+                      category.routineCategory,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: _getCategoryColor(category.routineCategory),
+                      ),
+                    ),
+                  ),
+                ),
+                ...category.routines.map((routine) => _buildRoutineTile(routine)),
+              ],
+            );
+          }).toList(),
+        ),
+      ),
+    )
+        : Container(); // 빈 루틴 섹션 처리
+  }
+
+// 그룹 루틴 섹션 빌드
+  Widget _buildGroupRoutineSection(Group2 group) {
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        color: const Color(0xFFE6F5F8),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          title: Text(group.groupTitle, style: const TextStyle(fontSize: 20, color: Colors.black)),
+          children: group.groupRoutines.map((categoryGroup) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 10),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+                    child: Text(
+                      categoryGroup.routineCategory,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: _getCategoryColor(categoryGroup.routineCategory),
+                      ),
+                    ),
+                  ),
+                ),
+                ...categoryGroup.routines.map((routine) => _buildRoutineTile2(routine)),
+              ],
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
 
   Color _getCategoryColor(String category) {
     switch (category) {
