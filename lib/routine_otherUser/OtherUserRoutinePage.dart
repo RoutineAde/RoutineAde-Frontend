@@ -413,12 +413,6 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
           child: Checkbox(
             value: routine.isCompletion,
             onChanged: (bool? value) {
-              if (value != null) {
-                print("Checkbox changed: $value");
-                setState(() {
-                  routine.isCompletion = value;
-                });
-              }
             },
             activeColor: const Color(0xFF8DCCFF),
             checkColor: Colors.white,
