@@ -7,7 +7,6 @@ import 'package:flutter_calendar_week/flutter_calendar_week.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:routine_ade/routine_myInfo/MyInfo.dart';
 import 'package:routine_ade/routine_group/GroupType.dart';
-import 'AddRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_home/AlarmListPage.dart';
 import 'package:routine_ade/routine_home/ModifiedRoutinePage.dart';
@@ -16,24 +15,23 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:routine_ade/routine_user/token.dart';
 import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
-import 'package:routine_ade/routine_otherUser/OtherUserRoutinePage.dart';
 
 void main() async {
   await initializeDateFormatting();
-  runApp(const MyRoutinePage());
+  runApp(const OtherUserRoutinePage());
 }
 
-class MyRoutinePage extends StatefulWidget {
-  const MyRoutinePage({super.key});
+class OtherUserRoutinePage extends StatefulWidget {
+  const OtherUserRoutinePage({super.key});
 
   @override
-  State<MyRoutinePage> createState() => _MyRoutinePageState();
+  State<OtherUserRoutinePage> createState() => _OtherUserRoutinePageState();
 }
 
-class _MyRoutinePageState extends State<MyRoutinePage>
+class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
     with SingleTickerProviderStateMixin {
-  Future<RoutineResponse>?
-  futureRoutineResponse; // late 키워드를 사용하여 초기화를 나중에 하도록 설정
+  Future<RoutineResponse2>?
+  futureRoutineResponse2; // late 키워드를 사용하여 초기화를 나중에 하도록 설정
   String selectedDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
   late CalendarWeekController _controller;
   String? userEmotion;
@@ -48,30 +46,10 @@ class _MyRoutinePageState extends State<MyRoutinePage>
   void initState() {
     super.initState();
     _controller = CalendarWeekController();
-    futureRoutineResponse = fetchRoutines(selectedDate);
-    _tabController = TabController(length: 4, vsync: this);
+    futureRoutineResponse2 = fetchRoutines(selectedDate);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
-  void _onDateSelected(DateTime date) {
-    setState(() {
-      selectedDate = DateFormat('yyyy.MM.dd').format(date);
-      futureRoutineResponse = fetchRoutines(selectedDate);
-      _isTileExpanded = true; // 날짜를 선택할 때마다 ExpansionTile이 펼쳐지도록 설정
-      // _showBottomSheet(date);
-      _fetchEmotionForSelectedDate(selectedDate);
-    });
-  }
-
-  void _fetchEmotionForSelectedDate(String date) async {
-    try {
-      final response = await fetchRoutines(date);
-      setState(() {
-        userEmotion = response.userEmotion;
-      });
-    } catch (e) {
-      print("Failed to fetch emotion for selected date: $e");
-    }
-  }
 
   @override
   void dispose() {
@@ -85,239 +63,175 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     });
   }
 
-  void _showBottomSheet(DateTime date) async {
-    final String? selectedImage = await showModalBottomSheet<String>(
-      context: context,
-      builder: (BuildContext context) {
-        return _buildBottomSheetContent(date);
-      },
-    );
 
-    if (selectedImage != null) {
-      setState(() {
-        _selectedImage = selectedImage;
-      });
-
-      await _registerEmotion(date, selectedImage);
-    }
-  }
-
-//기분등록
-  Future<void> _registerEmotion(DateTime date, String selectedImage) async {
-    final today = DateTime.now();
-    final isPastOrToday = date.isBefore(today) || date.isAtSameMomentAs(today);
-
-    if (!isPastOrToday) {
-      // 선택한 날짜가 미래일 경우 알림 메시지를 표시하고 등록을 차단
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('과거와 오늘 날짜만 선택 가능합니다.')),
-        );
-      }
-      return;
-    }
-
-    final formattedDate = DateFormat("yyyy.MM.dd").format(date);
-    final url = Uri.parse("http://15.164.88.94:8080/users/emotion");
-    final headers = {
-      "Content-Type": "application/json",
-      "Authorization": "Bearer $token"
-    };
-
-    final body = jsonEncode({
-      "date": formattedDate,
-      "userEmotion": getImageEmotion2(selectedImage),
-    });
-
-    try {
-      final response = await http.post(
-        url,
-        headers: headers,
-        body: body,
-      );
-
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        print("감정 등록 성공");
-        // 감정을 등록한 후 해당 날짜의 데이터를 가져옴
-        setState(() {
-          futureRoutineResponse = fetchRoutines(selectedDate);
-        });
-      } else {
-        print("감정 등록 실패: ${response.statusCode}- ${response.body}");
-      }
-    } catch (e) {
-      print("감정 등록 중 에러: $e");
-    }
-  }
-
-  Widget _buildBottomSheetContent(DateTime date) {
-    return SizedBox(
-      height: 250,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 30),
-            child: Text(
-              '${date.year}년 ${date.month}월 ${date.day}일',
-              style: const TextStyle(fontSize: 20),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildEmotionIcon("assets/images/emotion/happy.png"),
-              _buildEmotionIcon("assets/images/emotion/depressed.png"),
-              _buildEmotionIcon("assets/images/emotion/sad.png"),
-              _buildEmotionIcon("assets/images/emotion/angry.png"),
-            ],
-          ),
-          const SizedBox(height: 20),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEmotionIcon(String asset) {
-    return IconButton(
-      icon: Image.asset(asset, width: 78),
-      onPressed: () {
-        Navigator.pop(context, asset);
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: PreferredSize(
-      preferredSize: const Size.fromHeight(0),
-      child: AppBar(
-        backgroundColor: const Color(0xFF8DCCFF),
+    appBar: AppBar(
+      backgroundColor: Colors.white,
+      bottom: PreferredSize(
+        preferredSize: const Size.fromHeight(0.0),
+        child: Container(
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 20.0),
+          ),
+        ),
       ),
     ),
-    bottomNavigationBar: _buildBottomAppBar(),
-    floatingActionButton: FloatingActionButton(
-      onPressed: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const AddRoutinePage()));
-      },
-      backgroundColor: const Color(0xffB4DDFF),
-      shape: const CircleBorder(),
-      child: Image.asset('assets/images/add-button.png', width: 70, height: 70),
-    ),
-    body: Column(
+    backgroundColor: Colors.white,
+
+    body:
+    Column(
       children: [
-        _buildCalendarWeek(),
+        Row(
+          children: [
+            SizedBox(width: 20),
+            CircleAvatar(
+              radius: 30,
+              backgroundImage: AssetImage('assets/profile_placeholder.png'), // 사용자의 프로필 이미지
+            ),
+            SizedBox(width: 20),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '냥이', // 사용자 이름
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                Text(
+                  '등록된 한 줄 소개가 없습니다.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        SizedBox(height: 20),
+        TabBar(
+          controller: _tabController,
+          tabs: const [
+            Tab(text: "루틴"),
+            Tab(text: "캘린더"),
+            Tab(text: "카테고리"),
+          ],
+          labelStyle: const TextStyle(fontSize: 18),
+          labelColor: Colors.black,
+          unselectedLabelColor: Colors.grey,
+          indicator: const UnderlineTabIndicator(
+            borderSide: BorderSide(width: 3.0, color: Color(0xFF8DCCFF)),
+            insets: EdgeInsets.symmetric(horizontal: 90.0),
+          ),
+        ),
+        _buildMonthView(),
         Container(
           padding: const EdgeInsets.all(16),
           color: const Color(0xFFF8F8EF),
           child: Center(
-            child: GestureDetector(
-              onTap: () {
-                final DateTime selectedDateTime =
-                DateFormat('yyyy.MM.dd').parse(selectedDate);
-                _showBottomSheet(selectedDateTime);
-              },
-              child: Container(
-                width: 360,
-                height: 70,
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                decoration: BoxDecoration(
-                  color: Colors.white, // White background
-                  borderRadius:
-                  BorderRadius.circular(12), // Rounded corners
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey
-                          .withOpacity(0.3), // Shadow color and opacity
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3), // Shadow position
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    userEmotion != null &&
-                        getImageEmotion(userEmotion!) != null
-                        ? Image.asset(
-                      getImageEmotion(userEmotion!)!,
-                      fit: BoxFit.cover,
-                      width: 50,
-                      height: 50,
-                    )
-                        : Image.asset("assets/images/new-icons/김외롭.png",
-                        width: 50, height: 50),
-                    const SizedBox(width: 10),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: RichText(
-                        text: TextSpan(
-                          style: const TextStyle(
-                              fontSize: 18,
-                              color: Colors.black), // Default text style
-                          children: userEmotion != null &&
-                              (userEmotion == 'GOOD' ||
-                                  userEmotion == 'SAD' ||
-                                  userEmotion == 'OK' ||
-                                  userEmotion == 'ANGRY')
-                              ? [
-                            const TextSpan(text: '이 날은 기분이 '),
-                            if (userEmotion == 'GOOD')
-                              const TextSpan(
-                                text: '해피',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors
-                                        .yellow), // Highlighted text style for GOOD
-                              ),
-                            if (userEmotion == 'SAD')
-                              const TextSpan(
-                                text: '우중충',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors
-                                        .blue), // Highlighted text style for SAD
-                              ),
-                            if (userEmotion == 'OK')
-                              const TextSpan(
-                                text: '쏘쏘',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors
-                                        .green), // Highlighted text style for OK
-                              ),
-                            if (userEmotion == 'ANGRY')
-                              const TextSpan(
-                                text: '나쁜',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors
-                                        .redAccent), // Highlighted text style for ANGRY
-                              ),
-                            TextSpan(
-                                text: userEmotion == 'ANGRY'
-                                    ? ' 날이에요'
-                                    : '한 날이에요')
-                          ]
-                              : [
+            child: Container(
+              width: 360,
+              height: 70,
+              padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+              decoration: BoxDecoration(
+                color: Colors.white, // White background
+                borderRadius:
+                BorderRadius.circular(12), // Rounded corners
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey
+                        .withOpacity(0.3), // Shadow color and opacity
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3), // Shadow position
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  userEmotion != null &&
+                      getImageEmotion(userEmotion!) != null
+                      ? Image.asset(
+                    getImageEmotion(userEmotion!)!,
+                    fit: BoxFit.cover,
+                    width: 50,
+                    height: 50,
+                  )
+                      : Image.asset("assets/images/new-icons/김외롭.png",
+                      width: 50, height: 50),
+                  const SizedBox(width: 10),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.black), // Default text style
+                        children: userEmotion != null &&
+                            (userEmotion == 'GOOD' ||
+                                userEmotion == 'SAD' ||
+                                userEmotion == 'OK' ||
+                                userEmotion == 'ANGRY')
+                            ? [
+                          const TextSpan(text: '이 날은 기분이 '),
+                          if (userEmotion == 'GOOD')
                             const TextSpan(
-                              text: '오늘의 기분을 추가해보세요',
+                              text: '해피',
                               style: TextStyle(
-                                  fontSize: 18,
-                                  color:
-                                  Colors.black), // Italicize text
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors
+                                      .yellow), // Highlighted text style for GOOD
                             ),
-                          ],
-                        ),
+                          if (userEmotion == 'SAD')
+                            const TextSpan(
+                              text: '우중충',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors
+                                      .blue), // Highlighted text style for SAD
+                            ),
+                          if (userEmotion == 'OK')
+                            const TextSpan(
+                              text: '쏘쏘',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors
+                                      .green), // Highlighted text style for OK
+                            ),
+                          if (userEmotion == 'ANGRY')
+                            const TextSpan(
+                              text: '나쁜',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors
+                                      .redAccent), // Highlighted text style for ANGRY
+                            ),
+                          TextSpan(
+                              text: userEmotion == 'ANGRY'
+                                  ? ' 날이에요'
+                                  : '한 날이에요')
+                        ]
+                            : [
+                          const TextSpan(
+                            text: '오늘의 기분을 추가해보세요',
+                            style: TextStyle(
+                                fontSize: 18,
+                                color:
+                                Colors.black), // Italicize text
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -325,8 +239,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         Expanded(
           child: Container(
             color: const Color(0xFFF8F8EF),
-            child: FutureBuilder<RoutineResponse>(
-              future: futureRoutineResponse,
+            child: FutureBuilder<RoutineResponse2>(
+              future: futureRoutineResponse2,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -532,7 +446,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                 setState(() {
                   routine.isCompletion = value;
                 });
-                updateRoutineCompletion(routine.routineId, value, selectedDate);
               }
             },
             activeColor: const Color(0xFF8DCCFF),
@@ -550,73 +463,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     );
   }
 
-  Widget _buildBottomAppBar() {
-    return BottomAppBar(
-      color: Colors.white,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildBottomAppBarItem("assets/images/tap-bar/routine02.png"),
-          _buildBottomAppBarItem(
-              "assets/images/tap-bar/group01.png", const GroupMainPage()),
-          _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png",
-              StaticsCalendar()),
-          _buildBottomAppBarItem(
-              "assets/images/tap-bar/more01.png", MyInfo()),
-        ],
-      ),
-    );
-  }
 
-  Widget _buildBottomAppBarItem(String asset, [Widget? page]) {
-    return GestureDetector(
-      onTap: () {
-        if (page != null) {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => page));
-        }
-      },
-      child: SizedBox(
-        width: 60,
-        height: 60,
-        child: Image.asset(asset),
-      ),
-    );
-  }
-
-  Widget _buildCalendarWeek() {
-    return Container(
-      decoration: BoxDecoration(boxShadow: [
-        BoxShadow(
-            color: Colors.black.withOpacity(0.2),
-            blurRadius: 10,
-            spreadRadius: 1)
-      ]),
-      child: CalendarWeek(
-        controller: _controller,
-        height: 160,
-        showMonth: true,
-        minDate: DateTime.now().add(const Duration(days: -367)),
-        maxDate: DateTime.now().add(const Duration(days: 365)),
-        onDatePressed: (DateTime datetime) {
-          _onDateSelected(datetime);
-        },
-        dayOfWeekStyle: const TextStyle(
-            color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 17),
-        dayOfWeek: const ['월', '화', '수', '목', '금', '토', '일'],
-        dateStyle: const TextStyle(
-            color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 17),
-        todayDateStyle: const TextStyle(
-            color: Color(0xffFFFFFF),
-            fontWeight: FontWeight.w600,
-            fontSize: 17),
-        //todayBackgroundColor: Colors.blueAccent,
-        weekendsStyle: const TextStyle(
-            fontWeight: FontWeight.bold, fontSize: 17, color: Colors.grey),
-        monthViewBuilder: (DateTime time) => _buildMonthView(),
-      ),
-    );
-  }
 
   Widget _buildMonthView() {
     return Align(
@@ -625,32 +472,20 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         children: [
           Container(
             width: double.infinity, // 화면의 양끝까지 채우기
-            color: const Color(0xFF8DCCFF), // 파란색 배경
+            color: Colors.white,
             padding: const EdgeInsets.symmetric(vertical: 8), // 상하단 여백 추가
             child: Row(
               children: [
                 const SizedBox(width: 20),
                 Text(
-                  '${_controller.selectedDate.year}년 ${_controller.selectedDate.month}월',
+                  '${_controller.selectedDate.year}년 ${_controller.selectedDate.month}월 ${_controller.selectedDate.day}일',
                   style: const TextStyle(
-                    color: Colors.white, // 텍스트 색상
+                    color: Colors.black, // 텍스트 색상
                     fontWeight: FontWeight.bold,
                     fontSize: 22,
                   ),
                 ),
                 const Spacer(),
-                IconButton(
-                  icon: Image.asset("assets/images/bell.png",
-                      width: 30, height: 30),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AlarmListPage()),
-                    );
-                  },
-                ),
-                const SizedBox(width: 20), // 오른쪽 여백 추가
               ],
             ),
           ),
@@ -679,11 +514,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
           mainAxisAlignment:
           MainAxisAlignment.start, // Align elements to the start of the row
           children: [
-            GestureDetector(
-              onTap: () => _showDialog(context, routine),
-              child: Text(routine.routineTitle,
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-            ),
+            Text(routine.routineTitle,
+                style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(width: 3), // Adjust the width as needed
             if (routine.isAlarmEnabled) // Conditionally display the bell icon
               GestureDetector(
@@ -700,13 +532,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
           child: Checkbox(
             value: routine.isCompletion,
             onChanged: (bool? value) {
-              if (value != null) {
-                print("Checkbox changed: $value");
-                setState(() {
-                  routine.isCompletion = value;
-                });
-                updateRoutineCompletion(routine.routineId, value, selectedDate);
-              }
             },
             activeColor: const Color(0xFF8DCCFF),
             checkColor: Colors.white,
@@ -719,7 +544,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                 }),
           ),
         ),
-        onTap: () => _showDialog(context, routine),
       ),
     );
     // ],
@@ -727,95 +551,12 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     // );
   }
 
-  void _showDialog(BuildContext context, Routine routine) {
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierColor: Colors.black54,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(routine.routineTitle),
-          content: Text(routine.routineCategory ?? '기타'),
-          actions: <Widget>[
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ModifiedroutinePage(
-                        routineId: routine.routineId,
-                        routineTitle: routine.routineTitle,
-                        routineCategory: routine.routineCategory,
-                        isAlarmEnabled: routine.isAlarmEnabled,
-                        startDate: routine.startDate,
-                        repeatDays: routine.repeatDays,
-                      )),
-                );
-              },
-              child: const Text('수정'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                // 다이얼로그를 먼저 닫음
-                Navigator.of(context).pop();
 
-                // 루틴 삭제
-                await deleteRoutine(routine.routineId);
 
-                // 상태 갱신
-                setState(() {
-                  futureRoutineResponse = fetchRoutines(selectedDate);
-                });
-              },
-              child: const Text('삭제'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> updateRoutineCompletion(
-      int routineId, bool isCompletion, String date) async {
-    final url = Uri.parse(
-        "http://15.164.88.94:8080/routines/$routineId/completion?date=$date");
-    final headers = {
-      "Content-Type": "application/json",
-      'Authorization': 'Bearer $token',
-    };
-    final body = jsonEncode({"date": date, "isCompletion": isCompletion});
-
-    try {
-      final response = await http.put(url, headers: headers, body: body);
-      if (response.statusCode == 204) {
-        print("루틴 완료 상태 업데이트 성공 (응답 본문 없음)");
-      } else if (response.statusCode == 200) {
-        print("루틴 완료 상태 업데이트 성공");
-      } else {
-        print("루틴 완료 상태 업데이트 실패: ${response.statusCode} - ${response.body}");
-      }
-    } catch (e) {
-      print("루틴 완료 상태 업데이트 중 오류 발생: $e");
-    }
-  }
-
-  Future<void> deleteRoutine(int routineId) async {
-    final response = await http.delete(
-      Uri.parse('http://15.164.88.94:8080/routines/$routineId'),
-      headers: {
-        'Authorization': 'Bearer $token',
-      },
-    );
-
-    if (response.statusCode != 200) {
-      throw Exception('Failed to delete routine');
-    }
-  }
 }
 
 //루틴, 감정 조회
-Future<RoutineResponse> fetchRoutines(String date) async {
+Future<RoutineResponse2> fetchRoutines(String date) async {
   print('API 요청 날짜: $date'); // 요청할 날짜를 출력하여 확인
 
   final response = await http.get(
@@ -829,7 +570,7 @@ Future<RoutineResponse> fetchRoutines(String date) async {
     final responseBody = json.decode(utf8.decode(response.bodyBytes));
 
     print('Parsed data: $responseBody'); // 데이터를 출력하여 확인
-    return RoutineResponse.fromJson(responseBody);
+    return RoutineResponse2.fromJson(responseBody);
   } else {
     throw Exception('Failed to load routines');
   }
@@ -931,14 +672,22 @@ String getTextForEmotion(String emotion) {
 }
 
 //루틴, 감정 조회 class
-class RoutineResponse {
+class RoutineResponse2 {
+  final int userId;
+  final String profileImage;
+  final String nickname;
+  final String intro;
   final List<UserRoutineCategory> personalRoutines;
   final List<Group2> groupRoutines;
   final String userEmotion;
   final List<UserRoutineCategory> routines;
   // final List<String> groupRoutineCategories;
 
-  RoutineResponse({
+  RoutineResponse2({
+    required this.userId,
+    required this.profileImage,
+    required this.nickname,
+    required this.intro,
     required this.personalRoutines,
     required this.groupRoutines,
     required this.userEmotion,
@@ -946,8 +695,12 @@ class RoutineResponse {
     // required this.groupRoutineCategories,
   });
 
-  factory RoutineResponse.fromJson(Map<String, dynamic> json) {
-    return RoutineResponse(
+  factory RoutineResponse2.fromJson(Map<String, dynamic> json) {
+    return RoutineResponse2(
+      userId: json['userId'] ?? 0, //기본값 설정
+      profileImage: json['profileImage'] ?? '', // 한국어로 된 필드명을 사용하여 데이터를 파싱
+      nickname: json['nickname'] ?? '기타',
+      intro: json['intro'] ?? '기타',
       personalRoutines: (json['personalRoutines'] as List<dynamic>?)
           ?.map((item) =>
           UserRoutineCategory.fromJson(item as Map<String, dynamic>))

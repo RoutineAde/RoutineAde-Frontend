@@ -67,7 +67,14 @@ class _ProfileChangeState extends State<ProfileChange> {
     }
   }
 
-  Future<void> _pickImage() async {
+  Future<void> _pickImageFromGooglePhotos(String googlePhotosUrl) async {
+    setState(() {
+      _imageFile = null; // 로컬 이미지 파일을 비우고
+      _imageUrl = googlePhotosUrl; // Google Photos URL을 설정
+    });
+  }
+
+  Future<void> _pickImageFromLocal() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
     if (pickedFile != null) {
@@ -194,7 +201,7 @@ class _ProfileChangeState extends State<ProfileChange> {
               children: [
                 const SizedBox(height: 20),
                 GestureDetector(
-                  onTap: _pickImage,
+                  onTap: _pickImageFromLocal,  // 로컬 이미지 선택 기능
                   child: Stack(
                     children: [
                       CircleAvatar(
@@ -211,7 +218,7 @@ class _ProfileChangeState extends State<ProfileChange> {
                         bottom: 0,
                         right: 0,
                         child: GestureDetector(
-                          onTap: _pickImage,
+                          onTap: _pickImageFromLocal,
                           child: const CircleAvatar(
                             backgroundColor: Colors.white,
                             radius: 16,

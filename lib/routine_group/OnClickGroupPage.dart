@@ -13,6 +13,7 @@ import 'package:http/http.dart' as http;
 import 'groupType.dart';
 import 'package:routine_ade/routine_user/token.dart';
 import 'group-unjoin.dart';
+import 'package:routine_ade/routine_otherUser/OtherUserRoutinePage.dart';
 
 // 전역 함수로 getCategoryColor를 정의
 Color getCategoryColor(String category) {
@@ -308,9 +309,19 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
         required GroupMember groupmember,
         bool isLeader = false}) {
     return ListTile(
-      leading: CircleAvatar(
-        radius: 25,
-        backgroundImage: NetworkImage(groupmember.profileImage),
+      leading: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => OtherUserRoutinePage(),
+            ),
+          );
+        },
+        child: CircleAvatar(
+          radius: 25,
+          backgroundImage: NetworkImage(groupmember.profileImage),
+        ),
       ),
       title: Row(
         children: <Widget>[
@@ -328,6 +339,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
       ),
     );
   }
+
 
   Container buildLeaveGroupTile() {
     return Container(
