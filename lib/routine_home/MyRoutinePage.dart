@@ -728,16 +728,20 @@ class _MyRoutinePageState extends State<MyRoutinePage>
   }
 
   void _showDialog(BuildContext context, Routine routine) {
+    // routineCategory 값 로그 출력
+    print("Routine Category: ${routine.routineCategory}");
+
     showDialog(
       context: context,
       barrierDismissible: true,
       barrierColor: Colors.black54,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(routine.routineTitle),
-          content: Text(routine.routineCategory ?? '기타'),
+          backgroundColor: Colors.white,
+          title: Text(routine.routineTitle),  // Title과 함께 routineTitle 표시
+          content: Text(routine.routineCategory),  // Category 표시
           actions: <Widget>[
-            ElevatedButton(
+            TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.push(
@@ -746,16 +750,29 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                       builder: (context) => ModifiedroutinePage(
                         routineId: routine.routineId,
                         routineTitle: routine.routineTitle,
-                        routineCategory: routine.routineCategory,
+                        routineCategory: routine.routineCategory,  // 이 부분도 연동
                         isAlarmEnabled: routine.isAlarmEnabled,
                         startDate: routine.startDate,
                         repeatDays: routine.repeatDays,
                       )),
                 );
               },
-              child: const Text('수정'),
+              child: Row(
+                children: [
+                  Image.asset(
+                    "assets/images/edit.png",
+                    width: 20,
+                    height: 20,
+                  ),
+                  const SizedBox(width: 20),
+                  Text(
+                    '수정',
+                    style: TextStyle(fontSize: 18, color: Colors.black54),
+                  ),
+                ],
+              ),
             ),
-            ElevatedButton(
+            TextButton(
               onPressed: () async {
                 // 다이얼로그를 먼저 닫음
                 Navigator.of(context).pop();
@@ -768,13 +785,29 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                   futureRoutineResponse = fetchRoutines(selectedDate);
                 });
               },
-              child: const Text('삭제'),
+              child: Row(
+                children: [
+                  Image.asset(
+                    "assets/images/delete.png",
+                    width: 20,
+                    height: 20,
+                  ),
+                  const SizedBox(width: 20),
+                  Text(
+                    '삭제',
+                    style: TextStyle(fontSize: 18, color: Colors.black54),
+                  ),
+                ],
+              ),
             ),
           ],
         );
       },
     );
   }
+
+
+
 
   Future<void> updateRoutineCompletion(
       int routineId, bool isCompletion, String date) async {

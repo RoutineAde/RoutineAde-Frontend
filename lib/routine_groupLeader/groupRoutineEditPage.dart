@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+// import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart'; //날짜 포맷팅 init 패키지
@@ -312,28 +312,28 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                             selectedCategoryIndex = index;
                           });
                         },
-                        child: Container(
-                          width: 70,
-                          height: 35,
-                          margin: const EdgeInsets.only(
-                            bottom: 10,
-                          ),
-                          decoration: BoxDecoration(
-                            color: selectedCategoryIndex == index
-                                ? const Color(0xFFB1DAFC)
-                                : Color(0xFFF0F0F0),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Color(0xFFF0F0F0)),
-                          ),
-                          alignment: Alignment.center,
-                          child: Text(
-                            isCategory[index],
-                            style: TextStyle(
+                            child: Container(
+                              width: 70,
+                              height: 35,
+                              margin: const EdgeInsets.only(
+                                bottom: 10,
+                              ),
+                              decoration: BoxDecoration(
                                 color: selectedCategoryIndex == index
-                                    ? Color(0xFFFFFFFF)
-                                    : Color(0xFFAEAEAE)),
-                          ),
-                        ),
+                                    ? const Color(0xFFB1DAFC)
+                                    : Color(0xFFF0F0F0),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(color: Color(0xFFF0F0F0)),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                isCategory[index],
+                                style: TextStyle(
+                                    color: selectedCategoryIndex == index
+                                        ? Color(0xFFFFFFFF)
+                                        : Color(0xFFAEAEAE)),
+                              ),
+                            ),
                       ),
                     ),
                   ),

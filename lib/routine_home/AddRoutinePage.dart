@@ -36,7 +36,8 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
   List<String> selectedDays = [];
 
   //날짜 포맷팅
-  String get formattedDate => DateFormat('yyyy.MM.dd').format(_selectedDate);
+  String get formattedDate =>
+      DateFormat('yyyy.MM.dd', 'ko').format(_selectedDate);
 
   //텍스트필드
   @override
@@ -306,28 +307,28 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                               selectedCategoryIndex = index;
                             });
                           },
-                          child: Container(
-                            width: 70,
-                            height: 35,
-                            margin: const EdgeInsets.only(
-                              bottom: 10,
-                            ),
-                            decoration: BoxDecoration(
-                              color: selectedCategoryIndex == index
-                                  ? const Color(0xFFB1DAFC)
-                                  : Color(0xFFF0F0F0),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Color(0xFFF0F0F0)),
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              isCategory[index],
-                              style: TextStyle(
+                              child: Container(
+                                width: 70,
+                                height: 35,
+                                margin: const EdgeInsets.only(
+                                  bottom: 10,
+                                ),
+                                decoration: BoxDecoration(
                                   color: selectedCategoryIndex == index
-                                      ? Color(0xFFFFFFFF)
-                                      : Color(0xFFAEAEAE)),
-                            ),
-                          ),
+                                      ? const Color(0xFFB1DAFC)
+                                      : Color(0xFFF0F0F0),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(color: Color(0xFFF0F0F0)),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  isCategory[index],
+                                  style: TextStyle(
+                                      color: selectedCategoryIndex == index
+                                          ? Color(0xFFFFFFFF)
+                                          : Color(0xFFAEAEAE)),
+                                ),
+                              ),
                         ),
                       ),
                     ),

@@ -308,7 +308,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => StaticsCalendar()),
+                      builder: (context) => const StaticsCalendar()),
                 );
               },
               child: SizedBox(
@@ -322,8 +322,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
                 // 더보기 버튼 클릭 시 동작할 코드
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => MyInfo()),
+                  MaterialPageRoute(builder: (context) => MyInfo()),
                 );
               },
               child: SizedBox(

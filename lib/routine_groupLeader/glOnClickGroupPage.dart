@@ -14,7 +14,6 @@ import 'package:routine_ade/routine_user/token.dart';
 import 'glGroupIntroRule.dart';
 import 'package:routine_ade/routine_otherUser/OtherUserRoutinePage.dart';
 
-
 // 전역 함수로 getCategoryColor를 정의
 Color getCategoryColor(String category) {
   switch (category) {
@@ -217,7 +216,8 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
           children: <Widget>[
             Container(
               color: Colors.white, // DrawerHeader의 배경색
-              padding: const EdgeInsets.only(top: 120.0), // DrawerHeader 위쪽 여백 추가
+              padding:
+              const EdgeInsets.only(top: 120.0), // DrawerHeader 위쪽 여백 추가
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -232,9 +232,9 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
                               fontSize: 24, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 8.0), // Title과 구분선 사이 간격
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5.0), // 구분선 왼쪽 공백
-                          child: const Divider(color: Colors.grey), // 구분선 색상 조정
+                        const Padding(
+                          padding: EdgeInsets.only(left: 5.0), // 구분선 왼쪽 공백
+                          child: Divider(color: Colors.grey), // 구분선 색상 조정
                         ),
                       ],
                     ),
@@ -257,22 +257,24 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
                   buildDrawerListTile("인원",
                       "${groupInfo.joinMemberCount} / ${groupInfo.maxMemberCount} 명"),
                   buildSwitchListTile(),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: const Divider(),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20.0),
+                    child: Divider(),
                   ),
                   buildDrawerHeaderTile("그룹원"),
                   ...groupResponse.groupMembers.map((member) {
                     return buildDrawerMemberTile(
-                        member,                             // Pass the full member object as GroupMember
-                        member.nickname,                    // member.nickname as String (title)
-                        member.profileImage,                // member.profileImage as String (profileImage)
-                        groupInfo.groupId,       // Convert groupId to int (groupId should be an int)
-                        member.userId,                      // member.userId as int
+                        member, // Pass the full member object as GroupMember
+                        member.nickname, // member.nickname as String (title)
+                        member
+                            .profileImage, // member.profileImage as String (profileImage)
+                        groupInfo
+                            .groupId, // Convert groupId to int (groupId should be an int)
+                        member.userId, // member.userId as int
                         isLeader: groupResponse.isGroupAdmin &&
-                            member.nickname == groupInfo.createdUserNickname // isLeader flag
+                            member.nickname ==
+                                groupInfo.createdUserNickname // isLeader flag
                     );
-
                   }),
                 ],
               ),
@@ -331,8 +333,8 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
     );
   }
 
-  ListTile buildDrawerMemberTile(
-      GroupMember member, String title, String profileImage, int groupId, int userId,
+  ListTile buildDrawerMemberTile(GroupMember member, String title,
+      String profileImage, int groupId, int userId,
       {bool isLeader = false}) {
     return ListTile(
       leading: GestureDetector(
@@ -640,6 +642,7 @@ void _showRoutineDialog(
       //final categoryColor = getCategoryColor(routineCategory); // 카테고리 색상 얻기
 
       return AlertDialog(
+        backgroundColor: Colors.white,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

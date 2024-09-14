@@ -205,7 +205,8 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
           children: <Widget>[
             Container(
               color: Colors.white, // DrawerHeader의 배경색
-              padding: const EdgeInsets.only(top: 120.0), // DrawerHeader 위쪽 여백 추가
+              padding:
+              const EdgeInsets.only(top: 120.0), // DrawerHeader 위쪽 여백 추가
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -220,9 +221,9 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
                               fontSize: 24, fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 8.0), // Title과 구분선 사이 간격
-                        Padding(
-                          padding: const EdgeInsets.only(left: 5.0), // 구분선 왼쪽 공백
-                          child: const Divider(color: Colors.grey), // 구분선 색상 조정
+                        const Padding(
+                          padding: EdgeInsets.only(left: 5.0), // 구분선 왼쪽 공백
+                          child: Divider(color: Colors.grey), // 구분선 색상 조정
                         ),
                       ],
                     ),
@@ -232,7 +233,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
             ),
             Expanded(
               child: ListView(
-                  padding: const EdgeInsets.only(left: 20.0),
+                padding: const EdgeInsets.only(left: 20.0),
                 children: <Widget>[
                   buildDrawerListTile("그룹 코드", "#${groupInfo.groupId}"),
                   buildDrawerListTile(
@@ -245,9 +246,9 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
                   buildDrawerListTile("인원",
                       "${groupInfo.joinMemberCount} / ${groupInfo.maxMemberCount} 명"),
                   buildSwitchListTile(groupResponse),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20.0),
-                    child: const Divider(),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20.0),
+                    child: Divider(),
                   ),
                   buildDrawerHeaderTile("그룹원"),
                   ...groupResponse.groupMembers.map((member) {
@@ -268,9 +269,6 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
       ),
     );
   }
-
-
-
 
   ListTile buildDrawerListTile(String title, String trailing,
       {Color? color, Color? trailingColor}) {
@@ -336,7 +334,8 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => OtherUserRoutinePage(userId: groupmember.userId),
+              builder: (context) =>
+                  OtherUserRoutinePage(userId: groupmember.userId),
             ),
           );
         },
@@ -361,8 +360,6 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
       ),
     );
   }
-
-
 
   Container buildLeaveGroupTile() {
     return Container(
