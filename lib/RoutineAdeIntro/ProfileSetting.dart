@@ -100,7 +100,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                 SizedBox(height: 50),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text("닉네임"),
+                  child: Text("닉네임 (필수)"),
                 ),
                 SizedBox(height: 10),
                 TextField(
@@ -110,26 +110,41 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     hintText: '닉네임',
                     errorText: !_isNicknameValid
                         ? _nicknameErrorMessage
-                        : '10글자 이내로 입력해주세요.',
+                        : null, // 에러 메시지 표시
+                    counterText: '', // 글자수 카운터 삭제
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
                       borderSide: BorderSide(
-                        color: _isNicknameValid ? Colors.red : Colors.grey,
+                        color: Colors.black, // 기본 테두리 검은색
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
                       borderSide: BorderSide(
-                        color: _isNicknameValid ? Colors.blue : Colors.red,
+                        color: Colors.black, // 포커스 시 테두리 검은색
+                        width: 2.0,
+                      ),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        color: Colors.red, // 에러 상태 테두리 빨간색
+                        width: 2.0,
+                      ),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        color: Colors.red, // 에러 상태에서 포커스 시 테두리 빨간색
+                        width: 2.0,
                       ),
                     ),
                   ),
-                  maxLength: 10,
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 40),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text("한 줄 소개"),
+                  child: Text("한 줄 소개 (선택)"),
                 ),
                 SizedBox(height: 10),
                 TextField(

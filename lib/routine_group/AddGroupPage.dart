@@ -286,14 +286,14 @@ class _AddGroupPageState extends State<AddGroupPage> {
                             child: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: Colors.grey[100],
+                                  color: Color(0xFFFFFFFF),
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Text(
                                 '$_selectedMemberCount명',
                                 style: const TextStyle(
                                   fontSize: 16,
-                                  color: Colors.black,
+                                  color: Color(0xFFAEAEAE),
                                 ),
                               ),
                             ),

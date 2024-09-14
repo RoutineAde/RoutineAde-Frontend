@@ -249,17 +249,40 @@ class _ProfileChangeState extends State<ProfileChange> {
                   onChanged: _validateNickname,
                   decoration: InputDecoration(
                     hintText: '닉네임',
-                    errorText: !_isNicknameValid ? _nicknameErrorMessage : null,
+                    errorText: !_isNicknameValid
+                        ? _nicknameErrorMessage
+                        : null, // 에러 메시지 표시
+                    counterText: '', // 글자수 카운터 삭제
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        color: Colors.black, // 기본 테두리 검은색
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        color: Colors.black, // 포커스 시 테두리 검은색
+                        width: 2.0,
+                      ),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        color: Colors.red, // 에러 상태 테두리 빨간색
+                        width: 2.0,
+                      ),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        color: Colors.red, // 에러 상태에서 포커스 시 테두리 빨간색
+                        width: 2.0,
+                      ),
                     ),
                   ),
-                  maxLength: 10,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 40),
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Text("한 줄 소개 (선택)"),

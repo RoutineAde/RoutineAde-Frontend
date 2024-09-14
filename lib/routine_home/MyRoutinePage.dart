@@ -50,6 +50,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     _controller = CalendarWeekController();
     futureRoutineResponse = fetchRoutines(selectedDate);
     _tabController = TabController(length: 4, vsync: this);
+    _fetchEmotionForSelectedDate(selectedDate);
   }
 
   void _onDateSelected(DateTime date) {
@@ -151,40 +152,58 @@ class _MyRoutinePageState extends State<MyRoutinePage>
   }
 
   Widget _buildBottomSheetContent(DateTime date) {
-    return SizedBox(
-      height: 250,
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 30),
-            child: Text(
-              '${date.year}년 ${date.month}월 ${date.day}일',
-              style: const TextStyle(fontSize: 20),
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white, // 배경색을 하얀색으로 설정
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
+        ), // 모서리를 둥글게 설정
+      ),
+      child: SizedBox(
+        height: 250,
+        child: Column(
+          children: [
+            Align(
+              alignment: Alignment.centerLeft, // 텍스트를 왼쪽 정렬
+              child: Padding(
+                padding: const EdgeInsets.only(top: 30, left: 20), // 왼쪽에 약간의 패딩 추가
+                child: Text(
+                  '${date.year}년 ${date.month}월 ${date.day}일',
+                  style: const TextStyle(fontSize: 20, color: Colors.black54),
+                ),
+              ),
             ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildEmotionIcon("assets/images/emotion/happy.png"),
-              _buildEmotionIcon("assets/images/emotion/depressed.png"),
-              _buildEmotionIcon("assets/images/emotion/sad.png"),
-              _buildEmotionIcon("assets/images/emotion/angry.png"),
-            ],
-          ),
-          const SizedBox(height: 20),
-        ],
+            const SizedBox(height: 40),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center, // 이미지를 가운데 정렬
+              children: [
+                _buildEmotionIcon("assets/images/emotion/happy.png"),
+                const SizedBox(width: 20), // 사진 간 간격을 넓히기 위해 추가
+                _buildEmotionIcon("assets/images/emotion/depressed.png"),
+                const SizedBox(width: 20),
+                _buildEmotionIcon("assets/images/emotion/sad.png"),
+                const SizedBox(width: 20),
+                _buildEmotionIcon("assets/images/emotion/angry.png"),
+              ],
+            ),
+            const SizedBox(height: 20),
+          ],
+        ),
       ),
     );
   }
 
+
   Widget _buildEmotionIcon(String asset) {
     return IconButton(
-      icon: Image.asset(asset, width: 78),
+      icon: Image.asset(asset, width: 60), // 사진 크기를 50으로 줄임
       onPressed: () {
         Navigator.pop(context, asset);
       },
     );
   }
+
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -250,7 +269,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                       width: 50,
                       height: 50,
                     )
-                        : Image.asset("assets/images/new-icons/김외롭.png",
+                        : Image.asset("assets/images/new-icons/no-emotion.png",
                         width: 50, height: 50),
                     const SizedBox(width: 10),
                     const SizedBox(width: 10),
@@ -306,7 +325,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                           ]
                               : [
                             const TextSpan(
-                              text: '오늘의 기분을 추가해보세요',
+                              text: '\t\t\t오늘의 기분을 추가해보세요',
                               style: TextStyle(
                                   fontSize: 18,
                                   color:
@@ -728,8 +747,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
   }
 
   void _showDialog(BuildContext context, Routine routine) {
-    // routineCategory 값 로그 출력
-    print("Routine Category: ${routine.routineCategory}");
 
     showDialog(
       context: context,
@@ -925,7 +942,7 @@ String? getImageEmotion(String emotion) {
     case 'ANGRY':
       return 'assets/images/emotion/angry.png';
     default:
-      return "assets/images/new-icons/김외롭.png"; // 기본 이미지
+      return "assets/images/new-icons/no-emotion.png"; // 기본 이미지
   }
 }
 
@@ -941,7 +958,7 @@ String? getImageEmotion2(String emotion) {
     case 'assets/images/emotion/angry.png':
       return 'ANGRY';
     default:
-      return "assets/images/new-icons/김외롭.png"; // 기본 이미지
+      return "assets/images/new-icons/no-emotion.png"; // 기본 이미지
   }
 }
 
