@@ -6,6 +6,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart'; // MIME 타입 가져오기
 import 'package:http_parser/http_parser.dart';
 import 'package:routine_ade/routine_user/token.dart';
+import 'package:intl/intl.dart';
 import 'dart:async';
 
 class ChatScreen extends StatefulWidget {
@@ -25,6 +26,24 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   String? _nickname;
   File? _imageFile;
   Timer? _timer;
+  String? _createDate;
+  // String? _createdTime;
+  DateTime? _lastDateDisplayed;
+  DateTime parseDate(String dateString) {
+    // 날짜 형식: "2024년 09월 16일 (월)"
+    final datePattern = RegExp(r'(\d{4})년 (\d{2})월 (\d{2})일');
+    final match = datePattern.firstMatch(dateString);
+
+    if (match != null) {
+      final year = match.group(1);
+      final month = match.group(2);
+      final day = match.group(3);
+      final formattedDate = '$year-$month-$day'; // YYYY-MM-DD 형식으로 변환
+      return DateTime.parse(formattedDate);
+    } else {
+      throw const FormatException('Invalid date format');
+    }
+  }
 
   @override
   void initState() {
@@ -61,7 +80,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
         setState(() {
           _userId = data['groupMembers'][0]
-          ['userId']; // Assuming the user is the first group member
+              ['userId']; // Assuming the user is the first group member
           _nickname = data['groupMembers'][0]['nickname'];
         });
 
@@ -94,6 +113,8 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       if (response.statusCode == 200) {
         final decodedResponse = utf8.decode(response.bodyBytes);
         final data = json.decode(decodedResponse);
+        print('Fetched chat messages: $data'); // 추가된 로그
+
         return data['groupChatting'];
       } else {
         throw Exception('Failed to load chat messages');
@@ -119,13 +140,33 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   }
 
   void _addMessageFromApi(dynamic chatData) {
+    final createdTime = chatData['createdTime'] ?? '시간을 로드하지 못하였습니다.';
+    final createdDate = chatData['createdDate'] ?? '날짜를 로드하지 못하였습니다.';
+
+    final now = DateTime.now();
+    DateTime messageDate;
+    try {
+      messageDate = parseDate(createdDate); // 커스텀 파서 사용
+    } catch (e) {
+      print('Date parsing error: $e');
+      messageDate = now; // 파싱 오류 발생 시 현재 날짜로 설정
+    }
+
+    // 하루에 한 번만 표시하기 위해 날짜 비교
+    if (_lastDateDisplayed == null || !isSameDay(now, messageDate)) {
+      _lastDateDisplayed = messageDate;
+    } else {
+      _lastDateDisplayed = null;
+    }
+
     final message = ChatMessage(
       text: chatData['content'] ?? '',
       isMine: chatData['isMine'] ?? false,
       nickname: chatData['nickname'] ?? _nickname,
       profileImage: chatData['profileImage'],
       image: chatData['image'],
-      createdDate: chatData['createdDate'] ?? '',
+      createdDate: _lastDateDisplayed != null ? createdDate : '',
+      createdTime: createdTime,
       animationController: AnimationController(
         duration: const Duration(milliseconds: 700),
         vsync: this,
@@ -139,7 +180,13 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     message.animationController.forward();
   }
 
-  Future<void> createChatMessage(
+  bool isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
+  }
+
+  Future<Map<String, dynamic>> createChatMessage(
       int groupId, String content, File? imageFile) async {
     final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId/chatting');
 
@@ -149,7 +196,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
     if (imageFile != null) {
       final mimeTypeData =
-      lookupMimeType(imageFile.path, headerBytes: [0xFF, 0xD8])?.split('/');
+          lookupMimeType(imageFile.path, headerBytes: [0xFF, 0xD8])?.split('/');
       final multipartFile = await http.MultipartFile.fromPath(
         'image',
         imageFile.path,
@@ -164,39 +211,19 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     try {
       final response = await request.send();
       if (response.statusCode == 200) {
-        print('Message sent successfully');
         final responseData = await http.Response.fromStream(response);
         final responseBody = json.decode(responseData.body);
 
-        print('Message sent successfully');
-
-        // 서버 응답에 상관없이 메시지 화면에 바로 추가
-        _addMessageFromApi({
-          'content': content,
-          'isMine': true,
-          'nickname': _nickname,
-          'createdDate': DateTime.now().toString(),
-          'image': imageFile?.path,
-        });
-
-        // 나중에 서버에서 채팅 데이터 다시 불러와서 동기화
-        await _loadChatMessages(); // Load new messages
-
-        setState(() {
-          _isComposing = false;
-          _imageFile = null;
-          _textController.clear();
-        });
+        return responseBody; // API 응답을 반환
       } else {
         print(
             'Failed to create chat message. Status code: ${response.statusCode}');
         print('Response body: ${await response.stream.bytesToString()}');
+        return {}; // 실패 시 빈 맵 반환
       }
     } catch (e) {
       print('Failed to send message: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Failed to send message.')),
-      );
+      return {}; // 오류 발생 시 빈 맵 반환
     }
   }
 
@@ -222,12 +249,20 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     });
 
     if (_nickname != null) {
+      final response =
+          await createChatMessage(widget.groupId, text, _imageFile);
+
+      // API 응답에서 createdDate와 createdTime을 추출합니다.
+      final createdDate = response['createdDate'];
+      final createdTime = response['createdTime'];
+
       // 메시지 전송 후 메시지를 UI에 즉시 추가
       _addMessageFromApi({
         'content': text,
         'isMine': true,
         'nickname': _nickname,
-        'createdDate': DateTime.now().toString(),
+        'createdDate': createdDate,
+        'createdTime': createdTime,
         'image': _imageFile?.path, // 선택된 이미지 파일이 있다면 추가
       });
 
@@ -236,9 +271,9 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       setState(() {
         _imageFile = null;
       });
-
-      //서버로 메시지 전송
-      await createChatMessage(widget.groupId, text, _imageFile);
+      await _loadChatMessages();
+      // //서버로 메시지 전송
+      // await createChatMessage(widget.groupId, text,   createdTime,  _imageFile);
     } else {
       print('Nickname is null');
     }
@@ -259,7 +294,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
             ),
           ),
           Container(
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.white, // 텍스트 필드 배경색을 하얀색으로 설정
             ),
             child: _buildTextComposer(),
@@ -273,7 +308,8 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     return IconTheme(
       data: const IconThemeData(color: Colors.blueAccent),
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0), // 상하 좌우 여백 설정
+        margin: const EdgeInsets.symmetric(
+            horizontal: 8.0, vertical: 8.0), // 상하 좌우 여백 설정
         padding: const EdgeInsets.symmetric(horizontal: 12.0), // 내부 패딩 설정
         decoration: BoxDecoration(
           color: Colors.white, // 배경 흰색 (전체 배경과 일치)
@@ -328,7 +364,6 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     );
   }
 
-
   @override
   void dispose() {
     // _timer?.cancel();
@@ -347,6 +382,7 @@ class ChatMessage extends StatelessWidget {
   final String? profileImage;
   final String? image;
   final String createdDate;
+  final String createdTime;
   final AnimationController animationController;
 
   const ChatMessage({
@@ -357,9 +393,9 @@ class ChatMessage extends StatelessWidget {
     this.profileImage,
     this.image,
     required this.createdDate,
+    required this.createdTime,
     required this.animationController,
   });
-
   @override
   Widget build(BuildContext context) {
     return SizeTransition(
@@ -368,79 +404,98 @@ class ChatMessage extends StatelessWidget {
       axisAlignment: 0.0,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 10.0),
-        child: Row(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment:
-          isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: <Widget>[
-            if (!isMine)
+            if (createdDate.isNotEmpty)
               Container(
-                margin: const EdgeInsets.only(right: 8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (profileImage != null && profileImage!.isNotEmpty)
-                      CircleAvatar(
-                        backgroundImage: NetworkImage(profileImage!),
-                      ),
-                  ],
+                alignment: Alignment.center,
+                margin: const EdgeInsets.symmetric(vertical: 4.0),
+                child: Text(
+                  createdDate,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment:
-                isMine ? CrossAxisAlignment.end : CrossAxisAlignment.start,
-                children: <Widget>[
-                  if (nickname != null && !isMine)
-                    Text(
-                      nickname!,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment:
+                  isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+              children: <Widget>[
+                if (!isMine)
+                  Container(
+                    margin: const EdgeInsets.only(right: 8.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        if (profileImage != null && profileImage!.isNotEmpty)
+                          CircleAvatar(
+                            backgroundImage: NetworkImage(profileImage!),
+                          ),
+                      ],
                     ),
-                  if (image != null && image!.isNotEmpty)
-                    Image.network(
-                      image!,
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                    ),
-                  if (text.isNotEmpty)
-                    Container(
-                      margin: const EdgeInsets.only(top: 4.0),
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200], // 회색 배경
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: Text(
-                        text,
-                        style: const TextStyle(color: Colors.black),
-                        softWrap: true,
-                        overflow: TextOverflow.visible,
-                      ),
-                    ),
-                  if (!isMine)
-                    Container(
-                      margin: const EdgeInsets.only(top: 4.0),
-                      child: Text(
-                        createdDate,
-                        style:
-                        const TextStyle(fontSize: 10, color: Colors.grey),
-                      ),
-                    ),
-                  if (isMine)
-                    Container(
-                      margin: const EdgeInsets.only(left: 8.0),
-                      child: Text(
-                        createdDate,
-                        style:
-                        const TextStyle(fontSize: 10, color: Colors.grey),
-                      ),
-                    ),
-                ],
-              ),
+                  ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: isMine
+                        ? CrossAxisAlignment.end
+                        : CrossAxisAlignment.start,
+                    children: <Widget>[
+                      if (nickname != null && !isMine)
+                        Text(
+                          nickname!,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      if (image != null && image!.isNotEmpty)
+                        Image.network(
+                          image!,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
+                      if (text.isNotEmpty)
+                        Container(
+                          margin: const EdgeInsets.only(top: 4.0),
+                          padding: const EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[200], // 회색 배경
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          child: Text(
+                            text,
+                            style: const TextStyle(color: Colors.black),
+                            softWrap: true,
+                            overflow: TextOverflow.visible,
+                          ),
+                        ),
+                      if (!isMine)
+                        Container(
+                          margin: const EdgeInsets.only(top: 4.0),
+                          child: Text(
+                            createdTime,
+                            style: const TextStyle(
+                                fontSize: 10, color: Colors.grey),
+                          ),
+                        ),
+                      if (isMine)
+                        Container(
+                          margin: const EdgeInsets.only(left: 8.0),
+                          child: Text(
+                            createdTime,
+                            style: const TextStyle(
+                                fontSize: 10, color: Colors.grey),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),

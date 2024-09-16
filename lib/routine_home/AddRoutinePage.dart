@@ -36,8 +36,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
   List<String> selectedDays = [];
 
   //날짜 포맷팅
-  String get formattedDate =>
-      DateFormat('yyyy.MM.dd', 'ko').format(_selectedDate);
+  String get formattedDate => DateFormat('yyyy.MM.dd').format(_selectedDate);
 
   //텍스트필드
   @override
