@@ -36,7 +36,8 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
   List<String> selectedDays = [];
 
   //날짜 포맷팅
-  String get formattedDate => DateFormat('yyyy.MM.dd').format(_selectedDate);
+  String get formattedDate =>
+      DateFormat('yyyy.MM.dd', 'ko').format(_selectedDate);
 
   //텍스트필드
   @override
@@ -211,6 +212,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                     Text(
                       "반복요일",
                       style: TextStyle(
+                        color: Color.fromARGB(255, 56, 56, 56),
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -248,16 +250,17 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                           height: 40,
                           decoration: BoxDecoration(
                             color: isSelected[i]
-                                ? const Color(0xFFB4DDFF)
-                                : Colors.grey[200],
+                                ? const Color(0xFFB1DAFC)
+                                : const Color(0xFFF0F0F0),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           alignment: Alignment.center,
                           child: Text(
                             _getWeekdayName(i),
                             style: TextStyle(
-                              color:
-                                  isSelected[i] ? Colors.white : Colors.black,
+                              color: isSelected[i]
+                                  ? const Color(0xFFFFFFFF)
+                                  : const Color(0xFFAEAEAE),
                             ),
                           ),
                         ),
@@ -287,6 +290,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                         const Text(
                           "카테고리",
                           style: TextStyle(
+                            color: Color.fromARGB(255, 56, 56, 56),
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -312,18 +316,19 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                             ),
                             decoration: BoxDecoration(
                               color: selectedCategoryIndex == index
-                                  ? const Color(0xFFB4DDFF)
-                                  : Colors.white,
+                                  ? const Color(0xFFB1DAFC)
+                                  : const Color(0xFFF0F0F0),
                               borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: Colors.grey),
+                              border:
+                                  Border.all(color: const Color(0xFFF0F0F0)),
                             ),
                             alignment: Alignment.center,
                             child: Text(
                               isCategory[index],
                               style: TextStyle(
                                   color: selectedCategoryIndex == index
-                                      ? Colors.white
-                                      : Colors.grey),
+                                      ? const Color(0xFFFFFFFF)
+                                      : const Color(0xFFAEAEAE)),
                             ),
                           ),
                         ),
@@ -355,13 +360,15 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                     ),
                     const Text("알림",
                         style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold)),
+                            color: Color.fromARGB(255, 56, 56, 56),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold)),
                     Container(
                       padding: const EdgeInsets.only(left: 228),
                     ),
                     CupertinoSwitch(
                       value: _isAlarmOn,
-                      activeColor: const Color(0xFFB4DDFF),
+                      activeColor: const Color(0xFFB1DAFC),
                       onChanged: (value) {
                         setState(() {
                           _isAlarmOn = value;
@@ -391,6 +398,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                     const Text(
                       "루틴 시작일",
                       style: TextStyle(
+                        color: Color.fromARGB(255, 56, 56, 56),
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -417,13 +425,14 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 8, horizontal: 12),
                         decoration: BoxDecoration(
-                          color: Colors.grey[100],
+                          color: const Color(0xFFFFFFFF),
                           borderRadius: BorderRadius.circular(5),
                         ),
                         child: Text(
                           formattedDate,
                           style: const TextStyle(
-                              fontSize: 16, color: Colors.black),
+                              fontSize: 16,
+                              color: Color.fromARGB(255, 56, 56, 56)),
                         ),
                       ),
                     ),

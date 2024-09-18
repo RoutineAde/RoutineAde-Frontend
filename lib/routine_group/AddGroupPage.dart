@@ -16,7 +16,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
   final TextEditingController _groupNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _groupDescriptionController =
-  TextEditingController();
+      TextEditingController();
   int _selectedMemberCount = 0;
 
   // 카테고리 선택 (한번에 하나만)
@@ -49,7 +49,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
 
     // 비밀번호 값 설정
     final groupPassword =
-    _passwordController.text.isEmpty ? null : _passwordController.text;
+        _passwordController.text.isEmpty ? null : _passwordController.text;
 
     // 요청 바디 준비
     final url = Uri.parse('http://15.164.88.94:8080/groups');
@@ -115,7 +115,10 @@ class _AddGroupPageState extends State<AddGroupPage> {
         return AlertDialog(
           title: const Text(
             '모집인원 선택',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 23,
+            ),
           ),
           content: Container(
             padding: const EdgeInsets.symmetric(vertical: 20),
@@ -190,7 +193,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                           borderSide: BorderSide.none,
                         ),
                         contentPadding:
-                        EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
+                            EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
                         counterText: "", // 글자 수 표시 없애기
                       ),
                     ),
@@ -206,13 +209,13 @@ class _AddGroupPageState extends State<AddGroupPage> {
                           borderSide: BorderSide.none,
                         ),
                         contentPadding:
-                        EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
+                            EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
                       ),
                     ),
                     Container(
                       color: Colors.white,
                       padding:
-                      const EdgeInsets.only(left: 10, right: 10, top: 10),
+                          const EdgeInsets.only(left: 10, right: 10, top: 10),
                       margin: const EdgeInsets.only(top: 30),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,9 +225,9 @@ class _AddGroupPageState extends State<AddGroupPage> {
                               Text(
                                 "대표 카테고리",
                                 style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 56, 56, 56)),
                               ),
                             ],
                           ),
@@ -233,7 +236,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: List.generate(
                               5,
-                                  (index) => GestureDetector(
+                              (index) => GestureDetector(
                                 onTap: () {
                                   setState(() {
                                     selectedCategoryIndex = index;
@@ -245,18 +248,19 @@ class _AddGroupPageState extends State<AddGroupPage> {
                                   margin: const EdgeInsets.only(bottom: 10),
                                   decoration: BoxDecoration(
                                     color: selectedCategoryIndex == index
-                                        ? const Color(0xffB4DDFF)
-                                        : Colors.white,
+                                        ? const Color(0xFFB1DAFC)
+                                        : const Color(0xFFF0F0F0),
                                     borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Colors.grey),
+                                    border: Border.all(
+                                        color: const Color(0xFFF0F0F0)),
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(
                                     isCategory[index],
                                     style: TextStyle(
                                       color: selectedCategoryIndex == index
-                                          ? Colors.white
-                                          : Colors.grey,
+                                          ? const Color(0xFFFFFFFF)
+                                          : const Color(0xFFAEAEAE),
                                     ),
                                   ),
                                 ),
@@ -277,23 +281,23 @@ class _AddGroupPageState extends State<AddGroupPage> {
                           const Text(
                             "모집인원",
                             style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 56, 56, 56)),
                           ),
                           GestureDetector(
                             onTap: _selectMemberCount,
                             child: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: Colors.grey[100],
+                                color: const Color(0xFFFFFFFF),
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Text(
                                 '$_selectedMemberCount명',
                                 style: const TextStyle(
                                   fontSize: 16,
-                                  color: Colors.black,
+                                  color: Color.fromARGB(255, 56, 56, 56),
                                 ),
                               ),
                             ),
@@ -331,7 +335,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                   onPressed: _addGroup,
                   style: ButtonStyle(
                     backgroundColor:
-                    WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
+                        WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),

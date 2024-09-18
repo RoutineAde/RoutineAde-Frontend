@@ -6,6 +6,8 @@ import 'package:permission_handler/permission_handler.dart';
 import '../routine_home/MyRoutinePage.dart';
 
 class ProfileSetting extends StatefulWidget {
+  const ProfileSetting({super.key});
+
   @override
   _ProfileSettingState createState() => _ProfileSettingState();
 }
@@ -48,15 +50,15 @@ class _ProfileSettingState extends State<ProfileSetting> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        backgroundColor: Color(0xFF8DCCFF),
+        backgroundColor: const Color(0xFF8DCCFF),
         centerTitle: true,
-        title: Text(
+        title: const Text(
           '프로필 설정',
           style: TextStyle(
               color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
         ),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -70,7 +72,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 GestureDetector(
                   onTap: _pickImage, // 프로필 사진을 클릭했을 때 이미지 선택 기능 실행
                   child: Stack(
@@ -79,15 +81,16 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         radius: 50,
                         backgroundImage: _imageFile != null
                             ? FileImage(_imageFile!)
-                            : AssetImage('assets/images/default_profile.png')
-                        as ImageProvider,
+                            : const AssetImage(
+                                    'assets/images/default_profile.png')
+                                as ImageProvider,
                       ),
                       Positioned(
                         bottom: 0,
                         right: 0,
                         child: GestureDetector(
                           onTap: _pickImage, // 카메라 아이콘 클릭 시 이미지 선택 기능 실행
-                          child: CircleAvatar(
+                          child: const CircleAvatar(
                             backgroundColor: Colors.white,
                             radius: 16,
                             child: Icon(Icons.camera_alt, color: Colors.grey),
@@ -97,12 +100,12 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     ],
                   ),
                 ),
-                SizedBox(height: 50),
-                Align(
+                const SizedBox(height: 50),
+                const Align(
                   alignment: Alignment.centerLeft,
-                  child: Text("닉네임"),
+                  child: Text("닉네임 (필수)"),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextField(
                   controller: _nicknameController,
                   onChanged: _validateNickname,
@@ -110,28 +113,43 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     hintText: '닉네임',
                     errorText: !_isNicknameValid
                         ? _nicknameErrorMessage
-                        : '10글자 이내로 입력해주세요.',
+                        : null, // 에러 메시지 표시
+                    counterText: '', // 글자수 카운터 삭제
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(
-                        color: _isNicknameValid ? Colors.red : Colors.grey,
+                      borderSide: const BorderSide(
+                        color: Colors.black, // 기본 테두리 검은색
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(
-                        color: _isNicknameValid ? Colors.blue : Colors.red,
+                      borderSide: const BorderSide(
+                        color: Colors.black, // 포커스 시 테두리 검은색
+                        width: 2.0,
+                      ),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: const BorderSide(
+                        color: Colors.red, // 에러 상태 테두리 빨간색
+                        width: 2.0,
+                      ),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: const BorderSide(
+                        color: Colors.red, // 에러 상태에서 포커스 시 테두리 빨간색
+                        width: 2.0,
                       ),
                     ),
                   ),
-                  maxLength: 10,
                 ),
-                SizedBox(height: 20),
-                Align(
+                const SizedBox(height: 40),
+                const Align(
                   alignment: Alignment.centerLeft,
-                  child: Text("한 줄 소개"),
+                  child: Text("한 줄 소개 (선택)"),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextField(
                   controller: _bioController,
                   decoration: InputDecoration(
@@ -153,7 +171,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
               height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF8DCCFF),
+                  backgroundColor: const Color(0xFF8DCCFF),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -162,11 +180,11 @@ class _ProfileSettingState extends State<ProfileSetting> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => MyRoutinePage(),
+                      builder: (context) => const MyRoutinePage(),
                     ),
                   );
                 },
-                child: Text(
+                child: const Text(
                   '완료',
                   style: TextStyle(fontSize: 16, color: Colors.white),
                 ),

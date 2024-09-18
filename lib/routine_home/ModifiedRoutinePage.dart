@@ -112,7 +112,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
 
   void _ModifiedRoutine() async {
     final url =
-    Uri.parse('http://15.164.88.94:8080/routines/${widget.routineId}');
+        Uri.parse('http://15.164.88.94:8080/routines/${widget.routineId}');
     //   'routineTitle=${Uri.encodeComponent(_controller.text)}&'
     //   'routineCategory=${Uri.encodeComponent(_getCategoryFromIndex(selectedCategoryIndex))}&'
     //   'isAlarmEnabled=$_isAlarmOn&'
@@ -246,6 +246,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                   Text(
                     "반복요일",
                     style: TextStyle(
+                      color: Color.fromARGB(255, 56, 56, 56),
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -282,15 +283,17 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                         height: 40,
                         decoration: BoxDecoration(
                           color: isSelected[i]
-                              ? const Color(0xFFB4DDFF)
-                              : Colors.grey[200],
+                              ? const Color(0xFFB1DAFC)
+                              : const Color(0xFFF0F0F0),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         alignment: Alignment.center,
                         child: Text(
                           _getWeekdayName(i),
                           style: TextStyle(
-                            color: isSelected[i] ? Colors.white : Colors.black,
+                            color: isSelected[i]
+                                ? const Color(0xFFFFFFFF)
+                                : const Color(0xFFAEAEAE),
                           ),
                         ),
                       ),
@@ -320,6 +323,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                       const Text(
                         "카테고리",
                         style: TextStyle(
+                          color: Color.fromARGB(255, 56, 56, 56),
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -331,7 +335,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(
                       5,
-                          (index) => GestureDetector(
+                      (index) => GestureDetector(
                         onTap: () {
                           setState(() {
                             selectedCategoryIndex = index;
@@ -345,18 +349,18 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                           ),
                           decoration: BoxDecoration(
                             color: selectedCategoryIndex == index
-                                ? const Color(0xFFB4DDFF)
-                                : Colors.white,
+                                ? const Color(0xFFB1DAFC)
+                                : const Color(0xFFF0F0F0),
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.grey),
+                            border: Border.all(color: const Color(0xFFF0F0F0)),
                           ),
                           alignment: Alignment.center,
                           child: Text(
                             isCategory[index],
                             style: TextStyle(
                                 color: selectedCategoryIndex == index
-                                    ? Colors.white
-                                    : Colors.grey),
+                                    ? const Color(0xFFFFFFFF)
+                                    : const Color(0xFFAEAEAE)),
                           ),
                         ),
                       ),
@@ -387,8 +391,10 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                     width: 10,
                   ),
                   const Text("알림",
-                      style:
-                      TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      style: TextStyle(
+                          color: Color.fromARGB(255, 56, 56, 56),
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold)),
                   Container(
                     padding: const EdgeInsets.only(left: 228),
                   ),
@@ -424,6 +430,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                   const Text(
                     "루틴 시작일",
                     style: TextStyle(
+                      color: Color.fromARGB(255, 56, 56, 56),
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -450,13 +457,14 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8, horizontal: 12),
                       decoration: BoxDecoration(
-                        color: Colors.grey[100],
+                        color: const Color(0xFFFFFFFF),
                         borderRadius: BorderRadius.circular(5),
                       ),
                       child: Text(
                         formattedDate,
-                        style:
-                        const TextStyle(fontSize: 16, color: Colors.black),
+                        style: const TextStyle(
+                            fontSize: 16,
+                            color: Color.fromARGB(255, 56, 56, 56)),
                       ),
                     ),
                   ),
@@ -473,7 +481,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                 onPressed: _ModifiedRoutine,
                 style: ButtonStyle(
                   backgroundColor:
-                  WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
+                      WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
