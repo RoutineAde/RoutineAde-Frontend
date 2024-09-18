@@ -110,7 +110,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
       if (query.isNotEmpty) {
         filteredGroups = allGroups
             .where((group) =>
-            group.groupTitle.toLowerCase().contains(query.toLowerCase()))
+                group.groupTitle.toLowerCase().contains(query.toLowerCase()))
             .toList();
       } else {
         filteredGroups = allGroups;
@@ -232,26 +232,26 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
       appBar: AppBar(
         title: _isSearching
             ? TextField(
-          controller: _searchController,
-          decoration: const InputDecoration(
-            hintText: "  그룹명을 입력하세요",
-            fillColor: Colors.white,
-            filled: true,
-            contentPadding: EdgeInsets.symmetric(
-              vertical: 12.0,
-            ),
-          ),
-          onChanged: (value) {
-            filterGroups(value);
-          },
-        )
+                controller: _searchController,
+                decoration: const InputDecoration(
+                  hintText: "  그룹명을 입력하세요",
+                  fillColor: Colors.white,
+                  filled: true,
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical: 12.0,
+                  ),
+                ),
+                onChanged: (value) {
+                  filterGroups(value);
+                },
+              )
             : const Text(
-          "루틴 그룹",
-          style: TextStyle(
-              color: Colors.black,
-              fontSize: 23,
-              fontWeight: FontWeight.bold),
-        ),
+                "루틴 그룹",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 23,
+                    fontWeight: FontWeight.bold),
+              ),
         centerTitle: true,
         backgroundColor: Colors.grey[200],
         actions: [
@@ -259,7 +259,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
             icon: _isSearching
                 ? const Icon(Icons.close)
                 : Image.asset("assets/images/search.png",
-                width: 27, height: 27),
+                    width: 27, height: 27),
             onPressed: toggleSearch,
           ),
         ],
@@ -288,7 +288,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                               bool isSelected = selectedCategory == category;
                               return Padding(
                                 padding:
-                                const EdgeInsets.symmetric(horizontal: 3.0),
+                                    const EdgeInsets.symmetric(horizontal: 3.0),
                                 child: ElevatedButton(
                                   onPressed: () {
                                     setState(() {

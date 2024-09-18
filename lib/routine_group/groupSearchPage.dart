@@ -132,7 +132,7 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
               borderRadius: BorderRadius.circular(18.0),
             ),
             contentPadding:
-            const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
             title: Center(
               child: Column(
                 children: [
@@ -409,7 +409,7 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
                           children: [
                             Container(
                               padding:
-                              const EdgeInsets.symmetric(horizontal: 20),
+                                  const EdgeInsets.symmetric(horizontal: 20),
                               child: Text('그룹명',
                                   style: TextStyle(
                                     color: searchByGroupName
@@ -420,7 +420,7 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
                             ),
                             Padding(
                               padding:
-                              const EdgeInsets.symmetric(horizontal: 10),
+                                  const EdgeInsets.symmetric(horizontal: 10),
                               child: Text('그룹 코드',
                                   style: TextStyle(
                                     color: !searchByGroupName
