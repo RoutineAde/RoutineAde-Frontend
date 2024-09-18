@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart'; // http_parser 패키지 추가
-import 'package:mime/mime.dart'; // mime 패키지 import
+import 'package:mime/mime.dart';
+import 'package:routine_ade/routine_user/token.dart';
 
 class ProfileChange extends StatefulWidget {
   const ProfileChange({super.key});
@@ -23,8 +24,8 @@ class _ProfileChangeState extends State<ProfileChange> {
   final TextEditingController _bioController = TextEditingController();
   bool _isNicknameValid = true;
   String _nicknameErrorMessage = '';
-  String token =
-      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw'; // 실제 토큰으로 교체
+  // String token =
+  //     'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw'; // 실제 토큰으로 교체
 
   // Initialize with data from MyInfo
   @override
@@ -60,7 +61,8 @@ class _ProfileChangeState extends State<ProfileChange> {
         _nicknameController.text = _nickname;
         _bioController.text = _intro;
       } else {
-        print('Failed to fetch profile info. Status code: ${response.statusCode}');
+        print(
+            'Failed to fetch profile info. Status code: ${response.statusCode}');
       }
     } catch (e) {
       print('Error fetching profile info: $e');
@@ -111,7 +113,8 @@ class _ProfileChangeState extends State<ProfileChange> {
       request.headers.addAll(headers);
 
       // 닉네임과 한 줄 소개를 추가
-      request.fields['nickname'] = utf8.decode(utf8.encode(_nicknameController.text));
+      request.fields['nickname'] =
+          utf8.decode(utf8.encode(_nicknameController.text));
       request.fields['intro'] = utf8.decode(utf8.encode(_bioController.text));
 
       // Google Photos 이미지 URL이 제공된 경우 추가
@@ -141,19 +144,20 @@ class _ProfileChangeState extends State<ProfileChange> {
 
         if (responseBody.isNotEmpty) {
           try {
-            final responseData = jsonDecode(utf8.decode(responseBody.codeUnits)); // UTF-8 디코딩
+            final responseData =
+                jsonDecode(utf8.decode(responseBody.codeUnits)); // UTF-8 디코딩
 
             if (responseData.containsKey('profileImage')) {
               final newProfileImageUrl = responseData['profileImage'];
               print('Updated profile image URL: $newProfileImageUrl');
 
               setState(() {
-                _imageFile = null;  // 로컬 이미지를 초기화
-                _imageUrl = newProfileImageUrl;  // 새로운 이미지 URL로 갱신
+                _imageFile = null; // 로컬 이미지를 초기화
+                _imageUrl = newProfileImageUrl; // 새로운 이미지 URL로 갱신
               });
 
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('프로필이 성공적으로 업데이트되었습니다.')),
+                const SnackBar(content: Text('프로필이 성공적으로 업데이트되었습니다.')),
               );
             } else {
               print('Response does not contain profileImage URL.');
@@ -201,7 +205,7 @@ class _ProfileChangeState extends State<ProfileChange> {
               children: [
                 const SizedBox(height: 20),
                 GestureDetector(
-                  onTap: _pickImageFromLocal,  // 로컬 이미지 선택 기능
+                  onTap: _pickImageFromLocal, // 로컬 이미지 선택 기능
                   child: Stack(
                     children: [
                       CircleAvatar(
@@ -209,10 +213,11 @@ class _ProfileChangeState extends State<ProfileChange> {
                         backgroundImage: _imageFile != null
                             ? FileImage(_imageFile!)
                             : _imageUrl != null
-                            ? NetworkImage(_imageUrl!) // Google Photos 이미지 사용
-                            : const AssetImage(
-                            'assets/images/default_profile.png')
-                        as ImageProvider,
+                                ? NetworkImage(
+                                    _imageUrl!) // Google Photos 이미지 사용
+                                : const AssetImage(
+                                        'assets/images/default_profile.png')
+                                    as ImageProvider,
                       ),
                       Positioned(
                         bottom: 0,
@@ -249,17 +254,40 @@ class _ProfileChangeState extends State<ProfileChange> {
                   onChanged: _validateNickname,
                   decoration: InputDecoration(
                     hintText: '닉네임',
-                    errorText: !_isNicknameValid ? _nicknameErrorMessage : null,
+                    errorText: !_isNicknameValid
+                        ? _nicknameErrorMessage
+                        : null, // 에러 메시지 표시
+                    counterText: '', // 글자수 카운터 삭제
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
+                      borderSide: const BorderSide(
+                        color: Colors.black, // 기본 테두리 검은색
+                      ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
+                      borderSide: const BorderSide(
+                        color: Colors.black, // 포커스 시 테두리 검은색
+                        width: 2.0,
+                      ),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: const BorderSide(
+                        color: Colors.red, // 에러 상태 테두리 빨간색
+                        width: 2.0,
+                      ),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: const BorderSide(
+                        color: Colors.red, // 에러 상태에서 포커스 시 테두리 빨간색
+                        width: 2.0,
+                      ),
                     ),
                   ),
-                  maxLength: 10,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 40),
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Text("한 줄 소개 (선택)"),

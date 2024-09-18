@@ -219,6 +219,7 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                   Text(
                     "반복요일",
                     style: TextStyle(
+                      color: Color.fromARGB(255, 56, 56, 56),
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -255,15 +256,17 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                         height: 40,
                         decoration: BoxDecoration(
                           color: isSelected[i]
-                              ? const Color(0xFFB4DDFF)
-                              : Colors.grey[200],
+                              ? const Color(0xFFB1DAFC)
+                              : const Color(0xFFF0F0F0),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         alignment: Alignment.center,
                         child: Text(
                           _getWeekdayName(i),
                           style: TextStyle(
-                            color: isSelected[i] ? Colors.white : Colors.black,
+                            color: isSelected[i]
+                                ? const Color(0xFFFFFFFF)
+                                : const Color(0xFFAEAEAE),
                           ),
                         ),
                       ),
@@ -293,6 +296,7 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                       const Text(
                         "카테고리",
                         style: TextStyle(
+                          color: Color.fromARGB(255, 56, 56, 56),
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -318,18 +322,18 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                           ),
                           decoration: BoxDecoration(
                             color: selectedCategoryIndex == index
-                                ? const Color(0xFFB4DDFF)
-                                : Colors.white,
+                                ? const Color(0xFFB1DAFC)
+                                : const Color(0xFFF0F0F0),
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.grey),
+                            border: Border.all(color: const Color(0xFFF0F0F0)),
                           ),
                           alignment: Alignment.center,
                           child: Text(
                             isCategory[index],
                             style: TextStyle(
                                 color: selectedCategoryIndex == index
-                                    ? Colors.white
-                                    : Colors.grey),
+                                    ? const Color(0xFFFFFFFF)
+                                    : const Color(0xFFAEAEAE)),
                           ),
                         ),
                       ),

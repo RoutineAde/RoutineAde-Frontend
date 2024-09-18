@@ -176,6 +176,4 @@ class _glGroupIntroRuleState extends State<glGroupIntroRule> {
       ),
     );
   }
-
 }
-
