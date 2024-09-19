@@ -13,7 +13,6 @@ class ChatScreen extends StatefulWidget {
   final int groupId;
 
   const ChatScreen({required this.groupId, super.key});
-
   @override
   ChatScreenState createState() => ChatScreenState();
 }
