@@ -273,7 +273,7 @@ class _StaticsCalendarState extends State<StaticsCalendar>
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(10, 30, 10, 5),
+            padding: const EdgeInsets.fromLTRB(10, 15, 10, 5),
             child: TableCalendar(
               firstDay: DateTime.utc(2020, 1, 1),
               lastDay: DateTime.utc(2030, 12, 31),
@@ -329,15 +329,16 @@ class _StaticsCalendarState extends State<StaticsCalendar>
                   return days[date.weekday - 1];
                 },
                 weekdayStyle: const TextStyle(
-                  fontSize: 14.0,
+                  fontSize: 16.0,
                   color: Colors.black,
                 ),
                 weekendStyle: const TextStyle(
-                  fontSize: 14.0,
+                  fontSize: 16.0,
                   color: Colors.black,
                 ),
               ),
               headerVisible: false,
+              daysOfWeekHeight: 30.0,
             ),
           ),
           Padding(
@@ -409,7 +410,7 @@ class _StaticsCalendarState extends State<StaticsCalendar>
     };
 
     return Container(
-      margin: const EdgeInsets.all(2.0),
+      margin: const EdgeInsets.all(4.0),
       decoration: BoxDecoration(
         color: colorMap[level] ?? Colors.grey[300],
         shape: BoxShape.circle,
@@ -419,7 +420,7 @@ class _StaticsCalendarState extends State<StaticsCalendar>
           '${date.day}',
           style: const TextStyle(
             color: Colors.black,
-            fontWeight: FontWeight.bold,
+            fontSize: 16.0,
           ),
         ),
       ),

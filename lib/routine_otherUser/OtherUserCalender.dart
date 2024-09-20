@@ -224,15 +224,16 @@ class _OtherusercalenderState extends State<Otherusercalender>
                   return days[date.weekday - 1];
                 },
                 weekdayStyle: const TextStyle(
-                  fontSize: 14.0,
+                  fontSize: 16.0,
                   color: Colors.black,
                 ),
                 weekendStyle: const TextStyle(
-                  fontSize: 14.0,
+                  fontSize: 16.0,
                   color: Colors.black,
                 ),
               ),
               headerVisible: false,
+              daysOfWeekHeight: 30.0,
             ),
           ),
           Padding(
