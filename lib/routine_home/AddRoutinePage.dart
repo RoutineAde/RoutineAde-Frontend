@@ -212,7 +212,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                     Text(
                       "반복요일",
                       style: TextStyle(
-                        color: Color(0xFFAEAEAE),
+                        color: Color.fromARGB(255, 56, 56, 56),
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -251,15 +251,16 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                           decoration: BoxDecoration(
                             color: isSelected[i]
                                 ? const Color(0xFFB1DAFC)
-                                : Color(0xFFF0F0F0),
+                                : const Color(0xFFF0F0F0),
                             borderRadius: BorderRadius.circular(20),
                           ),
                           alignment: Alignment.center,
                           child: Text(
                             _getWeekdayName(i),
                             style: TextStyle(
-                              color:
-                              isSelected[i] ? Color(0xFFFFFFFF) : Color(0xFFAEAEAE),
+                              color: isSelected[i]
+                                  ? const Color(0xFFFFFFFF)
+                                  : const Color(0xFFAEAEAE),
                             ),
                           ),
                         ),
@@ -289,7 +290,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                         const Text(
                           "카테고리",
                           style: TextStyle(
-                            color: Color(0xFFAEAEAE),
+                            color: Color.fromARGB(255, 56, 56, 56),
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -307,28 +308,29 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                               selectedCategoryIndex = index;
                             });
                           },
-                              child: Container(
-                                width: 70,
-                                height: 35,
-                                margin: const EdgeInsets.only(
-                                  bottom: 10,
-                                ),
-                                decoration: BoxDecoration(
+                          child: Container(
+                            width: 70,
+                            height: 35,
+                            margin: const EdgeInsets.only(
+                              bottom: 10,
+                            ),
+                            decoration: BoxDecoration(
+                              color: selectedCategoryIndex == index
+                                  ? const Color(0xFFB1DAFC)
+                                  : const Color(0xFFF0F0F0),
+                              borderRadius: BorderRadius.circular(20),
+                              border:
+                              Border.all(color: const Color(0xFFF0F0F0)),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              isCategory[index],
+                              style: TextStyle(
                                   color: selectedCategoryIndex == index
-                                      ? const Color(0xFFB1DAFC)
-                                      : Color(0xFFF0F0F0),
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(color: Color(0xFFF0F0F0)),
-                                ),
-                                alignment: Alignment.center,
-                                child: Text(
-                                  isCategory[index],
-                                  style: TextStyle(
-                                      color: selectedCategoryIndex == index
-                                          ? Color(0xFFFFFFFF)
-                                          : Color(0xFFAEAEAE)),
-                                ),
-                              ),
+                                      ? const Color(0xFFFFFFFF)
+                                      : const Color(0xFFAEAEAE)),
+                            ),
+                          ),
                         ),
                       ),
                     ),
@@ -358,8 +360,9 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                     ),
                     const Text("알림",
                         style: TextStyle(
-                            color: Color(0xFFAEAEAE),
-                            fontSize: 18, fontWeight: FontWeight.bold)),
+                            color: Color.fromARGB(255, 56, 56, 56),
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold)),
                     Container(
                       padding: const EdgeInsets.only(left: 228),
                     ),
@@ -395,7 +398,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                     const Text(
                       "루틴 시작일",
                       style: TextStyle(
-                        color: Color(0xFFAEAEAE),
+                        color: Color.fromARGB(255, 56, 56, 56),
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -422,13 +425,14 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
                         padding: const EdgeInsets.symmetric(
                             vertical: 8, horizontal: 12),
                         decoration: BoxDecoration(
-                          color: Color(0xFFFFFFFF),
+                          color: const Color(0xFFFFFFFF),
                           borderRadius: BorderRadius.circular(5),
                         ),
                         child: Text(
                           formattedDate,
                           style: const TextStyle(
-                              fontSize: 16, color: Color(0xFFAEAEAE)),
+                              fontSize: 16,
+                              color: Color.fromARGB(255, 56, 56, 56)),
                         ),
                       ),
                     ),
