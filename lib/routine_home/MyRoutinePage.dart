@@ -103,7 +103,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     }
   }
 
-// 감정 등록 메서드 수정
+// 감정 등록 메서드
   Future<void> _registerEmotion(DateTime date, String selectedImage) async {
     final today = DateTime.now();
     final isPastOrToday = date.isBefore(today) || date.isAtSameMomentAs(today);
