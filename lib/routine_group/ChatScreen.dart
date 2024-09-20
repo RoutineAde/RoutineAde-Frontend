@@ -13,7 +13,6 @@ class ChatScreen extends StatefulWidget {
   final int groupId;
 
   const ChatScreen({required this.groupId, super.key});
-
   @override
   ChatScreenState createState() => ChatScreenState();
 }
@@ -25,45 +24,15 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   int? _userId;
   String? _nickname;
   File? _imageFile;
-  Timer? _timer;
-  String? _createDate;
-  // String? _createdTime;
-  DateTime? _lastDateDisplayed;
-  DateTime parseDate(String dateString) {
-    // 날짜 형식: "2024년 09월 16일 (월)"
-    final datePattern = RegExp(r'(\d{4})년 (\d{2})월 (\d{2})일');
-    final match = datePattern.firstMatch(dateString);
 
-    if (match != null) {
-      final year = match.group(1);
-      final month = match.group(2);
-      final day = match.group(3);
-      final formattedDate = '$year-$month-$day'; // YYYY-MM-DD 형식으로 변환
-      return DateTime.parse(formattedDate);
-    } else {
-      throw const FormatException('Invalid date format');
-    }
-  }
+  final Set<String> _shownDates = {}; // 날짜가 중복해서 나오지 않도록 관리하는 Set
 
   @override
   void initState() {
     super.initState();
     _loadUserInfo(); // 사용자 정보 로드
     _loadChatMessages(); // 채팅 메시지 로드
-
-    // _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-    //   _loadChatMessages(); // 주기적으로 채팅 메시지를 불러옴
-    // });
   }
-
-  // @override
-  // void dispose() {
-  //   _timer?.cancel(); // 타이머 해제
-  //   for (ChatMessage message in _messages) {
-  //     message.animationController.dispose();
-  //   }
-  //   super.dispose();
-  // }
 
   Future<void> fetchUserInfo(int groupId) async {
     final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId');
@@ -79,8 +48,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         final data = json.decode(decodedResponse);
 
         setState(() {
-          _userId = data['groupMembers'][0]
-              ['userId']; // Assuming the user is the first group member
+          _userId = data['groupMembers'][0]['userId'];
           _nickname = data['groupMembers'][0]['nickname'];
         });
 
@@ -101,6 +69,96 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     }
   }
 
+  // Future<List<dynamic>> fetchChatMessages(int groupId) async {
+  //   final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId/chatting');
+  //   final headers = {
+  //     'Content-Type': 'application/json',
+  //     'Authorization': 'Bearer $token',
+  //   };
+
+  //   try {
+  //     final response = await http.get(url, headers: headers);
+  //     if (response.statusCode == 200) {
+  //       final decodedResponse = utf8.decode(response.bodyBytes);
+  //       final data = json.decode(decodedResponse);
+  //       print('Fetched chat messages: $data'); // 추가된 로그
+
+  //       return data['groupChatting'];
+  //     } else {
+  //       throw Exception('Failed to load chat messages');
+  //     }
+  //   } catch (e) {
+  //     print('Error fetching chat messages: $e');
+  //     return [];
+  //   }
+  // }
+  Future<void> _loadChatMessages() async {
+    try {
+      final chatMessages = await fetchChatMessages(widget.groupId);
+      setState(() {
+        _messages.clear(); // 이전 메시지 삭제
+        _shownDates.clear(); // 날짜도 초기화
+        for (var chatDay in chatMessages) {
+          final createdDate = chatDay['createdDate'];
+          final messages = chatDay['groupChatting'];
+          // 날짜 표시가 필요할 때 추가
+          if (!_shownDates.contains(createdDate)) {
+            _shownDates.add(createdDate);
+            _addDateLabel(createdDate);
+          }
+          // 각 메시지를 추가
+          for (var chat in messages) {
+            _addMessageFromApi(chat);
+          }
+        }
+      });
+    } catch (e) {
+      print("Error loading chat messages: $e");
+    }
+  }
+
+  void _addDateLabel(String createdDate) {
+    // 날짜를 메시지 리스트에 추가하는 함수
+    final dateLabel = ChatMessage(
+      text: '', // 날짜는 텍스트가 없음
+      isMine: false,
+      nickname: null,
+      profileImage: null,
+      image: null,
+      createdDate: createdDate,
+      createdTime: '', // 시간도 없음
+      animationController: AnimationController(
+        duration: const Duration(milliseconds: 300),
+        vsync: this,
+      ),
+    );
+    setState(() {
+      _messages.insert(0, dateLabel);
+    });
+    dateLabel.animationController.forward();
+  }
+
+  void _addMessageFromApi(dynamic chatData) {
+    final createdTime = chatData['createdTime'] ?? '시간을 로드하지 못하였습니다.';
+    final message = ChatMessage(
+      text: chatData['content'] ?? '',
+      isMine: chatData['isMine'] ?? false,
+      nickname: chatData['nickname'] ?? _nickname,
+      profileImage: chatData['profileImage'],
+      image: chatData['image'],
+      createdDate: '', // 날짜는 별도로 관리되므로 여기서는 표시하지 않음
+      createdTime: createdTime,
+      animationController: AnimationController(
+        duration: const Duration(milliseconds: 300),
+        vsync: this,
+      ),
+    );
+    setState(() {
+      _messages.insert(0, message);
+    });
+    message.animationController.forward();
+  }
+
   Future<List<dynamic>> fetchChatMessages(int groupId) async {
     final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId/chatting');
     final headers = {
@@ -113,7 +171,6 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       if (response.statusCode == 200) {
         final decodedResponse = utf8.decode(response.bodyBytes);
         final data = json.decode(decodedResponse);
-        print('Fetched chat messages: $data'); // 추가된 로그
 
         return data['groupChatting'];
       } else {
@@ -123,67 +180,6 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
       print('Error fetching chat messages: $e');
       return [];
     }
-  }
-
-  Future<void> _loadChatMessages() async {
-    try {
-      final chatMessages = await fetchChatMessages(widget.groupId);
-      setState(() {
-        _messages.clear(); // Clear the old messages
-        for (var chatData in chatMessages) {
-          _addMessageFromApi(chatData);
-        }
-      });
-    } catch (e) {
-      print("Error loading chat messages: $e");
-    }
-  }
-
-  void _addMessageFromApi(dynamic chatData) {
-    final createdTime = chatData['createdTime'] ?? '시간을 로드하지 못하였습니다.';
-    final createdDate = chatData['createdDate'] ?? '날짜를 로드하지 못하였습니다.';
-
-    final now = DateTime.now();
-    DateTime messageDate;
-    try {
-      messageDate = parseDate(createdDate); // 커스텀 파서 사용
-    } catch (e) {
-      print('Date parsing error: $e');
-      messageDate = now; // 파싱 오류 발생 시 현재 날짜로 설정
-    }
-
-    // 하루에 한 번만 표시하기 위해 날짜 비교
-    if (_lastDateDisplayed == null || !isSameDay(now, messageDate)) {
-      _lastDateDisplayed = messageDate;
-    } else {
-      _lastDateDisplayed = null;
-    }
-
-    final message = ChatMessage(
-      text: chatData['content'] ?? '',
-      isMine: chatData['isMine'] ?? false,
-      nickname: chatData['nickname'] ?? _nickname,
-      profileImage: chatData['profileImage'],
-      image: chatData['image'],
-      createdDate: _lastDateDisplayed != null ? createdDate : '',
-      createdTime: createdTime,
-      animationController: AnimationController(
-        duration: const Duration(milliseconds: 700),
-        vsync: this,
-      ),
-    );
-
-    setState(() {
-      _messages.insert(0, message);
-    });
-
-    message.animationController.forward();
-  }
-
-  bool isSameDay(DateTime date1, DateTime date2) {
-    return date1.year == date2.year &&
-        date1.month == date2.month &&
-        date1.day == date2.day;
   }
 
   Future<Map<String, dynamic>> createChatMessage(
@@ -396,6 +392,7 @@ class ChatMessage extends StatelessWidget {
     required this.createdTime,
     required this.animationController,
   });
+
   @override
   Widget build(BuildContext context) {
     return SizeTransition(
