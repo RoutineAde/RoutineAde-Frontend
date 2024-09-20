@@ -103,7 +103,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     }
   }
 
-//기분등록
+// 감정 등록 메서드 수정
   Future<void> _registerEmotion(DateTime date, String selectedImage) async {
     final today = DateTime.now();
     final isPastOrToday = date.isBefore(today) || date.isAtSameMomentAs(today);
@@ -139,17 +139,27 @@ class _MyRoutinePageState extends State<MyRoutinePage>
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         print("감정 등록 성공");
-        // 감정을 등록한 후 해당 날짜의 데이터를 가져옴
+
+        // 감정 등록 후 상태 업데이트
         setState(() {
-          futureRoutineResponse = fetchRoutines(selectedDate);
+          userEmotion = getImageEmotion2(selectedImage); // 새로운 감정 상태를 반영
+          futureRoutineResponse = fetchRoutines(selectedDate); // 감정 등록 후 데이터를 다시 가져옴
         });
+
+        // 감정 등록 성공 메시지
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('감정이 성공적으로 등록되었습니다.')),
+          );
+        }
       } else {
-        print("감정 등록 실패: ${response.statusCode}- ${response.body}");
+        print("감정 등록 실패: ${response.statusCode} - ${response.body}");
       }
     } catch (e) {
       print("감정 등록 중 에러: $e");
     }
   }
+
 
   Widget _buildBottomSheetContent(DateTime date) {
     return SizedBox(
