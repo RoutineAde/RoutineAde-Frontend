@@ -246,7 +246,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                   Text(
                     "반복요일",
                     style: TextStyle(
-                      color: Color.fromARGB(255, 56, 56, 56),
+                      color: Color(0xFFAEAEAE),
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -284,16 +284,14 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                         decoration: BoxDecoration(
                           color: isSelected[i]
                               ? const Color(0xFFB1DAFC)
-                              : const Color(0xFFF0F0F0),
+                              : Color(0xFFF0F0F0),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         alignment: Alignment.center,
                         child: Text(
                           _getWeekdayName(i),
                           style: TextStyle(
-                            color: isSelected[i]
-                                ? const Color(0xFFFFFFFF)
-                                : const Color(0xFFAEAEAE),
+                            color: isSelected[i] ? Color(0xFFFFFFFF) : Color(0xFFAEAEAE),
                           ),
                         ),
                       ),
@@ -323,7 +321,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                       const Text(
                         "카테고리",
                         style: TextStyle(
-                          color: Color.fromARGB(255, 56, 56, 56),
+                          color: Color(0xFFAEAEAE),
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -350,17 +348,17 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                           decoration: BoxDecoration(
                             color: selectedCategoryIndex == index
                                 ? const Color(0xFFB1DAFC)
-                                : const Color(0xFFF0F0F0),
+                                : Color(0xFFF0F0F0),
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: const Color(0xFFF0F0F0)),
+                            border: Border.all(color: Color(0xFFF0F0F0)),
                           ),
                           alignment: Alignment.center,
                           child: Text(
                             isCategory[index],
                             style: TextStyle(
                                 color: selectedCategoryIndex == index
-                                    ? const Color(0xFFFFFFFF)
-                                    : const Color(0xFFAEAEAE)),
+                                    ? Color(0xFFFFFFFF)
+                                    : Color(0xFFAEAEAE)),
                           ),
                         ),
                       ),
@@ -391,10 +389,8 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                     width: 10,
                   ),
                   const Text("알림",
-                      style: TextStyle(
-                          color: Color.fromARGB(255, 56, 56, 56),
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold)),
+                      style:
+                      TextStyle(color: Color(0xFFAEAEAE),fontSize: 18, fontWeight: FontWeight.bold)),
                   Container(
                     padding: const EdgeInsets.only(left: 228),
                   ),
@@ -430,7 +426,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                   const Text(
                     "루틴 시작일",
                     style: TextStyle(
-                      color: Color.fromARGB(255, 56, 56, 56),
+                      color: Color(0xFFAEAEAE),
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -457,14 +453,13 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 8, horizontal: 12),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFFFFF),
+                        color: Color(0xFFFFFFFF),
                         borderRadius: BorderRadius.circular(5),
                       ),
                       child: Text(
                         formattedDate,
-                        style: const TextStyle(
-                            fontSize: 16,
-                            color: Color.fromARGB(255, 56, 56, 56)),
+                        style:
+                        const TextStyle(fontSize: 16, color: Color(0xFFAEAEAE)),
                       ),
                     ),
                   ),
