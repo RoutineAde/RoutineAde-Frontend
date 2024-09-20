@@ -152,58 +152,40 @@ class _MyRoutinePageState extends State<MyRoutinePage>
   }
 
   Widget _buildBottomSheetContent(DateTime date) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white, // 배경색을 하얀색으로 설정
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(30),
-          topRight: Radius.circular(30),
-        ), // 모서리를 둥글게 설정
-      ),
-      child: SizedBox(
-        height: 250,
-        child: Column(
-          children: [
-            Align(
-              alignment: Alignment.centerLeft, // 텍스트를 왼쪽 정렬
-              child: Padding(
-                padding: const EdgeInsets.only(top: 30, left: 20), // 왼쪽에 약간의 패딩 추가
-                child: Text(
-                  '${date.year}년 ${date.month}월 ${date.day}일',
-                  style: const TextStyle(fontSize: 20, color: Colors.black54),
-                ),
-              ),
+    return SizedBox(
+      height: 250,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(top: 30),
+            child: Text(
+              '${date.year}년 ${date.month}월 ${date.day}일',
+              style: const TextStyle(fontSize: 20),
             ),
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center, // 이미지를 가운데 정렬
-              children: [
-                _buildEmotionIcon("assets/images/emotion/happy.png"),
-                const SizedBox(width: 20), // 사진 간 간격을 넓히기 위해 추가
-                _buildEmotionIcon("assets/images/emotion/depressed.png"),
-                const SizedBox(width: 20),
-                _buildEmotionIcon("assets/images/emotion/sad.png"),
-                const SizedBox(width: 20),
-                _buildEmotionIcon("assets/images/emotion/angry.png"),
-              ],
-            ),
-            const SizedBox(height: 20),
-          ],
-        ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildEmotionIcon("assets/images/emotion/happy.png"),
+              _buildEmotionIcon("assets/images/emotion/depressed.png"),
+              _buildEmotionIcon("assets/images/emotion/sad.png"),
+              _buildEmotionIcon("assets/images/emotion/angry.png"),
+            ],
+          ),
+          const SizedBox(height: 20),
+        ],
       ),
     );
   }
 
-
   Widget _buildEmotionIcon(String asset) {
     return IconButton(
-      icon: Image.asset(asset, width: 60), // 사진 크기를 50으로 줄임
+      icon: Image.asset(asset, width: 78),
       onPressed: () {
         Navigator.pop(context, asset);
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -223,7 +205,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
       },
       backgroundColor: const Color(0xffB4DDFF),
       shape: const CircleBorder(),
-      child: Image.asset('assets/images/add-button.png', width: 70, height: 70),
+      child: Image.asset('assets/images/add-button.png',
+          width: 70, height: 70),
     ),
     body: Column(
       children: [
@@ -269,7 +252,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                       width: 50,
                       height: 50,
                     )
-                        : Image.asset("assets/images/new-icons/no-emotion.png",
+                        : Image.asset("assets/images/new-icons/김외롭.png",
                         width: 50, height: 50),
                     const SizedBox(width: 10),
                     const SizedBox(width: 10),
@@ -325,7 +308,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                           ]
                               : [
                             const TextSpan(
-                              text: '\t\t\t오늘의 기분을 추가해보세요',
+                              text: '오늘의 기분을 추가해보세요',
                               style: TextStyle(
                                   fontSize: 18,
                                   color:
@@ -579,9 +562,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
           _buildBottomAppBarItem(
               "assets/images/tap-bar/group01.png", const GroupMainPage()),
           _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png",
-              StaticsCalendar()),
-          _buildBottomAppBarItem(
-              "assets/images/tap-bar/more01.png", MyInfo()),
+              const StaticsCalendar()),
+          _buildBottomAppBarItem("assets/images/tap-bar/more01.png", MyInfo()),
         ],
       ),
     );
@@ -747,18 +729,16 @@ class _MyRoutinePageState extends State<MyRoutinePage>
   }
 
   void _showDialog(BuildContext context, Routine routine) {
-
     showDialog(
       context: context,
       barrierDismissible: true,
       barrierColor: Colors.black54,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.white,
-          title: Text(routine.routineTitle),  // Title과 함께 routineTitle 표시
-          content: Text(routine.routineCategory),  // Category 표시
+          title: Text(routine.routineTitle),
+          content: Text(routine.routineCategory ?? '기타'),
           actions: <Widget>[
-            TextButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.push(
@@ -767,29 +747,16 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                       builder: (context) => ModifiedroutinePage(
                         routineId: routine.routineId,
                         routineTitle: routine.routineTitle,
-                        routineCategory: routine.routineCategory,  // 이 부분도 연동
+                        routineCategory: routine.routineCategory,
                         isAlarmEnabled: routine.isAlarmEnabled,
                         startDate: routine.startDate,
                         repeatDays: routine.repeatDays,
                       )),
                 );
               },
-              child: Row(
-                children: [
-                  Image.asset(
-                    "assets/images/edit.png",
-                    width: 20,
-                    height: 20,
-                  ),
-                  const SizedBox(width: 20),
-                  Text(
-                    '수정',
-                    style: TextStyle(fontSize: 18, color: Colors.black54),
-                  ),
-                ],
-              ),
+              child: const Text('수정'),
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () async {
                 // 다이얼로그를 먼저 닫음
                 Navigator.of(context).pop();
@@ -802,29 +769,13 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                   futureRoutineResponse = fetchRoutines(selectedDate);
                 });
               },
-              child: Row(
-                children: [
-                  Image.asset(
-                    "assets/images/delete.png",
-                    width: 20,
-                    height: 20,
-                  ),
-                  const SizedBox(width: 20),
-                  Text(
-                    '삭제',
-                    style: TextStyle(fontSize: 18, color: Colors.black54),
-                  ),
-                ],
-              ),
+              child: const Text('삭제'),
             ),
           ],
         );
       },
     );
   }
-
-
-
 
   Future<void> updateRoutineCompletion(
       int routineId, bool isCompletion, String date) async {
@@ -942,7 +893,7 @@ String? getImageEmotion(String emotion) {
     case 'ANGRY':
       return 'assets/images/emotion/angry.png';
     default:
-      return "assets/images/new-icons/no-emotion.png"; // 기본 이미지
+      return "assets/images/new-icons/김외롭.png"; // 기본 이미지
   }
 }
 
@@ -958,7 +909,7 @@ String? getImageEmotion2(String emotion) {
     case 'assets/images/emotion/angry.png':
       return 'ANGRY';
     default:
-      return "assets/images/new-icons/no-emotion.png"; // 기본 이미지
+      return "assets/images/new-icons/김외롭.png"; // 기본 이미지
   }
 }
 

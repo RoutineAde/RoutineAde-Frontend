@@ -219,7 +219,7 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                   Text(
                     "반복요일",
                     style: TextStyle(
-                      color: Color(0xFFAEAEAE),
+                      color: Color.fromARGB(255, 56, 56, 56),
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -257,14 +257,16 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                         decoration: BoxDecoration(
                           color: isSelected[i]
                               ? const Color(0xFFB1DAFC)
-                              : Color(0xFFF0F0F0),
+                              : const Color(0xFFF0F0F0),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         alignment: Alignment.center,
                         child: Text(
                           _getWeekdayName(i),
                           style: TextStyle(
-                            color: isSelected[i] ? Color(0xFFFFFFFF) : Color(0xFFAEAEAE),
+                            color: isSelected[i]
+                                ? const Color(0xFFFFFFFF)
+                                : const Color(0xFFAEAEAE),
                           ),
                         ),
                       ),
@@ -294,7 +296,7 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                       const Text(
                         "카테고리",
                         style: TextStyle(
-                          color: Color(0xFFAEAEAE),
+                          color: Color.fromARGB(255, 56, 56, 56),
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -312,28 +314,28 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                             selectedCategoryIndex = index;
                           });
                         },
-                            child: Container(
-                              width: 70,
-                              height: 35,
-                              margin: const EdgeInsets.only(
-                                bottom: 10,
-                              ),
-                              decoration: BoxDecoration(
+                        child: Container(
+                          width: 70,
+                          height: 35,
+                          margin: const EdgeInsets.only(
+                            bottom: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: selectedCategoryIndex == index
+                                ? const Color(0xFFB1DAFC)
+                                : const Color(0xFFF0F0F0),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(color: const Color(0xFFF0F0F0)),
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            isCategory[index],
+                            style: TextStyle(
                                 color: selectedCategoryIndex == index
-                                    ? const Color(0xFFB1DAFC)
-                                    : Color(0xFFF0F0F0),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Color(0xFFF0F0F0)),
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                isCategory[index],
-                                style: TextStyle(
-                                    color: selectedCategoryIndex == index
-                                        ? Color(0xFFFFFFFF)
-                                        : Color(0xFFAEAEAE)),
-                              ),
-                            ),
+                                    ? const Color(0xFFFFFFFF)
+                                    : const Color(0xFFAEAEAE)),
+                          ),
+                        ),
                       ),
                     ),
                   ),

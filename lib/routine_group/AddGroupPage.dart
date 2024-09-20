@@ -115,7 +115,10 @@ class _AddGroupPageState extends State<AddGroupPage> {
         return AlertDialog(
           title: const Text(
             '모집인원 선택',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23, ),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 23,
+            ),
           ),
           content: Container(
             padding: const EdgeInsets.symmetric(vertical: 20),
@@ -222,9 +225,9 @@ class _AddGroupPageState extends State<AddGroupPage> {
                               Text(
                                 "대표 카테고리",
                                 style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold, color: Color(0xFFAEAEAE)
-                                ),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 56, 56, 56)),
                               ),
                             ],
                           ),
@@ -246,17 +249,18 @@ class _AddGroupPageState extends State<AddGroupPage> {
                                   decoration: BoxDecoration(
                                     color: selectedCategoryIndex == index
                                         ? const Color(0xFFB1DAFC)
-                                        : Color(0xFFF0F0F0),
+                                        : const Color(0xFFF0F0F0),
                                     borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Color(0xFFF0F0F0)),
+                                    border: Border.all(
+                                        color: const Color(0xFFF0F0F0)),
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(
                                     isCategory[index],
                                     style: TextStyle(
                                       color: selectedCategoryIndex == index
-                                          ? Color(0xFFFFFFFF)
-                                          : Color(0xFFAEAEAE),
+                                          ? const Color(0xFFFFFFFF)
+                                          : const Color(0xFFAEAEAE),
                                     ),
                                   ),
                                 ),
@@ -277,23 +281,23 @@ class _AddGroupPageState extends State<AddGroupPage> {
                           const Text(
                             "모집인원",
                             style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold, color: Color(0xFFAEAEAE)
-                            ),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 56, 56, 56)),
                           ),
                           GestureDetector(
                             onTap: _selectMemberCount,
                             child: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                  color: Color(0xFFFFFFFF),
+                                color: const Color(0xFFFFFFFF),
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Text(
                                 '$_selectedMemberCount명',
                                 style: const TextStyle(
                                   fontSize: 16,
-                                  color: Color(0xFFAEAEAE),
+                                  color: Color.fromARGB(255, 56, 56, 56),
                                 ),
                               ),
                             ),

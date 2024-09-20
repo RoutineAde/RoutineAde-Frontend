@@ -256,9 +256,9 @@ class _groupEditState extends State<groupEdit> {
                               Text(
                                 "대표 카테고리",
                                 style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 56, 56, 56)),
                               ),
                             ],
                           ),
@@ -280,17 +280,18 @@ class _groupEditState extends State<groupEdit> {
                                   decoration: BoxDecoration(
                                     color: selectedCategoryIndex == index
                                         ? const Color(0xffA1D1F9)
-                                        : Colors.white,
+                                        : const Color(0xFFF0F0F0),
                                     borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Colors.grey),
+                                    border: Border.all(
+                                        color: const Color(0xFFF0F0F0)),
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(
                                     isCategory[index],
                                     style: TextStyle(
                                       color: selectedCategoryIndex == index
-                                          ? Colors.white
-                                          : Colors.grey,
+                                          ? const Color(0xFFFFFFFF)
+                                          : const Color(0xFFAEAEAE),
                                     ),
                                   ),
                                 ),
@@ -311,9 +312,9 @@ class _groupEditState extends State<groupEdit> {
                           const Text(
                             "모집인원",
                             style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 56, 56, 56)),
                           ),
                           GestureDetector(
                             onTap: _selectMemberCount,
@@ -327,7 +328,7 @@ class _groupEditState extends State<groupEdit> {
                                 '$_selectedMemberCount명',
                                 style: const TextStyle(
                                   fontSize: 16,
-                                  color: Colors.black,
+                                  color: Color.fromARGB(255, 56, 56, 56),
                                 ),
                               ),
                             ),
