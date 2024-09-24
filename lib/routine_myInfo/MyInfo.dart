@@ -30,7 +30,7 @@ class _MyInfoState extends State<MyInfo> {
 
     try {
       final response = await http.get(
-        Uri.parse('http://15.164.88.94:8080/users/profile'),
+        Uri.parse('http://15.164.88.94:8080/users/infos'),
         headers: headers, // 헤더 추가
       );
 
@@ -73,28 +73,9 @@ class _MyInfoState extends State<MyInfo> {
           style: TextStyle(
               color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
         ),
-        automaticallyImplyLeading: false, // 뒤로가기 제거
-        actions: <Widget>[
-          IconButton(
-            icon: Stack(
-              children: [
-                // IconButton(
-                //   icon: Image.asset("assets/images/settings-cog.png"),
-                //   onPressed: () {
-                //     Navigator.push(
-                //       context,
-                //       MaterialPageRoute(
-                //           builder: (context) => ProfileChange()),
-                //     );
-                //   },
-                // ),
-              ],
-            ),
-            onPressed: () {
-              // Handle settings button press
-            },
-          ),
-        ],
+        automaticallyImplyLeading: false,
+        // 뒤로가기 제거
+
       ),
       backgroundColor: Colors.white,
       body: Center(
@@ -133,32 +114,24 @@ class _MyInfoState extends State<MyInfo> {
                               fontSize: 20,
                               fontWeight: FontWeight.bold),
                         ),
-                        SizedBox(width: 130),
+                        //SizedBox(width: 0),
                         // Edit Button
-                        ElevatedButton(
+                        IconButton(
+                          icon: Image.asset(
+                            "assets/images/settings-cog.png",
+                            width: 24, // 아이콘의 크기를 조정
+                            height: 24,
+                          ),
                           onPressed: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => ProfileChange()),
+                                builder: (context) => ProfileChange(),
+                              ),
                             );
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[300], // 버튼 색상
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 5),
-                          ),
-                          child: Text(
-                            '수정하기',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ),
+                        )
+
                       ],
                     ),
                     SizedBox(height: 8),
@@ -182,6 +155,7 @@ class _MyInfoState extends State<MyInfo> {
                     fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
+            // 루틴 & 그룹 Section에서 Row에 Expanded 추가
             Container(
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
               margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -199,12 +173,19 @@ class _MyInfoState extends State<MyInfo> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildInfoColumn('개인 루틴', '16'), // Replace '16' with your fetched data
-                  _buildInfoColumn('그룹 루틴', '6'), // Replace '6' with your fetched data
-                  _buildInfoColumn('그룹', '2'), // Replace '2' with your fetched data
+                  Expanded(
+                    child: _buildInfoColumn('개인 루틴', profile!.personalRoutineCount),
+                  ),
+                  Expanded(
+                    child: _buildInfoColumn('그룹 루틴', profile!.groupRoutineCount),
+                  ),
+                  Expanded(
+                    child: _buildInfoColumn('그룹', profile!.groupCount),
+                  ),
                 ],
               ),
             ),
+
             SizedBox(height: 20),
 
             // 계정 Section
@@ -216,9 +197,9 @@ class _MyInfoState extends State<MyInfo> {
                     fontSize: 18, fontWeight: FontWeight.bold),
               ),
             ),
-            
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 30.0, vertical: 10.0),
               child: TextButton(
                 onPressed: () {
                   // Implement logout functionality
@@ -228,14 +209,16 @@ class _MyInfoState extends State<MyInfo> {
                   children: [
                     Text(
                       '로그아웃',
-                      style: TextStyle(fontSize: 16, color: Colors.black),
+                      style: TextStyle(
+                          fontSize: 16, color: Colors.black),
                     ),
                   ],
                 ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 30.0, vertical: 0.0),
               child: TextButton(
                 onPressed: () {
                   // Implement delete account functionality
@@ -245,13 +228,14 @@ class _MyInfoState extends State<MyInfo> {
                   children: [
                     Text(
                       '탈퇴하기',
-                      style: TextStyle(fontSize: 16, color: Colors.black),
+                      style: TextStyle(
+                          fontSize: 16, color: Colors.black),
                     ),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 20,),
+            SizedBox(height: 50),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30.0),
               child: Text(
@@ -261,7 +245,8 @@ class _MyInfoState extends State<MyInfo> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 30.0, vertical: 10.0),
               child: TextButton(
                 onPressed: () {
                   // Implement contact us functionality
@@ -271,7 +256,8 @@ class _MyInfoState extends State<MyInfo> {
                   children: [
                     Text(
                       '문의하기',
-                      style: TextStyle(fontSize: 16, color: Colors.black),
+                      style: TextStyle(
+                          fontSize: 16, color: Colors.black),
                     ),
                   ],
                 ),
@@ -284,6 +270,7 @@ class _MyInfoState extends State<MyInfo> {
     );
   }
 
+
   // Bottom AppBar widget
   Widget _buildBottomAppBar(BuildContext context) {
     return BottomAppBar(
@@ -294,11 +281,14 @@ class _MyInfoState extends State<MyInfo> {
           _buildBottomAppBarItem(
               context, "assets/images/tap-bar/routine01.png", MyRoutinePage()),
           _buildBottomAppBarItem(
-              context, "assets/images/tap-bar/group01.png", const GroupMainPage()),
+              context, "assets/images/tap-bar/group01.png",
+              const GroupMainPage()),
           _buildBottomAppBarItem(
-              context, "assets/images/tap-bar/statistics01.png", StaticsCalendar()),
+              context, "assets/images/tap-bar/statistics01.png",
+              StaticsCalendar()),
           _buildBottomAppBarItem(
-              context, "assets/images/tap-bar/more02.png", MyInfo()), // Current page
+              context, "assets/images/tap-bar/more02.png", MyInfo()),
+          // Current page
         ],
       ),
     );
@@ -322,11 +312,13 @@ class _MyInfoState extends State<MyInfo> {
   }
 
   // Helper function to build columns for 루틴 & 그룹 info
-  Widget _buildInfoColumn(String label, String value) {
+  Widget _buildInfoColumn(String label, int value) {
     return Column(
+      mainAxisAlignment: MainAxisAlignment.center, // 수직 중앙 정렬
+      crossAxisAlignment: CrossAxisAlignment.center, // 수평 중앙 정렬
       children: [
         Text(
-          value,
+          value.toString(), // int 값을 toString()으로 변환하여 표시
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -347,33 +339,43 @@ class _MyInfoState extends State<MyInfo> {
 
 // Profile 클래스 정의
 class Profile {
-  int userId;
   String profileImage;
   String nickname;
   String intro;
+  int personalRoutineCount;
+  int groupRoutineCount;
+  int groupCount;
 
   Profile({
-    required this.userId,
     required this.profileImage,
     required this.nickname,
     required this.intro,
+    required this.personalRoutineCount,
+    required this.groupRoutineCount,
+    required this.groupCount,
+
   });
 
   factory Profile.fromJson(Map<String, dynamic> json) {
     return Profile(
-      userId: json['userId'] as int,
       profileImage: json['profileImage'] as String,
       nickname: json['nickname'] as String,
       intro: json['intro'] as String,
+      personalRoutineCount: json['personalRoutineCount'] as int,
+      groupRoutineCount: json['groupRoutineCount'] as int,
+      groupCount: json['groupCount'] as int,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'userId': userId,
       'profileImage': profileImage,
       'nickname': nickname,
       'intro': intro,
+      'personalRoutineCount': personalRoutineCount,
+      'groupRoutineCount': groupRoutineCount,
+      'groupCount': groupCount,
+
     };
   }
 }
