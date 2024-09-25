@@ -50,6 +50,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     _controller = CalendarWeekController();
     futureRoutineResponse = fetchRoutines(selectedDate);
     _tabController = TabController(length: 4, vsync: this);
+    _fetchEmotionForSelectedDate(selectedDate);
   }
 
   void _onDateSelected(DateTime date) {
@@ -102,7 +103,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     }
   }
 
-//기분등록
+// 감정 등록 메서드
   Future<void> _registerEmotion(DateTime date, String selectedImage) async {
     final today = DateTime.now();
     final isPastOrToday = date.isBefore(today) || date.isAtSameMomentAs(today);
@@ -138,17 +139,27 @@ class _MyRoutinePageState extends State<MyRoutinePage>
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         print("감정 등록 성공");
-        // 감정을 등록한 후 해당 날짜의 데이터를 가져옴
+
+        // 감정 등록 후 상태 업데이트
         setState(() {
-          futureRoutineResponse = fetchRoutines(selectedDate);
+          userEmotion = getImageEmotion2(selectedImage); // 새로운 감정 상태를 반영
+          futureRoutineResponse = fetchRoutines(selectedDate); // 감정 등록 후 데이터를 다시 가져옴
         });
+
+        // 감정 등록 성공 메시지
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('감정이 성공적으로 등록되었습니다.')),
+          );
+        }
       } else {
-        print("감정 등록 실패: ${response.statusCode}- ${response.body}");
+        print("감정 등록 실패: ${response.statusCode} - ${response.body}");
       }
     } catch (e) {
       print("감정 등록 중 에러: $e");
     }
   }
+
 
   Widget _buildBottomSheetContent(DateTime date) {
     return SizedBox(
@@ -188,77 +199,127 @@ class _MyRoutinePageState extends State<MyRoutinePage>
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(0),
-          child: AppBar(
-            backgroundColor: const Color(0xFF8DCCFF),
-          ),
-        ),
-        bottomNavigationBar: _buildBottomAppBar(),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const AddRoutinePage()));
-          },
-          backgroundColor: const Color(0xffB4DDFF),
-          shape: const CircleBorder(),
-          child: Image.asset('assets/images/add-button.png',
-              width: 70, height: 70),
-        ),
-        body: Column(
-          children: [
-            _buildCalendarWeek(),
-            Container(
-              padding: const EdgeInsets.all(16),
-              color: const Color(0xFFF8F8EF),
-              child: Center(
-                child: GestureDetector(
-                  onTap: () {
-                    final DateTime selectedDateTime =
-                        DateFormat('yyyy.MM.dd').parse(selectedDate);
-                    _showBottomSheet(selectedDateTime);
-                  },
-                  child: Container(
-                    width: 360,
-                    height: 70,
-                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    decoration: BoxDecoration(
-                      color: Colors.white, // White background
-                      borderRadius:
-                          BorderRadius.circular(12), // Rounded corners
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey
-                              .withOpacity(0.3), // Shadow color and opacity
-                          spreadRadius: 2,
-                          blurRadius: 5,
-                          offset: const Offset(0, 3), // Shadow position
-                        ),
-                      ],
+    appBar: PreferredSize(
+      preferredSize: const Size.fromHeight(0),
+      child: AppBar(
+        backgroundColor: const Color(0xFF8DCCFF),
+      ),
+    ),
+    bottomNavigationBar: _buildBottomAppBar(),
+    floatingActionButton: FloatingActionButton(
+      onPressed: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const AddRoutinePage()));
+      },
+      backgroundColor: const Color(0xffB4DDFF),
+      shape: const CircleBorder(),
+      child: Image.asset('assets/images/add-button.png',
+          width: 70, height: 70),
+    ),
+    body: Column(
+      children: [
+        _buildCalendarWeek(),
+        Container(
+          padding: const EdgeInsets.all(16),
+          color: const Color(0xFFF8F8EF),
+          child: Center(
+            child: GestureDetector(
+              onTap: () {
+                final DateTime selectedDateTime =
+                DateFormat('yyyy.MM.dd').parse(selectedDate);
+                _showBottomSheet(selectedDateTime);
+              },
+              child: Container(
+                width: 360,
+                height: 70,
+                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                decoration: BoxDecoration(
+                  color: Colors.white, // White background
+                  borderRadius:
+                  BorderRadius.circular(12), // Rounded corners
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey
+                          .withOpacity(0.3), // Shadow color and opacity
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3), // Shadow position
                     ),
-                    child: Row(
-                      children: [
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        userEmotion != null &&
-                                getImageEmotion(userEmotion!) != null
-                            ? Image.asset(
-                                getImageEmotion(userEmotion!)!,
-                                fit: BoxFit.cover,
-                                width: 50,
-                                height: 50,
-                              )
-                            : Image.asset("assets/images/new-icons/김외롭.png",
-                                width: 50, height: 50),
-                        const SizedBox(width: 10),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: RichText(
-                            text: TextSpan(
-                              style: const TextStyle(
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    userEmotion != null &&
+                        getImageEmotion(userEmotion!) != null
+                        ? Image.asset(
+                      getImageEmotion(userEmotion!)!,
+                      fit: BoxFit.cover,
+                      width: 50,
+                      height: 50,
+                    )
+                        : Image.asset("assets/images/emotion/no-emotion.png",
+                        width: 50, height: 50),
+                    const SizedBox(width: 10),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: RichText(
+                        text: TextSpan(
+                          style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.black), // Default text style
+                          children: userEmotion != null &&
+                              (userEmotion == 'GOOD' ||
+                                  userEmotion == 'SAD' ||
+                                  userEmotion == 'OK' ||
+                                  userEmotion == 'ANGRY')
+                              ? [
+                            const TextSpan(text: '이 날은 기분이 '),
+                            if (userEmotion == 'GOOD')
+                              const TextSpan(
+                                text: '해피',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors
+                                        .yellow), // Highlighted text style for GOOD
+                              ),
+                            if (userEmotion == 'SAD')
+                              const TextSpan(
+                                text: '우중충',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors
+                                        .blue), // Highlighted text style for SAD
+                              ),
+                            if (userEmotion == 'OK')
+                              const TextSpan(
+                                text: '쏘쏘',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors
+                                        .green), // Highlighted text style for OK
+                              ),
+                            if (userEmotion == 'ANGRY')
+                              const TextSpan(
+                                text: '나쁜',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors
+                                        .redAccent), // Highlighted text style for ANGRY
+                              ),
+                            TextSpan(
+                                text: userEmotion == 'ANGRY'
+                                    ? ' 날이에요'
+                                    : '한 날이에요')
+                          ]
+                              : [
+                            const TextSpan(
+                              text: '오늘의 기분을 추가해보세요',
+                              style: TextStyle(
                                   fontSize: 18,
                                   color: Colors.black), // Default text style
                               children: userEmotion != null &&
@@ -892,7 +953,7 @@ String? getImageEmotion(String emotion) {
     case 'ANGRY':
       return 'assets/images/emotion/angry.png';
     default:
-      return "assets/images/new-icons/김외롭.png"; // 기본 이미지
+      return "assets/images/emotion/no-emotion.png"; // 기본 이미지
   }
 }
 
@@ -908,7 +969,7 @@ String? getImageEmotion2(String emotion) {
     case 'assets/images/emotion/angry.png':
       return 'ANGRY';
     default:
-      return "assets/images/new-icons/김외롭.png"; // 기본 이미지
+      return "assets/images/emotion/no-emotion.png"; // 기본 이미지
   }
 }
 

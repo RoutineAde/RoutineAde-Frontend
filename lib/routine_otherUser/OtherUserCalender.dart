@@ -193,8 +193,8 @@ class _OtherusercalenderState extends State<Otherusercalender>
                   final dayInfo = routineStatistics
                       ?.userRoutineCompletionStatistics.routineCompletionInfos
                       .firstWhere((element) => element.day == date.day,
-                          orElse: () =>
-                              RoutineCompletionInfo(day: 0, level: 0));
+                      orElse: () =>
+                          RoutineCompletionInfo(day: 0, level: 0));
 
                   return _buildDayCell(date, dayInfo?.level ?? 0);
                 },
@@ -224,15 +224,17 @@ class _OtherusercalenderState extends State<Otherusercalender>
                   return days[date.weekday - 1];
                 },
                 weekdayStyle: const TextStyle(
-                  fontSize: 14.0,
+                  fontSize: 16.0,
                   color: Colors.black,
                 ),
                 weekendStyle: const TextStyle(
-                  fontSize: 14.0,
+                  fontSize: 16.0,
                   color: Colors.black,
                 ),
               ),
               headerVisible: false,
+              daysOfWeekHeight: 30.0,
+
             ),
           ),
           Padding(
@@ -249,7 +251,7 @@ class _OtherusercalenderState extends State<Otherusercalender>
                     color: Colors.white,
                     shape: BoxShape.circle,
                     border:
-                        Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                    Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
                   ),
                 ),
                 const SizedBox(width: 8.0),
@@ -260,7 +262,7 @@ class _OtherusercalenderState extends State<Otherusercalender>
                     color: const Color(0xffCAF4FF),
                     shape: BoxShape.circle,
                     border:
-                        Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                    Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
                   ),
                 ),
                 const SizedBox(width: 8.0),
@@ -271,7 +273,7 @@ class _OtherusercalenderState extends State<Otherusercalender>
                     color: const Color(0xffA0DEFF),
                     shape: BoxShape.circle,
                     border:
-                        Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                    Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
                   ),
                 ),
                 const SizedBox(width: 8.0),
@@ -282,7 +284,7 @@ class _OtherusercalenderState extends State<Otherusercalender>
                     color: const Color(0xff5AB2FF),
                     shape: BoxShape.circle,
                     border:
-                        Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                    Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
                   ),
                 ),
                 const SizedBox(width: 8.0),
@@ -332,7 +334,7 @@ class RoutineStatistics {
 
   RoutineStatistics(
       {required this.completedRoutinesCount,
-      required this.userRoutineCompletionStatistics});
+        required this.userRoutineCompletionStatistics});
 
   factory RoutineStatistics.fromJson(Map<String, dynamic> json) {
     return RoutineStatistics(

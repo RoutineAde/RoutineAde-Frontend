@@ -82,8 +82,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         backgroundImage: _imageFile != null
                             ? FileImage(_imageFile!)
                             : const AssetImage(
-                                    'assets/images/default_profile.png')
-                                as ImageProvider,
+                            'assets/images/default_profile.png')
+                        as ImageProvider,
                       ),
                       Positioned(
                         bottom: 0,

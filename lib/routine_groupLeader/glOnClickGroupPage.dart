@@ -217,7 +217,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
             Container(
               color: Colors.white, // DrawerHeader의 배경색
               padding:
-                  const EdgeInsets.only(top: 120.0), // DrawerHeader 위쪽 여백 추가
+              const EdgeInsets.only(top: 120.0), // DrawerHeader 위쪽 여백 추가
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -274,7 +274,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
                         isLeader: groupResponse.isGroupAdmin &&
                             member.nickname ==
                                 groupInfo.createdUserNickname // isLeader flag
-                        );
+                    );
                   }),
                 ],
               ),
@@ -642,6 +642,7 @@ void _showRoutineDialog(
       //final categoryColor = getCategoryColor(routineCategory); // 카테고리 색상 얻기
 
       return AlertDialog(
+        backgroundColor: Colors.white,
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [

@@ -256,7 +256,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text("루틴장 ${group.createdUserNickname}"),
+                                  Text("그룹장 ${group.createdUserNickname}"),
                                   Text("그룹코드 ${group.groupId}"),
                                 ],
                               ),

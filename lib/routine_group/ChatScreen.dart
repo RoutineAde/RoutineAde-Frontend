@@ -246,9 +246,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
     if (_nickname != null) {
       final response =
-          await createChatMessage(widget.groupId, text, _imageFile);
-
-      // API 응답에서 createdDate와 createdTime을 추출합니다.
+      await createChatMessage(widget.groupId, text, _imageFile);
       final createdDate = response['createdDate'];
       final createdTime = response['createdTime'];
 
@@ -420,7 +418,7 @@ class ChatMessage extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment:
-                  isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+              isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
               children: <Widget>[
                 if (!isMine)
                   Container(

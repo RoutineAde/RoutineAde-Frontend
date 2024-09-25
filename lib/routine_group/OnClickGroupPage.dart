@@ -206,7 +206,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
             Container(
               color: Colors.white, // DrawerHeader의 배경색
               padding:
-                  const EdgeInsets.only(top: 120.0), // DrawerHeader 위쪽 여백 추가
+              const EdgeInsets.only(top: 120.0), // DrawerHeader 위쪽 여백 추가
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
