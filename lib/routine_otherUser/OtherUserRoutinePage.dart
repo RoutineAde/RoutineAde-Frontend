@@ -466,12 +466,12 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
             activeColor: const Color(0xFF8DCCFF),
             checkColor: Colors.white,
             fillColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
-                  if (states.contains(WidgetState.selected)) {
-                    return const Color(0xFF8DCCFF);
-                  }
-                  return Colors.transparent;
-                }),
+                (Set<WidgetState> states) {
+              if (states.contains(WidgetState.selected)) {
+                return const Color(0xFF8DCCFF);
+              }
+              return Colors.transparent;
+            }),
           ),
         ),
       ),
@@ -525,7 +525,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
         title: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment:
-          MainAxisAlignment.start, // Align elements to the start of the row
+              MainAxisAlignment.start, // Align elements to the start of the row
           children: [
             Text(routine.routineTitle,
                 style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -548,12 +548,12 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
             activeColor: const Color(0xFF8DCCFF),
             checkColor: Colors.white,
             fillColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
-                  if (states.contains(WidgetState.selected)) {
-                    return const Color(0xFF8DCCFF);
-                  }
-                  return Colors.transparent;
-                }),
+                (Set<WidgetState> states) {
+              if (states.contains(WidgetState.selected)) {
+                return const Color(0xFF8DCCFF);
+              }
+              return Colors.transparent;
+            }),
           ),
         ),
       ),
@@ -621,8 +621,8 @@ String getTextForEmotion(String emotion) {
       return '이 날은 기분이 우중충한 날이에요';
     case 'ANGRY':
       return '이 날은 기분이 나쁜 날이에요';
-  // case 'null':
-  //   return '기분을 추가해보세요!';
+    // case 'null':
+    //   return '기분을 추가해보세요!';
     default:
       return '기분을 추가해보세요!'; // 기본 텍스트
   }
@@ -659,19 +659,19 @@ class RoutineResponse2 {
       nickname: json['nickname'] ?? '기타',
       intro: json['intro'] ?? '기타',
       personalRoutines: (json['personalRoutines'] as List<dynamic>?)
-          ?.map((item) =>
-          UserRoutineCategory.fromJson(item as Map<String, dynamic>))
-          .toList() ??
+              ?.map((item) =>
+                  UserRoutineCategory.fromJson(item as Map<String, dynamic>))
+              .toList() ??
           [],
       groupRoutines: (json['groupRoutines'] as List<dynamic>?)
-          ?.map((item) => Group2.fromJson(item as Map<String, dynamic>))
-          .toList() ??
+              ?.map((item) => Group2.fromJson(item as Map<String, dynamic>))
+              .toList() ??
           [],
       userEmotion: json['userEmotion'] ?? 'null',
       routines: (json['routines'] as List<dynamic>?)
-          ?.map((item) =>
-          UserRoutineCategory.fromJson(item as Map<String, dynamic>))
-          .toList() ??
+              ?.map((item) =>
+                  UserRoutineCategory.fromJson(item as Map<String, dynamic>))
+              .toList() ??
           [],
     );
   }
@@ -689,12 +689,12 @@ class Routine {
 
   Routine(
       {required this.routineId,
-        required this.routineTitle,
-        required this.routineCategory,
-        required this.isAlarmEnabled,
-        required this.startDate,
-        required this.repeatDays,
-        this.isCompletion = false});
+      required this.routineTitle,
+      required this.routineCategory,
+      required this.isAlarmEnabled,
+      required this.startDate,
+      required this.repeatDays,
+      this.isCompletion = false});
 
   factory Routine.fromJson(Map<String, dynamic> json) {
     return Routine(
@@ -703,7 +703,7 @@ class Routine {
       routineCategory: json['routineCategory'] ?? '기타',
       isAlarmEnabled: json['isAlarmEnabled'] ?? false,
       startDate:
-      json["startDate"] ?? DateFormat('yyyy.MM.dd').format(DateTime.now()),
+          json["startDate"] ?? DateFormat('yyyy.MM.dd').format(DateTime.now()),
       repeatDays: List<String>.from(json["repeatDays"] ?? []),
       isCompletion: json['isCompletion'] ?? false,
     );
@@ -724,8 +724,8 @@ class UserRoutineCategory {
     return UserRoutineCategory(
       routineCategory: json['routineCategory'] ?? '',
       routines: (json['routines'] as List)
-          .map((item) => Routine.fromJson(item))
-          .toList() ??
+              .map((item) => Routine.fromJson(item))
+              .toList() ??
           [],
     );
   }

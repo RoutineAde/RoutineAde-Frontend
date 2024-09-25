@@ -298,7 +298,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(
                         5,
-                            (index) => GestureDetector(
+                        (index) => GestureDetector(
                           onTap: () {
                             setState(() {
                               selectedCategoryIndex = index;

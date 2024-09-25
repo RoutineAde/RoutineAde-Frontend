@@ -112,7 +112,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
 
   void _ModifiedRoutine() async {
     final url =
-    Uri.parse('http://15.164.88.94:8080/routines/${widget.routineId}');
+        Uri.parse('http://15.164.88.94:8080/routines/${widget.routineId}');
     //   'routineTitle=${Uri.encodeComponent(_controller.text)}&'
     //   'routineCategory=${Uri.encodeComponent(_getCategoryFromIndex(selectedCategoryIndex))}&'
     //   'isAlarmEnabled=$_isAlarmOn&'
@@ -335,7 +335,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(
                       5,
-                          (index) => GestureDetector(
+                      (index) => GestureDetector(
                         onTap: () {
                           setState(() {
                             selectedCategoryIndex = index;
@@ -481,7 +481,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
                 onPressed: _ModifiedRoutine,
                 style: ButtonStyle(
                   backgroundColor:
-                  WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
+                      WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),

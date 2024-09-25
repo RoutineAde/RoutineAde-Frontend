@@ -192,7 +192,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
     if (imageFile != null) {
       final mimeTypeData =
-      lookupMimeType(imageFile.path, headerBytes: [0xFF, 0xD8])?.split('/');
+          lookupMimeType(imageFile.path, headerBytes: [0xFF, 0xD8])?.split('/');
       final multipartFile = await http.MultipartFile.fromPath(
         'image',
         imageFile.path,
@@ -247,7 +247,6 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     if (_nickname != null) {
       final response =
       await createChatMessage(widget.groupId, text, _imageFile);
-
       final createdDate = response['createdDate'];
       final createdTime = response['createdTime'];
 
@@ -396,7 +395,7 @@ class ChatMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizeTransition(
       sizeFactor:
-      CurvedAnimation(parent: animationController, curve: Curves.easeOut),
+          CurvedAnimation(parent: animationController, curve: Curves.easeOut),
       axisAlignment: 0.0,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 10.0),

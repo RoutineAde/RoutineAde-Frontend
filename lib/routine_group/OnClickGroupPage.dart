@@ -326,8 +326,8 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
 
   ListTile buildDrawerMemberTile(String title, String imagePath,
       {required GroupResponse groupResponse,
-        required GroupMember groupmember,
-        bool isLeader = false}) {
+      required GroupMember groupmember,
+      bool isLeader = false}) {
     return ListTile(
       leading: GestureDetector(
         onTap: () {
@@ -457,7 +457,7 @@ class RoutinePage extends StatelessWidget {
         // 각 카테고리와 루틴 아이템을 동적으로 추가
         ...routineCategories.map((category) {
           final color =
-          getCategoryColor(category.routineCategory); // 카테고리 색상 설정
+              getCategoryColor(category.routineCategory); // 카테고리 색상 설정
           return _buildCategorySection(
             category.routineCategory,
             color,

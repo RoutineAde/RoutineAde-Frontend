@@ -5,15 +5,14 @@ import 'dart:convert';
 
 import '../routine_user/token.dart';
 
-class Otherusercategory extends StatefulWidget {
-  final int userId;
-  const Otherusercategory({super.key, required this.userId});
+class StaticsCategory extends StatefulWidget {
+  const StaticsCategory({super.key});
 
   @override
-  _OtherusercategoryState createState() => _OtherusercategoryState();
+  _StaticsCategoryState createState() => _StaticsCategoryState();
 }
 
-class _OtherusercategoryState extends State<Otherusercategory> {
+class _StaticsCategoryState extends State<StaticsCategory> {
   int completedRoutinesCount = 0;
   List<RoutineCategoryStatistics> routineCategoryStatistics = [];
 
@@ -27,7 +26,7 @@ class _OtherusercategoryState extends State<Otherusercategory> {
 
   Future<void> _fetchCategoryStatistics() async {
     String url =
-        'http://15.164.88.94:8080/users/${widget.userId}/statistics?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
+        'http://15.164.88.94:8080/users/statistics?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
 
     try {
       final response = await http.get(
@@ -38,17 +37,20 @@ class _OtherusercategoryState extends State<Otherusercategory> {
         },
       );
 
+      // UTF-8로 응답 디코딩
       var responseBody = utf8.decode(response.bodyBytes);
       var data = json.decode(responseBody);
 
       print('Response body: $responseBody'); // 응답 확인용 출력
 
       if (response.statusCode == 200) {
+        // 데이터가 null 또는 잘못된 형식일 경우 처리
         if (data != null && data is Map<String, dynamic>) {
           var statistics = CategoryStatistics.fromJson(data);
           setState(() {
             completedRoutinesCount = statistics.completedRoutinesCount;
-            routineCategoryStatistics = statistics.routineCategoryStatistics;
+            routineCategoryStatistics =
+                statistics.routineCategoryStatistics; // 필드 수정
           });
           print(
               "Data loaded successfully: ${routineCategoryStatistics.length} categories");
@@ -86,19 +88,19 @@ class _OtherusercategoryState extends State<Otherusercategory> {
             const SizedBox(height: 20),
             routineCategoryStatistics.isNotEmpty
                 ? Column(
-              children: routineCategoryStatistics
-                  .map((stat) => _buildCategoryList(
-                  stat.category,
-                  stat.completedCount,
-                  _getCategoryColor(stat.category)))
-                  .toList(),
-            )
+                    children: routineCategoryStatistics
+                        .map((stat) => _buildCategoryList(
+                            stat.category,
+                            stat.completedCount,
+                            _getCategoryColor(stat.category)))
+                        .toList(),
+                  )
                 : const Center(
-              child: Text(
-                '완료한 카테고리가 없습니다.',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-            ),
+                    child: Text(
+                      'No categories available for this month.',
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  ),
           ],
         ),
       ),
@@ -151,19 +153,20 @@ class _OtherusercategoryState extends State<Otherusercategory> {
             PieChartData(
               sections: routineCategoryStatistics.isNotEmpty
                   ? routineCategoryStatistics.map((stat) {
-                return PieChartSectionData(
-                  color: _getCategoryColor(stat.category),
-                  value: stat.completedCount.toDouble(),
-                  title: '',
-                  radius: 30,
-                );
-              }).toList()
+                      return PieChartSectionData(
+                        color: _getCategoryColor(stat.category),
+                        value: stat.completedCount.toDouble(),
+                        title: '',
+                        radius: 30,
+                      );
+                    }).toList()
                   : [
-                PieChartSectionData(
-                  color: Colors.grey,
-                  radius: 30,
-                )
-              ],
+                      // 기본 섹션을 추가하여 빈 차트 처리
+                      PieChartSectionData(
+                        color: Colors.grey,
+                        radius: 30,
+                      )
+                    ],
               centerSpaceRadius: 55,
               sectionsSpace: 0,
             ),
@@ -217,7 +220,7 @@ class _OtherusercategoryState extends State<Otherusercategory> {
           ),
           title: Text(category),
           trailing:
-          Text('$completedCount 개', style: const TextStyle(fontSize: 16)),
+              Text('$completedCount 개', style: const TextStyle(fontSize: 16)),
         ),
       ),
     );
@@ -251,12 +254,14 @@ class CategoryStatistics {
   });
 
   factory CategoryStatistics.fromJson(Map<String, dynamic> json) {
-    var list = json['routineCategoryStatistics'] as List? ?? [];
+    var list =
+        json['routineCategoryStatistics'] as List? ?? []; // API 응답의 필드명 사용
     List<RoutineCategoryStatistics> categoryStatisticsList =
-    list.map((stat) => RoutineCategoryStatistics.fromJson(stat)).toList();
+        list.map((stat) => RoutineCategoryStatistics.fromJson(stat)).toList();
     return CategoryStatistics(
-      completedRoutinesCount: json['completedRoutinesCount'] ?? 0,
-      routineCategoryStatistics: categoryStatisticsList,
+      completedRoutinesCount:
+          json['completedRoutinesCount'] ?? 0, // null일 경우 기본값 설정
+      routineCategoryStatistics: categoryStatisticsList, // 필드명 수정
     );
   }
 }
@@ -272,8 +277,8 @@ class RoutineCategoryStatistics {
 
   factory RoutineCategoryStatistics.fromJson(Map<String, dynamic> json) {
     return RoutineCategoryStatistics(
-      category: json['category'] ?? 'Unknown',
-      completedCount: json['completedCount'] ?? 0,
+      category: json['category'] ?? 'Unknown', // null일 경우 기본값 설정
+      completedCount: json['completedCount'] ?? 0, // null일 경우 기본값 설정
     );
   }
 }
