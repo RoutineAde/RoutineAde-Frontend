@@ -126,7 +126,7 @@ class _ProfileChangeState extends State<ProfileChange> {
         final mimeTypeData = lookupMimeType(_imageFile!.path)?.split('/');
         if (mimeTypeData != null && mimeTypeData.length == 2) {
           var multipartFile = await http.MultipartFile.fromPath(
-            'profileImage',
+            'image',
             _imageFile!.path,
             contentType: MediaType(mimeTypeData[0], mimeTypeData[1]),
           );
@@ -196,6 +196,7 @@ class _ProfileChangeState extends State<ProfileChange> {
           },
         ),
       ),
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           Padding(
@@ -216,7 +217,7 @@ class _ProfileChangeState extends State<ProfileChange> {
                             ? NetworkImage(
                             _imageUrl!) // Google Photos 이미지 사용
                             : const AssetImage(
-                            'assets/images/default_profile.png')
+                            'assets/images/defaultProfile.png')
                         as ImageProvider,
                       ),
                       Positioned(

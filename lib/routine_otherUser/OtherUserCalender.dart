@@ -234,6 +234,7 @@ class _OtherusercalenderState extends State<Otherusercalender>
               ),
               headerVisible: false,
               daysOfWeekHeight: 30.0,
+
             ),
           ),
           Padding(

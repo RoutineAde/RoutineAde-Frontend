@@ -145,7 +145,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("루틴장 ",
+                    const Text("그룹장 ",
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     Text(Egroup.createdUserNickname),
                     const Text("  인원 ",
@@ -346,20 +346,6 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     );
   }
 
-  // void _checkPassword(EntireGroup group) {
-  //   setState(() {
-  //     if (_passwordController.text == group.groupPassword) {
-  //       Navigator.of(context).pop();
-  //       _passwordController.clear();
-  //       _isPasswordIncorrect = false;
-  //       // 비밀번호가 맞으면, 참여 로직 추가 가능
-  //       print("참여 성공!");
-  //     } else {
-  //       _isPasswordIncorrect = true;
-  //     }
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -515,7 +501,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                       MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
-                                            "루틴장 ${group.createdUserNickname}"),
+                                            "그룹장 ${group.createdUserNickname}"),
                                         Text("그룹코드 ${group.groupId}"),
                                       ],
                                     ),

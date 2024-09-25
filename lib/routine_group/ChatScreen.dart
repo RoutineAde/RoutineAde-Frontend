@@ -247,8 +247,6 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     if (_nickname != null) {
       final response =
       await createChatMessage(widget.groupId, text, _imageFile);
-
-      // API 응답에서 createdDate와 createdTime을 추출합니다.
       final createdDate = response['createdDate'];
       final createdTime = response['createdTime'];
 

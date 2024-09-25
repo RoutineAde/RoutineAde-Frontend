@@ -103,6 +103,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     }
   }
 
+
 // 감정 등록 메서드
   Future<void> _registerEmotion(DateTime date, String selectedImage) async {
     final today = DateTime.now();
@@ -262,7 +263,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                       width: 50,
                       height: 50,
                     )
-                        : Image.asset("assets/images/new-icons/김외롭.png",
+                        : Image.asset("assets/images/emotion/no-emotion.png",
                         width: 50, height: 50),
                     const SizedBox(width: 10),
                     const SizedBox(width: 10),
@@ -745,10 +746,11 @@ class _MyRoutinePageState extends State<MyRoutinePage>
       barrierColor: Colors.black54,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(routine.routineTitle),
-          content: Text(routine.routineCategory ?? '기타'),
+          backgroundColor: Colors.white,
+          title: Text(routine.routineTitle),  // Title과 함께 routineTitle 표시
+          content: Text(routine.routineCategory),  // Category 표시
           actions: <Widget>[
-            ElevatedButton(
+            TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.push(
@@ -757,16 +759,29 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                       builder: (context) => ModifiedroutinePage(
                         routineId: routine.routineId,
                         routineTitle: routine.routineTitle,
-                        routineCategory: routine.routineCategory,
+                        routineCategory: routine.routineCategory,  // 이 부분도 연동
                         isAlarmEnabled: routine.isAlarmEnabled,
                         startDate: routine.startDate,
                         repeatDays: routine.repeatDays,
                       )),
                 );
               },
-              child: const Text('수정'),
+              child: Row(
+                children: [
+                  Image.asset(
+                    "assets/images/edit.png",
+                    width: 20,
+                    height: 20,
+                  ),
+                  const SizedBox(width: 20),
+                  Text(
+                    '수정',
+                    style: TextStyle(fontSize: 18, color: Colors.black54),
+                  ),
+                ],
+              ),
             ),
-            ElevatedButton(
+            TextButton(
               onPressed: () async {
                 // 다이얼로그를 먼저 닫음
                 Navigator.of(context).pop();
@@ -779,13 +794,27 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                   futureRoutineResponse = fetchRoutines(selectedDate);
                 });
               },
-              child: const Text('삭제'),
+              child: Row(
+                children: [
+                  Image.asset(
+                    "assets/images/delete.png",
+                    width: 20,
+                    height: 20,
+                  ),
+                  const SizedBox(width: 20),
+                  Text(
+                    '삭제',
+                    style: TextStyle(fontSize: 18, color: Colors.black54),
+                  ),
+                ],
+              ),
             ),
           ],
         );
       },
     );
   }
+
 
   Future<void> updateRoutineCompletion(
       int routineId, bool isCompletion, String date) async {
@@ -903,7 +932,7 @@ String? getImageEmotion(String emotion) {
     case 'ANGRY':
       return 'assets/images/emotion/angry.png';
     default:
-      return "assets/images/new-icons/김외롭.png"; // 기본 이미지
+      return "assets/images/emotion/no-emotion.png"; // 기본 이미지
   }
 }
 
@@ -919,7 +948,7 @@ String? getImageEmotion2(String emotion) {
     case 'assets/images/emotion/angry.png':
       return 'ANGRY';
     default:
-      return "assets/images/new-icons/김외롭.png"; // 기본 이미지
+      return "assets/images/emotion/no-emotion.png"; // 기본 이미지
   }
 }
 
