@@ -113,7 +113,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
               borderRadius: BorderRadius.circular(18.0),
             ),
             contentPadding:
-            const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
             title: Center(
               child: Column(
                 children: [
@@ -145,7 +145,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text("루틴장 ",
+                    const Text("그룹장 ",
                         style: TextStyle(fontWeight: FontWeight.bold)),
                     Text(Egroup.createdUserNickname),
                     const Text("  인원 ",
@@ -346,20 +346,6 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     );
   }
 
-  // void _checkPassword(EntireGroup group) {
-  //   setState(() {
-  //     if (_passwordController.text == group.groupPassword) {
-  //       Navigator.of(context).pop();
-  //       _passwordController.clear();
-  //       _isPasswordIncorrect = false;
-  //       // 비밀번호가 맞으면, 참여 로직 추가 가능
-  //       print("참여 성공!");
-  //     } else {
-  //       _isPasswordIncorrect = true;
-  //     }
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -411,7 +397,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                               bool isSelected = selectedCategory == category;
                               return Padding(
                                 padding:
-                                const EdgeInsets.symmetric(horizontal: 3.0),
+                                    const EdgeInsets.symmetric(horizontal: 3.0),
                                 child: ElevatedButton(
                                   onPressed: () {
                                     setState(() {
@@ -444,88 +430,88 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                       child: _isLoading
                           ? const Center(child: CircularProgressIndicator())
                           : ListView.builder(
-                        itemCount: filteredGroups.length,
-                        itemBuilder: (context, index) {
-                          final group = filteredGroups[index];
-                          Color textColor =
-                          getCategoryColor(group.groupCategory);
-                          return InkWell(
-                            onTap: () {
-                              _showGroupDialog(group);
-                            },
-                            child: Card(
-                              margin: const EdgeInsets.all(8.0),
-                              color: const Color(0xFFE6F5F8),
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              group.groupTitle,
-                                              style: const TextStyle(
-                                                fontSize: 18,
-                                                fontWeight:
-                                                FontWeight.bold,
+                              itemCount: filteredGroups.length,
+                              itemBuilder: (context, index) {
+                                final group = filteredGroups[index];
+                                Color textColor =
+                                    getCategoryColor(group.groupCategory);
+                                return InkWell(
+                                  onTap: () {
+                                    _showGroupDialog(group);
+                                  },
+                                  child: Card(
+                                    margin: const EdgeInsets.all(8.0),
+                                    color: const Color(0xFFE6F5F8),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(16.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    group.groupTitle,
+                                                    style: const TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  if (!group.isPublic)
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 8.0),
+                                                      child: Image.asset(
+                                                        "assets/images/lock.png",
+                                                        color: const Color(
+                                                            0xFF8DCCFF),
+                                                        width: 20,
+                                                        height: 20,
+                                                      ),
+                                                    ),
+                                                ],
                                               ),
-                                            ),
-                                            if (!group.isPublic)
-                                              Padding(
-                                                padding:
-                                                const EdgeInsets.only(
-                                                    left: 8.0),
-                                                child: Image.asset(
-                                                  "assets/images/lock.png",
-                                                  color: const Color(
-                                                      0xFF8DCCFF),
-                                                  width: 20,
-                                                  height: 20,
-                                                ),
+                                            ],
+                                          ),
+                                          const SizedBox(height: 8.0),
+                                          Row(
+                                            children: [
+                                              const Text("대표 카테고리 "),
+                                              Text(group.groupCategory,
+                                                  style: TextStyle(
+                                                      color: textColor)),
+                                              Expanded(child: Container()),
+                                              Align(
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                child: Text(
+                                                    "인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),
                                               ),
-                                          ],
-                                        ),
-                                      ],
+                                            ],
+                                          ),
+                                          const SizedBox(height: 8.0),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                  "그룹장 ${group.createdUserNickname}"),
+                                              Text("그룹코드 ${group.groupId}"),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    const SizedBox(height: 8.0),
-                                    Row(
-                                      children: [
-                                        const Text("대표 카테고리 "),
-                                        Text(group.groupCategory,
-                                            style: TextStyle(
-                                                color: textColor)),
-                                        Expanded(child: Container()),
-                                        Align(
-                                          alignment:
-                                          Alignment.centerRight,
-                                          child: Text(
-                                              "인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                            "루틴장 ${group.createdUserNickname}"),
-                                        Text("그룹코드 ${group.groupId}"),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
+                                  ),
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
                     ),
                   ],
                 ),

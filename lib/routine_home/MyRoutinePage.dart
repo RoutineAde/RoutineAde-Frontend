@@ -262,7 +262,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                       width: 50,
                       height: 50,
                     )
-                        : Image.asset("assets/images/new-icons/김외롭.png",
+                        : Image.asset("assets/images/emotion/no-emotion.png",
                         width: 50, height: 50),
                     const SizedBox(width: 10),
                     const SizedBox(width: 10),
@@ -903,7 +903,7 @@ String? getImageEmotion(String emotion) {
     case 'ANGRY':
       return 'assets/images/emotion/angry.png';
     default:
-      return "assets/images/new-icons/김외롭.png"; // 기본 이미지
+      return "assets/images/emotion/no-emotion.png"; // 기본 이미지
   }
 }
 
@@ -919,7 +919,7 @@ String? getImageEmotion2(String emotion) {
     case 'assets/images/emotion/angry.png':
       return 'ANGRY';
     default:
-      return "assets/images/new-icons/김외롭.png"; // 기본 이미지
+      return "assets/images/emotion/no-emotion.png"; // 기본 이미지
   }
 }
 
