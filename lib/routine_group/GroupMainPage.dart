@@ -69,7 +69,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
 
   //내그룹 조회
   Future<void> _fetchGroups() async {
-    final url = Uri.parse('http://15.164.88.94:8080/groups/my');
+    final url = Uri.parse('http://15.164.88.94/groups/my');
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -94,7 +94,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
   }
 
   Future<bool> fetchIsGroupAdmin(int groupId) async {
-    final url = Uri.parse("http://15.164.88.94:8080/groups/$groupId");
+    final url = Uri.parse("http://15.164.88.94/groups/$groupId");
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -322,7 +322,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
                 // 더보기 버튼 클릭 시 동작할 코드
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => MyInfo()),
+                  MaterialPageRoute(builder: (context) => const MyInfo()),
                 );
               },
               child: SizedBox(

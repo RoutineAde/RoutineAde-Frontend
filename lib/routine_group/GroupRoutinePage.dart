@@ -47,7 +47,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     String categoryQuery = category != null && category != '전체'
         ? 'groupCategory=${Uri.encodeComponent(category)}'
         : 'groupCategory=%EC%A0%84%EC%B2%B4';
-    final url = Uri.parse('http://15.164.88.94:8080/groups?$categoryQuery');
+    final url = Uri.parse('http://15.164.88.94/groups?$categoryQuery');
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -169,7 +169,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
               ],
             ),
             actions: [
-              ButtonBar(
+              OverflowBar(
                 alignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
@@ -227,7 +227,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
   }
 
   Future<bool> fetchIsGroupAdmin(int groupId) async {
-    final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId');
+    final url = Uri.parse('http://15.164.88.94/groups/$groupId');
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -250,7 +250,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
 
   Future<bool> _joinGroup(int groupId, {String? password}) async {
     final url = Uri.parse(
-      'http://15.164.88.94:8080/groups/$groupId/join?password=${Uri.encodeComponent(password ?? '')}',
+      'http://15.164.88.94/groups/$groupId/join?password=${Uri.encodeComponent(password ?? '')}',
     );
 
     final response = await http.post(
@@ -300,7 +300,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                 ],
               ),
               actions: [
-                ButtonBar(
+                OverflowBar(
                   alignment: MainAxisAlignment.end,
                   children: [
                     TextButton(

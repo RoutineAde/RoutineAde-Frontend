@@ -33,7 +33,7 @@ class MyRoutinePage extends StatefulWidget {
 class _MyRoutinePageState extends State<MyRoutinePage>
     with SingleTickerProviderStateMixin {
   Future<RoutineResponse>?
-  futureRoutineResponse; // late 키워드를 사용하여 초기화를 나중에 하도록 설정
+      futureRoutineResponse; // late 키워드를 사용하여 초기화를 나중에 하도록 설정
   String selectedDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
   late CalendarWeekController _controller;
   String? userEmotion;
@@ -143,7 +143,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         // 감정 등록 후 상태 업데이트
         setState(() {
           userEmotion = getImageEmotion2(selectedImage); // 새로운 감정 상태를 반영
-          futureRoutineResponse = fetchRoutines(selectedDate); // 감정 등록 후 데이터를 다시 가져옴
+          futureRoutineResponse =
+              fetchRoutines(selectedDate); // 감정 등록 후 데이터를 다시 가져옴
         });
 
         // 감정 등록 성공 메시지
@@ -159,7 +160,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
       print("감정 등록 중 에러: $e");
     }
   }
-
 
   Widget _buildBottomSheetContent(DateTime date) {
     return SizedBox(
@@ -199,299 +199,301 @@ class _MyRoutinePageState extends State<MyRoutinePage>
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: PreferredSize(
-      preferredSize: const Size.fromHeight(0),
-      child: AppBar(
-        backgroundColor: const Color(0xFF8DCCFF),
-      ),
-    ),
-    bottomNavigationBar: _buildBottomAppBar(),
-    floatingActionButton: FloatingActionButton(
-      onPressed: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => const AddRoutinePage()));
-      },
-      backgroundColor: const Color(0xffB4DDFF),
-      shape: const CircleBorder(),
-      child: Image.asset('assets/images/add-button.png',
-          width: 70, height: 70),
-    ),
-    body: Column(
-      children: [
-        _buildCalendarWeek(),
-        Container(
-          padding: const EdgeInsets.all(16),
-          color: const Color(0xFFF8F8EF),
-          child: Center(
-            child: GestureDetector(
-              onTap: () {
-                final DateTime selectedDateTime =
-                DateFormat('yyyy.MM.dd').parse(selectedDate);
-                _showBottomSheet(selectedDateTime);
-              },
-              child: Container(
-                width: 360,
-                height: 70,
-                padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                decoration: BoxDecoration(
-                  color: Colors.white, // White background
-                  borderRadius:
-                  BorderRadius.circular(12), // Rounded corners
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey
-                          .withOpacity(0.3), // Shadow color and opacity
-                      spreadRadius: 2,
-                      blurRadius: 5,
-                      offset: const Offset(0, 3), // Shadow position
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    userEmotion != null &&
-                        getImageEmotion(userEmotion!) != null
-                        ? Image.asset(
-                      getImageEmotion(userEmotion!)!,
-                      fit: BoxFit.cover,
-                      width: 50,
-                      height: 50,
-                    )
-                        : Image.asset("assets/images/emotion/no-emotion.png",
-                        width: 50, height: 50),
-                    const SizedBox(width: 10),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: RichText(
-                        text: TextSpan(
-                          style: const TextStyle(
-                              fontSize: 18,
-                              color: Colors.black), // Default text style
-                          children: userEmotion != null &&
-                              (userEmotion == 'GOOD' ||
-                                  userEmotion == 'SAD' ||
-                                  userEmotion == 'OK' ||
-                                  userEmotion == 'ANGRY')
-                              ? [
-                            const TextSpan(text: '이 날은 기분이 '),
-                            if (userEmotion == 'GOOD')
-                              const TextSpan(
-                                text: '해피',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors
-                                        .yellow), // Highlighted text style for GOOD
-                              ),
-                            if (userEmotion == 'SAD')
-                              const TextSpan(
-                                text: '우중충',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors
-                                        .blue), // Highlighted text style for SAD
-                              ),
-                            if (userEmotion == 'OK')
-                              const TextSpan(
-                                text: '쏘쏘',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors
-                                        .green), // Highlighted text style for OK
-                              ),
-                            if (userEmotion == 'ANGRY')
-                              const TextSpan(
-                                text: '나쁜',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors
-                                        .redAccent), // Highlighted text style for ANGRY
-                              ),
-                            TextSpan(
-                                text: userEmotion == 'ANGRY'
-                                    ? ' 날이에요'
-                                    : '한 날이에요')
-                          ]
-                              : [
-                            const TextSpan(
-                              text: '오늘의 기분을 추가해보세요',
-                              style: TextStyle(
-                                  fontSize: 18,
-                                  color:
-                                  Colors.black), // Italicize text
-                            ),
-                          ],
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(0),
+          child: AppBar(
+            backgroundColor: const Color(0xFF8DCCFF),
+          ),
+        ),
+        bottomNavigationBar: _buildBottomAppBar(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const AddRoutinePage()));
+          },
+          backgroundColor: const Color(0xffB4DDFF),
+          shape: const CircleBorder(),
+          child: Image.asset('assets/images/add-button.png',
+              width: 70, height: 70),
+        ),
+        body: Column(
+          children: [
+            _buildCalendarWeek(),
+            Container(
+              padding: const EdgeInsets.all(16),
+              color: const Color(0xFFF8F8EF),
+              child: Center(
+                child: GestureDetector(
+                  onTap: () {
+                    final DateTime selectedDateTime =
+                        DateFormat('yyyy.MM.dd').parse(selectedDate);
+                    _showBottomSheet(selectedDateTime);
+                  },
+                  child: Container(
+                    width: 360,
+                    height: 70,
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    decoration: BoxDecoration(
+                      color: Colors.white, // White background
+                      borderRadius:
+                          BorderRadius.circular(12), // Rounded corners
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey
+                              .withOpacity(0.3), // Shadow color and opacity
+                          spreadRadius: 2,
+                          blurRadius: 5,
+                          offset: const Offset(0, 3), // Shadow position
                         ),
-                      ),
+                      ],
                     ),
-                  ],
+                    child: Row(
+                      children: [
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        userEmotion != null &&
+                                getImageEmotion(userEmotion!) != null
+                            ? Image.asset(
+                                getImageEmotion(userEmotion!)!,
+                                fit: BoxFit.cover,
+                                width: 50,
+                                height: 50,
+                              )
+                            : Image.asset(
+                                "assets/images/emotion/no-emotion.png",
+                                width: 50,
+                                height: 50),
+                        const SizedBox(width: 10),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: RichText(
+                            text: TextSpan(
+                              style: const TextStyle(
+                                  fontSize: 18,
+                                  color: Colors.black), // Default text style
+                              children: userEmotion != null &&
+                                      (userEmotion == 'GOOD' ||
+                                          userEmotion == 'SAD' ||
+                                          userEmotion == 'OK' ||
+                                          userEmotion == 'ANGRY')
+                                  ? [
+                                      const TextSpan(text: '이 날은 기분이 '),
+                                      if (userEmotion == 'GOOD')
+                                        const TextSpan(
+                                          text: '해피',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors
+                                                  .yellow), // Highlighted text style for GOOD
+                                        ),
+                                      if (userEmotion == 'SAD')
+                                        const TextSpan(
+                                          text: '우중충',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors
+                                                  .blue), // Highlighted text style for SAD
+                                        ),
+                                      if (userEmotion == 'OK')
+                                        const TextSpan(
+                                          text: '쏘쏘',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors
+                                                  .green), // Highlighted text style for OK
+                                        ),
+                                      if (userEmotion == 'ANGRY')
+                                        const TextSpan(
+                                          text: '나쁜',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors
+                                                  .redAccent), // Highlighted text style for ANGRY
+                                        ),
+                                      TextSpan(
+                                          text: userEmotion == 'ANGRY'
+                                              ? ' 날이에요'
+                                              : '한 날이에요')
+                                    ]
+                                  : [
+                                      const TextSpan(
+                                        text: '오늘의 기분을 추가해보세요',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color:
+                                                Colors.black), // Italicize text
+                                      ),
+                                    ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
-          ),
-        ),
-        Expanded(
-          child: Container(
-            color: const Color(0xFFF8F8EF),
-            child: FutureBuilder<RoutineResponse>(
-              future: futureRoutineResponse,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(
-                      child:
-                      Text('루틴을 불러오는 중 오류가 발생했습니다: ${snapshot.error}'));
-                } else if (!snapshot.hasData ||
-                    snapshot.data!.personalRoutines.isEmpty) {
-                  return const Center(
-                      child: Text(
+            Expanded(
+              child: Container(
+                color: const Color(0xFFF8F8EF),
+                child: FutureBuilder<RoutineResponse>(
+                  future: futureRoutineResponse,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(
+                          child:
+                              Text('루틴을 불러오는 중 오류가 발생했습니다: ${snapshot.error}'));
+                    } else if (!snapshot.hasData ||
+                        snapshot.data!.personalRoutines.isEmpty) {
+                      return const Center(
+                          child: Text(
                         '\n\t\t\t\t\t\t\t\t 아래 + 버튼을 눌러 \n 새로운 루틴을 추가해보세요',
                         style: TextStyle(fontSize: 20, color: Colors.grey),
                       ));
-                }
-                userEmotion = snapshot.data!.userEmotion; // 감정 상태를 업데이트
+                    }
+                    userEmotion = snapshot.data!.userEmotion; // 감정 상태를 업데이트
 
-                return ListView(
-                  padding: const EdgeInsets.fromLTRB(24, 10, 24, 16),
-                  children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE6F5F8), // 배경색 설정
-                        borderRadius:
-                        BorderRadius.circular(12), // 둥근 모서리 설정
-                      ),
-                      child: Theme(
-                        data: Theme.of(context).copyWith(
-                          dividerColor: Colors.transparent,
-                        ),
-                        child: ExpansionTile(
-                          title: const Text("개인 루틴",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black)), // 텍스트 색상 변경
-                          children: snapshot.data!.personalRoutines
-                              .map((category) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 10, top: 5),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromARGB(
-                                          255, 255, 255, 255),
-                                      borderRadius:
-                                      BorderRadius.circular(20.0),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 1),
-                                    child: Text(
-                                      category.routineCategory,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: _getCategoryColor(
-                                            category.routineCategory),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                // 카테고리 밑에 루틴 추가
-                                ...category.routines.map((routine) {
-                                  return _buildRoutineTile(
-                                      routine); // 기존 _buildRoutineTile 메서드 사용
-                                }),
-                              ],
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    ...snapshot.data!.groupRoutines.map((group) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Container(
+                    return ListView(
+                      padding: const EdgeInsets.fromLTRB(24, 10, 24, 16),
+                      children: <Widget>[
+                        Container(
                           padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFE6F5F8),
-                            borderRadius: BorderRadius.circular(12),
+                            color: const Color(0xFFE6F5F8), // 배경색 설정
+                            borderRadius:
+                                BorderRadius.circular(12), // 둥근 모서리 설정
                           ),
                           child: Theme(
                             data: Theme.of(context).copyWith(
                               dividerColor: Colors.transparent,
                             ),
                             child: ExpansionTile(
-                              title: Text(group.groupTitle,
-                                  style: const TextStyle(
-                                      fontSize: 20, color: Colors.black)),
-                              children:
-                              group.groupRoutines.map((categoryGroup) {
+                              title: const Text("개인 루틴",
+                                  style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.black)), // 텍스트 색상 변경
+                              children: snapshot.data!.personalRoutines
+                                  .map((category) {
                                 return Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Padding(
                                       padding: const EdgeInsets.only(
-                                        left: 10,
-                                      ),
+                                          left: 10, top: 5),
                                       child: Container(
                                         decoration: BoxDecoration(
                                           color: const Color.fromARGB(
                                               255, 255, 255, 255),
                                           borderRadius:
-                                          BorderRadius.circular(20.0),
+                                              BorderRadius.circular(20.0),
                                         ),
-                                        // margin: const EdgeInsets.fromLTRB(
-                                        //     30, 40, 0, 16),
                                         padding: const EdgeInsets.symmetric(
-                                            horizontal: 10.0, vertical: 1),
-                                        child: Column(
-                                          children: [
-                                            // const SizedBox(height: 5),
-                                            Text(
-                                              categoryGroup
-                                                  .routineCategory, // 카테고리 이름
-                                              style: TextStyle(
-                                                color: _getCategoryColor(
-                                                    categoryGroup
-                                                        .routineCategory),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                          ],
+                                            horizontal: 10, vertical: 1),
+                                        child: Text(
+                                          category.routineCategory,
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: _getCategoryColor(
+                                                category.routineCategory),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                    ...categoryGroup.routines.map(
-                                            (routine) => _buildRoutineTile2(
-                                            routine)), // 루틴 목록
+                                    // 카테고리 밑에 루틴 추가
+                                    ...category.routines.map((routine) {
+                                      return _buildRoutineTile(
+                                          routine); // 기존 _buildRoutineTile 메서드 사용
+                                    }),
                                   ],
                                 );
                               }).toList(),
                             ),
                           ),
                         ),
-                      );
-                    }),
-                    const SizedBox(height: 10),
-                  ],
-                );
-              },
+                        const SizedBox(height: 10),
+                        ...snapshot.data!.groupRoutines.map((group) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Container(
+                              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE6F5F8),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Theme(
+                                data: Theme.of(context).copyWith(
+                                  dividerColor: Colors.transparent,
+                                ),
+                                child: ExpansionTile(
+                                  title: Text(group.groupTitle,
+                                      style: const TextStyle(
+                                          fontSize: 20, color: Colors.black)),
+                                  children:
+                                      group.groupRoutines.map((categoryGroup) {
+                                    return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 10,
+                                          ),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: const Color.fromARGB(
+                                                  255, 255, 255, 255),
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            // margin: const EdgeInsets.fromLTRB(
+                                            //     30, 40, 0, 16),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10.0, vertical: 1),
+                                            child: Column(
+                                              children: [
+                                                // const SizedBox(height: 5),
+                                                Text(
+                                                  categoryGroup
+                                                      .routineCategory, // 카테고리 이름
+                                                  style: TextStyle(
+                                                    color: _getCategoryColor(
+                                                        categoryGroup
+                                                            .routineCategory),
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        ...categoryGroup.routines.map(
+                                            (routine) => _buildRoutineTile2(
+                                                routine)), // 루틴 목록
+                                      ],
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                        const SizedBox(height: 10),
+                      ],
+                    );
+                  },
+                ),
+              ),
             ),
-          ),
+          ],
         ),
-      ],
-    ),
-  );
+      );
 
   Color _getCategoryColor(String category) {
     switch (category) {
@@ -550,12 +552,12 @@ class _MyRoutinePageState extends State<MyRoutinePage>
             activeColor: const Color(0xFF8DCCFF),
             checkColor: Colors.white,
             fillColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
-                  if (states.contains(WidgetState.selected)) {
-                    return const Color(0xFF8DCCFF);
-                  }
-                  return Colors.transparent;
-                }),
+                (Set<WidgetState> states) {
+              if (states.contains(WidgetState.selected)) {
+                return const Color(0xFF8DCCFF);
+              }
+              return Colors.transparent;
+            }),
           ),
         ),
       ),
@@ -573,7 +575,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
               "assets/images/tap-bar/group01.png", const GroupMainPage()),
           _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png",
               const StaticsCalendar()),
-          _buildBottomAppBarItem("assets/images/tap-bar/more01.png", MyInfo()),
+          _buildBottomAppBarItem(
+              "assets/images/tap-bar/more01.png", const MyInfo()),
         ],
       ),
     );
@@ -688,7 +691,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         title: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment:
-          MainAxisAlignment.start, // Align elements to the start of the row
+              MainAxisAlignment.start, // Align elements to the start of the row
           children: [
             GestureDetector(
               onTap: () => _showDialog(context, routine),
@@ -722,12 +725,12 @@ class _MyRoutinePageState extends State<MyRoutinePage>
             activeColor: const Color(0xFF8DCCFF),
             checkColor: Colors.white,
             fillColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
-                  if (states.contains(WidgetState.selected)) {
-                    return const Color(0xFF8DCCFF);
-                  }
-                  return Colors.transparent;
-                }),
+                (Set<WidgetState> states) {
+              if (states.contains(WidgetState.selected)) {
+                return const Color(0xFF8DCCFF);
+              }
+              return Colors.transparent;
+            }),
           ),
         ),
         onTap: () => _showDialog(context, routine),
@@ -745,28 +748,43 @@ class _MyRoutinePageState extends State<MyRoutinePage>
       barrierColor: Colors.black54,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(routine.routineTitle),
-          content: Text(routine.routineCategory ?? '기타'),
+          backgroundColor: Colors.white,
+          title: Text(routine.routineTitle), // Title과 함께 routineTitle 표시
+          content: Text(routine.routineCategory), // Category 표시
           actions: <Widget>[
-            ElevatedButton(
+            TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => ModifiedroutinePage(
-                        routineId: routine.routineId,
-                        routineTitle: routine.routineTitle,
-                        routineCategory: routine.routineCategory,
-                        isAlarmEnabled: routine.isAlarmEnabled,
-                        startDate: routine.startDate,
-                        repeatDays: routine.repeatDays,
-                      )),
+                            routineId: routine.routineId,
+                            routineTitle: routine.routineTitle,
+                            routineCategory:
+                                routine.routineCategory, // 이 부분도 연동
+                            isAlarmEnabled: routine.isAlarmEnabled,
+                            startDate: routine.startDate,
+                            repeatDays: routine.repeatDays,
+                          )),
                 );
               },
-              child: const Text('수정'),
+              child: Row(
+                children: [
+                  Image.asset(
+                    "assets/images/edit.png",
+                    width: 20,
+                    height: 20,
+                  ),
+                  const SizedBox(width: 20),
+                  const Text(
+                    '수정',
+                    style: TextStyle(fontSize: 18, color: Colors.black54),
+                  ),
+                ],
+              ),
             ),
-            ElevatedButton(
+            TextButton(
               onPressed: () async {
                 // 다이얼로그를 먼저 닫음
                 Navigator.of(context).pop();
@@ -779,7 +797,20 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                   futureRoutineResponse = fetchRoutines(selectedDate);
                 });
               },
-              child: const Text('삭제'),
+              child: Row(
+                children: [
+                  Image.asset(
+                    "assets/images/delete.png",
+                    width: 20,
+                    height: 20,
+                  ),
+                  const SizedBox(width: 20),
+                  const Text(
+                    '삭제',
+                    style: TextStyle(fontSize: 18, color: Colors.black54),
+                  ),
+                ],
+              ),
             ),
           ],
         );
@@ -934,8 +965,8 @@ String getTextForEmotion(String emotion) {
       return '이 날은 기분이 우중충한 날이에요';
     case 'ANGRY':
       return '이 날은 기분이 나쁜 날이에요';
-  // case 'null':
-  //   return '기분을 추가해보세요!';
+    // case 'null':
+    //   return '기분을 추가해보세요!';
     default:
       return '기분을 추가해보세요!'; // 기본 텍스트
   }
@@ -960,19 +991,19 @@ class RoutineResponse {
   factory RoutineResponse.fromJson(Map<String, dynamic> json) {
     return RoutineResponse(
       personalRoutines: (json['personalRoutines'] as List<dynamic>?)
-          ?.map((item) =>
-          UserRoutineCategory.fromJson(item as Map<String, dynamic>))
-          .toList() ??
+              ?.map((item) =>
+                  UserRoutineCategory.fromJson(item as Map<String, dynamic>))
+              .toList() ??
           [],
       groupRoutines: (json['groupRoutines'] as List<dynamic>?)
-          ?.map((item) => Group2.fromJson(item as Map<String, dynamic>))
-          .toList() ??
+              ?.map((item) => Group2.fromJson(item as Map<String, dynamic>))
+              .toList() ??
           [],
       userEmotion: json['userEmotion'] ?? 'null',
       routines: (json['routines'] as List<dynamic>?)
-          ?.map((item) =>
-          UserRoutineCategory.fromJson(item as Map<String, dynamic>))
-          .toList() ??
+              ?.map((item) =>
+                  UserRoutineCategory.fromJson(item as Map<String, dynamic>))
+              .toList() ??
           [],
     );
   }
@@ -990,12 +1021,12 @@ class Routine {
 
   Routine(
       {required this.routineId,
-        required this.routineTitle,
-        required this.routineCategory,
-        required this.isAlarmEnabled,
-        required this.startDate,
-        required this.repeatDays,
-        this.isCompletion = false});
+      required this.routineTitle,
+      required this.routineCategory,
+      required this.isAlarmEnabled,
+      required this.startDate,
+      required this.repeatDays,
+      this.isCompletion = false});
 
   factory Routine.fromJson(Map<String, dynamic> json) {
     return Routine(
@@ -1004,7 +1035,7 @@ class Routine {
       routineCategory: json['routineCategory'] ?? '기타',
       isAlarmEnabled: json['isAlarmEnabled'] ?? false,
       startDate:
-      json["startDate"] ?? DateFormat('yyyy.MM.dd').format(DateTime.now()),
+          json["startDate"] ?? DateFormat('yyyy.MM.dd').format(DateTime.now()),
       repeatDays: List<String>.from(json["repeatDays"] ?? []),
       isCompletion: json['isCompletion'] ?? false,
     );
@@ -1025,8 +1056,8 @@ class UserRoutineCategory {
     return UserRoutineCategory(
       routineCategory: json['routineCategory'] ?? '',
       routines: (json['routines'] as List)
-          .map((item) => Routine.fromJson(item))
-          .toList() ??
+              .map((item) => Routine.fromJson(item))
+              .toList() ??
           [],
     );
   }

@@ -39,7 +39,7 @@ class _ProfileChangeState extends State<ProfileChange> {
     try {
       // API 호출
       final response = await http.get(
-        Uri.parse('http://15.164.88.94:8080/users/infos'),
+        Uri.parse('http://15.164.88.94/users/infos'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json; charset=UTF-8', // UTF-8 설정
@@ -102,7 +102,7 @@ class _ProfileChangeState extends State<ProfileChange> {
   }
 
   Future<void> _updateProfile() async {
-    final url = Uri.parse('http://15.164.88.94:8080/users/profile');
+    final url = Uri.parse('http://15.164.88.94/users/profile');
     final headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json; charset=UTF-8', // UTF-8 설정

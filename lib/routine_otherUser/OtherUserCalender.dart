@@ -33,7 +33,7 @@ class _OtherusercalenderState extends State<Otherusercalender>
   // API 호출 함수
   Future<void> _fetchRoutineStatistics() async {
     final String url =
-        'http://15.164.88.94:8080/users/${widget.userId}/statistics/calender?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
+        'http://15.164.88.94/users/${widget.userId}/statistics/calender?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
 
     try {
       final response = await http.get(
@@ -193,8 +193,8 @@ class _OtherusercalenderState extends State<Otherusercalender>
                   final dayInfo = routineStatistics
                       ?.userRoutineCompletionStatistics.routineCompletionInfos
                       .firstWhere((element) => element.day == date.day,
-                      orElse: () =>
-                          RoutineCompletionInfo(day: 0, level: 0));
+                          orElse: () =>
+                              RoutineCompletionInfo(day: 0, level: 0));
 
                   return _buildDayCell(date, dayInfo?.level ?? 0);
                 },
@@ -250,7 +250,7 @@ class _OtherusercalenderState extends State<Otherusercalender>
                     color: Colors.white,
                     shape: BoxShape.circle,
                     border:
-                    Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                        Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
                   ),
                 ),
                 const SizedBox(width: 8.0),
@@ -261,7 +261,7 @@ class _OtherusercalenderState extends State<Otherusercalender>
                     color: const Color(0xffCAF4FF),
                     shape: BoxShape.circle,
                     border:
-                    Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                        Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
                   ),
                 ),
                 const SizedBox(width: 8.0),
@@ -272,7 +272,7 @@ class _OtherusercalenderState extends State<Otherusercalender>
                     color: const Color(0xffA0DEFF),
                     shape: BoxShape.circle,
                     border:
-                    Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                        Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
                   ),
                 ),
                 const SizedBox(width: 8.0),
@@ -283,7 +283,7 @@ class _OtherusercalenderState extends State<Otherusercalender>
                     color: const Color(0xff5AB2FF),
                     shape: BoxShape.circle,
                     border:
-                    Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                        Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
                   ),
                 ),
                 const SizedBox(width: 8.0),
@@ -333,7 +333,7 @@ class RoutineStatistics {
 
   RoutineStatistics(
       {required this.completedRoutinesCount,
-        required this.userRoutineCompletionStatistics});
+      required this.userRoutineCompletionStatistics});
 
   factory RoutineStatistics.fromJson(Map<String, dynamic> json) {
     return RoutineStatistics(

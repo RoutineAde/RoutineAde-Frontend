@@ -93,7 +93,7 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
 
   void _ModifiedRoutine() async {
     final url = Uri.parse(
-        'http://15.164.88.94:8080/groups/${widget.groupId}/group-routines/${widget.routineId}');
+        'http://15.164.88.94/groups/${widget.groupId}/group-routines/${widget.routineId}');
 
     final headers = {
       'Content-Type': 'application/json',
@@ -308,7 +308,7 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: List.generate(
                       5,
-                          (index) => GestureDetector(
+                      (index) => GestureDetector(
                         onTap: () {
                           setState(() {
                             selectedCategoryIndex = index;
@@ -353,7 +353,7 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                 onPressed: _ModifiedRoutine,
                 style: ButtonStyle(
                   backgroundColor:
-                  WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
+                      WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),

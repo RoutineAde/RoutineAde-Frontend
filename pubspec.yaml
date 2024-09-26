@@ -4,7 +4,7 @@ description: "A new Flutter project."
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.4.0 <4.0.0"
+  sdk: ">=3.4.0 <5.0.0"
 
 dependencies:
   flutter:
@@ -17,6 +17,7 @@ dependencies:
   #추가한 패키지
   flutter_calendar_week: ^3.0.1
   intl: ^0.18.0
+
   cupertino_icons: ^1.0.6
   json_annotation: ^4.0.1
   shelf_swagger_ui: ^1.0.0+2
@@ -26,8 +27,10 @@ dependencies:
   shared_preferences: ^2.0.8
   table_calendar: ^3.0.0
   fl_chart: ^0.69.0
-  # flutter_localizations:
-  #   sdk: flutter
+  kakao_flutter_sdk: ^1.1.0 #카카오로그인
+  url_launcher: ^6.0.17 # 카카오 로그인
+  webview_flutter: ^4.9.0
+  uni_links: ^0.5.1
 
 dev_dependencies:
   flutter_test:

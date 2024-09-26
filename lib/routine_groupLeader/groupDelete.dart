@@ -22,7 +22,7 @@ class _groupDeleteState extends State<groupDelete> {
       return;
     }
 
-    final url = Uri.parse('http://15.164.88.94:8080/groups/${widget.groupId}');
+    final url = Uri.parse('http://15.164.88.94/groups/${widget.groupId}');
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token', // 토큰 추가
@@ -167,7 +167,7 @@ class _groupDeleteState extends State<groupDelete> {
               padding: const EdgeInsets.fromLTRB(0, 30, 0, 0),
               child: ElevatedButton(
                 onPressed:
-                _isChecked ? _deleteGroup : null, // 체크박스가 체크되어야만 버튼 활성화
+                    _isChecked ? _deleteGroup : null, // 체크박스가 체크되어야만 버튼 활성화
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all<Color>(
                     _isChecked ? const Color(0xffB4DDFF) : Colors.grey,

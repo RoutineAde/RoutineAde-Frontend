@@ -17,7 +17,7 @@ class _groupEditState extends State<groupEdit> {
   final TextEditingController _groupNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _groupDescriptionController =
-  TextEditingController();
+      TextEditingController();
   int _selectedMemberCount = 0; //선택 할 인원 수
 
   // 카테고리 선택 (한번에 하나만)
@@ -39,7 +39,7 @@ class _groupEditState extends State<groupEdit> {
   }
 
   Future<void> _loadGroupInfo() async {
-    final url = Uri.parse("http://15.164.88.94:8080/groups/${widget.groupId}");
+    final url = Uri.parse("http://15.164.88.94/groups/${widget.groupId}");
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -83,10 +83,10 @@ class _groupEditState extends State<groupEdit> {
 
     // 비밀번호 값 설정
     final groupPassword =
-    _passwordController.text.isEmpty ? null : _passwordController.text;
+        _passwordController.text.isEmpty ? null : _passwordController.text;
 
     // 요청 바디 준비
-    final url = Uri.parse('http://15.164.88.94:8080/groups/${widget.groupId}');
+    final url = Uri.parse('http://15.164.88.94/groups/${widget.groupId}');
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -224,7 +224,7 @@ class _groupEditState extends State<groupEdit> {
                           borderSide: BorderSide.none,
                         ),
                         contentPadding:
-                        EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
+                            EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
                         counterText: "", // 글자 수 표시 없애기
                       ),
                     ),
@@ -240,13 +240,13 @@ class _groupEditState extends State<groupEdit> {
                           borderSide: BorderSide.none,
                         ),
                         contentPadding:
-                        EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
+                            EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
                       ),
                     ),
                     Container(
                       color: Colors.white,
                       padding:
-                      const EdgeInsets.only(left: 10, right: 10, top: 10),
+                          const EdgeInsets.only(left: 10, right: 10, top: 10),
                       margin: const EdgeInsets.only(top: 30),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -267,7 +267,7 @@ class _groupEditState extends State<groupEdit> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: List.generate(
                               5,
-                                  (index) => GestureDetector(
+                              (index) => GestureDetector(
                                 onTap: () {
                                   setState(() {
                                     selectedCategoryIndex = index;
@@ -365,7 +365,7 @@ class _groupEditState extends State<groupEdit> {
                   onPressed: _editGroup,
                   style: ButtonStyle(
                     backgroundColor:
-                    WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
+                        WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),

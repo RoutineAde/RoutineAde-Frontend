@@ -114,7 +114,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
                       backgroundImage: profileImage.isNotEmpty
                           ? NetworkImage(profileImage)
                           : const AssetImage('assets/profile_placeholder.png')
-                      as ImageProvider,
+                              as ImageProvider,
                     ),
                     const SizedBox(width: 20),
                     Column(
@@ -154,7 +154,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
                   unselectedLabelColor: Colors.grey,
                   indicator: const UnderlineTabIndicator(
                     borderSide:
-                    BorderSide(width: 3.0, color: Color(0xFF8DCCFF)),
+                        BorderSide(width: 3.0, color: Color(0xFF8DCCFF)),
                     insets: EdgeInsets.symmetric(horizontal: 90.0),
                   ),
                 ),
@@ -190,17 +190,17 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
                                 children: [
                                   const SizedBox(width: 10),
                                   userEmotion.isNotEmpty &&
-                                      getImageEmotion(userEmotion) != null
+                                          getImageEmotion(userEmotion) != null
                                       ? Image.asset(
-                                    getImageEmotion(userEmotion)!,
-                                    fit: BoxFit.cover,
-                                    width: 50,
-                                    height: 50,
-                                  )
+                                          getImageEmotion(userEmotion)!,
+                                          fit: BoxFit.cover,
+                                          width: 50,
+                                          height: 50,
+                                        )
                                       : Image.asset(
-                                      "assets/images/new-icons/김외롭.png",
-                                      width: 50,
-                                      height: 50),
+                                          "assets/images/new-icons/김외롭.png",
+                                          width: 50,
+                                          height: 50),
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: RichText(
@@ -208,7 +208,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
                                         style: const TextStyle(
                                             fontSize: 18, color: Colors.black),
                                         children:
-                                        _buildEmotionText(userEmotion),
+                                            _buildEmotionText(userEmotion),
                                       ),
                                     ),
                                   ),
@@ -221,27 +221,27 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
                           child: Container(
                             color: const Color(0xFFF8F8EF),
                             child: personalRoutines.isEmpty &&
-                                groupRoutines.isEmpty
+                                    groupRoutines.isEmpty
                                 ? const Center(
-                              child: Text(
-                                ' 등록된 루틴이 없습니다.',
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.grey),
-                              ),
-                            )
+                                    child: Text(
+                                      ' 등록된 루틴이 없습니다.',
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.grey),
+                                    ),
+                                  )
                                 : ListView(
-                              padding: const EdgeInsets.fromLTRB(
-                                  24, 10, 24, 16),
-                              children: [
-                                _buildRoutineSection(
-                                    "개인 루틴", personalRoutines),
-                                const SizedBox(height: 10),
-                                ...groupRoutines.map((group) {
-                                  return _buildGroupRoutineSection(group);
-                                }),
-                                const SizedBox(height: 10),
-                              ],
-                            ),
+                                    padding: const EdgeInsets.fromLTRB(
+                                        24, 10, 24, 16),
+                                    children: [
+                                      _buildRoutineSection(
+                                          "개인 루틴", personalRoutines),
+                                      const SizedBox(height: 10),
+                                      ...groupRoutines.map((group) {
+                                        return _buildGroupRoutineSection(group);
+                                      }),
+                                      const SizedBox(height: 10),
+                                    ],
+                                  ),
                           ),
                         ),
                       ],
@@ -297,7 +297,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
           const TextSpan(
             text: '나쁜',
             style:
-            TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent),
+                TextStyle(fontWeight: FontWeight.bold, color: Colors.redAccent),
           ),
           const TextSpan(text: ' 날이에요')
         ];
@@ -316,51 +316,51 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
       String title, List<UserRoutineCategory> routines) {
     return routines.isNotEmpty
         ? Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: const Color(0xFFE6F5F8),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Theme(
-        data:
-        Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
-          title: Text(
-            title,
-            style: const TextStyle(fontSize: 20, color: Colors.black),
-          ),
-          children: routines.map((category) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 10, top: 5),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 1),
-                    child: Text(
-                      category.routineCategory,
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color:
-                        _getCategoryColor(category.routineCategory),
-                      ),
-                    ),
-                  ),
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: const Color(0xFFE6F5F8),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Theme(
+              data:
+                  Theme.of(context).copyWith(dividerColor: Colors.transparent),
+              child: ExpansionTile(
+                title: Text(
+                  title,
+                  style: const TextStyle(fontSize: 20, color: Colors.black),
                 ),
-                ...category.routines
-                    .map((routine) => _buildRoutineTile(routine)),
-              ],
-            );
-          }).toList(),
-        ),
-      ),
-    )
+                children: routines.map((category) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10, top: 5),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 1),
+                          child: Text(
+                            category.routineCategory,
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color:
+                                  _getCategoryColor(category.routineCategory),
+                            ),
+                          ),
+                        ),
+                      ),
+                      ...category.routines
+                          .map((routine) => _buildRoutineTile(routine)),
+                    ],
+                  );
+                }).toList(),
+              ),
+            ),
+          )
         : Container(); // 빈 루틴 섹션 처리
   }
 
@@ -389,7 +389,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
                       borderRadius: BorderRadius.circular(20),
                     ),
                     padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
                     child: Text(
                       categoryGroup.routineCategory,
                       style: TextStyle(
@@ -466,12 +466,12 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
             activeColor: const Color(0xFF8DCCFF),
             checkColor: Colors.white,
             fillColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
-                  if (states.contains(WidgetState.selected)) {
-                    return const Color(0xFF8DCCFF);
-                  }
-                  return Colors.transparent;
-                }),
+                (Set<WidgetState> states) {
+              if (states.contains(WidgetState.selected)) {
+                return const Color(0xFF8DCCFF);
+              }
+              return Colors.transparent;
+            }),
           ),
         ),
       ),
@@ -525,7 +525,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
         title: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment:
-          MainAxisAlignment.start, // Align elements to the start of the row
+              MainAxisAlignment.start, // Align elements to the start of the row
           children: [
             Text(routine.routineTitle,
                 style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -548,12 +548,12 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
             activeColor: const Color(0xFF8DCCFF),
             checkColor: Colors.white,
             fillColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
-                  if (states.contains(WidgetState.selected)) {
-                    return const Color(0xFF8DCCFF);
-                  }
-                  return Colors.transparent;
-                }),
+                (Set<WidgetState> states) {
+              if (states.contains(WidgetState.selected)) {
+                return const Color(0xFF8DCCFF);
+              }
+              return Colors.transparent;
+            }),
           ),
         ),
       ),
@@ -567,8 +567,7 @@ Future<RoutineResponse2> fetchRoutinesByUserId(int userId) async {
 
   try {
     final response = await http.get(
-      Uri.parse(
-          'http://15.164.88.94:8080/users/$userId/routines'), // userId로 조회
+      Uri.parse('http://15.164.88.94/users/$userId/routines'), // userId로 조회
       headers: {
         'Authorization': 'Bearer $token', // 적절한 토큰 사용
         'Content-Type': 'application/json; charset=UTF-8', // UTF-8 설정
@@ -621,8 +620,8 @@ String getTextForEmotion(String emotion) {
       return '이 날은 기분이 우중충한 날이에요';
     case 'ANGRY':
       return '이 날은 기분이 나쁜 날이에요';
-  // case 'null':
-  //   return '기분을 추가해보세요!';
+    // case 'null':
+    //   return '기분을 추가해보세요!';
     default:
       return '기분을 추가해보세요!'; // 기본 텍스트
   }
@@ -659,19 +658,19 @@ class RoutineResponse2 {
       nickname: json['nickname'] ?? '기타',
       intro: json['intro'] ?? '기타',
       personalRoutines: (json['personalRoutines'] as List<dynamic>?)
-          ?.map((item) =>
-          UserRoutineCategory.fromJson(item as Map<String, dynamic>))
-          .toList() ??
+              ?.map((item) =>
+                  UserRoutineCategory.fromJson(item as Map<String, dynamic>))
+              .toList() ??
           [],
       groupRoutines: (json['groupRoutines'] as List<dynamic>?)
-          ?.map((item) => Group2.fromJson(item as Map<String, dynamic>))
-          .toList() ??
+              ?.map((item) => Group2.fromJson(item as Map<String, dynamic>))
+              .toList() ??
           [],
       userEmotion: json['userEmotion'] ?? 'null',
       routines: (json['routines'] as List<dynamic>?)
-          ?.map((item) =>
-          UserRoutineCategory.fromJson(item as Map<String, dynamic>))
-          .toList() ??
+              ?.map((item) =>
+                  UserRoutineCategory.fromJson(item as Map<String, dynamic>))
+              .toList() ??
           [],
     );
   }
@@ -689,12 +688,12 @@ class Routine {
 
   Routine(
       {required this.routineId,
-        required this.routineTitle,
-        required this.routineCategory,
-        required this.isAlarmEnabled,
-        required this.startDate,
-        required this.repeatDays,
-        this.isCompletion = false});
+      required this.routineTitle,
+      required this.routineCategory,
+      required this.isAlarmEnabled,
+      required this.startDate,
+      required this.repeatDays,
+      this.isCompletion = false});
 
   factory Routine.fromJson(Map<String, dynamic> json) {
     return Routine(
@@ -703,7 +702,7 @@ class Routine {
       routineCategory: json['routineCategory'] ?? '기타',
       isAlarmEnabled: json['isAlarmEnabled'] ?? false,
       startDate:
-      json["startDate"] ?? DateFormat('yyyy.MM.dd').format(DateTime.now()),
+          json["startDate"] ?? DateFormat('yyyy.MM.dd').format(DateTime.now()),
       repeatDays: List<String>.from(json["repeatDays"] ?? []),
       isCompletion: json['isCompletion'] ?? false,
     );
@@ -724,8 +723,8 @@ class UserRoutineCategory {
     return UserRoutineCategory(
       routineCategory: json['routineCategory'] ?? '',
       routines: (json['routines'] as List)
-          .map((item) => Routine.fromJson(item))
-          .toList() ??
+              .map((item) => Routine.fromJson(item))
+              .toList() ??
           [],
     );
   }

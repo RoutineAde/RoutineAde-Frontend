@@ -64,7 +64,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
 
   Future<GroupResponse> fetchGroupResponse(int groupId) async {
     final response = await http.get(
-      Uri.parse('http://15.164.88.94:8080/groups/$groupId'),
+      Uri.parse('http://15.164.88.94/groups/$groupId'),
       headers: {
         'Authorization': 'Bearer $token', // 필요 시 여기에 토큰을 추가
         'Accept': 'application/json', // JSON 응답을 기대하는 경우
@@ -83,7 +83,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
 //알람 보내기
   Future<void> updateGroupAlarm(int groupId, bool isEnabled) async {
     final response = await http.patch(
-      Uri.parse('http://15.164.88.94:8080/groups/$groupId'),
+      Uri.parse('http://15.164.88.94/groups/$groupId'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -206,7 +206,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
             Container(
               color: Colors.white, // DrawerHeader의 배경색
               padding:
-              const EdgeInsets.only(top: 120.0), // DrawerHeader 위쪽 여백 추가
+                  const EdgeInsets.only(top: 120.0), // DrawerHeader 위쪽 여백 추가
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -326,8 +326,8 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
 
   ListTile buildDrawerMemberTile(String title, String imagePath,
       {required GroupResponse groupResponse,
-        required GroupMember groupmember,
-        bool isLeader = false}) {
+      required GroupMember groupmember,
+      bool isLeader = false}) {
     return ListTile(
       leading: GestureDetector(
         onTap: () {
@@ -457,7 +457,7 @@ class RoutinePage extends StatelessWidget {
         // 각 카테고리와 루틴 아이템을 동적으로 추가
         ...routineCategories.map((category) {
           final color =
-          getCategoryColor(category.routineCategory); // 카테고리 색상 설정
+              getCategoryColor(category.routineCategory); // 카테고리 색상 설정
           return _buildCategorySection(
             category.routineCategory,
             color,

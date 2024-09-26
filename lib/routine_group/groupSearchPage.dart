@@ -38,7 +38,7 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
     });
 
     final url = Uri.parse(
-        'http://15.164.88.94:8080/groups?groupCategory=%EC%A0%84%EC%B2%B4');
+        'http://15.164.88.94/groups?groupCategory=%EC%A0%84%EC%B2%B4');
 
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
@@ -188,7 +188,7 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
               ],
             ),
             actions: [
-              ButtonBar(
+              OverflowBar(
                 alignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
@@ -243,7 +243,7 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
   }
 
   Future<bool> fetchIsGroupAdmin(int groupId) async {
-    final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId');
+    final url = Uri.parse('http://15.164.88.94/groups/$groupId');
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -266,7 +266,7 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
 
   Future<bool> _joinGroup(int groupId, {String? password}) async {
     final url = Uri.parse(
-      'http://15.164.88.94:8080/groups/$groupId/join?password=${Uri.encodeComponent(password ?? '')}',
+      'http://15.164.88.94/groups/$groupId/join?password=${Uri.encodeComponent(password ?? '')}',
     );
 
     final response = await http.post(
@@ -316,7 +316,7 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
                 ],
               ),
               actions: [
-                ButtonBar(
+                OverflowBar(
                   alignment: MainAxisAlignment.end,
                   children: [
                     TextButton(

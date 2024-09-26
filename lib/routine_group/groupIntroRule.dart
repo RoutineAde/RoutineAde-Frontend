@@ -66,7 +66,7 @@ class _GroupIntroRuleState extends State<GroupIntroRule> {
   }
 
   Future<ApiResponse> fetchGroupInfo(int groupId) async {
-    final url = Uri.parse("http://15.164.88.94:8080/groups/$groupId");
+    final url = Uri.parse("http://15.164.88.94/groups/$groupId");
 
     // 요청 전 로그 추가
     print("Requesting group info for groupId: $groupId");
