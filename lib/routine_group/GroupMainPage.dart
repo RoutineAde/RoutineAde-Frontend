@@ -8,6 +8,11 @@ import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupType.dart';
 import 'package:routine_ade/routine_group/AddGroupPage.dart';
+<<<<<<< HEAD
+=======
+import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
+import 'package:routine_ade/routine_myInfo/MyInfo.dart';
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
 import 'package:routine_ade/routine_user/token.dart';
 
 //전체화면 어둡게
@@ -67,7 +72,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
 
   //내그룹 조회
   Future<void> _fetchGroups() async {
-    final url = Uri.parse('http://15.164.88.94:8080/groups/my');
+    final url = Uri.parse('http://15.164.88.94/groups/my');
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -92,7 +97,11 @@ class _GroupMainPageState extends State<GroupMainPage> {
   }
 
   Future<bool> fetchIsGroupAdmin(int groupId) async {
+<<<<<<< HEAD
     final url = Uri.parse("http://15.164.88.94:8080/groups/$groupId");
+=======
+    final url = Uri.parse("http://15.164.88.94/groups/$groupId");
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -162,16 +171,16 @@ class _GroupMainPageState extends State<GroupMainPage> {
         backgroundColor:
             isExpanded ? Colors.grey[600] : const Color(0xFF8DCCFF),
         automaticallyImplyLeading: false, // 뒤로가기 제거
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16.0),
-            child: Image.asset(
-              "assets/images/bell.png",
-              width: 35,
-              height: 35,
-            ),
-          ),
-        ],
+        // actions: [
+        //   Padding(
+        //     padding: const EdgeInsets.only(right: 16.0),
+        //     child: Image.asset(
+        //       "assets/images/bell.png",
+        //       width: 35,
+        //       height: 35,
+        //     ),
+        //   ),
+        // ],
       ),
       body: DarkOverlay(
         isDark: isExpanded, // 눌렀을때만 어둡게
@@ -254,7 +263,11 @@ class _GroupMainPageState extends State<GroupMainPage> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
+<<<<<<< HEAD
                                   Text("루틴장 ${group.createdUserNickname}"),
+=======
+                                  Text("그룹장 ${group.createdUserNickname}"),
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
                                   Text("그룹코드 ${group.groupId}"),
                                 ],
                               ),
@@ -285,8 +298,8 @@ class _GroupMainPageState extends State<GroupMainPage> {
                 );
               },
               child: SizedBox(
-                width: 50,
-                height: 50,
+                width: 60,
+                height: 60,
                 child: Image.asset("assets/images/tap-bar/routine01.png"),
               ),
             ),
@@ -295,28 +308,37 @@ class _GroupMainPageState extends State<GroupMainPage> {
                 // 그룹 버튼 클릭 시 동작할 코드
               },
               child: SizedBox(
-                width: 50,
-                height: 50,
+                width: 60,
+                height: 60,
                 child: Image.asset("assets/images/tap-bar/group02.png"),
               ),
             ),
             GestureDetector(
               onTap: () {
                 // 통계 버튼 클릭 시 동작할 코드
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const StaticsCalendar()),
+                );
               },
               child: SizedBox(
-                width: 50,
-                height: 50,
+                width: 60,
+                height: 60,
                 child: Image.asset("assets/images/tap-bar/statistics01.png"),
               ),
             ),
             GestureDetector(
               onTap: () {
                 // 더보기 버튼 클릭 시 동작할 코드
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MyInfo()),
+                );
               },
               child: SizedBox(
-                width: 50,
-                height: 50,
+                width: 60,
+                height: 60,
                 child: Image.asset("assets/images/tap-bar/more01.png"),
               ),
             ),
@@ -324,7 +346,6 @@ class _GroupMainPageState extends State<GroupMainPage> {
         ),
       ),
 
-      // add 버튼
       // add 버튼
       floatingActionButton: Stack(
         alignment: Alignment.bottomRight,
@@ -377,9 +398,9 @@ class _GroupMainPageState extends State<GroupMainPage> {
                             },
                           ));
                         },
-                        backgroundColor: const Color(0xffF1E977),
+                        backgroundColor: const Color(0xffB4DDFF),
                         shape: const CircleBorder(),
-                        child: Image.asset('assets/images/add.png'),
+                        child: Image.asset('assets/images/add-button.png'),
                       ),
                     ],
                   ),
@@ -399,11 +420,11 @@ class _GroupMainPageState extends State<GroupMainPage> {
                       },
                       backgroundColor: isExpanded
                           ? const Color(0xfff7c7c7c)
-                          : const Color(0xffF1E977),
+                          : const Color(0xffB4DDFF),
                       shape: const CircleBorder(),
                       child: isExpanded
                           ? Image.asset('assets/images/cancel.png')
-                          : Image.asset('assets/images/add.png'),
+                          : Image.asset('assets/images/add-button.png'),
                     ),
                   ],
                 ),

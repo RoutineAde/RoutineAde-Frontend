@@ -8,12 +8,12 @@ import 'package:routine_ade/routine_groupLeader/AddGroupRoutinePage.dart';
 import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
-import 'package:routine_ade/routine_group/groupManagement.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
-import '../routine_groupLeader/groupRoutineEditPage.dart';
 import 'package:http/http.dart' as http;
 import 'groupType.dart';
 import 'package:routine_ade/routine_user/token.dart';
+import 'group-unjoin.dart';
+import 'package:routine_ade/routine_otherUser/OtherUserRoutinePage.dart';
 
 // 전역 함수로 getCategoryColor를 정의
 Color getCategoryColor(String category) {
@@ -45,7 +45,7 @@ class OnClickGroupPage extends StatefulWidget {
 class _OnClickGroupPageState extends State<OnClickGroupPage>
     with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  bool _isSwitchOn = false;
+  final bool _isSwitchOn = false;
   late TabController _tabController;
   late Future<GroupResponse> futureGroupResponse;
 
@@ -64,7 +64,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
 
   Future<GroupResponse> fetchGroupResponse(int groupId) async {
     final response = await http.get(
-      Uri.parse('http://15.164.88.94:8080/groups/$groupId'),
+      Uri.parse('http://15.164.88.94/groups/$groupId'),
       headers: {
         'Authorization': 'Bearer $token', // 필요 시 여기에 토큰을 추가
         'Accept': 'application/json', // JSON 응답을 기대하는 경우
@@ -80,11 +80,29 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
     }
   }
 
+//알람 보내기
+  Future<void> updateGroupAlarm(int groupId, bool isEnabled) async {
+    final response = await http.patch(
+      Uri.parse('http://15.164.88.94/groups/$groupId'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({'isGroupAlarmEnabled': isEnabled}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update group alarm');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: const Color(0xff8DCCFF),
         title: FutureBuilder<GroupResponse>(
           future: futureGroupResponse,
           builder: (context, snapshot) {
@@ -98,7 +116,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
                 groupResponse.groupInfo.groupTitle,
                 style: const TextStyle(
                     fontSize: 20,
-                    color: Colors.black,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold),
               );
             }
@@ -112,17 +130,23 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
             },
           ),
         ],
-        bottom: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: "루틴"),
-            Tab(text: "채팅"),
-          ],
-          labelStyle: const TextStyle(fontSize: 18),
-          labelColor: Colors.black,
-          indicator: const UnderlineTabIndicator(
-            borderSide: BorderSide(width: 3.0, color: Color(0xffE6E288)),
-            insets: EdgeInsets.symmetric(horizontal: 115.0),
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(kToolbarHeight),
+          child: Container(
+            color: Colors.white,
+            child: TabBar(
+              controller: _tabController,
+              tabs: const [
+                Tab(text: "루틴"),
+                Tab(text: "채팅"),
+              ],
+              labelStyle: const TextStyle(fontSize: 18),
+              labelColor: Colors.black,
+              indicator: const UnderlineTabIndicator(
+                borderSide: BorderSide(width: 3.0, color: Color(0xffB4DDFF)),
+                insets: EdgeInsets.symmetric(horizontal: 115.0),
+              ),
+            ),
           ),
         ),
         centerTitle: true,
@@ -161,7 +185,9 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
               }
             },
           ),
-          ChatScreen(),
+          ChatScreen(
+            groupId: widget.groupId,
+          ),
         ],
       ),
       endDrawerEnableOpenDragGesture: false,
@@ -172,53 +198,74 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
     final groupInfo = groupResponse.groupInfo;
 
     return Drawer(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          DrawerHeader(
-            padding: const EdgeInsets.fromLTRB(25, 10, 10, 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  groupInfo.groupTitle,
-                  style: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-              ],
+      child: Container(
+        color: Colors.white,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Container(
+              color: Colors.white, // DrawerHeader의 배경색
+              padding:
+                  const EdgeInsets.only(top: 120.0), // DrawerHeader 위쪽 여백 추가
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(30, 10, 0, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          groupInfo.groupTitle,
+                          style: const TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 8.0), // Title과 구분선 사이 간격
+                        const Padding(
+                          padding: EdgeInsets.only(left: 5.0), // 구분선 왼쪽 공백
+                          child: Divider(color: Colors.grey), // 구분선 색상 조정
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          Expanded(
-            child: ListView(
-              padding: const EdgeInsets.all(10.0),
-              children: <Widget>[
-                buildDrawerListTile("그룹 코드", "#${groupInfo.groupId}"),
-                buildDrawerListTile(
-                  "대표 카테고리",
-                  groupInfo.groupCategory,
-                  color: Colors.black, // "대표 카테고리"의 title 텍스트는 검은색으로 유지
-                  trailingColor: getCategoryColor(
-                      groupInfo.groupCategory), // trailing 텍스트에만 색상을 적용
-                ),
-                buildDrawerListTile("인원",
-                    "${groupInfo.joinMemberCount} / ${groupInfo.maxMemberCount} 명"),
-                buildSwitchListTile(),
-                const Divider(),
-                buildDrawerHeaderTile("그룹원"),
-                ...groupResponse.groupMembers.map((member) {
-                  return buildDrawerMemberTile(
-                    member.nickname,
-                    member.profileImage,
-                    isLeader: groupResponse.isGroupAdmin &&
-                        member.nickname == groupInfo.createdUserNickname,
-                  );
-                }),
-              ],
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.only(left: 20.0),
+                children: <Widget>[
+                  buildDrawerListTile("그룹 코드", "#${groupInfo.groupId}"),
+                  buildDrawerListTile(
+                    "대표 카테고리",
+                    groupInfo.groupCategory,
+                    color: Colors.black, // "대표 카테고리"의 title 텍스트는 검은색으로 유지
+                    trailingColor: getCategoryColor(
+                        groupInfo.groupCategory), // trailing 텍스트에만 색상을 적용
+                  ),
+                  buildDrawerListTile("인원",
+                      "${groupInfo.joinMemberCount} / ${groupInfo.maxMemberCount} 명"),
+                  buildSwitchListTile(groupResponse),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 20.0),
+                    child: Divider(),
+                  ),
+                  buildDrawerHeaderTile("그룹원"),
+                  ...groupResponse.groupMembers.map((member) {
+                    bool isLeader =
+                        member.nickname == groupInfo.createdUserNickname;
+                    return buildDrawerMemberTile(
+                        member.nickname, member.profileImage,
+                        groupmember: member,
+                        groupResponse: groupResponse,
+                        isLeader: isLeader);
+                  }),
+                ],
+              ),
             ),
-          ),
-          buildLeaveGroupTile(),
-        ],
+            buildLeaveGroupTile(),
+          ],
+        ),
       ),
     );
   }
@@ -243,15 +290,22 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
     );
   }
 
-  ListTile buildSwitchListTile() {
+  ListTile buildSwitchListTile(GroupResponse groupResponse) {
     return ListTile(
       trailing: CupertinoSwitch(
-        activeColor: const Color(0xffE6E288),
-        value: _isSwitchOn,
-        onChanged: (bool value) {
-          setState(() {
-            _isSwitchOn = value;
-          });
+        activeColor: const Color(0xffB4DDFF),
+        value: groupResponse.isGroupAlarmEnabled, //현재 상태 표시
+        onChanged: (bool value) async {
+          try {
+            await updateGroupAlarm(widget.groupId, value); //서버에 알림 설정 요청
+            setState(() {
+              groupResponse.isGroupAlarmEnabled = value; // 알림 상태 업데이트
+            });
+          } catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Failed to update alarm setting')),
+            );
+          }
         },
       ),
       title: const Text(
@@ -271,11 +325,24 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
   }
 
   ListTile buildDrawerMemberTile(String title, String imagePath,
-      {bool isLeader = false}) {
+      {required GroupResponse groupResponse,
+      required GroupMember groupmember,
+      bool isLeader = false}) {
     return ListTile(
-      leading: CircleAvatar(
-        radius: 25,
-        backgroundImage: AssetImage("assets/images/profile/$imagePath"),
+      leading: GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  OtherUserRoutinePage(userId: groupmember.userId),
+            ),
+          );
+        },
+        child: CircleAvatar(
+          radius: 25,
+          backgroundImage: NetworkImage(groupmember.profileImage),
+        ),
       ),
       title: Row(
         children: <Widget>[
@@ -304,14 +371,16 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
       ),
       child: GestureDetector(
         onTap: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const groupManagement()));
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => Groupunjoin(groupId: widget.groupId)));
         },
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.end, // 이미지가 오른쪽에 배치되도록 설정
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Image.asset(
-              'assets/images/new-icons/setting.png',
+              'assets/images/sign-out.png',
               width: 30,
               height: 30,
             ),
@@ -339,7 +408,7 @@ class RoutinePage extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           margin: const EdgeInsets.fromLTRB(30, 20, 30, 0),
           decoration: BoxDecoration(
-            color: Colors.grey[200], // 배경색 설정
+            color: const Color(0xffF6F6F6), // 배경색 설정
             borderRadius: BorderRadius.circular(10.0), // 둥근 모서리 설정
           ),
           child: Row(
@@ -414,12 +483,11 @@ class RoutinePage extends StatelessWidget {
           child: Container(
             height: 40,
             decoration: BoxDecoration(
-              color: Colors.grey[200],
+              color: const Color(0xffF6F6F6),
               borderRadius: BorderRadius.circular(20.0),
             ),
             margin: const EdgeInsets.fromLTRB(30, 40, 0, 16),
-            padding: const EdgeInsets.symmetric(
-                horizontal: 20.0), // 좌우 여백을 추가하여 텍스트 주변에 공간을 줍니다.
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -445,7 +513,7 @@ class RoutinePage extends StatelessWidget {
   Widget _buildRoutineItem(
       BuildContext context, String title, String schedule) {
     return GestureDetector(
-      onTap: () => {_showRoutineDialog(context, title)},
+      onTap: () => {},
       child: Container(
         margin: const EdgeInsets.fromLTRB(20, 0, 0, 16),
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -481,34 +549,4 @@ class RoutinePage extends StatelessWidget {
       ),
     );
   }
-}
-
-void _showRoutineDialog(BuildContext context, String routineTitle) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text(routineTitle),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('수정'),
-            onPressed: () {
-              Navigator.of(context).pop(); // 다이얼로그 닫기
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const GroupRoutinePage()),
-              );
-            },
-          ),
-          TextButton(
-            child: const Text('취소'),
-            onPressed: () {
-              Navigator.of(context).pop(); // 다이얼로그 닫기
-            },
-          ),
-        ],
-      );
-    },
-  );
 }

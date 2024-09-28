@@ -52,7 +52,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
         _passwordController.text.isEmpty ? null : _passwordController.text;
 
     // 요청 바디 준비
-    final url = Uri.parse('http://15.164.88.94:8080/groups');
+    final url = Uri.parse('http://15.164.88.94/groups');
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -115,7 +115,10 @@ class _AddGroupPageState extends State<AddGroupPage> {
         return AlertDialog(
           title: const Text(
             '모집인원 선택',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 23),
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 23,
+            ),
           ),
           content: Container(
             padding: const EdgeInsets.symmetric(vertical: 20),
@@ -147,6 +150,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: const Color(0xFFF8F8EF),
         appBar: AppBar(
@@ -221,9 +225,9 @@ class _AddGroupPageState extends State<AddGroupPage> {
                               Text(
                                 "대표 카테고리",
                                 style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 56, 56, 56)),
                               ),
                             ],
                           ),
@@ -244,18 +248,24 @@ class _AddGroupPageState extends State<AddGroupPage> {
                                   margin: const EdgeInsets.only(bottom: 10),
                                   decoration: BoxDecoration(
                                     color: selectedCategoryIndex == index
+<<<<<<< HEAD
                                         ? const Color(0xffE6E288)
                                         : Colors.white,
+=======
+                                        ? const Color(0xFFB1DAFC)
+                                        : const Color(0xFFF0F0F0),
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
                                     borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Colors.grey),
+                                    border: Border.all(
+                                        color: const Color(0xFFF0F0F0)),
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(
                                     isCategory[index],
                                     style: TextStyle(
                                       color: selectedCategoryIndex == index
-                                          ? Colors.white
-                                          : Colors.grey,
+                                          ? const Color(0xFFFFFFFF)
+                                          : const Color(0xFFAEAEAE),
                                     ),
                                   ),
                                 ),
@@ -276,23 +286,23 @@ class _AddGroupPageState extends State<AddGroupPage> {
                           const Text(
                             "모집인원",
                             style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 56, 56, 56)),
                           ),
                           GestureDetector(
                             onTap: _selectMemberCount,
                             child: Container(
                               padding: const EdgeInsets.all(8),
                               decoration: BoxDecoration(
-                                color: Colors.grey[100],
+                                color: const Color(0xFFFFFFFF),
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: Text(
                                 '$_selectedMemberCount명',
                                 style: const TextStyle(
                                   fontSize: 16,
-                                  color: Colors.black,
+                                  color: Color.fromARGB(255, 56, 56, 56),
                                 ),
                               ),
                             ),
@@ -321,6 +331,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                   ),
                 ),
               ),
+              const SizedBox(height: 90),
               Container(
                 width: 400,
                 height: 80,
@@ -329,7 +340,11 @@ class _AddGroupPageState extends State<AddGroupPage> {
                   onPressed: _addGroup,
                   style: ButtonStyle(
                     backgroundColor:
+<<<<<<< HEAD
                         WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
+=======
+                        WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
@@ -340,7 +355,8 @@ class _AddGroupPageState extends State<AddGroupPage> {
                     "그룹 추가하기",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 18,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),

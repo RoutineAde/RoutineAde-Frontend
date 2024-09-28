@@ -18,7 +18,11 @@ class _groupEditState extends State<groupEdit> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _groupDescriptionController =
       TextEditingController();
+<<<<<<< HEAD
   int _selectedMemberCount = 0;
+=======
+  int _selectedMemberCount = 0; //선택 할 인원 수
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
 
   // 카테고리 선택 (한번에 하나만)
   int selectedCategoryIndex = -1;
@@ -39,7 +43,11 @@ class _groupEditState extends State<groupEdit> {
   }
 
   Future<void> _loadGroupInfo() async {
+<<<<<<< HEAD
     final url = Uri.parse("http://15.164.88.94:8080/groups/${widget.groupId}");
+=======
+    final url = Uri.parse("http://15.164.88.94/groups/${widget.groupId}");
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -55,7 +63,11 @@ class _groupEditState extends State<groupEdit> {
       _groupNameController.text = groupInfo['groupTitle'] ?? '';
       _passwordController.text = groupInfo['groupPassword'] ?? '';
       _groupDescriptionController.text = groupInfo['description'] ?? '';
+<<<<<<< HEAD
       _selectedMemberCount = groupInfo['maxMember'] ?? 0;
+=======
+      _selectedMemberCount = groupInfo['maxMemberCount'] ?? 0;
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
       selectedCategoryIndex =
           isCategory.indexOf(groupInfo['groupCategory'] ?? '');
 
@@ -65,6 +77,7 @@ class _groupEditState extends State<groupEdit> {
     }
   }
 
+<<<<<<< HEAD
   // Future<bool> fetchIsGroupAdmin(int groupId) async {
   //   final url = Uri.parse("http://15.164.88.94:8080/groups/$groupId");
   //   final response = await http.get(url, headers: {
@@ -87,6 +100,8 @@ class _groupEditState extends State<groupEdit> {
   //   }
   // }
 
+=======
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
   // 그룹 수정 API 호출 함수
   void _editGroup() async {
     // 카테고리 선택 여부 확인
@@ -108,7 +123,11 @@ class _groupEditState extends State<groupEdit> {
         _passwordController.text.isEmpty ? null : _passwordController.text;
 
     // 요청 바디 준비
+<<<<<<< HEAD
     final url = Uri.parse('http://15.164.88.94:8080/groups/${widget.groupId}');
+=======
+    final url = Uri.parse('http://15.164.88.94/groups/${widget.groupId}');
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -278,9 +297,15 @@ class _groupEditState extends State<groupEdit> {
                               Text(
                                 "대표 카테고리",
                                 style: TextStyle(
+<<<<<<< HEAD
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
+=======
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 56, 56, 56)),
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
                               ),
                             ],
                           ),
@@ -302,17 +327,29 @@ class _groupEditState extends State<groupEdit> {
                                   decoration: BoxDecoration(
                                     color: selectedCategoryIndex == index
                                         ? const Color(0xffA1D1F9)
+<<<<<<< HEAD
                                         : Colors.white,
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(color: Colors.grey),
+=======
+                                        : const Color(0xFFF0F0F0),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(
+                                        color: const Color(0xFFF0F0F0)),
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(
                                     isCategory[index],
                                     style: TextStyle(
                                       color: selectedCategoryIndex == index
+<<<<<<< HEAD
                                           ? Colors.white
                                           : Colors.grey,
+=======
+                                          ? const Color(0xFFFFFFFF)
+                                          : const Color(0xFFAEAEAE),
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
                                     ),
                                   ),
                                 ),
@@ -333,9 +370,15 @@ class _groupEditState extends State<groupEdit> {
                           const Text(
                             "모집인원",
                             style: TextStyle(
+<<<<<<< HEAD
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
+=======
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 56, 56, 56)),
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
                           ),
                           GestureDetector(
                             onTap: _selectMemberCount,
@@ -349,7 +392,11 @@ class _groupEditState extends State<groupEdit> {
                                 '$_selectedMemberCount명',
                                 style: const TextStyle(
                                   fontSize: 16,
+<<<<<<< HEAD
                                   color: Colors.black,
+=======
+                                  color: Color.fromARGB(255, 56, 56, 56),
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
                                 ),
                               ),
                             ),

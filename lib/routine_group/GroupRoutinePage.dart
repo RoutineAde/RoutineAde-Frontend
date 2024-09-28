@@ -47,7 +47,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     String categoryQuery = category != null && category != '전체'
         ? 'groupCategory=${Uri.encodeComponent(category)}'
         : 'groupCategory=%EC%A0%84%EC%B2%B4';
-    final url = Uri.parse('http://15.164.88.94:8080/groups?$categoryQuery');
+    final url = Uri.parse('http://15.164.88.94/groups?$categoryQuery');
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -109,6 +109,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Colors.white,
+<<<<<<< HEAD
             title: Center(child: Text(Egroup.groupTitle)),
             content: SingleChildScrollView(
               child: SizedBox(
@@ -128,15 +129,88 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                     Text(Egroup.description),
                   ],
                 ),
+=======
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18.0),
+            ),
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+            title: Center(
+              child: Column(
+                children: [
+                  Text(Egroup.groupTitle,
+                      style: const TextStyle(color: Colors.black)),
+                  const SizedBox(height: 1.0),
+                  Text("그룹 코드 #${Egroup.groupId}",
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(color: Colors.grey, fontSize: 13)),
+                ],
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
               ),
             ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("대표 카테고리 ",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(Egroup.groupCategory),
+                  ],
+                ),
+                const SizedBox(
+                  height: 4.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("그룹장 ",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(Egroup.createdUserNickname),
+                    const Text("  인원 ",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text("${Egroup.joinMemberCount}/${Egroup.maxMemberCount}명"),
+                  ],
+                ),
+                const SizedBox(height: 12), // 추가 설명 텍스트를 위한 공간
+                const Divider(
+                  height: 20,
+                  thickness: 0.5,
+                  color: Colors.black,
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Text(Egroup.description),
+                const SizedBox(
+                  height: 80.0,
+                ),
+              ],
+            ),
             actions: [
-              ButtonBar(
+              OverflowBar(
                 alignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
+<<<<<<< HEAD
                     child: const Text("가입하기"),
                     onPressed: () async {
+=======
+                    child: const Text("취소",
+                        style: TextStyle(
+                            color: Color.fromARGB(255, 128, 121, 121))),
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: const Text("그룹 가입",
+                        style: TextStyle(color: Color(0xff8DCCFF))),
+                    onPressed: () async {
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
                       Navigator.of(context).pop(); // 다이얼로그 닫기
                       if (Egroup.isPublic) {
                         bool joinSuccess = await _joinGroup(Egroup.groupId);
@@ -150,12 +224,15 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                       }
                     },
                   ),
+<<<<<<< HEAD
                   TextButton(
                     child: const Text("취소"),
                     onPressed: () {
                       Navigator.of(context).pop();
                     },
                   ),
+=======
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
                 ],
               ),
             ],
@@ -186,7 +263,11 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
   }
 
   Future<bool> fetchIsGroupAdmin(int groupId) async {
+<<<<<<< HEAD
     final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId');
+=======
+    final url = Uri.parse('http://15.164.88.94/groups/$groupId');
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -209,7 +290,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
 
   Future<bool> _joinGroup(int groupId, {String? password}) async {
     final url = Uri.parse(
-      'http://15.164.88.94:8080/groups/$groupId/join?password=${Uri.encodeComponent(password ?? '')}',
+      'http://15.164.88.94/groups/$groupId/join?password=${Uri.encodeComponent(password ?? '')}',
     );
 
     final response = await http.post(
@@ -259,7 +340,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                 ],
               ),
               actions: [
-                ButtonBar(
+                OverflowBar(
                   alignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
@@ -305,6 +386,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     );
   }
 
+<<<<<<< HEAD
   // void _checkPassword(EntireGroup group) {
   //   setState(() {
   //     if (_passwordController.text == group.groupPassword) {
@@ -319,6 +401,8 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
   //   });
   // }
 
+=======
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -474,7 +558,11 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
+<<<<<<< HEAD
                                                   "루틴장 ${group.createdUserNickname}"),
+=======
+                                                  "그룹장 ${group.createdUserNickname}"),
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
                                               Text("그룹코드 ${group.groupId}"),
                                             ],
                                           ),

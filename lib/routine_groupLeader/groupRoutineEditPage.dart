@@ -3,7 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+// import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart'; //날짜 포맷팅 init 패키지
@@ -93,7 +93,7 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
 
   void _ModifiedRoutine() async {
     final url = Uri.parse(
-        'http://15.164.88.94:8080/groups/${widget.groupId}/group-routines/${widget.routineId}');
+        'http://15.164.88.94/groups/${widget.groupId}/group-routines/${widget.routineId}');
 
     final headers = {
       'Content-Type': 'application/json',
@@ -160,7 +160,7 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
           title: const Text(
             '루틴 수정',
             style: TextStyle(
-                fontSize: 18, color: Colors.white, fontWeight: FontWeight.bold),
+                fontSize: 25, color: Colors.white, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
           leading: IconButton(
@@ -219,6 +219,7 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                   Text(
                     "반복요일",
                     style: TextStyle(
+                      color: Color.fromARGB(255, 56, 56, 56),
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -255,15 +256,17 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                         height: 40,
                         decoration: BoxDecoration(
                           color: isSelected[i]
-                              ? const Color(0xFF8DCCFF)
-                              : Colors.grey[200],
+                              ? const Color(0xFFB1DAFC)
+                              : const Color(0xFFF0F0F0),
                           borderRadius: BorderRadius.circular(20),
                         ),
                         alignment: Alignment.center,
                         child: Text(
                           _getWeekdayName(i),
                           style: TextStyle(
-                            color: isSelected[i] ? Colors.white : Colors.black,
+                            color: isSelected[i]
+                                ? const Color(0xFFFFFFFF)
+                                : const Color(0xFFAEAEAE),
                           ),
                         ),
                       ),
@@ -293,6 +296,7 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                       const Text(
                         "카테고리",
                         style: TextStyle(
+                          color: Color.fromARGB(255, 56, 56, 56),
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -318,18 +322,18 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                           ),
                           decoration: BoxDecoration(
                             color: selectedCategoryIndex == index
-                                ? const Color(0xFF8DCCFF)
-                                : Colors.white,
+                                ? const Color(0xFFB1DAFC)
+                                : const Color(0xFFF0F0F0),
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.grey),
+                            border: Border.all(color: const Color(0xFFF0F0F0)),
                           ),
                           alignment: Alignment.center,
                           child: Text(
                             isCategory[index],
                             style: TextStyle(
                                 color: selectedCategoryIndex == index
-                                    ? Colors.white
-                                    : Colors.grey),
+                                    ? const Color(0xFFFFFFFF)
+                                    : const Color(0xFFAEAEAE)),
                           ),
                         ),
                       ),
@@ -338,17 +342,22 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                 ],
               ),
             ),
+            const SizedBox(height: 300),
 
             //루틴 추가 버튼
             Container(
               width: 400,
-              height: 80,
+              height: 90,
               padding: const EdgeInsets.only(top: 30),
               child: ElevatedButton(
                 onPressed: _ModifiedRoutine,
                 style: ButtonStyle(
                   backgroundColor:
+<<<<<<< HEAD
                       WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
+=======
+                      WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
@@ -358,9 +367,9 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                 child: const Text(
                   "수정하기",
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                  ),
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
             ),

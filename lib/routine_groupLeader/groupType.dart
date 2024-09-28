@@ -25,7 +25,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
   @override
   void initState() {
     super.initState();
-    _fetchGroups();
+    // _fetchGroups();
   }
 
   Future<void> _fetchGroups({bool loadMore = false, String? category}) async {
@@ -42,7 +42,11 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     String categoryQuery = category != null && category != '전체'
         ? 'groupCategory=${Uri.encodeComponent(category)}'
         : 'groupCategory=%EC%A0%84%EC%B2%B4';
+<<<<<<< HEAD
     final url = Uri.parse('http://15.164.88.94:8080/groups?$categoryQuery');
+=======
+    final url = Uri.parse('http://15.164.88.94/groups?$categoryQuery');
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -138,7 +142,11 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
               ],
             ),
             actions: [
+<<<<<<< HEAD
               ButtonBar(
+=======
+              OverflowBar(
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
                 alignment: MainAxisAlignment.end, // 버튼들을 오른쪽에 정렬
                 children: [
                   TextButton(
@@ -187,7 +195,11 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
             ],
           ),
           actions: [
+<<<<<<< HEAD
             ButtonBar(
+=======
+            OverflowBar(
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
               alignment: MainAxisAlignment.end, // 버튼들을 오른쪽에 정렬
               children: [
                 TextButton(
@@ -320,6 +332,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                     Expanded(
                       child: _isLoading
                           ? const Center(child: CircularProgressIndicator())
+<<<<<<< HEAD
                           : ListView.builder(
                               itemCount: filteredGroups.length,
                               itemBuilder: (context, index) {
@@ -401,6 +414,105 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                 );
                               },
                             ),
+=======
+                          // : (!_isSearching && filteredGroups.isEmpty)
+                          : filteredGroups.isEmpty
+                              ? const Center(child: Text('검색 결과가 없습니다.'))
+                              : (!_isSearching)
+                                  ? const Center(child: Text('그룹을 검색하세요.'))
+                                  : ListView.builder(
+                                      itemCount: filteredGroups.length,
+                                      itemBuilder: (context, index) {
+                                        final group = filteredGroups[index];
+                                        Color textColor = getCategoryColor(
+                                            group.groupCategory);
+                                        return InkWell(
+                                          onTap: () {
+                                            _showGroupDialog(group);
+                                          },
+                                          child: Card(
+                                            margin: const EdgeInsets.all(8.0),
+                                            color: Colors.white,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.all(16.0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            group.groupTitle,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontSize: 18,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
+                                                          if (!group.isPublic)
+                                                            Padding(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .only(
+                                                                      left:
+                                                                          8.0),
+                                                              child:
+                                                                  Image.asset(
+                                                                "assets/images/lock.png",
+                                                                width: 20,
+                                                                height: 20,
+                                                              ),
+                                                            ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(height: 8.0),
+                                                  Row(
+                                                    children: [
+                                                      const Text("대표 카테고리 "),
+                                                      Text(group.groupCategory,
+                                                          style: TextStyle(
+                                                              color:
+                                                                  textColor)),
+                                                      Expanded(
+                                                          child: Container()),
+                                                      Align(
+                                                        alignment: Alignment
+                                                            .centerRight,
+                                                        child: Text(
+                                                            "인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(height: 8.0),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                          "루틴장 ${group.createdUserNickname}"),
+                                                      Text(
+                                                          "그룹코드 ${group.groupId}"),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+>>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
                     ),
                   ],
                 ),

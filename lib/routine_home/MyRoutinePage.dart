@@ -1,20 +1,22 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_calendar_week/flutter_calendar_week.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:routine_ade/routine_groupLeader/glOnClickGroupPage.dart';
+import 'package:routine_ade/routine_myInfo/MyInfo.dart';
+import 'package:routine_ade/routine_group/GroupType.dart';
 import 'AddRoutinePage.dart';
-import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
-import 'package:routine_ade/routine_group/OnClickGroupPage.dart';
 import 'package:routine_ade/routine_home/AlarmListPage.dart';
 import 'package:routine_ade/routine_home/ModifiedRoutinePage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:routine_ade/routine_user/token.dart';
+import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
+import 'package:routine_ade/routine_otherUser/OtherUserRoutinePage.dart';
 
 void main() async {
   await initializeDateFormatting();
@@ -34,7 +36,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
       futureRoutineResponse; // late 키워드를 사용하여 초기화를 나중에 하도록 설정
   String selectedDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
   late CalendarWeekController _controller;
-  String? _userEmotion;
+  String? userEmotion;
 
   bool _isTileExpanded = false;
 
@@ -42,15 +44,13 @@ class _MyRoutinePageState extends State<MyRoutinePage>
   bool _isExpanded = false;
   String? _selectedImage;
 
-  //루틴완료체크여부
-  //Map<int, bool> isCheckedMap = {};
-
   @override
   void initState() {
     super.initState();
     _controller = CalendarWeekController();
     futureRoutineResponse = fetchRoutines(selectedDate);
     _tabController = TabController(length: 4, vsync: this);
+    _fetchEmotionForSelectedDate(selectedDate);
   }
 
   void _onDateSelected(DateTime date) {
@@ -67,7 +67,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     try {
       final response = await fetchRoutines(date);
       setState(() {
-        _userEmotion = response.userEmotion;
+        userEmotion = response.userEmotion;
       });
     } catch (e) {
       print("Failed to fetch emotion for selected date: $e");
@@ -103,7 +103,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     }
   }
 
-//기분등록
+// 감정 등록 메서드
   Future<void> _registerEmotion(DateTime date, String selectedImage) async {
     final today = DateTime.now();
     final isPastOrToday = date.isBefore(today) || date.isAtSameMomentAs(today);
@@ -119,7 +119,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     }
 
     final formattedDate = DateFormat("yyyy.MM.dd").format(date);
-    final url = Uri.parse("http://15.164.88.94:8080/users/emotion");
+    final url = Uri.parse("http://15.164.88.94/users/emotion");
     final headers = {
       "Content-Type": "application/json",
       "Authorization": "Bearer $token"
@@ -127,7 +127,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
 
     final body = jsonEncode({
       "date": formattedDate,
-      "userEmotion": _getImageEmotion2(selectedImage),
+      "userEmotion": getImageEmotion2(selectedImage),
     });
 
     try {
@@ -139,12 +139,22 @@ class _MyRoutinePageState extends State<MyRoutinePage>
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         print("감정 등록 성공");
-        // 감정을 등록한 후 해당 날짜의 데이터를 가져옴
+
+        // 감정 등록 후 상태 업데이트
         setState(() {
-          futureRoutineResponse = fetchRoutines(selectedDate);
+          userEmotion = getImageEmotion2(selectedImage); // 새로운 감정 상태를 반영
+          futureRoutineResponse =
+              fetchRoutines(selectedDate); // 감정 등록 후 데이터를 다시 가져옴
         });
+
+        // 감정 등록 성공 메시지
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('감정이 성공적으로 등록되었습니다.')),
+          );
+        }
       } else {
-        print("감정 등록 실패: ${response.statusCode}- ${response.body}");
+        print("감정 등록 실패: ${response.statusCode} - ${response.body}");
       }
     } catch (e) {
       print("감정 등록 중 에러: $e");
@@ -158,9 +168,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         children: [
           Padding(
             padding: const EdgeInsets.only(top: 30),
-            // child: Text(
-            //   '${_controller.selectedDate.year ?? DateTime.now().year}년 ${_controller.selectedDate.month?? DateTime.now().month}월 ${_controller.selectedDate.day?? DateTime.now().day}일',
-            //   style: TextStyle(fontSize: 20),
             child: Text(
               '${date.year}년 ${date.month}월 ${date.day}일',
               style: const TextStyle(fontSize: 20),
@@ -192,7 +199,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
 
   @override
   Widget build(BuildContext context) => Scaffold(
-        floatingActionButton: _buildFloatingActionButton(),
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(0),
           child: AppBar(
@@ -200,14 +206,31 @@ class _MyRoutinePageState extends State<MyRoutinePage>
           ),
         ),
         bottomNavigationBar: _buildBottomAppBar(),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const AddRoutinePage()));
+          },
+          backgroundColor: const Color(0xffB4DDFF),
+          shape: const CircleBorder(),
+          child: Image.asset('assets/images/add-button.png',
+              width: 70, height: 70),
+        ),
         body: Column(
           children: [
             _buildCalendarWeek(),
-            if (_userEmotion != null && _userEmotion!.isNotEmpty)
-              Container(
-                padding: const EdgeInsets.all(16),
-                color: const Color(0xFFF8F8EF),
-                child: Center(
+            Container(
+              padding: const EdgeInsets.all(16),
+              color: const Color(0xFFF8F8EF),
+              child: Center(
+                child: GestureDetector(
+                  onTap: () {
+                    final DateTime selectedDateTime =
+                        DateFormat('yyyy.MM.dd').parse(selectedDate);
+                    _showBottomSheet(selectedDateTime);
+                  },
                   child: Container(
                     width: 360,
                     height: 70,
@@ -231,13 +254,19 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                         const SizedBox(
                           width: 10,
                         ),
-                        if (_getImageEmotion(_userEmotion!) != null)
-                          Image.asset(
-                            _getImageEmotion(_userEmotion!)!,
-                            fit: BoxFit.cover,
-                            width: 50,
-                            height: 50,
-                          ),
+                        userEmotion != null &&
+                                getImageEmotion(userEmotion!) != null
+                            ? Image.asset(
+                                getImageEmotion(userEmotion!)!,
+                                fit: BoxFit.cover,
+                                width: 50,
+                                height: 50,
+                              )
+                            : Image.asset(
+                                "assets/images/emotion/no-emotion.png",
+                                width: 50,
+                                height: 50),
+                        const SizedBox(width: 10),
                         const SizedBox(width: 10),
                         Expanded(
                           child: RichText(
@@ -245,45 +274,59 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                               style: const TextStyle(
                                   fontSize: 18,
                                   color: Colors.black), // Default text style
-                              children: [
-                                const TextSpan(text: '이 날은 기분이 '),
-                                if (_userEmotion == 'GOOD')
-                                  const TextSpan(
-                                    text: '해피',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors
-                                            .yellow), // Highlighted text style for GOOD
-                                  ),
-                                if (_userEmotion == 'SAD')
-                                  const TextSpan(
-                                    text: '우중충',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors
-                                            .blue), // Highlighted text style for SAD
-                                  ),
-                                if (_userEmotion == 'OK')
-                                  const TextSpan(
-                                    text: '쏘쏘',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors
-                                            .green), // Highlighted text style for OK
-                                  ),
-                                if (_userEmotion == 'ANGRY')
-                                  const TextSpan(
-                                    text: '나쁜',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors
-                                            .redAccent), // Highlighted text style for ANGRY
-                                  ),
-                                TextSpan(
-                                    text: _userEmotion == 'ANGRY'
-                                        ? ' 날이에요'
-                                        : '한 날이에요'),
-                              ],
+                              children: userEmotion != null &&
+                                      (userEmotion == 'GOOD' ||
+                                          userEmotion == 'SAD' ||
+                                          userEmotion == 'OK' ||
+                                          userEmotion == 'ANGRY')
+                                  ? [
+                                      const TextSpan(text: '이 날은 기분이 '),
+                                      if (userEmotion == 'GOOD')
+                                        const TextSpan(
+                                          text: '해피',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors
+                                                  .yellow), // Highlighted text style for GOOD
+                                        ),
+                                      if (userEmotion == 'SAD')
+                                        const TextSpan(
+                                          text: '우중충',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors
+                                                  .blue), // Highlighted text style for SAD
+                                        ),
+                                      if (userEmotion == 'OK')
+                                        const TextSpan(
+                                          text: '쏘쏘',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors
+                                                  .green), // Highlighted text style for OK
+                                        ),
+                                      if (userEmotion == 'ANGRY')
+                                        const TextSpan(
+                                          text: '나쁜',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors
+                                                  .redAccent), // Highlighted text style for ANGRY
+                                        ),
+                                      TextSpan(
+                                          text: userEmotion == 'ANGRY'
+                                              ? ' 날이에요'
+                                              : '한 날이에요')
+                                    ]
+                                  : [
+                                      const TextSpan(
+                                        text: '오늘의 기분을 추가해보세요',
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color:
+                                                Colors.black), // Italicize text
+                                      ),
+                                    ],
                             ),
                           ),
                         ),
@@ -292,6 +335,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                   ),
                 ),
               ),
+            ),
             Expanded(
               child: Container(
                 color: const Color(0xFFF8F8EF),
@@ -312,14 +356,11 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                         style: TextStyle(fontSize: 20, color: Colors.grey),
                       ));
                     }
-                    _userEmotion = snapshot.data!.userEmotion; // 감정 상태를 업데이트
+                    userEmotion = snapshot.data!.userEmotion; // 감정 상태를 업데이트
 
                     return ListView(
                       padding: const EdgeInsets.fromLTRB(24, 10, 24, 16),
                       children: <Widget>[
-                        // const SizedBox(
-                        //   height: 10,
-                        // ), // 여백 추가
                         Container(
                           padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                           decoration: BoxDecoration(
@@ -336,16 +377,114 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                   style: TextStyle(
                                       fontSize: 20,
                                       color: Colors.black)), // 텍스트 색상 변경
-                              initiallyExpanded: _isTileExpanded,
                               children: snapshot.data!.personalRoutines
-                                  .map((routine) => _buildRoutineTile(routine))
-                                  .toList(),
+                                  .map((category) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          left: 10, top: 5),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: const Color.fromARGB(
+                                              255, 255, 255, 255),
+                                          borderRadius:
+                                              BorderRadius.circular(20.0),
+                                        ),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 10, vertical: 1),
+                                        child: Text(
+                                          category.routineCategory,
+                                          style: TextStyle(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
+                                            color: _getCategoryColor(
+                                                category.routineCategory),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    // 카테고리 밑에 루틴 추가
+                                    ...category.routines.map((routine) {
+                                      return _buildRoutineTile(
+                                          routine); // 기존 _buildRoutineTile 메서드 사용
+                                    }),
+                                  ],
+                                );
+                              }).toList(),
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ), // 여백 추가
+                        const SizedBox(height: 10),
+                        ...snapshot.data!.groupRoutines.map((group) {
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: Container(
+                              padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFE6F5F8),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Theme(
+                                data: Theme.of(context).copyWith(
+                                  dividerColor: Colors.transparent,
+                                ),
+                                child: ExpansionTile(
+                                  title: Text(group.groupTitle,
+                                      style: const TextStyle(
+                                          fontSize: 20, color: Colors.black)),
+                                  children:
+                                      group.groupRoutines.map((categoryGroup) {
+                                    return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            left: 10,
+                                          ),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              color: const Color.fromARGB(
+                                                  255, 255, 255, 255),
+                                              borderRadius:
+                                                  BorderRadius.circular(20.0),
+                                            ),
+                                            // margin: const EdgeInsets.fromLTRB(
+                                            //     30, 40, 0, 16),
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 10.0, vertical: 1),
+                                            child: Column(
+                                              children: [
+                                                // const SizedBox(height: 5),
+                                                Text(
+                                                  categoryGroup
+                                                      .routineCategory, // 카테고리 이름
+                                                  style: TextStyle(
+                                                    color: _getCategoryColor(
+                                                        categoryGroup
+                                                            .routineCategory),
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 18,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        ...categoryGroup.routines.map(
+                                            (routine) => _buildRoutineTile2(
+                                                routine)), // 루틴 목록
+                                      ],
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ),
+                          );
+                        }),
+                        const SizedBox(height: 10),
                       ],
                     );
                   },
@@ -356,72 +495,72 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         ),
       );
 
-  Widget _buildFloatingActionButton() {
-    return Stack(
-      alignment: Alignment.bottomRight,
-      children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10, right: 10),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (_isExpanded) ...[
-                _buildFABRow("기분 추가", () {
-                  final DateTime selectedDateTime =
-                      DateFormat('yyyy.MM.dd').parse(selectedDate);
-                  _showBottomSheet(selectedDateTime);
-                }, 'assets/images/add-emotion.png'),
-                const SizedBox(height: 20),
-                _buildFABRow("루틴 추가", () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AddRoutinePage()));
-                }, 'assets/images/add-button.png'),
-                const SizedBox(height: 20),
-              ],
-              _buildMainFAB(),
-            ],
+  Color _getCategoryColor(String category) {
+    switch (category) {
+      case "건강":
+        return const Color(0xff6ACBF3);
+      case "자기개발":
+        return const Color(0xff7BD7C6);
+      case "일상":
+        return const Color(0xffF5A77B);
+      case "자기관리":
+        return const Color(0xffC69FEC);
+      default:
+        return const Color(0xffF4A2D8);
+    }
+  }
+
+//그룹 루틴
+  Widget _buildRoutineTile2(GroupRoutine routine) {
+    Color categoryColor = _getCategoryColor(routine.routineCategory);
+
+    // 루틴 이름
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 0),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20), // 좌우 여백 조절
+        minLeadingWidth: 0,
+        leading: const Icon(
+          Icons.brightness_1,
+          size: 8,
+          color: Colors.black,
+        ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Text(
+              routine.routineTitle,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+            // const SizedBox(width: 3),
+          ],
+        ),
+        trailing: Transform.scale(
+          scale: 1.2, // Checkbox size increased by 1.5 times
+          child: Checkbox(
+            value: routine.isCompletion,
+            onChanged: (bool? value) {
+              if (value != null) {
+                print("Checkbox changed: $value");
+                setState(() {
+                  routine.isCompletion = value;
+                });
+                updateRoutineCompletion(routine.routineId, value, selectedDate);
+              }
+            },
+            activeColor: const Color(0xFF8DCCFF),
+            checkColor: Colors.white,
+            fillColor: WidgetStateProperty.resolveWith<Color>(
+                (Set<WidgetState> states) {
+              if (states.contains(WidgetState.selected)) {
+                return const Color(0xFF8DCCFF);
+              }
+              return Colors.transparent;
+            }),
           ),
         ),
-      ],
-    );
-  }
-
-  Widget _buildFABRow(String text, VoidCallback onPressed, String asset) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Text(text,
-            style: const TextStyle(
-                color: Colors.black, fontWeight: FontWeight.bold)),
-        const SizedBox(width: 10),
-        FloatingActionButton(
-          onPressed: onPressed,
-          backgroundColor: const Color(0xffF1E977),
-          shape: const CircleBorder(),
-          child: Image.asset(asset),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildMainFAB() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        const Text(""),
-        const SizedBox(width: 10),
-        FloatingActionButton(
-          onPressed: _toggleExpand,
-          backgroundColor:
-              _isExpanded ? const Color(0xfff7c7c7c) : const Color(0xffA1D1F9),
-          shape: const CircleBorder(),
-          child: Image.asset(_isExpanded
-              ? 'assets/images/cancel.png'
-              : 'assets/images/add-button.png'),
-        ),
-      ],
+      ),
     );
   }
 
@@ -435,9 +574,9 @@ class _MyRoutinePageState extends State<MyRoutinePage>
           _buildBottomAppBarItem(
               "assets/images/tap-bar/group01.png", const GroupMainPage()),
           _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png",
-              const OnClickGroupPage(groupId: 1)),
-          _buildBottomAppBarItem("assets/images/tap-bar/more01.png",
-              const glOnClickGroupPage(groupId: 1)),
+              const StaticsCalendar()),
+          _buildBottomAppBarItem(
+              "assets/images/tap-bar/more01.png", const MyInfo()),
         ],
       ),
     );
@@ -452,8 +591,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         }
       },
       child: SizedBox(
-        width: 50,
-        height: 50,
+        width: 60,
+        height: 60,
         child: Image.asset(asset),
       ),
     );
@@ -536,109 +675,70 @@ class _MyRoutinePageState extends State<MyRoutinePage>
   }
 
   Widget _buildRoutineTile(Routine routine) {
-    Color categoryColor;
+    Color categoryColor = _getCategoryColor(routine.routineCategory);
 
-    // 카테고리 색상
-    switch (routine.routineCategory) {
-      case "건강":
-        categoryColor = const Color(0xff6ACBF3);
-        break;
-      case "자기개발":
-        categoryColor = const Color(0xff7BD7C6);
-        break;
-      case "일상":
-        categoryColor = const Color(0xffF5A77B);
-        break;
-      case "자기관리":
-        categoryColor = const Color(0xffC69FEC);
-        break;
-      default:
-        categoryColor = const Color(0xffF4A2D8);
-        break;
-    }
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 10),
-      padding: const EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(
-            height: 3,
-          ),
-          // 카테고리 텍스트
-          Container(
-            padding: const EdgeInsets.only(left: 10), // 왼쪽에 10의 간격 추가
-            child: Text(
-              ' ${routine.routineCategory}',
-              style: TextStyle(
-                  color: categoryColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18),
+//개인틴
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 0),
+      child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 20), // 좌우 여백 조절
+        minLeadingWidth: 0,
+        leading: const Icon(
+          Icons.brightness_1,
+          size: 8,
+          color: Colors.black,
+        ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment:
+              MainAxisAlignment.start, // Align elements to the start of the row
+          children: [
+            GestureDetector(
+              onTap: () => _showDialog(context, routine),
+              child: Text(routine.routineTitle,
+                  style: const TextStyle(fontWeight: FontWeight.bold)),
             ),
-          ),
-          // 루틴 이름
-          ListTile(
-            title: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment
-                  .start, // Align elements to the start of the row
-              children: [
-                GestureDetector(
-                  onTap: () => _showDialog(context, routine),
-                  child: Text(routine.routineTitle,
-                      style: const TextStyle(fontWeight: FontWeight.bold)),
-                ),
-                const SizedBox(width: 3), // Adjust the width as needed
-                if (routine
-                    .isAlarmEnabled) // Conditionally display the bell icon
-                  GestureDetector(
-                    onTap: () {
-                      // Do nothing when the image is tapped3
-                    },
-                    child: Image.asset('assets/images/bell.png',
-                        width: 20, height: 20),
-                  ),
-              ],
-            ),
-            trailing: Transform.scale(
-              scale: 1.5, // Checkbox size increased by 1.5 times
-              child: Checkbox(
-                value: routine.isCompletion,
-                onChanged: (bool? value) {
-                  if (value != null) {
-                    print("Checkbox changed: $value");
-                    setState(() {
-                      routine.isCompletion = value;
-                    });
-                    updateRoutineCompletion(
-                        routine.routineId, value, selectedDate);
-                  }
+            const SizedBox(width: 3), // Adjust the width as needed
+            if (routine.isAlarmEnabled) // Conditionally display the bell icon
+              GestureDetector(
+                onTap: () {
+                  // Do nothing when the image is tapped3
                 },
-                activeColor: const Color(
-                    0xFF8DCCFF), // Color when the checkbox is checked
-                checkColor:
-                    Colors.white, // The check mark color inside the checkbox
-                fillColor: WidgetStateProperty.resolveWith<Color>(
-                    (Set<WidgetState> states) {
-                  if (states.contains(WidgetState.selected)) {
-                    return const Color(
-                        0xFF8DCCFF); // Checkbox fill color when checked
-                  }
-                  return Colors
-                      .transparent; // Checkbox fill color when unchecked
-                }),
+                child: Image.asset('assets/images/bell.png',
+                    width: 20, height: 20),
               ),
-            ),
-            onTap: () => _showDialog(context, routine),
+          ],
+        ),
+        trailing: Transform.scale(
+          scale: 1.2, // Checkbox size increased by 1.5 times
+          child: Checkbox(
+            value: routine.isCompletion,
+            onChanged: (bool? value) {
+              if (value != null) {
+                print("Checkbox changed: $value");
+                setState(() {
+                  routine.isCompletion = value;
+                });
+                updateRoutineCompletion(routine.routineId, value, selectedDate);
+              }
+            },
+            activeColor: const Color(0xFF8DCCFF),
+            checkColor: Colors.white,
+            fillColor: WidgetStateProperty.resolveWith<Color>(
+                (Set<WidgetState> states) {
+              if (states.contains(WidgetState.selected)) {
+                return const Color(0xFF8DCCFF);
+              }
+              return Colors.transparent;
+            }),
           ),
-        ],
+        ),
+        onTap: () => _showDialog(context, routine),
       ),
     );
+    // ],
+    //   ),
+    // );
   }
 
   void _showDialog(BuildContext context, Routine routine) {
@@ -648,10 +748,11 @@ class _MyRoutinePageState extends State<MyRoutinePage>
       barrierColor: Colors.black54,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(routine.routineTitle),
-          content: Text(routine.routineCategory ?? '기타'),
+          backgroundColor: Colors.white,
+          title: Text(routine.routineTitle), // Title과 함께 routineTitle 표시
+          content: Text(routine.routineCategory), // Category 표시
           actions: <Widget>[
-            ElevatedButton(
+            TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.push(
@@ -660,16 +761,30 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                       builder: (context) => ModifiedroutinePage(
                             routineId: routine.routineId,
                             routineTitle: routine.routineTitle,
-                            routineCategory: routine.routineCategory,
+                            routineCategory:
+                                routine.routineCategory, // 이 부분도 연동
                             isAlarmEnabled: routine.isAlarmEnabled,
                             startDate: routine.startDate,
                             repeatDays: routine.repeatDays,
                           )),
                 );
               },
-              child: const Text('수정'),
+              child: Row(
+                children: [
+                  Image.asset(
+                    "assets/images/edit.png",
+                    width: 20,
+                    height: 20,
+                  ),
+                  const SizedBox(width: 20),
+                  const Text(
+                    '수정',
+                    style: TextStyle(fontSize: 18, color: Colors.black54),
+                  ),
+                ],
+              ),
             ),
-            ElevatedButton(
+            TextButton(
               onPressed: () async {
                 // 다이얼로그를 먼저 닫음
                 Navigator.of(context).pop();
@@ -682,7 +797,20 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                   futureRoutineResponse = fetchRoutines(selectedDate);
                 });
               },
-              child: const Text('삭제'),
+              child: Row(
+                children: [
+                  Image.asset(
+                    "assets/images/delete.png",
+                    width: 20,
+                    height: 20,
+                  ),
+                  const SizedBox(width: 20),
+                  const Text(
+                    '삭제',
+                    style: TextStyle(fontSize: 18, color: Colors.black54),
+                  ),
+                ],
+              ),
             ),
           ],
         );
@@ -693,7 +821,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
   Future<void> updateRoutineCompletion(
       int routineId, bool isCompletion, String date) async {
     final url = Uri.parse(
-        "http://15.164.88.94:8080/routines/$routineId/completion?date=$date");
+        "http://15.164.88.94/routines/$routineId/completion?date=$date");
     final headers = {
       "Content-Type": "application/json",
       'Authorization': 'Bearer $token',
@@ -716,7 +844,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
 
   Future<void> deleteRoutine(int routineId) async {
     final response = await http.delete(
-      Uri.parse('http://15.164.88.94:8080/routines/$routineId'),
+      Uri.parse('http://15.164.88.94/routines/$routineId'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -733,7 +861,7 @@ Future<RoutineResponse> fetchRoutines(String date) async {
   print('API 요청 날짜: $date'); // 요청할 날짜를 출력하여 확인
 
   final response = await http.get(
-    Uri.parse('http://15.164.88.94:8080/routines/v2?routineDate=$date'),
+    Uri.parse('http://15.164.88.94/routines/v3?routineDate=$date'),
     headers: {
       'Authorization': 'Bearer $token',
     },
@@ -751,7 +879,7 @@ Future<RoutineResponse> fetchRoutines(String date) async {
 
 //루틴 조회 및 수정
 Future<void> _fetchRoutineDate(BuildContext context, int routineId) async {
-  final url = Uri.parse("http://15.164.88.94:8080/routines/$routineId");
+  final url = Uri.parse("http://15.164.88.94/routines/$routineId");
   final headers = {
     "Content-Type": "application/json",
     "Authorization": "Bearer $token"
@@ -795,7 +923,7 @@ Future<void> _fetchRoutineDate(BuildContext context, int routineId) async {
 }
 
 //기분 조회
-String? _getImageEmotion(String emotion) {
+String? getImageEmotion(String emotion) {
   switch (emotion) {
     case 'GOOD':
       return 'assets/images/emotion/happy.png';
@@ -806,12 +934,12 @@ String? _getImageEmotion(String emotion) {
     case 'ANGRY':
       return 'assets/images/emotion/angry.png';
     default:
-      return null; // 기본 이미지
+      return "assets/images/emotion/no-emotion.png"; // 기본 이미지
   }
 }
 
 //기분 등록
-String? _getImageEmotion2(String emotion) {
+String? getImageEmotion2(String emotion) {
   switch (emotion) {
     case 'assets/images/emotion/happy.png':
       return 'GOOD';
@@ -822,12 +950,12 @@ String? _getImageEmotion2(String emotion) {
     case 'assets/images/emotion/angry.png':
       return 'ANGRY';
     default:
-      return null; // 기본 이미지
+      return "assets/images/emotion/no-emotion.png"; // 기본 이미지
   }
 }
 
 //기분 텍스트
-String _getTextForEmotion(String emotion) {
+String getTextForEmotion(String emotion) {
   switch (emotion) {
     case 'GOOD':
       return '이 날은 기분이 해피한 날이에요';
@@ -837,6 +965,8 @@ String _getTextForEmotion(String emotion) {
       return '이 날은 기분이 우중충한 날이에요';
     case 'ANGRY':
       return '이 날은 기분이 나쁜 날이에요';
+    // case 'null':
+    //   return '기분을 추가해보세요!';
     default:
       return '기분을 추가해보세요!'; // 기본 텍스트
   }
@@ -844,26 +974,47 @@ String _getTextForEmotion(String emotion) {
 
 //루틴, 감정 조회 class
 class RoutineResponse {
-  final List<Routine> personalRoutines;
+  final List<UserRoutineCategory> personalRoutines;
+  final List<Group2> groupRoutines;
   final String userEmotion;
+  final List<UserRoutineCategory> routines;
+  // final List<String> groupRoutineCategories;
 
-  RoutineResponse({required this.personalRoutines, required this.userEmotion});
+  RoutineResponse({
+    required this.personalRoutines,
+    required this.groupRoutines,
+    required this.userEmotion,
+    required this.routines,
+    // required this.groupRoutineCategories,
+  });
 
   factory RoutineResponse.fromJson(Map<String, dynamic> json) {
     return RoutineResponse(
-      personalRoutines: (json['personalRoutines'] as List)
-          .map((item) => Routine.fromJson(item))
-          .toList(),
-      userEmotion: json['userEmotion'] ?? 'OK',
+      personalRoutines: (json['personalRoutines'] as List<dynamic>?)
+              ?.map((item) =>
+                  UserRoutineCategory.fromJson(item as Map<String, dynamic>))
+              .toList() ??
+          [],
+      groupRoutines: (json['groupRoutines'] as List<dynamic>?)
+              ?.map((item) => Group2.fromJson(item as Map<String, dynamic>))
+              .toList() ??
+          [],
+      userEmotion: json['userEmotion'] ?? 'null',
+      routines: (json['routines'] as List<dynamic>?)
+              ?.map((item) =>
+                  UserRoutineCategory.fromJson(item as Map<String, dynamic>))
+              .toList() ??
+          [],
     );
   }
 }
 
+// 개인 루틴
 class Routine {
   final int routineId;
   final String routineTitle;
-  final String? routineCategory;
-  final bool isAlarmEnabled; // isAlarmEnabled를 mutable로 변경
+  final String routineCategory;
+  bool isAlarmEnabled; // isAlarmEnabled를 mutable로 변경
   final String startDate;
   final List<String> repeatDays;
   bool isCompletion;
@@ -887,6 +1038,94 @@ class Routine {
           json["startDate"] ?? DateFormat('yyyy.MM.dd').format(DateTime.now()),
       repeatDays: List<String>.from(json["repeatDays"] ?? []),
       isCompletion: json['isCompletion'] ?? false,
+    );
+  }
+}
+
+// 개인 카테고리 그룹
+class UserRoutineCategory {
+  final String routineCategory;
+  final List<Routine> routines;
+
+  UserRoutineCategory({
+    required this.routineCategory,
+    required this.routines,
+  });
+
+  factory UserRoutineCategory.fromJson(Map<String, dynamic> json) {
+    return UserRoutineCategory(
+      routineCategory: json['routineCategory'] ?? '',
+      routines: (json['routines'] as List)
+              .map((item) => Routine.fromJson(item))
+              .toList() ??
+          [],
+    );
+  }
+}
+
+//그룹 루틴
+class GroupRoutine {
+  final int routineId;
+  final String routineTitle;
+  final String routineCategory;
+  bool isCompletion;
+
+  GroupRoutine({
+    required this.routineId,
+    required this.routineTitle,
+    required this.routineCategory,
+    this.isCompletion = false,
+  });
+
+  factory GroupRoutine.fromJson(Map<String, dynamic> json) {
+    return GroupRoutine(
+      routineId: json['routineId'] ?? 0,
+      routineTitle: json['routineTitle'] ?? '',
+      routineCategory: json['routineCategory'] ?? '',
+      isCompletion: json['isCompletion'] ?? false,
+    );
+  }
+}
+
+// 루틴 카테고리 그룹
+class RoutineCategoryGroup {
+  final String routineCategory;
+  final List<GroupRoutine> routines;
+
+  RoutineCategoryGroup({
+    required this.routineCategory,
+    required this.routines,
+  });
+
+  factory RoutineCategoryGroup.fromJson(Map<String, dynamic> json) {
+    return RoutineCategoryGroup(
+      routineCategory: json['routineCategory'] ?? '',
+      routines: (json['routines'] as List)
+          .map((item) => GroupRoutine.fromJson(item))
+          .toList(),
+    );
+  }
+}
+
+// 그룹
+class Group2 {
+  final int groupId;
+  final String groupTitle;
+  final List<RoutineCategoryGroup> groupRoutines;
+
+  Group2({
+    required this.groupId,
+    required this.groupTitle,
+    required this.groupRoutines,
+  });
+
+  factory Group2.fromJson(Map<String, dynamic> json) {
+    return Group2(
+      groupId: json['groupId'] ?? 0,
+      groupTitle: json['groupTitle'] ?? '',
+      groupRoutines: (json['groupRoutines'] as List)
+          .map((item) => RoutineCategoryGroup.fromJson(item))
+          .toList(),
     );
   }
 }

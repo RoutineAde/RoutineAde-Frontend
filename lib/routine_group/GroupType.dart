@@ -42,13 +42,17 @@ class Group {
 }
 
 class GroupMember {
+  final int userId;
   final String nickname;
   final String profileImage;
 
-  GroupMember({required this.nickname, required this.profileImage});
+  GroupMember(
+      {required this.userId,        required this.nickname,
+        required this.profileImage});
 
   factory GroupMember.fromJson(Map<String, dynamic> json) {
     return GroupMember(
+      userId: json['userId'],
       nickname: json['nickname'],
       profileImage: json['profileImage'],
     );
@@ -101,16 +105,17 @@ class Routine {
   Routine(this.routineTitle, this.repeatDay);
 }
 
+//그룹
 class GroupResponse {
   final bool isGroupAdmin;
-  final bool isGroupAlarmEnabled;
+  bool isGroupAlarmEnabled;
   final Group groupInfo;
   final List<GroupMember> groupMembers;
   final List<RoutineCategory> groupRoutines;
 
   GroupResponse({
     required this.isGroupAdmin,
-    required this.isGroupAlarmEnabled,
+    this.isGroupAlarmEnabled = false,
     required this.groupInfo,
     required this.groupMembers,
     required this.groupRoutines,

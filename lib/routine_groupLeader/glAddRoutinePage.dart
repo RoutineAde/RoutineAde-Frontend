@@ -8,19 +8,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart'; //날짜 포맷팅 init 패키지
 import 'package:http/http.dart' as http;
-import 'package:routine_ade/routine_user/token.dart';
+//import 'MyRoutinePage.dart';
 
-class AddGroupRoutinePage extends StatefulWidget {
-  final int groupId;
-  const AddGroupRoutinePage({super.key, required this.groupId});
+class glAddRoutinePage extends StatefulWidget {
+  const glAddRoutinePage({super.key});
 
   @override
-  State<AddGroupRoutinePage> createState() => _AddRoutinePageState();
+  State<glAddRoutinePage> createState() => _glAddRoutinePageState();
 }
 
-class _AddRoutinePageState extends State<AddGroupRoutinePage> {
+class _glAddRoutinePageState extends State<glAddRoutinePage> {
   //텍스트필드
   final TextEditingController _controller = TextEditingController();
+  late final String _token =
+      'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjA0MzIzMDYsImV4cCI6MTczNTk4NDMwNiwidXNlcklkIjoxfQ.gVbh87iupFLFR6zo6PcGAIhAiYIRfLWV_wi8e_tnqyM'; // 토큰 입력
 
   int _currentLength = 0;
   final int _maxLength = 15;
@@ -31,7 +32,8 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
   int selectedCategoryIndex = -1;
   List<String> isCategory = ["일상", "건강", "자기개발", "자기관리", "기타"]; //.
 
-  DateTime _selectedDate = DateTime.now(); //선택된 날짜
+  final bool _isAlarmOn = false; //알람
+  final DateTime _selectedDate = DateTime.now(); //선택된 날짜
   List<String> selectedDays = [];
 
   //날짜 포맷팅
@@ -78,27 +80,28 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
     }
 
     // 요청 바디 준비
-    final url = Uri.parse(
-        'http://15.164.88.94/groups/${widget.groupId}/group-routines');
+    final url = Uri.parse('http://15.164.88.94/routines');
     final headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
+      'Authorization': 'Bearer $_token',
     };
     final body = jsonEncode({
       'routineTitle': _controller.text,
       'routineCategory': _getCategoryFromIndex(selectedCategoryIndex),
+      'isAlarmEnabled': _isAlarmOn,
+      'startDate': formattedDate,
       'repeatDays': selectedDays,
     });
 
     try {
       final response = await http.post(url, headers: headers, body: body);
       print('Response status: ${response.statusCode}');
-      print('Response body: ${utf8.decode(response.bodyBytes)}');
+      print('Response body: ${response.body}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         _showDialog('성공', '루틴이 성공적으로 추가되었습니다.');
       } else {
-        _showDialog('오류', '루틴 추가에 실패했습니다: ${utf8.decode(response.bodyBytes)}');
+        _showDialog('오류', '루틴 추가에 실패했습니다: ${response.body}');
       }
     } catch (e) {
       print('Error: $e');
@@ -136,18 +139,17 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: const Color(0xFFF8F8EF),
+        backgroundColor: Colors.grey[200],
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(50),
           child: AppBar(
-            backgroundColor: const Color(0xFF8DCCFF),
+            backgroundColor: Colors.grey[200],
             title: const Text(
               '루틴 추가',
               style: TextStyle(
-                  fontSize: 25,
-                  color: Colors.white,
+                  fontSize: 18,
+                  color: Colors.black,
                   fontWeight: FontWeight.bold),
             ),
             centerTitle: true,
@@ -164,12 +166,9 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
           //스크롤 가능하게 변경  bottom overflowed 오류 해결
           child: Column(
             children: <Widget>[
-              const SizedBox(
-                height: 20,
-              ),
               Container(
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF8F8EF),
+                  color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10),
                 ),
                 padding: const EdgeInsets.all(10),
@@ -188,6 +187,16 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                 ),
               ),
 
+              const SizedBox(
+                height: 30,
+              ),
+              Container(
+                padding: const EdgeInsets.fromLTRB(0, 0, 300, 10),
+                child: const Text(
+                  "루틴 설정",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+              ),
               Container(
                 decoration: const BoxDecoration(
                   color: Colors.white,
@@ -209,7 +218,6 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                     Text(
                       "반복요일",
                       style: TextStyle(
-                        color: Color(0xFFAEAEAE),
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
@@ -247,17 +255,16 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                           height: 40,
                           decoration: BoxDecoration(
                             color: isSelected[i]
-                                ? const Color(0xFFB1DAFC)
-                                : const Color(0xFFF0F0F0),
+                                ? const Color(0xffE6E288)
+                                : Colors.grey[200],
                             borderRadius: BorderRadius.circular(20),
                           ),
                           alignment: Alignment.center,
                           child: Text(
                             _getWeekdayName(i),
                             style: TextStyle(
-                              color: isSelected[i]
-                                  ? const Color(0xFFFFFFFF)
-                                  : const Color(0xFFAEAEAE),
+                              color:
+                                  isSelected[i] ? Colors.white : Colors.black,
                             ),
                           ),
                         ),
@@ -287,7 +294,6 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                         const Text(
                           "카테고리",
                           style: TextStyle(
-                            color: Color(0xFFAEAEAE),
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -313,19 +319,18 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                             ),
                             decoration: BoxDecoration(
                               color: selectedCategoryIndex == index
-                                  ? const Color(0xFFB1DAFC)
-                                  : const Color(0xFFF0F0F0),
+                                  ? const Color(0xffE6E288)
+                                  : Colors.white,
                               borderRadius: BorderRadius.circular(20),
-                              border:
-                                  Border.all(color: const Color(0xFFF0F0F0)),
+                              border: Border.all(color: Colors.grey),
                             ),
                             alignment: Alignment.center,
                             child: Text(
                               isCategory[index],
                               style: TextStyle(
                                   color: selectedCategoryIndex == index
-                                      ? const Color(0xFFFFFFFF)
-                                      : const Color(0xFFAEAEAE)),
+                                      ? Colors.white
+                                      : Colors.grey),
                             ),
                           ),
                         ),
@@ -334,77 +339,17 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.only(
-                    top: 20, bottom: 15, left: 10, right: 10),
-                margin: const EdgeInsets.only(top: 30, left: 10, right: 10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Image.asset(
-                      "assets/images/calendar.png",
-                      width: 30,
-                      height: 30,
-                    ),
-                    const SizedBox(width: 10),
-                    const Text(
-                      "루틴 시작일",
-                      style: TextStyle(
-                        color: Color(0xFFAEAEAE),
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(left: 130),
-                    ),
-                    //시작일 선택
-                    GestureDetector(
-                      onTap: () async {
-                        DateTime? pickeDate = await showDatePicker(
-                          context: context,
-                          initialDate: _selectedDate,
-                          firstDate: DateTime.now(),
-                          lastDate: DateTime(2100),
-                        );
-                        if (pickeDate != null && pickeDate != _selectedDate) {
-                          setState(() {
-                            _selectedDate = pickeDate;
-                          });
-                        }
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8, horizontal: 12),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFFFFFF),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: Text(
-                          formattedDate,
-                          style: const TextStyle(
-                              fontSize: 16, color: Color(0xFFAEAEAE)),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              const SizedBox(height: 280),
               //루틴 추가 버튼
-              const SizedBox(height: 210),
               Container(
                 width: 400,
-                height: 90,
+                height: 80,
                 padding: const EdgeInsets.only(top: 30),
                 child: ElevatedButton(
                   onPressed: _addRoutine,
                   style: ButtonStyle(
                     backgroundColor:
-                        WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
+                        WidgetStateProperty.all<Color>(const Color(0xffE6E288)),
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0), //테두리 둥글게
@@ -416,13 +361,12 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                     "루틴 추가하기",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
                     ),
                   ),
                 ),
               ),
-              // const SizedBox(height: 20), //버튼 아래 여백
+              const SizedBox(height: 20), //버튼 아래 여백
             ],
           ),
         ),
