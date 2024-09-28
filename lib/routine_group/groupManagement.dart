@@ -54,7 +54,7 @@ class _groupManagementState extends State<groupManagement> {
                 minimumSize: WidgetStateProperty.all<Size>(const Size(0, 0)),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 overlayColor:
-                WidgetStateProperty.all<Color>(Colors.transparent),
+                    WidgetStateProperty.all<Color>(Colors.transparent),
               ),
               child: const Padding(
                 padding: EdgeInsets.only(right: 210.0), // 왼쪽으로 8.0만큼 패딩을 추가
@@ -83,7 +83,7 @@ class _groupManagementState extends State<groupManagement> {
                 minimumSize: WidgetStateProperty.all<Size>(const Size(0, 0)),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 overlayColor:
-                WidgetStateProperty.all<Color>(Colors.transparent),
+                    WidgetStateProperty.all<Color>(Colors.transparent),
               ),
               child: const Padding(
                 padding: EdgeInsets.only(right: 235.0), // 왼쪽으로 8.0만큼 패딩을 추가

@@ -86,19 +86,19 @@ class _OtherusercategoryState extends State<Otherusercategory> {
             const SizedBox(height: 20),
             routineCategoryStatistics.isNotEmpty
                 ? Column(
-              children: routineCategoryStatistics
-                  .map((stat) => _buildCategoryList(
-                  stat.category,
-                  stat.completedCount,
-                  _getCategoryColor(stat.category)))
-                  .toList(),
-            )
+                    children: routineCategoryStatistics
+                        .map((stat) => _buildCategoryList(
+                            stat.category,
+                            stat.completedCount,
+                            _getCategoryColor(stat.category)))
+                        .toList(),
+                  )
                 : const Center(
-              child: Text(
-                '완료한 카테고리가 없습니다.',
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-            ),
+                    child: Text(
+                      '완료한 카테고리가 없습니다.',
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
+                    ),
+                  ),
           ],
         ),
       ),
@@ -151,19 +151,19 @@ class _OtherusercategoryState extends State<Otherusercategory> {
             PieChartData(
               sections: routineCategoryStatistics.isNotEmpty
                   ? routineCategoryStatistics.map((stat) {
-                return PieChartSectionData(
-                  color: _getCategoryColor(stat.category),
-                  value: stat.completedCount.toDouble(),
-                  title: '',
-                  radius: 30,
-                );
-              }).toList()
+                      return PieChartSectionData(
+                        color: _getCategoryColor(stat.category),
+                        value: stat.completedCount.toDouble(),
+                        title: '',
+                        radius: 30,
+                      );
+                    }).toList()
                   : [
-                PieChartSectionData(
-                  color: Colors.grey,
-                  radius: 30,
-                )
-              ],
+                      PieChartSectionData(
+                        color: Colors.grey,
+                        radius: 30,
+                      )
+                    ],
               centerSpaceRadius: 55,
               sectionsSpace: 0,
             ),
@@ -217,7 +217,7 @@ class _OtherusercategoryState extends State<Otherusercategory> {
           ),
           title: Text(category),
           trailing:
-          Text('$completedCount 개', style: const TextStyle(fontSize: 16)),
+              Text('$completedCount 개', style: const TextStyle(fontSize: 16)),
         ),
       ),
     );
@@ -253,7 +253,7 @@ class CategoryStatistics {
   factory CategoryStatistics.fromJson(Map<String, dynamic> json) {
     var list = json['routineCategoryStatistics'] as List? ?? [];
     List<RoutineCategoryStatistics> categoryStatisticsList =
-    list.map((stat) => RoutineCategoryStatistics.fromJson(stat)).toList();
+        list.map((stat) => RoutineCategoryStatistics.fromJson(stat)).toList();
     return CategoryStatistics(
       completedRoutinesCount: json['completedRoutinesCount'] ?? 0,
       routineCategoryStatistics: categoryStatisticsList,

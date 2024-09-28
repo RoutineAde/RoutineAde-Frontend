@@ -196,7 +196,6 @@ class _ProfileChangeState extends State<ProfileChange> {
           },
         ),
       ),
-      backgroundColor: Colors.white,
       body: Stack(
         children: [
           Padding(
@@ -217,7 +216,7 @@ class _ProfileChangeState extends State<ProfileChange> {
                             ? NetworkImage(
                             _imageUrl!) // Google Photos 이미지 사용
                             : const AssetImage(
-                            'assets/images/defaultProfile.png')
+                            'assets/images/default_profile.png')
                         as ImageProvider,
                       ),
                       Positioned(

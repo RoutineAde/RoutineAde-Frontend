@@ -26,7 +26,7 @@ class _StaticsCategoryState extends State<StaticsCategory> {
 
   Future<void> _fetchCategoryStatistics() async {
     String url =
-        'http://15.164.88.94/users/statistics?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
+        'http://15.164.88.94:8080/users/statistics?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
 
     try {
       final response = await http.get(
