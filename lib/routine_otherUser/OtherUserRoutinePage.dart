@@ -567,8 +567,7 @@ Future<RoutineResponse2> fetchRoutinesByUserId(int userId) async {
 
   try {
     final response = await http.get(
-      Uri.parse(
-          'http://15.164.88.94:8080/users/$userId/routines'), // userId로 조회
+      Uri.parse('http://15.164.88.94/users/$userId/routines'), // userId로 조회
       headers: {
         'Authorization': 'Bearer $token', // 적절한 토큰 사용
         'Content-Type': 'application/json; charset=UTF-8', // UTF-8 설정

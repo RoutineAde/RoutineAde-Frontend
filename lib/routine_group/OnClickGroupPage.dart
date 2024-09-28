@@ -64,7 +64,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
 
   Future<GroupResponse> fetchGroupResponse(int groupId) async {
     final response = await http.get(
-      Uri.parse('http://15.164.88.94:8080/groups/$groupId'),
+      Uri.parse('http://15.164.88.94/groups/$groupId'),
       headers: {
         'Authorization': 'Bearer $token', // 필요 시 여기에 토큰을 추가
         'Accept': 'application/json', // JSON 응답을 기대하는 경우
@@ -83,7 +83,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
 //알람 보내기
   Future<void> updateGroupAlarm(int groupId, bool isEnabled) async {
     final response = await http.patch(
-      Uri.parse('http://15.164.88.94:8080/groups/$groupId'),
+      Uri.parse('http://15.164.88.94/groups/$groupId'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',

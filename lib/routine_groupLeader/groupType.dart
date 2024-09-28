@@ -42,7 +42,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     String categoryQuery = category != null && category != '전체'
         ? 'groupCategory=${Uri.encodeComponent(category)}'
         : 'groupCategory=%EC%A0%84%EC%B2%B4';
-    final url = Uri.parse('http://15.164.88.94:8080/groups?$categoryQuery');
+    final url = Uri.parse('http://15.164.88.94/groups?$categoryQuery');
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -138,7 +138,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
               ],
             ),
             actions: [
-              ButtonBar(
+              OverflowBar(
                 alignment: MainAxisAlignment.end, // 버튼들을 오른쪽에 정렬
                 children: [
                   TextButton(
@@ -187,7 +187,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
             ],
           ),
           actions: [
-            ButtonBar(
+            OverflowBar(
               alignment: MainAxisAlignment.end, // 버튼들을 오른쪽에 정렬
               children: [
                 TextButton(

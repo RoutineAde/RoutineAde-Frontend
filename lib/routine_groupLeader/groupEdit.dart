@@ -39,7 +39,7 @@ class _groupEditState extends State<groupEdit> {
   }
 
   Future<void> _loadGroupInfo() async {
-    final url = Uri.parse("http://15.164.88.94:8080/groups/${widget.groupId}");
+    final url = Uri.parse("http://15.164.88.94/groups/${widget.groupId}");
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -86,7 +86,7 @@ class _groupEditState extends State<groupEdit> {
     _passwordController.text.isEmpty ? null : _passwordController.text;
 
     // 요청 바디 준비
-    final url = Uri.parse('http://15.164.88.94:8080/groups/${widget.groupId}');
+    final url = Uri.parse('http://15.164.88.94/groups/${widget.groupId}');
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',

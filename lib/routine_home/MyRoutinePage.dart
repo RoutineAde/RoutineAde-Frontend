@@ -103,7 +103,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     }
   }
 
-
 // 감정 등록 메서드
   Future<void> _registerEmotion(DateTime date, String selectedImage) async {
     final today = DateTime.now();
@@ -144,7 +143,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         // 감정 등록 후 상태 업데이트
         setState(() {
           userEmotion = getImageEmotion2(selectedImage); // 새로운 감정 상태를 반영
-          futureRoutineResponse = fetchRoutines(selectedDate); // 감정 등록 후 데이터를 다시 가져옴
+          futureRoutineResponse =
+              fetchRoutines(selectedDate); // 감정 등록 후 데이터를 다시 가져옴
         });
 
         // 감정 등록 성공 메시지
@@ -160,7 +160,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
       print("감정 등록 중 에러: $e");
     }
   }
-
 
   Widget _buildBottomSheetContent(DateTime date) {
     return SizedBox(
@@ -263,8 +262,10 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                       width: 50,
                       height: 50,
                     )
-                        : Image.asset("assets/images/emotion/no-emotion.png",
-                        width: 50, height: 50),
+                        : Image.asset(
+                        "assets/images/emotion/no-emotion.png",
+                        width: 50,
+                        height: 50),
                     const SizedBox(width: 10),
                     const SizedBox(width: 10),
                     Expanded(
@@ -574,7 +575,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
               "assets/images/tap-bar/group01.png", const GroupMainPage()),
           _buildBottomAppBarItem("assets/images/tap-bar/statistics01.png",
               const StaticsCalendar()),
-          _buildBottomAppBarItem("assets/images/tap-bar/more01.png", MyInfo()),
+          _buildBottomAppBarItem(
+              "assets/images/tap-bar/more01.png", const MyInfo()),
         ],
       ),
     );
@@ -747,8 +749,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.white,
-          title: Text(routine.routineTitle),  // Title과 함께 routineTitle 표시
-          content: Text(routine.routineCategory),  // Category 표시
+          title: Text(routine.routineTitle), // Title과 함께 routineTitle 표시
+          content: Text(routine.routineCategory), // Category 표시
           actions: <Widget>[
             TextButton(
               onPressed: () {
@@ -759,7 +761,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                       builder: (context) => ModifiedroutinePage(
                         routineId: routine.routineId,
                         routineTitle: routine.routineTitle,
-                        routineCategory: routine.routineCategory,  // 이 부분도 연동
+                        routineCategory:
+                        routine.routineCategory, // 이 부분도 연동
                         isAlarmEnabled: routine.isAlarmEnabled,
                         startDate: routine.startDate,
                         repeatDays: routine.repeatDays,
@@ -774,7 +777,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                     height: 20,
                   ),
                   const SizedBox(width: 20),
-                  Text(
+                  const Text(
                     '수정',
                     style: TextStyle(fontSize: 18, color: Colors.black54),
                   ),
@@ -802,7 +805,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                     height: 20,
                   ),
                   const SizedBox(width: 20),
-                  Text(
+                  const Text(
                     '삭제',
                     style: TextStyle(fontSize: 18, color: Colors.black54),
                   ),
@@ -814,7 +817,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
       },
     );
   }
-
 
   Future<void> updateRoutineCompletion(
       int routineId, bool isCompletion, String date) async {

@@ -22,7 +22,7 @@ class _groupDeleteState extends State<groupDelete> {
       return;
     }
 
-    final url = Uri.parse('http://15.164.88.94:8080/groups/${widget.groupId}');
+    final url = Uri.parse('http://15.164.88.94/groups/${widget.groupId}');
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token', // 토큰 추가

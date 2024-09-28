@@ -80,7 +80,7 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
     }
 
     // 요청 바디 준비
-    final url = Uri.parse('http://15.164.88.94:8080/routines');
+    final url = Uri.parse('http://15.164.88.94/routines');
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',

@@ -27,7 +27,7 @@ class _OtherusercategoryState extends State<Otherusercategory> {
 
   Future<void> _fetchCategoryStatistics() async {
     String url =
-        'http://15.164.88.94:8080/users/${widget.userId}/statistics?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
+        'http://15.164.88.94/users/${widget.userId}/statistics?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
 
     try {
       final response = await http.get(

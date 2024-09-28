@@ -111,8 +111,7 @@ class _ModifiedRoutinePageState extends State<ModifiedroutinePage> {
   }
 
   void _ModifiedRoutine() async {
-    final url =
-    Uri.parse('http://15.164.88.94:8080/routines/${widget.routineId}');
+    final url = Uri.parse('http://15.164.88.94/routines/${widget.routineId}');
     //   'routineTitle=${Uri.encodeComponent(_controller.text)}&'
     //   'routineCategory=${Uri.encodeComponent(_getCategoryFromIndex(selectedCategoryIndex))}&'
     //   'isAlarmEnabled=$_isAlarmOn&'

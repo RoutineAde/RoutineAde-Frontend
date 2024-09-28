@@ -35,7 +35,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   }
 
   Future<void> fetchUserInfo(int groupId) async {
-    final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId');
+    final url = Uri.parse('http://15.164.88.94/groups/$groupId');
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -160,7 +160,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   }
 
   Future<List<dynamic>> fetchChatMessages(int groupId) async {
-    final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId/chatting');
+    final url = Uri.parse('http://15.164.88.94/groups/$groupId/chatting');
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -184,7 +184,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   Future<Map<String, dynamic>> createChatMessage(
       int groupId, String content, File? imageFile) async {
-    final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId/chatting');
+    final url = Uri.parse('http://15.164.88.94/groups/$groupId/chatting');
 
     final request = http.MultipartRequest('POST', url);
     request.headers['Authorization'] = 'Bearer $token';
@@ -247,6 +247,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     if (_nickname != null) {
       final response =
       await createChatMessage(widget.groupId, text, _imageFile);
+
       final createdDate = response['createdDate'];
       final createdTime = response['createdTime'];
 

@@ -52,7 +52,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
     _passwordController.text.isEmpty ? null : _passwordController.text;
 
     // 요청 바디 준비
-    final url = Uri.parse('http://15.164.88.94:8080/groups');
+    final url = Uri.parse('http://15.164.88.94/groups');
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',

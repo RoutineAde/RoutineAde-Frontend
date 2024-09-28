@@ -75,7 +75,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
 
   Future<GroupResponse> fetchGroupResponse(int groupId) async {
     final response = await http.get(
-      Uri.parse('http://15.164.88.94:8080/groups/$groupId'),
+      Uri.parse('http://15.164.88.94/groups/$groupId'),
       headers: {
         'Authorization': 'Bearer $token',
         'Accept': 'application/json', // JSON 응답을 기대하는 경우
@@ -425,7 +425,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
   }
 
   Future<void> deleteMember(int groupId, int userId) async {
-    final url = 'http://15.164.88.94:8080/groups/$groupId/members/$userId';
+    final url = 'http://15.164.88.94/groups/$groupId/members/$userId';
     final response = await http.delete(
       Uri.parse(url),
       headers: {
@@ -807,8 +807,7 @@ void _showDeleteConfirmationDialog(
 }
 
 Future<void> deleteGroupRoutine(int groupId, int routineId) async {
-  final url =
-      'http://15.164.88.94:8080/groups/$groupId/group-routines/$routineId';
+  final url = 'http://15.164.88.94/groups/$groupId/group-routines/$routineId';
   final response = await http.delete(
     Uri.parse(url),
     headers: {

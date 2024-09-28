@@ -33,7 +33,7 @@ class _OtherusercalenderState extends State<Otherusercalender>
   // API 호출 함수
   Future<void> _fetchRoutineStatistics() async {
     final String url =
-        'http://15.164.88.94:8080/users/${widget.userId}/statistics/calender?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
+        'http://15.164.88.94/users/${widget.userId}/statistics/calender?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
 
     try {
       final response = await http.get(
@@ -234,7 +234,6 @@ class _OtherusercalenderState extends State<Otherusercalender>
               ),
               headerVisible: false,
               daysOfWeekHeight: 30.0,
-
             ),
           ),
           Padding(

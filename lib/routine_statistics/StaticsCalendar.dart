@@ -41,7 +41,7 @@ class _StaticsCalendarState extends State<StaticsCalendar>
   // API 호출 함수
   Future<void> _fetchRoutineStatistics() async {
     final String url =
-        'http://15.164.88.94:8080/users/statistics/calender?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
+        'http://15.164.88.94/users/statistics/calender?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
 
     try {
       final response = await http.get(
@@ -112,7 +112,7 @@ class _StaticsCalendarState extends State<StaticsCalendar>
         controller: _tabController,
         children: [
           _buildCalendarTab(),
-          StaticsCategory(),
+          const StaticsCategory(),
         ],
       ),
       bottomNavigationBar: BottomAppBar(
@@ -163,8 +163,7 @@ class _StaticsCalendarState extends State<StaticsCalendar>
                 // 더보기 버튼 클릭 시 동작할 코드
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => MyInfo()),
+                  MaterialPageRoute(builder: (context) => MyInfo()),
                 );
               },
               child: SizedBox(
