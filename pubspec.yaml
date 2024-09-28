@@ -28,7 +28,7 @@ dependencies:
   table_calendar: ^3.0.0
   fl_chart: ^0.69.0
   kakao_flutter_sdk: ^1.1.0 #카카오로그인
-  url_launcher: ^6.0.17 # 카카오 로그인
+  url_launcher: ^6.0.20 # 카카오 로그인
   webview_flutter: ^4.9.0
   uni_links: ^0.5.1
 

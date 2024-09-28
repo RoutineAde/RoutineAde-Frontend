@@ -119,7 +119,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     }
 
     final formattedDate = DateFormat("yyyy.MM.dd").format(date);
-    final url = Uri.parse("http://15.164.88.94:8080/users/emotion");
+    final url = Uri.parse("http://15.164.88.94/users/emotion");
     final headers = {
       "Content-Type": "application/json",
       "Authorization": "Bearer $token"
@@ -821,7 +821,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
   Future<void> updateRoutineCompletion(
       int routineId, bool isCompletion, String date) async {
     final url = Uri.parse(
-        "http://15.164.88.94:8080/routines/$routineId/completion?date=$date");
+        "http://15.164.88.94/routines/$routineId/completion?date=$date");
     final headers = {
       "Content-Type": "application/json",
       'Authorization': 'Bearer $token',
@@ -844,7 +844,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
 
   Future<void> deleteRoutine(int routineId) async {
     final response = await http.delete(
-      Uri.parse('http://15.164.88.94:8080/routines/$routineId'),
+      Uri.parse('http://15.164.88.94/routines/$routineId'),
       headers: {
         'Authorization': 'Bearer $token',
       },
@@ -861,7 +861,7 @@ Future<RoutineResponse> fetchRoutines(String date) async {
   print('API 요청 날짜: $date'); // 요청할 날짜를 출력하여 확인
 
   final response = await http.get(
-    Uri.parse('http://15.164.88.94:8080/routines/v3?routineDate=$date'),
+    Uri.parse('http://15.164.88.94/routines/v3?routineDate=$date'),
     headers: {
       'Authorization': 'Bearer $token',
     },
@@ -879,7 +879,7 @@ Future<RoutineResponse> fetchRoutines(String date) async {
 
 //루틴 조회 및 수정
 Future<void> _fetchRoutineDate(BuildContext context, int routineId) async {
-  final url = Uri.parse("http://15.164.88.94:8080/routines/$routineId");
+  final url = Uri.parse("http://15.164.88.94/routines/$routineId");
   final headers = {
     "Content-Type": "application/json",
     "Authorization": "Bearer $token"
