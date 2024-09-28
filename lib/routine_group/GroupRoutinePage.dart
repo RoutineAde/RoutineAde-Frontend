@@ -196,9 +196,12 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                 children: [
                   TextButton(
 <<<<<<< HEAD
+<<<<<<< HEAD
                     child: const Text("가입하기"),
                     onPressed: () async {
 =======
+=======
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                     child: const Text("취소",
                         style: TextStyle(
                             color: Color.fromARGB(255, 128, 121, 121))),
@@ -210,7 +213,10 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                     child: const Text("그룹 가입",
                         style: TextStyle(color: Color(0xff8DCCFF))),
                     onPressed: () async {
+<<<<<<< HEAD
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                       Navigator.of(context).pop(); // 다이얼로그 닫기
                       if (Egroup.isPublic) {
                         bool joinSuccess = await _joinGroup(Egroup.groupId);
@@ -225,6 +231,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                     },
                   ),
 <<<<<<< HEAD
+<<<<<<< HEAD
                   TextButton(
                     child: const Text("취소"),
                     onPressed: () {
@@ -233,6 +240,8 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                   ),
 =======
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                 ],
               ),
             ],
@@ -387,6 +396,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
   }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
   // void _checkPassword(EntireGroup group) {
   //   setState(() {
   //     if (_passwordController.text == group.groupPassword) {
@@ -403,6 +413,8 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
 
 =======
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -559,10 +571,14 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                             children: [
                                               Text(
 <<<<<<< HEAD
+<<<<<<< HEAD
                                                   "루틴장 ${group.createdUserNickname}"),
 =======
                                                   "그룹장 ${group.createdUserNickname}"),
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+                                                  "그룹장 ${group.createdUserNickname}"),
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                                               Text("그룹코드 ${group.groupId}"),
                                             ],
                                           ),

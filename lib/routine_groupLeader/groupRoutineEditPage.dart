@@ -354,10 +354,14 @@ class _groupRoutineEditPageState extends State<groupRoutineEditPage> {
                 style: ButtonStyle(
                   backgroundColor:
 <<<<<<< HEAD
+<<<<<<< HEAD
                       WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
 =======
                       WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+                      WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),

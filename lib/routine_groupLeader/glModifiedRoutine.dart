@@ -15,7 +15,7 @@ class _glModifiedRoutineState extends State<glModifiedRoutine> {
   bool _isObscured = true; //텍스트를 가리는 초기 상태
   IconData _icon = Icons.visibility_off; // 초기 아이콘
   final TextEditingController _groupDescriptionController =
-  TextEditingController();
+      TextEditingController();
   int _selectedMemberCount = 0;
 
   //카테고리 선택 (한번에 하나만)
@@ -166,7 +166,7 @@ class _glModifiedRoutineState extends State<glModifiedRoutine> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: List.generate(
                               5,
-                                  (index) => GestureDetector(
+                              (index) => GestureDetector(
                                 onTap: () {
                                   setState(() {
                                     selectedCategoryIndex = index;

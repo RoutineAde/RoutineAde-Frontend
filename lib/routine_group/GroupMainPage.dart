@@ -9,10 +9,15 @@ import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupType.dart';
 import 'package:routine_ade/routine_group/AddGroupPage.dart';
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
 import 'package:routine_ade/routine_myInfo/MyInfo.dart';
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
+import 'package:routine_ade/routine_myInfo/MyInfo.dart';
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
 import 'package:routine_ade/routine_user/token.dart';
 
 //전체화면 어둡게
@@ -264,10 +269,14 @@ class _GroupMainPageState extends State<GroupMainPage> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
 <<<<<<< HEAD
+<<<<<<< HEAD
                                   Text("루틴장 ${group.createdUserNickname}"),
 =======
                                   Text("그룹장 ${group.createdUserNickname}"),
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+                                  Text("그룹장 ${group.createdUserNickname}"),
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                                   Text("그룹코드 ${group.groupId}"),
                                 ],
                               ),

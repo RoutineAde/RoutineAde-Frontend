@@ -2,21 +2,23 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:table_calendar/table_calendar.dart';
-import '../routine_myInfo/MyInfo.dart';
+
 import '../routine_group/GroupMainPage.dart';
 import '../routine_home/MyRoutinePage.dart';
 import '../routine_user/token.dart';
+import 'StaticsCategory.dart';
 
-class Otherusercalender extends StatefulWidget {
-  final int userId;
-  const Otherusercalender({super.key, required this.userId});
+class StaticsCalendar extends StatefulWidget {
+  const StaticsCalendar({super.key});
 
   @override
-  _OtherusercalenderState createState() => _OtherusercalenderState();
+  _StaticsCalendarState createState() => _StaticsCalendarState();
 }
 
-class _OtherusercalenderState extends State<Otherusercalender>
+class _StaticsCalendarState extends State<StaticsCalendar>
     with SingleTickerProviderStateMixin {
+  bool isExpanded = false;
+  late TabController _tabController;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
@@ -26,14 +28,20 @@ class _OtherusercalenderState extends State<Otherusercalender>
   @override
   void initState() {
     super.initState();
-
+    _tabController = TabController(length: 2, vsync: this);
     _fetchRoutineStatistics(); // 통계 데이터 가져오기
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   // API 호출 함수
   Future<void> _fetchRoutineStatistics() async {
     final String url =
-        'http://15.164.88.94/users/${widget.userId}/statistics/calender?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
+        'http://15.164.88.94:8080/users/statistics/calender?date=${_focusedDay.year}.${_focusedDay.month.toString().padLeft(2, '0')}';
 
     try {
       final response = await http.get(
@@ -63,16 +71,110 @@ class _OtherusercalenderState extends State<Otherusercalender>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   // backgroundColor: const Color(0xFF8DCCFF),
-      //   automaticallyImplyLeading: false, // 뒤로가기 제거
-      // ),
+      appBar: AppBar(
+        title: const Text(
+          '통계',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color(0xFF8DCCFF),
+        automaticallyImplyLeading: false, // 뒤로가기 제거
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(90.0),
+          child: Container(
+            color: Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 40.0),
+              child: TabBar(
+                controller: _tabController,
+                tabs: const [
+                  Tab(text: "캘린더"),
+                  Tab(text: "카테고리"),
+                ],
+                labelStyle: const TextStyle(fontSize: 18),
+                labelColor: Colors.black,
+                unselectedLabelColor: Colors.grey,
+                indicator: const UnderlineTabIndicator(
+                  borderSide: BorderSide(width: 3.0, color: Color(0xFF8DCCFF)),
+                  insets: EdgeInsets.symmetric(horizontal: 115.0),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
       backgroundColor: Colors.white,
-      body: _buildBody(),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          _buildCalendarTab(),
+          const StaticsCategory(),
+        ],
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const MyRoutinePage()),
+                );
+              },
+              child: SizedBox(
+                width: 60,
+                height: 60,
+                child: Image.asset("assets/images/tap-bar/routine01.png"),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const GroupMainPage()),
+                );
+              },
+              child: SizedBox(
+                width: 60,
+                height: 60,
+                child: Image.asset("assets/images/tap-bar/group01.png"),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                // 통계 버튼 클릭 시 동작할 코드
+              },
+              child: SizedBox(
+                width: 60,
+                height: 60,
+                child: Image.asset("assets/images/tap-bar/statistics02.png"),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                // 더보기 버튼 클릭 시 동작할 코드
+              },
+              child: SizedBox(
+                width: 60,
+                height: 60,
+                child: Image.asset("assets/images/tap-bar/more01.png"),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  Widget _buildBody() {
+  Widget _buildCalendarTab() {
     final totalCompletedRoutines =
         routineStatistics?.completedRoutinesCount ?? 0;
 
@@ -156,8 +258,6 @@ class _OtherusercalenderState extends State<Otherusercalender>
 
   Widget _buildCalendar() {
     return Container(
-      width: 360, //달력비율
-      height: 400, //달력비율
       decoration: BoxDecoration(
         border: Border.all(
           color: Colors.grey,
@@ -224,17 +324,15 @@ class _OtherusercalenderState extends State<Otherusercalender>
                   return days[date.weekday - 1];
                 },
                 weekdayStyle: const TextStyle(
-                  fontSize: 16.0,
+                  fontSize: 14.0,
                   color: Colors.black,
                 ),
                 weekendStyle: const TextStyle(
-                  fontSize: 16.0,
+                  fontSize: 14.0,
                   color: Colors.black,
                 ),
               ),
               headerVisible: false,
-              daysOfWeekHeight: 30.0,
-
             ),
           ),
           Padding(
@@ -300,26 +398,23 @@ class _OtherusercalenderState extends State<Otherusercalender>
   Widget _buildDayCell(DateTime date, int level) {
     final colorMap = {
       0: Colors.white, // 완료 안 됨
-      1: const Color(0xffCAF4FF),
-      2: const Color(0xffA0DEFF),
-      3: const Color(0xff5AB2FF),
+      1: const Color(0xffCAF4FF), // 낮은 달성도
+      2: const Color(0xffA0DEFF), // 중간 달성도
+      3: const Color(0xff5AB2FF), // 높은 달성도
     };
+
     return Container(
+      margin: const EdgeInsets.all(2.0),
       decoration: BoxDecoration(
-        color: colorMap[level] ?? Colors.white,
+        color: colorMap[level] ?? Colors.grey[300],
         shape: BoxShape.circle,
-        // border: Border.all(
-        //   color: Colors.grey,
-        //   width: 1.0,
-        // ),
       ),
-      margin: const EdgeInsets.all(4.0),
       child: Center(
         child: Text(
-          date.day.toString(),
+          '${date.day}',
           style: const TextStyle(
             color: Colors.black,
-            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),

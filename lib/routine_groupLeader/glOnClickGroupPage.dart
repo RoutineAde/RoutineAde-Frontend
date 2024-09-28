@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import 'package:routine_ade/routine_group/groupManagement.dart';
 import 'package:routine_ade/routine_groupLeader/groupDelete.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
@@ -17,6 +18,8 @@ import 'groupRoutineEditPage.dart';
 import 'AddGroupRoutinePage.dart';
 import 'package:routine_ade/routine_user/token.dart';
 =======
+=======
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
 import 'package:routine_ade/routine_groupLeader/groupDelete.dart';
 import 'package:http/http.dart' as http;
 import '../routine_group/GroupType.dart';
@@ -25,7 +28,10 @@ import 'AddGroupRoutinePage.dart';
 import 'package:routine_ade/routine_user/token.dart';
 import 'glGroupIntroRule.dart';
 import 'package:routine_ade/routine_otherUser/OtherUserRoutinePage.dart';
+<<<<<<< HEAD
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
 
 // 전역 함수로 getCategoryColor를 정의
 Color getCategoryColor(String category) {
@@ -383,8 +389,11 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
           : TextButton(
               onPressed: () {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 // 그룹원 내보내기 기능 추가
 =======
+=======
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -413,7 +422,10 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
                     );
                   },
                 );
+<<<<<<< HEAD
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
               },
               style: ButtonStyle(
                 padding: WidgetStateProperty.all<EdgeInsets>(
@@ -539,10 +551,14 @@ class RoutinePage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
 <<<<<<< HEAD
+<<<<<<< HEAD
                       builder: (context) => GroupIntroRule(groupId: groupId),
 =======
                       builder: (context) => glGroupIntroRule(groupId: groupId),
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+                      builder: (context) => glGroupIntroRule(groupId: groupId),
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                     ),
                   );
                 },
@@ -652,15 +668,21 @@ class RoutinePage extends StatelessWidget {
 
 void _showRoutineDialog(
 <<<<<<< HEAD
+<<<<<<< HEAD
     BuildContext context, String routineTitle, int routineId, int groupId) {
 =======
+=======
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
   BuildContext context,
   String routineTitle,
   int routineId,
   int groupId,
   //String routineCategory, // routineCategory 추가
 ) {
+<<<<<<< HEAD
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -691,12 +713,15 @@ void _showRoutineDialog(
                 context,
                 MaterialPageRoute(
 <<<<<<< HEAD
+<<<<<<< HEAD
                     builder: (context) => groupRoutineEditPage(
                         groupId: groupId,
                         routineTitle: routineTitle,
                         routineId: routineId,
                         repeatDays: const [])),
 =======
+=======
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                   builder: (context) => groupRoutineEditPage(
                     groupId: groupId,
                     routineTitle: routineTitle,
@@ -704,7 +729,10 @@ void _showRoutineDialog(
                     repeatDays: const [],
                   ),
                 ),
+<<<<<<< HEAD
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
               );
             },
             child: Row(
@@ -750,7 +778,10 @@ void _showRoutineDialog(
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
 // 삭제 확인 다이얼로그 함수
 void _showDeleteConfirmationDialog(
     BuildContext context, String routineTitle, int groupId, int routineId) {
@@ -856,7 +887,10 @@ Future<void> deleteGroupRoutine(int groupId, int routineId) async {
   }
 }
 
+<<<<<<< HEAD
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
 class GroupInfo {
   final String groupTitle;
   final String groupDescription;

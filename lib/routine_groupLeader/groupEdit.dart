@@ -19,10 +19,14 @@ class _groupEditState extends State<groupEdit> {
   final TextEditingController _groupDescriptionController =
       TextEditingController();
 <<<<<<< HEAD
+<<<<<<< HEAD
   int _selectedMemberCount = 0;
 =======
   int _selectedMemberCount = 0; //선택 할 인원 수
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+  int _selectedMemberCount = 0; //선택 할 인원 수
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
 
   // 카테고리 선택 (한번에 하나만)
   int selectedCategoryIndex = -1;
@@ -64,10 +68,14 @@ class _groupEditState extends State<groupEdit> {
       _passwordController.text = groupInfo['groupPassword'] ?? '';
       _groupDescriptionController.text = groupInfo['description'] ?? '';
 <<<<<<< HEAD
+<<<<<<< HEAD
       _selectedMemberCount = groupInfo['maxMember'] ?? 0;
 =======
       _selectedMemberCount = groupInfo['maxMemberCount'] ?? 0;
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+      _selectedMemberCount = groupInfo['maxMemberCount'] ?? 0;
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
       selectedCategoryIndex =
           isCategory.indexOf(groupInfo['groupCategory'] ?? '');
 
@@ -77,6 +85,7 @@ class _groupEditState extends State<groupEdit> {
     }
   }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   // Future<bool> fetchIsGroupAdmin(int groupId) async {
   //   final url = Uri.parse("http://15.164.88.94:8080/groups/$groupId");
@@ -102,6 +111,8 @@ class _groupEditState extends State<groupEdit> {
 
 =======
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
   // 그룹 수정 API 호출 함수
   void _editGroup() async {
     // 카테고리 선택 여부 확인
@@ -298,6 +309,7 @@ class _groupEditState extends State<groupEdit> {
                                 "대표 카테고리",
                                 style: TextStyle(
 <<<<<<< HEAD
+<<<<<<< HEAD
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -306,6 +318,11 @@ class _groupEditState extends State<groupEdit> {
                                     fontWeight: FontWeight.bold,
                                     color: Color.fromARGB(255, 56, 56, 56)),
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromARGB(255, 56, 56, 56)),
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                               ),
                             ],
                           ),
@@ -328,15 +345,21 @@ class _groupEditState extends State<groupEdit> {
                                     color: selectedCategoryIndex == index
                                         ? const Color(0xffA1D1F9)
 <<<<<<< HEAD
+<<<<<<< HEAD
                                         : Colors.white,
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(color: Colors.grey),
 =======
+=======
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                                         : const Color(0xFFF0F0F0),
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(
                                         color: const Color(0xFFF0F0F0)),
+<<<<<<< HEAD
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(
@@ -344,12 +367,17 @@ class _groupEditState extends State<groupEdit> {
                                     style: TextStyle(
                                       color: selectedCategoryIndex == index
 <<<<<<< HEAD
+<<<<<<< HEAD
                                           ? Colors.white
                                           : Colors.grey,
 =======
                                           ? const Color(0xFFFFFFFF)
                                           : const Color(0xFFAEAEAE),
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+                                          ? const Color(0xFFFFFFFF)
+                                          : const Color(0xFFAEAEAE),
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                                     ),
                                   ),
                                 ),
@@ -371,6 +399,7 @@ class _groupEditState extends State<groupEdit> {
                             "모집인원",
                             style: TextStyle(
 <<<<<<< HEAD
+<<<<<<< HEAD
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
@@ -379,6 +408,11 @@ class _groupEditState extends State<groupEdit> {
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 56, 56, 56)),
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 56, 56, 56)),
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                           ),
                           GestureDetector(
                             onTap: _selectMemberCount,
@@ -393,10 +427,14 @@ class _groupEditState extends State<groupEdit> {
                                 style: const TextStyle(
                                   fontSize: 16,
 <<<<<<< HEAD
+<<<<<<< HEAD
                                   color: Colors.black,
 =======
                                   color: Color.fromARGB(255, 56, 56, 56),
 >>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
+=======
+                                  color: Color.fromARGB(255, 56, 56, 56),
+>>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                                 ),
                               ),
                             ),
