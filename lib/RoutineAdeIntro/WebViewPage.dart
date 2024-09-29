@@ -25,19 +25,20 @@ class _WebViewPageState extends State<WebViewPage> {
       ),
       body: WebView(
         initialUrl:
-        'https://accounts.kakao.com/login/?continue=https%3A%2F%2Fkauth.kakao.com%2Foauth%2Fauthorize%3Fresponse_type%3Dcode%26client_id%3D25a0f887ecba2fdb77884c01ca0325b0%26redirect_uri%3Dhttps%253A%252F%252F15.164.88.94%252Fusers%252Flogin%252Fkakao%26through_account%3Dtrue#login',
+        'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=25a0f887ecba2fdb77884c01ca0325b0&redirect_uri=https://15.164.88.94/users/login/kakao',
         javascriptMode: JavascriptMode.unrestricted,  // Javascript 활성화
         onWebViewCreated: (WebViewController webViewController) {
           _controller = webViewController;
         },
         onPageFinished: (String url) {
-          // 페이지 로딩이 끝나면 인증 코드를 추출하는 로직
-          if (url.contains('code=')) {
+          // 페이지 로딩이 끝나면 URL을 확인
+          if (url.contains('token=')) {
             Uri uri = Uri.parse(url);
-            String? code = uri.queryParameters['code'];
-            if (code != null) {
-              print('OAuth 인증 코드: $code');
-              // 인증 코드로 필요한 작업을 추가 수행
+            String? token = uri.queryParameters['token'];
+            if (token != null) {
+              print('OAuth 토큰: $token');
+              // 추출한 토큰으로 로그인 처리 로직 추가
+              // 예: 서버에 토큰을 보내 인증 처리
             }
           }
         },
