@@ -20,3 +20,24 @@ class TokenManager {
     await prefs.remove('authToken');
   }
 }
+
+
+// import 'package:shared_preferences/shared_preferences.dart';
+//
+// class TokenManager {
+//   static Future<void> saveToken(String token) async {
+//     final prefs = await SharedPreferences.getInstance(); //토큰 저장
+//     await prefs.setString('authToken', token);
+//   }
+//
+//   static Future<String?> getToken() async {
+//     final prefs = await SharedPreferences.getInstance(); //토큰 불러오기
+//     return prefs.getString('authToken');
+//   }
+//
+//   static Future<void> clearToken() async {
+//     final prefs = await SharedPreferences.getInstance(); //토큰 삭제
+//     await prefs.remove('authToken');
+//   }
+// }
+
