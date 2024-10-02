@@ -88,19 +88,19 @@ class _StaticsCategoryState extends State<StaticsCategory> {
             const SizedBox(height: 20),
             routineCategoryStatistics.isNotEmpty
                 ? Column(
-                    children: routineCategoryStatistics
-                        .map((stat) => _buildCategoryList(
-                            stat.category,
-                            stat.completedCount,
-                            _getCategoryColor(stat.category)))
-                        .toList(),
-                  )
+              children: routineCategoryStatistics
+                  .map((stat) => _buildCategoryList(
+                  stat.category,
+                  stat.completedCount,
+                  _getCategoryColor(stat.category)))
+                  .toList(),
+            )
                 : const Center(
-                    child: Text(
-                      'No categories available for this month.',
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                  ),
+              child: Text(
+                'No categories available for this month.',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            ),
           ],
         ),
       ),
@@ -153,20 +153,20 @@ class _StaticsCategoryState extends State<StaticsCategory> {
             PieChartData(
               sections: routineCategoryStatistics.isNotEmpty
                   ? routineCategoryStatistics.map((stat) {
-                      return PieChartSectionData(
-                        color: _getCategoryColor(stat.category),
-                        value: stat.completedCount.toDouble(),
-                        title: '',
-                        radius: 30,
-                      );
-                    }).toList()
+                return PieChartSectionData(
+                  color: _getCategoryColor(stat.category),
+                  value: stat.completedCount.toDouble(),
+                  title: '',
+                  radius: 30,
+                );
+              }).toList()
                   : [
-                      // 기본 섹션을 추가하여 빈 차트 처리
-                      PieChartSectionData(
-                        color: Colors.grey,
-                        radius: 30,
-                      )
-                    ],
+                // 기본 섹션을 추가하여 빈 차트 처리
+                PieChartSectionData(
+                  color: Colors.grey,
+                  radius: 30,
+                )
+              ],
               centerSpaceRadius: 55,
               sectionsSpace: 0,
             ),
@@ -220,7 +220,7 @@ class _StaticsCategoryState extends State<StaticsCategory> {
           ),
           title: Text(category),
           trailing:
-              Text('$completedCount 개', style: const TextStyle(fontSize: 16)),
+          Text('$completedCount 개', style: const TextStyle(fontSize: 16)),
         ),
       ),
     );
@@ -257,10 +257,10 @@ class CategoryStatistics {
     var list =
         json['routineCategoryStatistics'] as List? ?? []; // API 응답의 필드명 사용
     List<RoutineCategoryStatistics> categoryStatisticsList =
-        list.map((stat) => RoutineCategoryStatistics.fromJson(stat)).toList();
+    list.map((stat) => RoutineCategoryStatistics.fromJson(stat)).toList();
     return CategoryStatistics(
       completedRoutinesCount:
-          json['completedRoutinesCount'] ?? 0, // null일 경우 기본값 설정
+      json['completedRoutinesCount'] ?? 0, // null일 경우 기본값 설정
       routineCategoryStatistics: categoryStatisticsList, // 필드명 수정
     );
   }

@@ -69,29 +69,6 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     }
   }
 
-  // Future<List<dynamic>> fetchChatMessages(int groupId) async {
-  //   final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId/chatting');
-  //   final headers = {
-  //     'Content-Type': 'application/json',
-  //     'Authorization': 'Bearer $token',
-  //   };
-
-  //   try {
-  //     final response = await http.get(url, headers: headers);
-  //     if (response.statusCode == 200) {
-  //       final decodedResponse = utf8.decode(response.bodyBytes);
-  //       final data = json.decode(decodedResponse);
-  //       print('Fetched chat messages: $data'); // 추가된 로그
-
-  //       return data['groupChatting'];
-  //     } else {
-  //       throw Exception('Failed to load chat messages');
-  //     }
-  //   } catch (e) {
-  //     print('Error fetching chat messages: $e');
-  //     return [];
-  //   }
-  // }
   Future<void> _loadChatMessages() async {
     try {
       final chatMessages = await fetchChatMessages(widget.groupId);
@@ -192,7 +169,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
     if (imageFile != null) {
       final mimeTypeData =
-          lookupMimeType(imageFile.path, headerBytes: [0xFF, 0xD8])?.split('/');
+      lookupMimeType(imageFile.path, headerBytes: [0xFF, 0xD8])?.split('/');
       final multipartFile = await http.MultipartFile.fromPath(
         'image',
         imageFile.path,
@@ -246,7 +223,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
     if (_nickname != null) {
       final response =
-          await createChatMessage(widget.groupId, text, _imageFile);
+      await createChatMessage(widget.groupId, text, _imageFile);
 
       final createdDate = response['createdDate'];
       final createdTime = response['createdTime'];
@@ -396,7 +373,7 @@ class ChatMessage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizeTransition(
       sizeFactor:
-          CurvedAnimation(parent: animationController, curve: Curves.easeOut),
+      CurvedAnimation(parent: animationController, curve: Curves.easeOut),
       axisAlignment: 0.0,
       child: Container(
         margin: const EdgeInsets.symmetric(vertical: 10.0),
@@ -419,7 +396,7 @@ class ChatMessage extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment:
-                  isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
+              isMine ? MainAxisAlignment.end : MainAxisAlignment.start,
               children: <Widget>[
                 if (!isMine)
                   Container(

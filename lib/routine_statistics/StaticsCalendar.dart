@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:table_calendar/table_calendar.dart';
-import '../routine_myInfo/MyInfo.dart';
+
 import '../routine_group/GroupMainPage.dart';
 import '../routine_home/MyRoutinePage.dart';
 import '../routine_user/token.dart';
@@ -161,10 +161,6 @@ class _StaticsCalendarState extends State<StaticsCalendar>
             GestureDetector(
               onTap: () {
                 // 더보기 버튼 클릭 시 동작할 코드
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyInfo()),
-                );
               },
               child: SizedBox(
                 width: 60,
@@ -272,7 +268,7 @@ class _StaticsCalendarState extends State<StaticsCalendar>
       child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(10, 15, 10, 5),
+            padding: const EdgeInsets.fromLTRB(10, 30, 10, 5),
             child: TableCalendar(
               firstDay: DateTime.utc(2020, 1, 1),
               lastDay: DateTime.utc(2030, 12, 31),
@@ -297,8 +293,8 @@ class _StaticsCalendarState extends State<StaticsCalendar>
                   final dayInfo = routineStatistics
                       ?.userRoutineCompletionStatistics.routineCompletionInfos
                       .firstWhere((element) => element.day == date.day,
-                          orElse: () =>
-                              RoutineCompletionInfo(day: 0, level: 0));
+                      orElse: () =>
+                          RoutineCompletionInfo(day: 0, level: 0));
 
                   return _buildDayCell(date, dayInfo?.level ?? 0);
                 },
@@ -328,16 +324,15 @@ class _StaticsCalendarState extends State<StaticsCalendar>
                   return days[date.weekday - 1];
                 },
                 weekdayStyle: const TextStyle(
-                  fontSize: 16.0,
+                  fontSize: 14.0,
                   color: Colors.black,
                 ),
                 weekendStyle: const TextStyle(
-                  fontSize: 16.0,
+                  fontSize: 14.0,
                   color: Colors.black,
                 ),
               ),
               headerVisible: false,
-              daysOfWeekHeight: 30.0,
             ),
           ),
           Padding(
@@ -354,7 +349,7 @@ class _StaticsCalendarState extends State<StaticsCalendar>
                     color: Colors.white,
                     shape: BoxShape.circle,
                     border:
-                        Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                    Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
                   ),
                 ),
                 const SizedBox(width: 8.0),
@@ -365,7 +360,7 @@ class _StaticsCalendarState extends State<StaticsCalendar>
                     color: const Color(0xffCAF4FF),
                     shape: BoxShape.circle,
                     border:
-                        Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                    Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
                   ),
                 ),
                 const SizedBox(width: 8.0),
@@ -376,7 +371,7 @@ class _StaticsCalendarState extends State<StaticsCalendar>
                     color: const Color(0xffA0DEFF),
                     shape: BoxShape.circle,
                     border:
-                        Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                    Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
                   ),
                 ),
                 const SizedBox(width: 8.0),
@@ -387,7 +382,7 @@ class _StaticsCalendarState extends State<StaticsCalendar>
                     color: const Color(0xff5AB2FF),
                     shape: BoxShape.circle,
                     border:
-                        Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
+                    Border.all(color: Colors.grey, width: 1.0), // 테두리 추가
                   ),
                 ),
                 const SizedBox(width: 8.0),
@@ -409,7 +404,7 @@ class _StaticsCalendarState extends State<StaticsCalendar>
     };
 
     return Container(
-      margin: const EdgeInsets.all(4.0),
+      margin: const EdgeInsets.all(2.0),
       decoration: BoxDecoration(
         color: colorMap[level] ?? Colors.grey[300],
         shape: BoxShape.circle,
@@ -419,7 +414,7 @@ class _StaticsCalendarState extends State<StaticsCalendar>
           '${date.day}',
           style: const TextStyle(
             color: Colors.black,
-            fontSize: 16.0,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -434,7 +429,7 @@ class RoutineStatistics {
 
   RoutineStatistics(
       {required this.completedRoutinesCount,
-      required this.userRoutineCompletionStatistics});
+        required this.userRoutineCompletionStatistics});
 
   factory RoutineStatistics.fromJson(Map<String, dynamic> json) {
     return RoutineStatistics(
