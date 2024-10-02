@@ -299,7 +299,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(
                         5,
-                        (index) => GestureDetector(
+                            (index) => GestureDetector(
                           onTap: () {
                             setState(() {
                               selectedCategoryIndex = index;
@@ -317,7 +317,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                                   : const Color(0xFFF0F0F0),
                               borderRadius: BorderRadius.circular(20),
                               border:
-                                  Border.all(color: const Color(0xFFF0F0F0)),
+                              Border.all(color: const Color(0xFFF0F0F0)),
                             ),
                             alignment: Alignment.center,
                             child: Text(
@@ -404,7 +404,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                   onPressed: _addRoutine,
                   style: ButtonStyle(
                     backgroundColor:
-                        WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
+                    WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0), //테두리 둥글게

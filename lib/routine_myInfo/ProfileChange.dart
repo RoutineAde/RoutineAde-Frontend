@@ -145,7 +145,7 @@ class _ProfileChangeState extends State<ProfileChange> {
         if (responseBody.isNotEmpty) {
           try {
             final responseData =
-                jsonDecode(utf8.decode(responseBody.codeUnits)); // UTF-8 디코딩
+            jsonDecode(utf8.decode(responseBody.codeUnits)); // UTF-8 디코딩
 
             if (responseData.containsKey('profileImage')) {
               final newProfileImageUrl = responseData['profileImage'];
@@ -213,11 +213,11 @@ class _ProfileChangeState extends State<ProfileChange> {
                         backgroundImage: _imageFile != null
                             ? FileImage(_imageFile!)
                             : _imageUrl != null
-                                ? NetworkImage(
-                                    _imageUrl!) // Google Photos 이미지 사용
-                                : const AssetImage(
-                                        'assets/images/default_profile.png')
-                                    as ImageProvider,
+                            ? NetworkImage(
+                            _imageUrl!) // Google Photos 이미지 사용
+                            : const AssetImage(
+                            'assets/images/default_profile.png')
+                        as ImageProvider,
                       ),
                       Positioned(
                         bottom: 0,

@@ -69,29 +69,6 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     }
   }
 
-  // Future<List<dynamic>> fetchChatMessages(int groupId) async {
-  //   final url = Uri.parse('http://15.164.88.94:8080/groups/$groupId/chatting');
-  //   final headers = {
-  //     'Content-Type': 'application/json',
-  //     'Authorization': 'Bearer $token',
-  //   };
-
-  //   try {
-  //     final response = await http.get(url, headers: headers);
-  //     if (response.statusCode == 200) {
-  //       final decodedResponse = utf8.decode(response.bodyBytes);
-  //       final data = json.decode(decodedResponse);
-  //       print('Fetched chat messages: $data'); // 추가된 로그
-
-  //       return data['groupChatting'];
-  //     } else {
-  //       throw Exception('Failed to load chat messages');
-  //     }
-  //   } catch (e) {
-  //     print('Error fetching chat messages: $e');
-  //     return [];
-  //   }
-  // }
   Future<void> _loadChatMessages() async {
     try {
       final chatMessages = await fetchChatMessages(widget.groupId);

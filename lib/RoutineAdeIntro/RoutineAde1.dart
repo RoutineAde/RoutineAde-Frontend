@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:uni_links/uni_links.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:routine_ade/RoutineAdeIntro/ProfileSetting.dart';
-import 'package:http/http.dart' as http;
-import 'dart:async';
+import 'WebViewPage.dart';
 
-void main() async {
-  await initializeDateFormatting();
+void main() {
   runApp(const MyApp());
 }
 
@@ -31,61 +25,6 @@ class RoutineAde1 extends StatefulWidget {
 }
 
 class _RoutineAde1State extends State<RoutineAde1> {
-  String? token;
-  StreamSubscription? _sub;
-
-  @override
-  void initState() {
-    super.initState();
-    _initUniLinks();
-  }
-
-  Future<void> _initUniLinks() async {
-    // 초기 링크 수신
-    try {
-      final initialLink = await getInitialLink();
-      _extractToken(initialLink);
-    } catch (e) {
-      print("초기 링크 오류: $e");
-    }
-
-    // 링크 스트림 수신
-    _sub = linkStream.listen((String? link) {
-      _extractToken(link);
-    }, onError: (err) {
-      print("링크 스트림 오류: $err");
-    });
-  }
-
-  void _extractToken(String? link) {
-    if (link != null) {
-      Uri uri = Uri.parse(link);
-      String? code = uri.queryParameters['code'];
-      if (code != null) {
-        setState(() {
-          token = code; // 토큰 저장
-        });
-        print('추출된 토큰: $token');
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    _sub?.cancel(); // 구독 해제
-    super.dispose();
-  }
-
-  Future<void> _launchURL() async {
-    const url =
-        'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=25a0f887ecba2fdb77884c01ca0325b0&redirect_uri=http://15.164.88.94/users/login/kakao';
-    if (await canLaunch(url)) {
-      await launch(url);
-    } else {
-      throw 'Could not launch $url';
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,8 +65,12 @@ class _RoutineAde1State extends State<RoutineAde1> {
                 width: double.infinity,
                 height: 150,
                 child: GestureDetector(
-                  onTap: () async {
-                    await _launchURL(); // 카카오 로그인 페이지로 이동
+                  onTap: () {
+                    // WebView 페이지로 이동
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const WebViewPage()),
+                    );
                   },
                   child: Image.asset(
                     "assets/images/new-icons/kakaoTalk.png",

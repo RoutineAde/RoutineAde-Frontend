@@ -8,16 +8,8 @@ import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
 import 'package:routine_ade/routine_group/GroupType.dart';
 import 'package:routine_ade/routine_group/AddGroupPage.dart';
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
 import 'package:routine_ade/routine_myInfo/MyInfo.dart';
->>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
-=======
-import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
-import 'package:routine_ade/routine_myInfo/MyInfo.dart';
->>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
 import 'package:routine_ade/routine_user/token.dart';
 
 //전체화면 어둡게
@@ -28,9 +20,9 @@ class DarkOverlay extends StatelessWidget {
 
   const DarkOverlay(
       {super.key,
-      required this.child,
-      required this.isDark,
-      required this.onTap});
+        required this.child,
+        required this.isDark,
+        required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -102,11 +94,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
   }
 
   Future<bool> fetchIsGroupAdmin(int groupId) async {
-<<<<<<< HEAD
-    final url = Uri.parse("http://15.164.88.94:8080/groups/$groupId");
-=======
     final url = Uri.parse("http://15.164.88.94/groups/$groupId");
->>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -174,7 +162,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
         ),
         centerTitle: true,
         backgroundColor:
-            isExpanded ? Colors.grey[600] : const Color(0xFF8DCCFF),
+        isExpanded ? Colors.grey[600] : const Color(0xFF8DCCFF),
         automaticallyImplyLeading: false, // 뒤로가기 제거
         // actions: [
         //   Padding(
@@ -222,7 +210,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
                             children: [
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
@@ -236,7 +224,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
                                       if (!group.isPublic)
                                         Padding(
                                           padding:
-                                              const EdgeInsets.only(left: 8.0),
+                                          const EdgeInsets.only(left: 8.0),
                                           child: Image.asset(
                                             "assets/images/lock.png",
                                             width: 20,
@@ -266,17 +254,9 @@ class _GroupMainPageState extends State<GroupMainPage> {
                               const SizedBox(height: 8.0),
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: [
-<<<<<<< HEAD
-<<<<<<< HEAD
-                                  Text("루틴장 ${group.createdUserNickname}"),
-=======
                                   Text("그룹장 ${group.createdUserNickname}"),
->>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
-=======
-                                  Text("그룹장 ${group.createdUserNickname}"),
->>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                                   Text("그룹코드 ${group.groupId}"),
                                 ],
                               ),

@@ -248,18 +248,8 @@ class _AddGroupPageState extends State<AddGroupPage> {
                                   margin: const EdgeInsets.only(bottom: 10),
                                   decoration: BoxDecoration(
                                     color: selectedCategoryIndex == index
-<<<<<<< HEAD
-<<<<<<< HEAD
-                                        ? const Color(0xffE6E288)
-                                        : Colors.white,
-=======
                                         ? const Color(0xFFB1DAFC)
                                         : const Color(0xFFF0F0F0),
->>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
-=======
-                                        ? const Color(0xFFB1DAFC)
-                                        : const Color(0xFFF0F0F0),
->>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(
                                         color: const Color(0xFFF0F0F0)),
@@ -345,15 +335,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                   onPressed: _addGroup,
                   style: ButtonStyle(
                     backgroundColor:
-<<<<<<< HEAD
-<<<<<<< HEAD
-                        WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
-=======
-                        WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
->>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
-=======
-                        WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
->>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
+                    WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),

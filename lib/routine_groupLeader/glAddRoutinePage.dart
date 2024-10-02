@@ -264,7 +264,7 @@ class _glAddRoutinePageState extends State<glAddRoutinePage> {
                             _getWeekdayName(i),
                             style: TextStyle(
                               color:
-                                  isSelected[i] ? Colors.white : Colors.black,
+                              isSelected[i] ? Colors.white : Colors.black,
                             ),
                           ),
                         ),
@@ -305,7 +305,7 @@ class _glAddRoutinePageState extends State<glAddRoutinePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(
                         5,
-                        (index) => GestureDetector(
+                            (index) => GestureDetector(
                           onTap: () {
                             setState(() {
                               selectedCategoryIndex = index;
@@ -349,7 +349,7 @@ class _glAddRoutinePageState extends State<glAddRoutinePage> {
                   onPressed: _addRoutine,
                   style: ButtonStyle(
                     backgroundColor:
-                        WidgetStateProperty.all<Color>(const Color(0xffE6E288)),
+                    WidgetStateProperty.all<Color>(const Color(0xffE6E288)),
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0), //테두리 둥글게

@@ -83,189 +83,189 @@ class _MyInfoState extends State<MyInfo> {
         child: profile == null
             ? const CircularProgressIndicator() // 데이터가 없으면 로딩 표시
             : Column(
-                crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
-                children: <Widget>[
-                  const SizedBox(height: 40),
-                  // Profile Information Row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      // Profile Image
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(30, 20, 0, 10),
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundImage: NetworkImage(
-                            profile!.profileImage, // API에서 가져온 이미지 URL 사용
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-
-                      // Nickname and Introduction Column
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                profile!.nickname,
-                                style: const TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
-                              ),
-                              //SizedBox(width: 0),
-                              // Edit Button
-                              IconButton(
-                                icon: Image.asset(
-                                  "assets/images/settings-cog.png",
-                                  width: 24, // 아이콘의 크기를 조정
-                                  height: 24,
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const ProfileChange(),
-                                    ),
-                                  );
-                                },
-                              )
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          Text(
-                            profile!.intro,
-                            style: TextStyle(
-                                fontSize: 16, color: Colors.grey[700]),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-
-                  // 루틴 & 그룹 Section
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30.0),
-                    child: Text(
-                      '루틴 & 그룹',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          crossAxisAlignment: CrossAxisAlignment.start, // 왼쪽 정렬
+          children: <Widget>[
+            const SizedBox(height: 40),
+            // Profile Information Row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Profile Image
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(30, 20, 0, 10),
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: NetworkImage(
+                      profile!.profileImage, // API에서 가져온 이미지 URL 사용
                     ),
                   ),
-                  // 루틴 & 그룹 Section에서 Row에 Expanded 추가
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 15),
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.3),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                ),
+                const SizedBox(width: 20),
+
+                // Nickname and Introduction Column
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
                       children: [
-                        Expanded(
-                          child: _buildInfoColumn(
-                              '개인 루틴', profile!.personalRoutineCount),
+                        Text(
+                          profile!.nickname,
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         ),
-                        Expanded(
-                          child: _buildInfoColumn(
-                              '그룹 루틴', profile!.groupRoutineCount),
-                        ),
-                        Expanded(
-                          child: _buildInfoColumn('그룹', profile!.groupCount),
-                        ),
+                        //SizedBox(width: 0),
+                        // Edit Button
+                        IconButton(
+                          icon: Image.asset(
+                            "assets/images/settings-cog.png",
+                            width: 24, // 아이콘의 크기를 조정
+                            height: 24,
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                const ProfileChange(),
+                              ),
+                            );
+                          },
+                        )
                       ],
                     ),
-                  ),
+                    const SizedBox(height: 8),
+                    Text(
+                      profile!.intro,
+                      style: TextStyle(
+                          fontSize: 16, color: Colors.grey[700]),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            const SizedBox(height: 30),
 
-                  const SizedBox(height: 20),
-
-                  // 계정 Section
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30.0),
-                    child: Text(
-                      '계정',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30.0, vertical: 10.0),
-                    child: TextButton(
-                      onPressed: () {
-                        // Implement logout functionality
-                      },
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '로그아웃',
-                            style: TextStyle(fontSize: 16, color: Colors.black),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30.0, vertical: 0.0),
-                    child: TextButton(
-                      onPressed: () {
-                        // Implement delete account functionality
-                      },
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '탈퇴하기',
-                            style: TextStyle(fontSize: 16, color: Colors.black),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 50),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30.0),
-                    child: Text(
-                      '앱 정보',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 30.0, vertical: 10.0),
-                    child: TextButton(
-                      onPressed: () {
-                        // Implement contact us functionality
-                      },
-                      child: const Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            '문의하기',
-                            style: TextStyle(fontSize: 16, color: Colors.black),
-                          ),
-                        ],
-                      ),
-                    ),
+            // 루틴 & 그룹 Section
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30.0),
+              child: Text(
+                '루틴 & 그룹',
+                style:
+                TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+            // 루틴 & 그룹 Section에서 Row에 Expanded 추가
+            Container(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 20, vertical: 15),
+              margin: const EdgeInsets.symmetric(
+                  horizontal: 20, vertical: 10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 5),
                   ),
                 ],
               ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: _buildInfoColumn(
+                        '개인 루틴', profile!.personalRoutineCount),
+                  ),
+                  Expanded(
+                    child: _buildInfoColumn(
+                        '그룹 루틴', profile!.groupRoutineCount),
+                  ),
+                  Expanded(
+                    child: _buildInfoColumn('그룹', profile!.groupCount),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // 계정 Section
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30.0),
+              child: Text(
+                '계정',
+                style:
+                TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 30.0, vertical: 10.0),
+              child: TextButton(
+                onPressed: () {
+                  // Implement logout functionality
+                },
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '로그아웃',
+                      style: TextStyle(fontSize: 16, color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 30.0, vertical: 0.0),
+              child: TextButton(
+                onPressed: () {
+                  // Implement delete account functionality
+                },
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '탈퇴하기',
+                      style: TextStyle(fontSize: 16, color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 50),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30.0),
+              child: Text(
+                '앱 정보',
+                style:
+                TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 30.0, vertical: 10.0),
+              child: TextButton(
+                onPressed: () {
+                  // Implement contact us functionality
+                },
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      '문의하기',
+                      style: TextStyle(fontSize: 16, color: Colors.black),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
       bottomNavigationBar: _buildBottomAppBar(context),
     );

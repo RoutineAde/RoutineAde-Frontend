@@ -28,7 +28,7 @@ class _GroupunjoinState extends State<Groupunjoin> {
     });
 
     final url =
-        Uri.parse('http://15.164.88.94/groups/${widget.groupId}/un-join');
+    Uri.parse('http://15.164.88.94/groups/${widget.groupId}/un-join');
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token', // 토큰 추가

@@ -17,16 +17,8 @@ class _groupEditState extends State<groupEdit> {
   final TextEditingController _groupNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _groupDescriptionController =
-      TextEditingController();
-<<<<<<< HEAD
-<<<<<<< HEAD
-  int _selectedMemberCount = 0;
-=======
+  TextEditingController();
   int _selectedMemberCount = 0; //선택 할 인원 수
->>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
-=======
-  int _selectedMemberCount = 0; //선택 할 인원 수
->>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
 
   // 카테고리 선택 (한번에 하나만)
   int selectedCategoryIndex = -1;
@@ -47,11 +39,7 @@ class _groupEditState extends State<groupEdit> {
   }
 
   Future<void> _loadGroupInfo() async {
-<<<<<<< HEAD
-    final url = Uri.parse("http://15.164.88.94:8080/groups/${widget.groupId}");
-=======
     final url = Uri.parse("http://15.164.88.94/groups/${widget.groupId}");
->>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -67,15 +55,7 @@ class _groupEditState extends State<groupEdit> {
       _groupNameController.text = groupInfo['groupTitle'] ?? '';
       _passwordController.text = groupInfo['groupPassword'] ?? '';
       _groupDescriptionController.text = groupInfo['description'] ?? '';
-<<<<<<< HEAD
-<<<<<<< HEAD
-      _selectedMemberCount = groupInfo['maxMember'] ?? 0;
-=======
       _selectedMemberCount = groupInfo['maxMemberCount'] ?? 0;
->>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
-=======
-      _selectedMemberCount = groupInfo['maxMemberCount'] ?? 0;
->>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
       selectedCategoryIndex =
           isCategory.indexOf(groupInfo['groupCategory'] ?? '');
 
@@ -85,34 +65,6 @@ class _groupEditState extends State<groupEdit> {
     }
   }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-  // Future<bool> fetchIsGroupAdmin(int groupId) async {
-  //   final url = Uri.parse("http://15.164.88.94:8080/groups/$groupId");
-  //   final response = await http.get(url, headers: {
-  //     'Content-Type': 'application/json',
-  //     'Authorization': 'Bearer $token',
-  //   });
-
-  //   if (response.statusCode == 200) {
-  //     final decodedResponse = utf8.decode(response.bodyBytes);
-  //     final data = jsonDecode(decodedResponse);
-
-  //     if (data is Map<String, dynamic> && data.containsKey('isGroupAdmin')) {
-  //       return data['isGroupAdmin'] as bool;
-  //     } else {
-  //       return false;
-  //     }
-  //   } else {
-  //     print("Error fetching group admin status: ${response.statusCode}");
-  //     return false;
-  //   }
-  // }
-
-=======
->>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
-=======
->>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
   // 그룹 수정 API 호출 함수
   void _editGroup() async {
     // 카테고리 선택 여부 확인
@@ -131,14 +83,10 @@ class _groupEditState extends State<groupEdit> {
 
     // 비밀번호 값 설정
     final groupPassword =
-        _passwordController.text.isEmpty ? null : _passwordController.text;
+    _passwordController.text.isEmpty ? null : _passwordController.text;
 
     // 요청 바디 준비
-<<<<<<< HEAD
-    final url = Uri.parse('http://15.164.88.94:8080/groups/${widget.groupId}');
-=======
     final url = Uri.parse('http://15.164.88.94/groups/${widget.groupId}');
->>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -276,7 +224,7 @@ class _groupEditState extends State<groupEdit> {
                           borderSide: BorderSide.none,
                         ),
                         contentPadding:
-                            EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
+                        EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
                         counterText: "", // 글자 수 표시 없애기
                       ),
                     ),
@@ -292,13 +240,13 @@ class _groupEditState extends State<groupEdit> {
                           borderSide: BorderSide.none,
                         ),
                         contentPadding:
-                            EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
+                        EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
                       ),
                     ),
                     Container(
                       color: Colors.white,
                       padding:
-                          const EdgeInsets.only(left: 10, right: 10, top: 10),
+                      const EdgeInsets.only(left: 10, right: 10, top: 10),
                       margin: const EdgeInsets.only(top: 30),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -308,21 +256,9 @@ class _groupEditState extends State<groupEdit> {
                               Text(
                                 "대표 카테고리",
                                 style: TextStyle(
-<<<<<<< HEAD
-<<<<<<< HEAD
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-=======
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
                                     color: Color.fromARGB(255, 56, 56, 56)),
->>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
-=======
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Color.fromARGB(255, 56, 56, 56)),
->>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                               ),
                             ],
                           ),
@@ -331,7 +267,7 @@ class _groupEditState extends State<groupEdit> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: List.generate(
                               5,
-                              (index) => GestureDetector(
+                                  (index) => GestureDetector(
                                 onTap: () {
                                   setState(() {
                                     selectedCategoryIndex = index;
@@ -344,40 +280,18 @@ class _groupEditState extends State<groupEdit> {
                                   decoration: BoxDecoration(
                                     color: selectedCategoryIndex == index
                                         ? const Color(0xffA1D1F9)
-<<<<<<< HEAD
-<<<<<<< HEAD
-                                        : Colors.white,
-                                    borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: Colors.grey),
-=======
-=======
->>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                                         : const Color(0xFFF0F0F0),
                                     borderRadius: BorderRadius.circular(20),
                                     border: Border.all(
                                         color: const Color(0xFFF0F0F0)),
-<<<<<<< HEAD
->>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
-=======
->>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                                   ),
                                   alignment: Alignment.center,
                                   child: Text(
                                     isCategory[index],
                                     style: TextStyle(
                                       color: selectedCategoryIndex == index
-<<<<<<< HEAD
-<<<<<<< HEAD
-                                          ? Colors.white
-                                          : Colors.grey,
-=======
                                           ? const Color(0xFFFFFFFF)
                                           : const Color(0xFFAEAEAE),
->>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
-=======
-                                          ? const Color(0xFFFFFFFF)
-                                          : const Color(0xFFAEAEAE),
->>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                                     ),
                                   ),
                                 ),
@@ -398,21 +312,9 @@ class _groupEditState extends State<groupEdit> {
                           const Text(
                             "모집인원",
                             style: TextStyle(
-<<<<<<< HEAD
-<<<<<<< HEAD
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-=======
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                                 color: Color.fromARGB(255, 56, 56, 56)),
->>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
-=======
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromARGB(255, 56, 56, 56)),
->>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                           ),
                           GestureDetector(
                             onTap: _selectMemberCount,
@@ -426,15 +328,7 @@ class _groupEditState extends State<groupEdit> {
                                 '$_selectedMemberCount명',
                                 style: const TextStyle(
                                   fontSize: 16,
-<<<<<<< HEAD
-<<<<<<< HEAD
-                                  color: Colors.black,
-=======
                                   color: Color.fromARGB(255, 56, 56, 56),
->>>>>>> c9c475db42ea7dd3d18a7b696a69ca3fd1f7d9fc
-=======
-                                  color: Color.fromARGB(255, 56, 56, 56),
->>>>>>> 08fc670302a7e71ac50d24c0dfc0f0f90f7930cb
                                 ),
                               ),
                             ),
@@ -471,7 +365,7 @@ class _groupEditState extends State<groupEdit> {
                   onPressed: _editGroup,
                   style: ButtonStyle(
                     backgroundColor:
-                        WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
+                    WidgetStateProperty.all<Color>(const Color(0xFF8DCCFF)),
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),
