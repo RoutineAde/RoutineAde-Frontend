@@ -148,16 +148,16 @@ class _GroupIntroRuleState extends State<GroupIntroRule> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                    "그룹 아이디: ${groupInfo.groupId}",
-                    style: const TextStyle(
-                        fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "그룹 소개",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
+                  // Text(
+                  //   "그룹 아이디: ${groupInfo.groupId}",
+                  //   style: const TextStyle(
+                  //       fontSize: 18, fontWeight: FontWeight.bold),
+                  // ),
+                  // const SizedBox(height: 20),
+                  // const Text(
+                  //   "그룹 소개",
+                  //   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  // ),
                   const SizedBox(height: 10),
                   Text(
                     groupInfo.groupDescription,

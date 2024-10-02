@@ -173,6 +173,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
               style: const TextStyle(fontSize: 20),
             ),
           ),
+          const SizedBox(height: 25),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
