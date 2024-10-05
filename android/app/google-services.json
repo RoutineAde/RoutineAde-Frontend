@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "480958477321",
+    "project_id": "routine-ade-621e0",
+    "storage_bucket": "routine-ade-621e0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:480958477321:android:c2351c5c7efdd72fc3f4d8",
+        "android_client_info": {
+          "package_name": "com.example.routine_ade"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSwdB-8nt9YD1EoR61tUyVxQcZs2Q4r2U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
