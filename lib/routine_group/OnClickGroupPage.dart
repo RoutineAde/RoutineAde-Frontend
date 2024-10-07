@@ -82,8 +82,8 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
 
 //알람 보내기
   Future<void> updateGroupAlarm(int groupId, bool isEnabled) async {
-    final response = await http.patch(
-      Uri.parse('http://15.164.88.94/groups/$groupId'),
+    final response = await http.put(
+      Uri.parse('http://15.164.88.94/groups/$groupId/alarm'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
       body: json.encode({'isGroupAlarmEnabled': isEnabled}),
     );
 
-    if (response.statusCode != 200) {
+    if (response.statusCode != 204) {
       throw Exception('Failed to update group alarm');
     }
   }
