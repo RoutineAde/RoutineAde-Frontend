@@ -91,6 +91,22 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
     }
   }
 
+  //알람 보내기
+  Future<void> updateGroupAlarm(int groupId, bool isEnabled) async {
+    final response = await http.put(
+      Uri.parse('http://15.164.88.94/groups/$groupId/alarm'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({'isGroupAlarmEnabled': isEnabled}),
+    );
+
+    if (response.statusCode != 204) {
+      throw Exception('Failed to update group alarm');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -256,7 +272,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
                   ),
                   buildDrawerListTile("인원",
                       "${groupInfo.joinMemberCount} / ${groupInfo.maxMemberCount} 명"),
-                  buildSwitchListTile(),
+                  buildSwitchListTile(groupResponse),
                   const Padding(
                     padding: EdgeInsets.only(left: 20.0),
                     child: Divider(),
@@ -306,15 +322,22 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
     );
   }
 
-  ListTile buildSwitchListTile() {
+  ListTile buildSwitchListTile(GroupResponse groupResponse) {
     return ListTile(
       trailing: CupertinoSwitch(
         activeColor: const Color(0xffB4DDFF),
-        value: _isSwitchOn,
-        onChanged: (bool value) {
-          setState(() {
-            _isSwitchOn = value;
-          });
+        value: groupResponse.isGroupAlarmEnabled, //현재 상태 표시
+        onChanged: (bool value) async {
+          try {
+            await updateGroupAlarm(widget.groupId, value); //서버에 알림 설정 요청
+            setState(() {
+              groupResponse.isGroupAlarmEnabled = value; // 알림 상태 업데이트
+            });
+          } catch (e) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Failed to update alarm setting')),
+            );
+          }
         },
       ),
       title: const Text(
