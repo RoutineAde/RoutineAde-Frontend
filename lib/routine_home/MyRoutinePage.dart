@@ -377,6 +377,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                               style: TextStyle(
                                   fontSize: 20,
                                   color: Colors.black)), // 텍스트 색상 변경
+                          initiallyExpanded: true, // 초기상태를 펼친상태로 변경
                           children: snapshot.data!.personalRoutines
                               .map((category) {
                             return Column(
@@ -640,7 +641,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
           Container(
             width: double.infinity, // 화면의 양끝까지 채우기
             color: const Color(0xFF8DCCFF), // 파란색 배경
-            padding: const EdgeInsets.symmetric(vertical: 8), // 상하단 여백 추가
+            padding: const EdgeInsets.symmetric(vertical: 15), // 상하단 여백 추가
             child: Row(
               children: [
                 const SizedBox(width: 20),
@@ -652,19 +653,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                     fontSize: 22,
                   ),
                 ),
-                const Spacer(),
-                IconButton(
-                  icon: Image.asset("assets/images/bell.png",
-                      width: 30, height: 30),
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const AlarmListPage()),
-                    );
-                  },
-                ),
-                const SizedBox(width: 20), // 오른쪽 여백 추가
               ],
             ),
           ),
@@ -677,7 +665,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
   Widget _buildRoutineTile(Routine routine) {
     Color categoryColor = _getCategoryColor(routine.routineCategory);
 
-//개인틴
+//개인루틴
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 0),
       child: ListTile(
@@ -736,9 +724,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
         onTap: () => _showDialog(context, routine),
       ),
     );
-    // ],
-    //   ),
-    // );
   }
 
   void _showDialog(BuildContext context, Routine routine) {

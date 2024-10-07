@@ -23,11 +23,10 @@ class _ProfileChangeState extends State<ProfileChange> {
   final TextEditingController _nicknameController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   bool _isNicknameValid = true;
+  bool _isIntroValid = true;
   String _nicknameErrorMessage = '';
-  // String token =
-  //     'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3MjEwMzkzMDEsImV4cCI6MTczNjU5MTMwMSwidXNlcklkIjoyfQ.XLthojYmD3dA4TSeXv_JY7DYIjoaMRHB7OLx9-l2rvw'; // 실제 토큰으로 교체
+  String _introErrorMessage = '';
 
-  // Initialize with data from MyInfo
   @override
   void initState() {
     super.initState();
@@ -93,10 +92,22 @@ class _ProfileChangeState extends State<ProfileChange> {
     setState(() {
       if (value.length > 10) {
         _isNicknameValid = false;
-        _nicknameErrorMessage = 'Please enter less than 10 characters.';
+        _nicknameErrorMessage = '10글자 이내로 입력해주세요.';
       } else {
         _isNicknameValid = true;
         _nicknameErrorMessage = '';
+      }
+    });
+  }
+
+  void _validateIntro(String value) {
+    setState(() {
+      if (value.length > 20) {
+        _isIntroValid = false;
+        _introErrorMessage = '20글자 이내로 입력해주세요.';
+      } else {
+        _isIntroValid = true;
+        _introErrorMessage = '';
       }
     });
   }
@@ -295,10 +306,39 @@ class _ProfileChangeState extends State<ProfileChange> {
                 const SizedBox(height: 10),
                 TextField(
                   controller: _bioController,
+                  onChanged: _validateIntro,
                   decoration: InputDecoration(
                     hintText: '한 줄 소개',
+                    errorText: !_isIntroValid
+                        ? _introErrorMessage
+                        : null, // 에러 메시지 표시
+                    counterText: '', // 글자수 카운터 삭제
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
+                      borderSide: const BorderSide(
+                        color: Colors.black, // 기본 테두리 검은색
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: const BorderSide(
+                        color: Colors.black, // 포커스 시 테두리 검은색
+                        width: 2.0,
+                      ),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: const BorderSide(
+                        color: Colors.red, // 에러 상태 테두리 빨간색
+                        width: 2.0,
+                      ),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: const BorderSide(
+                        color: Colors.red, // 에러 상태에서 포커스 시 테두리 빨간색
+                        width: 2.0,
+                      ),
                     ),
                   ),
                 ),

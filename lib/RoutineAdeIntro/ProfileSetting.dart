@@ -33,7 +33,9 @@ class _ProfileSettingState extends State<ProfileSetting> {
   final TextEditingController _nicknameController = TextEditingController();
   final TextEditingController _bioController = TextEditingController();
   bool _isNicknameValid = true;
+  bool _isBioValid = true;
   String _nicknameErrorMessage = '';
+  String _bioErrorMessage = '';
 
   void _validateNickname(String value) {
     setState(() {
@@ -43,6 +45,18 @@ class _ProfileSettingState extends State<ProfileSetting> {
       } else {
         _isNicknameValid = true;
         _nicknameErrorMessage = '';
+      }
+    });
+  }
+
+  void _validateBio(String value) {
+    setState(() {
+      if (value.length > 20) {
+        _isBioValid = false;
+        _bioErrorMessage = '20글자 이내로 입력해주세요.';
+      } else {
+        _isBioValid = true;
+        _bioErrorMessage = '';
       }
     });
   }
@@ -98,7 +112,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
         print('Response body: $errorBody');
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('정보 등록 실패: $errorBody')),
+          SnackBar(content: Text('정보 등록 실패: 이미 사용 중인 닉네임입니다.')),
         );
       }
     } catch (e) {
@@ -145,7 +159,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         radius: 50,
                         backgroundImage: _imageFile != null
                             ? FileImage(_imageFile!)
-                            : const AssetImage('assets/images/default_profile.png')
+                            : const AssetImage('assets/images/defaultProfile.png')
                         as ImageProvider,
                       ),
                       Positioned(
@@ -175,22 +189,37 @@ class _ProfileSettingState extends State<ProfileSetting> {
                   decoration: InputDecoration(
                     hintText: '닉네임',
                     errorText: !_isNicknameValid ? _nicknameErrorMessage : null,
+                    counterText: '', // 글자수 카운터 삭제
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
                       borderSide: BorderSide(
-                        color: _isNicknameValid ? Colors.grey : Colors.red,
+                        color: Colors.black, // 기본 테두리 검은색
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
                       borderSide: BorderSide(
-                        color: _isNicknameValid ? Colors.blue : Colors.red,
+                        color: Colors.black, // 포커스 시 테두리 검은색
+                        width: 2.0,
+                      ),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: const BorderSide(
+                        color: Colors.red, // 에러 상태 테두리 빨간색
+                        width: 2.0,
+                      ),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: const BorderSide(
+                        color: Colors.red, // 에러 상태에서 포커스 시 테두리 빨간색
+                        width: 2.0,
                       ),
                     ),
                   ),
-                  maxLength: 10,
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 40),
                 const Align(
                   alignment: Alignment.centerLeft,
                   child: Text("한 줄 소개"),
@@ -198,10 +227,37 @@ class _ProfileSettingState extends State<ProfileSetting> {
                 const SizedBox(height: 10),
                 TextField(
                   controller: _bioController,
+                  onChanged: _validateBio,
                   decoration: InputDecoration(
                     hintText: '한 줄 소개',
+                    errorText: !_isBioValid ? _bioErrorMessage : null,
+                    counterText: '', // 글자수 카운터 삭제
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        color: Colors.black, // 기본 테두리 검은색
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: BorderSide(
+                        color: Colors.black, // 포커스 시 테두리 검은색
+                        width: 2.0,
+                      ),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: const BorderSide(
+                        color: Colors.red, // 에러 상태 테두리 빨간색
+                        width: 2.0,
+                      ),
+                    ),
+                    focusedErrorBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10.0),
+                      borderSide: const BorderSide(
+                        color: Colors.red, // 에러 상태에서 포커스 시 테두리 빨간색
+                        width: 2.0,
+                      ),
                     ),
                   ),
                 ),

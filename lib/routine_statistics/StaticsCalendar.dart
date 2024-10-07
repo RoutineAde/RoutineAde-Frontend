@@ -5,6 +5,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../routine_group/GroupMainPage.dart';
 import '../routine_home/MyRoutinePage.dart';
+import '../routine_myInfo/MyInfo.dart';
 import '../routine_user/token.dart';
 import 'StaticsCategory.dart';
 
@@ -161,6 +162,11 @@ class _StaticsCalendarState extends State<StaticsCalendar>
             GestureDetector(
               onTap: () {
                 // 더보기 버튼 클릭 시 동작할 코드
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const MyInfo()),
+                );
               },
               child: SizedBox(
                 width: 60,
