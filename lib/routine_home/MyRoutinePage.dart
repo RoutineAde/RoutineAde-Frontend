@@ -534,7 +534,13 @@ class _MyRoutinePageState extends State<MyRoutinePage>
               routine.routineTitle,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            // const SizedBox(width: 3),
+            const SizedBox(width: 5),
+            if (routine.isAlarmEnabled) // 알림이 활성화된 경우에만 벨 아이콘 표시
+              Image.asset(
+                'assets/images/bell.png', // bell.png 이미지 경로
+                width: 20,
+                height: 20,
+              ),
           ],
         ),
         trailing: Transform.scale(
@@ -686,7 +692,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
               child: Text(routine.routineTitle,
                   style: const TextStyle(fontWeight: FontWeight.bold)),
             ),
-            const SizedBox(width: 3), // Adjust the width as needed
+            const SizedBox(width: 5), // Adjust the width as needed
             if (routine.isAlarmEnabled) // Conditionally display the bell icon
               GestureDetector(
                 onTap: () {
@@ -1054,12 +1060,14 @@ class GroupRoutine {
   final String routineTitle;
   final String routineCategory;
   bool isCompletion;
+  bool isAlarmEnabled;
 
   GroupRoutine({
     required this.routineId,
     required this.routineTitle,
     required this.routineCategory,
     this.isCompletion = false,
+    this.isAlarmEnabled = false,
   });
 
   factory GroupRoutine.fromJson(Map<String, dynamic> json) {
@@ -1068,6 +1076,7 @@ class GroupRoutine {
       routineTitle: json['routineTitle'] ?? '',
       routineCategory: json['routineCategory'] ?? '',
       isCompletion: json['isCompletion'] ?? false,
+      isAlarmEnabled: json['isAlarmEnabled'] ?? false,
     );
   }
 }
