@@ -1,9 +1,7 @@
-//루틴그룹  ui
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:routine_ade/routine_group/groupSearchPage.dart';
-
 import '../routine_groupLeader/glOnClickGroupPage.dart';
 import 'OnClickGroupPage.dart';
 import 'package:routine_ade/routine_user/token.dart';
@@ -20,34 +18,32 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
   final TextEditingController _passwordController = TextEditingController();
   List<EntireGroup> allGroups = [];
   List<EntireGroup> filteredGroups = [];
-  bool _isPasswordIncorrect = false;
   bool _isLoading = false;
-  int _currentPage = 1;
-  final int _pageSize = 10;
   String? selectedCategory = '전체';
-  bool searchByGroupName = true; //
+  String? selectedSortType = '신규'; // 기본 정렬 기준
 
   @override
   void initState() {
     super.initState();
-    fetchGroups();
+    fetchGroups(); // 초기 데이터 로드 (기본은 '신규' 기준)
   }
 
-  Future<void> fetchGroups({bool loadMore = false, String? category}) async {
-    if (loadMore) {
-      _currentPage++;
-    } else {
-      setState(() {
-        _isLoading = true;
-        _currentPage = 1;
-        allGroups.clear();
-      });
-    }
+  // 그룹을 서버에서 가져오는 함수
+  Future<void> fetchGroups({String? category, String? sortType}) async {
+    setState(() {
+      _isLoading = true;
+      allGroups.clear(); // 새로운 조회 시 리스트 초기화
+    });
 
     String categoryQuery = category != null && category != '전체'
         ? 'groupCategory=${Uri.encodeComponent(category)}'
         : 'groupCategory=%EC%A0%84%EC%B2%B4';
-    final url = Uri.parse('http://15.164.88.94/groups?$categoryQuery');
+
+    String sortTypeQuery = sortType != null
+        ? '&sortType=${Uri.encodeComponent(sortType)}'
+        : '&sortType=신규'; // 기본 정렬 기준을 '신규'로 설정
+
+    final url = Uri.parse('http://15.164.88.94/groups?$categoryQuery$sortTypeQuery');
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -59,14 +55,11 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
 
       setState(() {
         if (data is Map<String, dynamic> && data.containsKey('groups')) {
-          final newGroups = (data['groups'] as List<dynamic>)
+          allGroups = (data['groups'] as List<dynamic>)
               .map((json) => EntireGroup.fromJson(json))
               .toList();
-          allGroups.addAll(newGroups);
         }
-
         filteredGroups = allGroups;
-        _sortGroupsByGroupIdDescending(); // 그룹 정렬 추가
         _isLoading = false;
       });
     } else {
@@ -74,8 +67,6 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
         _isLoading = false;
       });
       print("그룹 불러오기를 실패하였습니다.");
-      print("Status Code: ${response.statusCode}");
-      print("Response Body: ${response.body}");
     }
   }
 
@@ -94,10 +85,6 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
       default:
         return const Color(0xffF4A2D8);
     }
-  }
-
-  void _sortGroupsByGroupIdDescending() {
-    filteredGroups.sort((a, b) => b.groupId.compareTo(a.groupId));
   }
 
   void _showGroupDialog(EntireGroup Egroup) {
@@ -282,61 +269,44 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              backgroundColor: Colors.white,
-              title: const Center(child: Text("비공개 그룹")),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20.0),
+              ),
+              title: Text('비공개 그룹 입장'),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  Text('비공개 그룹입니다. 비밀번호를 입력해주세요.'),
+                  SizedBox(height: 10),
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
-                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      labelText: "비밀번호 4자리 입력",
-                      errorText: _isPasswordIncorrect ? "비밀번호가 틀렸습니다." : null,
+                      border: OutlineInputBorder(),
+                      labelText: '비밀번호',
                     ),
                   ),
                 ],
               ),
               actions: [
-                OverflowBar(
-                  alignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      child: const Text("취소"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        _passwordController.clear();
-                        setState(() {
-                          _isPasswordIncorrect = false;
-                        });
-                      },
-                    ),
-                    TextButton(
-                      child: const Text("확인"),
-                      onPressed: () async {
-                        // 서버로 비밀번호 검증 요청
-                        bool joinSuccess = await _joinGroup(
-                          group.groupId,
-                          password: _passwordController.text,
-                        );
-
-                        if (joinSuccess) {
-                          Navigator.of(context).pop(); // 다이얼로그 닫기
-                          navigateToGroupPage(group.groupId); // 그룹 페이지로 이동
-                          _passwordController.clear(); // 비밀번호 필드 초기화
-                          setState(() {
-                            _isPasswordIncorrect = false;
-                          });
-                        } else {
-                          setState(() {
-                            _isPasswordIncorrect = true; // 비밀번호 틀림 표시
-                          });
-                        }
-                      },
-                    ),
-                  ],
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('취소'),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    bool joinSuccess = await _joinGroup(group.groupId,
+                        password: _passwordController.text);
+                    Navigator.of(context).pop();
+                    if (joinSuccess) {
+                      navigateToGroupPage(group.groupId); // 가입 성공 시 페이지 이동
+                    } else {
+                      print("그룹 참여 실패!");
+                    }
+                  },
+                  child: Text('입장'),
                 ),
               ],
             );
@@ -381,9 +351,8 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    const SizedBox(height: 10),
+                    // 카테고리와 정렬 기준 버튼 추가
                     Container(
                       color: const Color(0xFFF8F8EF),
                       child: Padding(
@@ -392,40 +361,86 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: ['전체', '일상', '건강', '자기개발', '자기관리', '기타']
-                                .map((category) {
-                              bool isSelected = selectedCategory == category;
-                              return Padding(
-                                padding:
-                                const EdgeInsets.symmetric(horizontal: 3.0),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      selectedCategory = category;
-                                    });
-                                    fetchGroups(category: category);
-                                  },
-                                  style: ButtonStyle(
-                                    backgroundColor: WidgetStateProperty.all(
-                                      isSelected
-                                          ? Colors.white
-                                          : const Color(0xE8E8E8EF),
+                            children: [
+                              // Use the spread operator (...) to unpack the map-generated list of widgets
+                              ...['전체', '일상', '건강', '자기개발', '자기관리', '기타'].map((category) {
+                                bool isSelected = selectedCategory == category;
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        selectedCategory = category;
+                                      });
+                                      fetchGroups(category: category);
+                                    },
+                                    style: ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all(
+                                        isSelected ? Colors.white : const Color(0xE8E8E8EF),
+                                      ),
+                                    ),
+                                    child: Text(
+                                      category,
+                                      style: TextStyle(
+                                        color: getCategoryColor(category), // Set the color based on the category
+                                      ),
                                     ),
                                   ),
-                                  child: Text(
-                                    category,
-                                    style: TextStyle(
-                                      color: getCategoryColor(
-                                          category), // Always set the color based on the category
+                                );
+                              }).toList(), // Convert the map to a list and unpack it
+
+                              // Add the sort buttons below the category buttons
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Row(
+                                  children: [
+                                    TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          selectedSortType = '신규';
+                                        });
+                                        fetchGroups(
+                                          category: selectedCategory,
+                                          sortType: '신규',
+                                        );
+                                      },
+                                      child: Text(
+                                        '신규',
+                                        style: TextStyle(
+                                          color: selectedSortType == '신규'
+                                              ? Colors.blue
+                                              : Colors.black,
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          selectedSortType = '랭킹';
+                                        });
+                                        fetchGroups(
+                                          category: selectedCategory,
+                                          sortType: '랭킹',
+                                        );
+                                      },
+                                      child: Text(
+                                        '랭킹',
+                                        style: TextStyle(
+                                          color: selectedSortType == '랭킹'
+                                              ? Colors.blue
+                                              : Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              );
-                            }).toList(),
+                              ),
+                            ],
                           ),
                         ),
                       ),
                     ),
+
                     Expanded(
                       child: _isLoading
                           ? const Center(child: CircularProgressIndicator())
@@ -524,40 +539,42 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
   }
 }
 
+
+// 그룹 정보를 나타내는 클래스 (API 응답에서 가져오는 데이터 형태와 일치하도록 정의해야 함)
 class EntireGroup {
   final int groupId;
   final String groupTitle;
-  final String description;
   final String groupCategory;
+  final String description;
   final String createdUserNickname;
-  final int maxMemberCount;
   final int joinMemberCount;
-  final bool isPublic;
+  final int maxMemberCount;
   final bool isJoined;
+  final bool isPublic;
 
   EntireGroup({
     required this.groupId,
     required this.groupTitle,
-    required this.description,
     required this.groupCategory,
+    required this.description,
     required this.createdUserNickname,
-    required this.maxMemberCount,
     required this.joinMemberCount,
-    required this.isPublic,
+    required this.maxMemberCount,
     required this.isJoined,
+    required this.isPublic,
   });
 
   factory EntireGroup.fromJson(Map<String, dynamic> json) {
     return EntireGroup(
-      groupId: json['groupId'] ?? 0,
-      groupTitle: json['groupTitle'] ?? 'Unknown',
+      groupId: json['groupId'],
+      groupTitle: json['groupTitle'],
+      groupCategory: json['groupCategory'],
       description: json['description'],
-      groupCategory: json['groupCategory'] ?? '기타',
-      createdUserNickname: json['createdUserNickname'] ?? 'Unknown',
-      maxMemberCount: json['maxMemberCount'] ?? 0,
-      joinMemberCount: json['joinMemberCount'] ?? 0,
-      isPublic: json['isPublic'] ?? true,
-      isJoined: json['isJoined'] ?? true,
+      createdUserNickname: json['createdUserNickname'],
+      joinMemberCount: json['joinMemberCount'],
+      maxMemberCount: json['maxMemberCount'],
+      isJoined: json['isJoined'],
+      isPublic: json['isPublic'],
     );
   }
 }
