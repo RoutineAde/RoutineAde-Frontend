@@ -432,40 +432,44 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                               dividerColor: Colors.transparent,
                             ),
                             child: ExpansionTile(
-                              title: Text(group.groupTitle,
-                                  style: const TextStyle(
-                                      fontSize: 20, color: Colors.black)),
-                              children:
-                              group.groupRoutines.map((categoryGroup) {
+                              title: Row(
+                                mainAxisAlignment: MainAxisAlignment.start, // 시작 부분에 배치
+                                crossAxisAlignment: CrossAxisAlignment.center, // 수직 중앙 정렬
+                                children: [
+                                  Text(
+                                    group.groupTitle,
+                                    style: const TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8), // 제목과 아이콘 사이 간격
+                                  if (group.isAlarmEnabled) // 알림이 활성화된 경우에만 벨 아이콘 표시
+                                    Image.asset(
+                                      'assets/images/bell.png', // bell.png 이미지 경로
+                                      width: 20,
+                                      height: 20,
+                                    ),
+                                ],
+                              ),
+                              children: group.groupRoutines.map((categoryGroup) {
                                 return Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 10,
-                                      ),
+                                      padding: const EdgeInsets.only(left: 10),
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          color: const Color.fromARGB(
-                                              255, 255, 255, 255),
-                                          borderRadius:
-                                          BorderRadius.circular(20.0),
+                                          color: const Color.fromARGB(255, 255, 255, 255),
+                                          borderRadius: BorderRadius.circular(20.0),
                                         ),
-                                        // margin: const EdgeInsets.fromLTRB(
-                                        //     30, 40, 0, 16),
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 10.0, vertical: 1),
+                                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 1),
                                         child: Column(
                                           children: [
-                                            // const SizedBox(height: 5),
                                             Text(
-                                              categoryGroup
-                                                  .routineCategory, // 카테고리 이름
+                                              categoryGroup.routineCategory, // 카테고리 이름
                                               style: TextStyle(
-                                                color: _getCategoryColor(
-                                                    categoryGroup
-                                                        .routineCategory),
+                                                color: _getCategoryColor(categoryGroup.routineCategory),
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 18,
                                               ),
@@ -474,9 +478,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                         ),
                                       ),
                                     ),
-                                    ...categoryGroup.routines.map(
-                                            (routine) => _buildRoutineTile2(
-                                            routine)), // 루틴 목록
+                                    ...categoryGroup.routines.map((routine) => _buildRoutineTile2(routine)), // 루틴 목록
                                   ],
                                 );
                               }).toList(),
@@ -484,6 +486,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                           ),
                         ),
                       );
+
+
                     }),
                     const SizedBox(height: 10),
                   ],
@@ -534,13 +538,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
               routine.routineTitle,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(width: 5),
-            if (routine.isAlarmEnabled) // 알림이 활성화된 경우에만 벨 아이콘 표시
-              Image.asset(
-                'assets/images/bell.png', // bell.png 이미지 경로
-                width: 20,
-                height: 20,
-              ),
           ],
         ),
         trailing: Transform.scale(
@@ -1060,14 +1057,12 @@ class GroupRoutine {
   final String routineTitle;
   final String routineCategory;
   bool isCompletion;
-  bool isAlarmEnabled;
 
   GroupRoutine({
     required this.routineId,
     required this.routineTitle,
     required this.routineCategory,
     this.isCompletion = false,
-    this.isAlarmEnabled = false,
   });
 
   factory GroupRoutine.fromJson(Map<String, dynamic> json) {
@@ -1076,7 +1071,6 @@ class GroupRoutine {
       routineTitle: json['routineTitle'] ?? '',
       routineCategory: json['routineCategory'] ?? '',
       isCompletion: json['isCompletion'] ?? false,
-      isAlarmEnabled: json['isAlarmEnabled'] ?? false,
     );
   }
 }
@@ -1105,11 +1099,13 @@ class RoutineCategoryGroup {
 class Group2 {
   final int groupId;
   final String groupTitle;
+  bool isAlarmEnabled;
   final List<RoutineCategoryGroup> groupRoutines;
 
   Group2({
     required this.groupId,
     required this.groupTitle,
+    this.isAlarmEnabled = false,
     required this.groupRoutines,
   });
 
@@ -1117,6 +1113,7 @@ class Group2 {
     return Group2(
       groupId: json['groupId'] ?? 0,
       groupTitle: json['groupTitle'] ?? '',
+      isAlarmEnabled: json['isAlarmEnabled'] ?? false,
       groupRoutines: (json['groupRoutines'] as List)
           .map((item) => RoutineCategoryGroup.fromJson(item))
           .toList(),
