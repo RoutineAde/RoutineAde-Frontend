@@ -18,9 +18,13 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
   final TextEditingController _passwordController = TextEditingController();
   List<EntireGroup> allGroups = [];
   List<EntireGroup> filteredGroups = [];
+  bool _isPasswordIncorrect = false;
   bool _isLoading = false;
+  int _currentPage = 1;
+  final int _pageSize = 10;
   String? selectedCategory = '전체';
-  String? selectedSortType = '신규'; // 기본 정렬 기준
+  String? selectedSortType = '신규'; // 추가된 정렬 기준
+  bool searchByGroupName = true;
 
   @override
   void initState() {
@@ -28,12 +32,18 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     fetchGroups(); // 초기 데이터 로드 (기본은 '신규' 기준)
   }
 
-  // 그룹을 서버에서 가져오는 함수
-  Future<void> fetchGroups({String? category, String? sortType}) async {
-    setState(() {
-      _isLoading = true;
-      allGroups.clear(); // 새로운 조회 시 리스트 초기화
-    });
+  // fetchGroups에 sortType 추가
+  Future<void> fetchGroups({bool loadMore = false, String? category, String? sortType}) async {
+    if (loadMore) {
+      _currentPage++;
+    } else {
+      setState(() {
+        _isLoading = true;
+        _currentPage = 1;
+        allGroups.clear();
+      });
+    }
+
 
     String categoryQuery = category != null && category != '전체'
         ? 'groupCategory=${Uri.encodeComponent(category)}'
@@ -117,7 +127,6 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -382,14 +391,14 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                     child: Text(
                                       category,
                                       style: TextStyle(
-                                        color: getCategoryColor(category), // Set the color based on the category
+                                        color: getCategoryColor(category),
                                       ),
                                     ),
                                   ),
                                 );
                               }).toList(), // Convert the map to a list and unpack it
 
-                              // Add the sort buttons below the category buttons
+                              //신규, 랭킹 버튼
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Row(
@@ -539,8 +548,6 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
   }
 }
 
-
-// 그룹 정보를 나타내는 클래스 (API 응답에서 가져오는 데이터 형태와 일치하도록 정의해야 함)
 class EntireGroup {
   final int groupId;
   final String groupTitle;
