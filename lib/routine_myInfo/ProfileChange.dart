@@ -182,6 +182,10 @@ class _ProfileChangeState extends State<ProfileChange> {
       } else {
         print("Failed to update profile. Status code: ${response.statusCode}");
         print("Response: $responseBody");
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('정보 등록 실패: 이미 사용 중인 닉네임입니다.')),
+        );
       }
     } catch (e) {
       print("Error updating profile: $e");
