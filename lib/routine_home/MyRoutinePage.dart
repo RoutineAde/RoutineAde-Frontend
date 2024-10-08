@@ -346,156 +346,160 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(
-                      child:
-                      Text('루틴을 불러오는 중 오류가 발생했습니다: ${snapshot.error}'));
+                      child: Text('루틴을 불러오는 중 오류가 발생했습니다: ${snapshot.error}'));
                 } else if (!snapshot.hasData ||
-                    snapshot.data!.personalRoutines.isEmpty) {
+                    (snapshot.data!.personalRoutines.isEmpty && snapshot.data!.groupRoutines.isEmpty)) {
+                  // 개인 루틴과 그룹 루틴이 모두 비어있을 때 문구 표시
                   return const Center(
                       child: Text(
                         '\n\t\t\t\t\t\t\t\t 아래 + 버튼을 눌러 \n 새로운 루틴을 추가해보세요',
                         style: TextStyle(fontSize: 20, color: Colors.grey),
                       ));
                 }
-                userEmotion = snapshot.data!.userEmotion; // 감정 상태를 업데이트
+
+                // 감정 상태를 업데이트
+                userEmotion = snapshot.data!.userEmotion;
 
                 return ListView(
                   padding: const EdgeInsets.fromLTRB(24, 10, 24, 16),
                   children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE6F5F8), // 배경색 설정
-                        borderRadius:
-                        BorderRadius.circular(12), // 둥근 모서리 설정
-                      ),
-                      child: Theme(
-                        data: Theme.of(context).copyWith(
-                          dividerColor: Colors.transparent,
+                    // 개인 루틴이 있을 때만 표시
+                    if (snapshot.data!.personalRoutines.isNotEmpty)
+                      Container(
+                        padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE6F5F8), // 배경색 설정
+                          borderRadius: BorderRadius.circular(12), // 둥근 모서리 설정
                         ),
-                        child: ExpansionTile(
-                          title: const Text("개인 루틴",
-                              style: TextStyle(
-                                  fontSize: 20,
-                                  color: Colors.black)), // 텍스트 색상 변경
-                          initiallyExpanded: true, // 초기상태를 펼친상태로 변경
-                          children: snapshot.data!.personalRoutines
-                              .map((category) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 10, top: 5),
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromARGB(
-                                          255, 255, 255, 255),
-                                      borderRadius:
-                                      BorderRadius.circular(20.0),
-                                    ),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10, vertical: 1),
-                                    child: Text(
-                                      category.routineCategory,
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color: _getCategoryColor(
-                                            category.routineCategory),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                // 카테고리 밑에 루틴 추가
-                                ...category.routines.map((routine) {
-                                  return _buildRoutineTile(
-                                      routine); // 기존 _buildRoutineTile 메서드 사용
-                                }),
-                              ],
-                            );
-                          }).toList(),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    ...snapshot.data!.groupRoutines.map((group) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 10),
-                        child: Container(
-                          padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFE6F5F8),
-                            borderRadius: BorderRadius.circular(12),
+                        child: Theme(
+                          data: Theme.of(context).copyWith(
+                            dividerColor: Colors.transparent,
                           ),
-                          child: Theme(
-                            data: Theme.of(context).copyWith(
-                              dividerColor: Colors.transparent,
-                            ),
-                            child: ExpansionTile(
-                              title: Row(
-                                mainAxisAlignment: MainAxisAlignment.start, // 시작 부분에 배치
-                                crossAxisAlignment: CrossAxisAlignment.center, // 수직 중앙 정렬
+                          child: ExpansionTile(
+                            title: const Text("개인 루틴",
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black)), // 텍스트 색상 변경
+                            initiallyExpanded: true, // 초기상태를 펼친상태로 변경
+                            children: snapshot.data!.personalRoutines.map((category) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    group.groupTitle,
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8), // 제목과 아이콘 사이 간격
-                                  if (group.isAlarmEnabled) // 알림이 활성화된 경우에만 벨 아이콘 표시
-                                    Image.asset(
-                                      'assets/images/bell.png', // bell.png 이미지 경로
-                                      width: 20,
-                                      height: 20,
-                                    ),
-                                ],
-                              ),
-                              children: group.groupRoutines.map((categoryGroup) {
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 10),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: const Color.fromARGB(255, 255, 255, 255),
-                                          borderRadius: BorderRadius.circular(20.0),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 1),
-                                        child: Column(
-                                          children: [
-                                            Text(
-                                              categoryGroup.routineCategory, // 카테고리 이름
-                                              style: TextStyle(
-                                                color: _getCategoryColor(categoryGroup.routineCategory),
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18,
-                                              ),
-                                            ),
-                                          ],
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 10, top: 5),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color.fromARGB(255, 255, 255, 255),
+                                        borderRadius: BorderRadius.circular(20.0),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 10, vertical: 1),
+                                      child: Text(
+                                        category.routineCategory,
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: _getCategoryColor(
+                                              category.routineCategory),
                                         ),
                                       ),
                                     ),
-                                    ...categoryGroup.routines.map((routine) => _buildRoutineTile2(routine)), // 루틴 목록
-                                  ],
-                                );
-                              }).toList(),
-                            ),
+                                  ),
+                                  // 카테고리 밑에 루틴 추가
+                                  ...category.routines.map((routine) {
+                                    return _buildRoutineTile(routine); // 기존 _buildRoutineTile 메서드 사용
+                                  }),
+                                ],
+                              );
+                            }).toList(),
                           ),
                         ),
-                      );
+                      ),
 
+                    const SizedBox(height: 10),
 
-                    }),
+                    // 그룹 루틴이 있을 때만 표시
+                    if (snapshot.data!.groupRoutines.isNotEmpty)
+                      ...snapshot.data!.groupRoutines.map((group) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: Container(
+                            padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFE6F5F8),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Theme(
+                              data: Theme.of(context).copyWith(
+                                dividerColor: Colors.transparent,
+                              ),
+                              child: ExpansionTile(
+                                title: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start, // 시작 부분에 배치
+                                  crossAxisAlignment: CrossAxisAlignment.center, // 수직 중앙 정렬
+                                  children: [
+                                    Text(
+                                      group.groupTitle,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8), // 제목과 아이콘 사이 간격
+                                    if (group.isAlarmEnabled) // 알림이 활성화된 경우에만 벨 아이콘 표시
+                                      Image.asset(
+                                        'assets/images/bell.png', // bell.png 이미지 경로
+                                        width: 20,
+                                        height: 20,
+                                      ),
+                                  ],
+                                ),
+                                children: group.groupRoutines.map((categoryGroup) {
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 10),
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: const Color.fromARGB(255, 255, 255, 255),
+                                            borderRadius: BorderRadius.circular(20.0),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 10.0, vertical: 1),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                categoryGroup.routineCategory, // 카테고리 이름
+                                                style: TextStyle(
+                                                  color: _getCategoryColor(categoryGroup.routineCategory),
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 18,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      ...categoryGroup.routines.map(
+                                              (routine) => _buildRoutineTile2(routine)), // 루틴 목록
+                                    ],
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+
                     const SizedBox(height: 10),
                   ],
                 );
               },
             ),
           ),
-        ),
+        )
+
       ],
     ),
   );
