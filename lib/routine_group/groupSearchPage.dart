@@ -24,22 +24,37 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
   bool _isLoading = false;
   bool searchByGroupName = true;
   bool _hasSearched = false; //검색 수행 여부
+  int _currentPage = 1;
+  final int _pageSize = 10;
 
   @override
   void initState() {
     super.initState();
-    fetchGroups();
+    fetchGroups(); // 초기 데이터 로드 (기본은 '신규' 기준)
   }
 
-  Future<void> fetchGroups({bool loadMore = false}) async {
-    setState(() {
-      _isLoading = true;
-      allGroups.clear();
-    });
+  // fetchGroups에 sortType 추가
+  Future<void> fetchGroups({bool loadMore = false, String? category, String? sortType}) async {
+    if (loadMore) {
+      _currentPage++;
+    } else {
+      setState(() {
+        _isLoading = true;
+        _currentPage = 1;
+        allGroups.clear();
+      });
+    }
 
-    final url = Uri.parse(
-        'http://15.164.88.94/groups?groupCategory=%EC%A0%84%EC%B2%B4');
 
+    String categoryQuery = category != null && category != '전체'
+        ? 'groupCategory=${Uri.encodeComponent(category)}'
+        : 'groupCategory=%EC%A0%84%EC%B2%B4';
+
+    String sortTypeQuery = sortType != null
+        ? '&sortType=${Uri.encodeComponent(sortType)}'
+        : '&sortType=신규'; // 기본 정렬 기준을 '신규'로 설정
+
+    final url = Uri.parse('http://15.164.88.94/groups?$categoryQuery$sortTypeQuery');
     final response = await http.get(url, headers: {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -51,14 +66,11 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
 
       setState(() {
         if (data is Map<String, dynamic> && data.containsKey('groups')) {
-          final newGroups = (data['groups'] as List<dynamic>)
+          allGroups = (data['groups'] as List<dynamic>)
               .map((json) => EntireGroup.fromJson(json))
               .toList();
-          allGroups.addAll(newGroups);
         }
-
         filteredGroups = allGroups;
-        _sortGroupsByGroupIdDescending(); // 그룹 정렬 추가
         _isLoading = false;
       });
     } else {
@@ -66,13 +78,7 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
         _isLoading = false;
       });
       print("그룹 불러오기를 실패하였습니다.");
-      print("Status Code: ${response.statusCode}");
-      print("Response Body: ${response.body}");
     }
-  }
-
-  void _sortGroupsByGroupIdDescending() {
-    filteredGroups.sort((a, b) => b.groupId.compareTo(a.groupId));
   }
 
   void filterGroups(String query) {
@@ -90,7 +96,7 @@ class _GroupSearchPageState extends State<GroupSearchPage> {
         // filteredGroups = allGroups;
         filteredGroups = [];
       }
-      _sortGroupsByGroupIdDescending(); // 필터 후 정렬 유지
+      // _sortGroupsByGroupIdDescending(); // 필터 후 정렬 유지
     });
   }
 
