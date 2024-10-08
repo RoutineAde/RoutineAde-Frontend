@@ -116,7 +116,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                 children: [
                   Text(Egroup.groupTitle,
                       style: const TextStyle(color: Colors.black)),
-                  const SizedBox(height: 1.0),
+                  const SizedBox(height: 1.0), //그룹 여백
                   Text("그룹 코드 #${Egroup.groupId}",
                       textAlign: TextAlign.center,
                       style: const TextStyle(color: Colors.grey, fontSize: 13)),
@@ -127,6 +127,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                const SizedBox(height: 0), //그룹 코드와 대표 카테고리 사이의 여백
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -172,24 +173,19 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                     child: const Text("취소",
                         style: TextStyle(
                             color: Color.fromARGB(255, 128, 121, 121))),
-                    onPressed: () async {
+                    onPressed: () {
                       Navigator.of(context).pop();
                     },
                   ),
                   TextButton(
                     child: const Text("그룹 가입",
                         style: TextStyle(color: Color(0xff8DCCFF))),
-                    onPressed: () async {
-                      Navigator.of(context).pop(); // 다이얼로그 닫기
+                    onPressed: () {
+                      Navigator.of(context).pop();
                       if (Egroup.isPublic) {
-                        bool joinSuccess = await _joinGroup(Egroup.groupId);
-                        if (joinSuccess) {
-                          navigateToGroupPage(Egroup.groupId); // 가입 성공 시 페이지 이동
-                        } else {
-                          print("그룹 참여 실패!");
-                        }
+                        print("참여 성공!");
                       } else {
-                        _showPasswordDialog(Egroup); // 비밀번호 입력 필요 시 다이얼로그 표시
+                        _showPasswordDialog(Egroup);
                       }
                     },
                   ),
@@ -278,44 +274,61 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return AlertDialog(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              title: Text('비공개 그룹 입장'),
+              backgroundColor: Colors.white,
+              title: const Center(child: Text("비공개 그룹")),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text('비공개 그룹입니다. 비밀번호를 입력해주세요.'),
-                  SizedBox(height: 10),
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: '비밀번호',
+                      labelText: "비밀번호 4자리 입력",
+                      errorText: _isPasswordIncorrect ? "비밀번호가 틀렸습니다." : null,
                     ),
                   ),
                 ],
               ),
               actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('취소'),
-                ),
-                TextButton(
-                  onPressed: () async {
-                    bool joinSuccess = await _joinGroup(group.groupId,
-                        password: _passwordController.text);
-                    Navigator.of(context).pop();
-                    if (joinSuccess) {
-                      navigateToGroupPage(group.groupId); // 가입 성공 시 페이지 이동
-                    } else {
-                      print("그룹 참여 실패!");
-                    }
-                  },
-                  child: Text('입장'),
+                OverflowBar(
+                  alignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      child: const Text("취소"),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        _passwordController.clear();
+                        setState(() {
+                          _isPasswordIncorrect = false;
+                        });
+                      },
+                    ),
+                    TextButton(
+                      child: const Text("확인"),
+                      onPressed: () async {
+                        // 서버로 비밀번호 검증 요청
+                        bool joinSuccess = await _joinGroup(
+                          group.groupId,
+                          password: _passwordController.text,
+                        );
+
+                        if (joinSuccess) {
+                          Navigator.of(context).pop(); // 다이얼로그 닫기
+                          navigateToGroupPage(group.groupId); // 그룹 페이지로 이동
+                          _passwordController.clear(); // 비밀번호 필드 초기화
+                          setState(() {
+                            _isPasswordIncorrect = false;
+                          });
+                        } else {
+                          setState(() {
+                            _isPasswordIncorrect = true; // 비밀번호 틀림 표시
+                          });
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ],
             );
