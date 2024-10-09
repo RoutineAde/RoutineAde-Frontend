@@ -32,6 +32,8 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
     fetchGroups(); // 초기 데이터 로드 (기본은 '신규' 기준)
   }
 
+  int groupCount = 0;
+
   // fetchGroups에 sortType 추가
   Future<void> fetchGroups({bool loadMore = false, String? category, String? sortType}) async {
     if (loadMore) {
@@ -43,7 +45,6 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
         allGroups.clear();
       });
     }
-
 
     String categoryQuery = category != null && category != '전체'
         ? 'groupCategory=${Uri.encodeComponent(category)}'
@@ -68,6 +69,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
           allGroups = (data['groups'] as List<dynamic>)
               .map((json) => EntireGroup.fromJson(json))
               .toList();
+          groupCount = data['groupCount']; // groupCount 업데이트
         }
         filteredGroups = allGroups;
         _isLoading = false;
@@ -416,6 +418,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: Row(
                                   children: [
+                                    Text("그룹 갯수: $groupCount"), // 그룹 갯수를 표시
                                     TextButton(
                                       onPressed: () {
                                         setState(() {
@@ -429,9 +432,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                       child: Text(
                                         '신규',
                                         style: TextStyle(
-                                          color: selectedSortType == '신규'
-                                              ? Colors.blue
-                                              : Colors.black,
+                                          color: selectedSortType == '신규' ? Colors.blue : Colors.black,
                                         ),
                                       ),
                                     ),
@@ -448,15 +449,14 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                       child: Text(
                                         '랭킹',
                                         style: TextStyle(
-                                          color: selectedSortType == '랭킹'
-                                              ? Colors.blue
-                                              : Colors.black,
+                                          color: selectedSortType == '랭킹' ? Colors.blue : Colors.black,
                                         ),
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
+
                             ],
                           ),
                         ),
@@ -557,6 +557,27 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class RoutineGroup {
+  final int groupCount;
+  final List<EntireGroup> groups;
+
+  RoutineGroup({
+    required this.groupCount,
+    required this.groups,
+  });
+
+  factory RoutineGroup.fromJson(Map<String, dynamic> json) {
+    return RoutineGroup(
+      groupCount: json['groupCount'],
+      groups: (json['groups'] as List<dynamic>?)
+          ?.map((item) =>
+          EntireGroup.fromJson(item as Map<String, dynamic>))
+          .toList() ??
+          [],
     );
   }
 }
