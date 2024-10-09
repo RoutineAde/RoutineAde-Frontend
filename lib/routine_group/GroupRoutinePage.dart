@@ -386,7 +386,6 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              // Use the spread operator (...) to unpack the map-generated list of widgets
                               ...['전체', '일상', '건강', '자기개발', '자기관리', '기타'].map((category) {
                                 bool isSelected = selectedCategory == category;
                                 return Padding(
@@ -411,55 +410,45 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                     ),
                                   ),
                                 );
-                              }).toList(), // Convert the map to a list and unpack it
-
-                              //신규, 랭킹 버튼
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Row(
-                                  children: [
-                                    Text("그룹 갯수: $groupCount"), // 그룹 갯수를 표시
-                                    TextButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          selectedSortType = '신규';
-                                        });
-                                        fetchGroups(
-                                          category: selectedCategory,
-                                          sortType: '신규',
-                                        );
-                                      },
-                                      child: Text(
-                                        '신규',
-                                        style: TextStyle(
-                                          color: selectedSortType == '신규' ? Colors.blue : Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                    TextButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          selectedSortType = '랭킹';
-                                        });
-                                        fetchGroups(
-                                          category: selectedCategory,
-                                          sortType: '랭킹',
-                                        );
-                                      },
-                                      child: Text(
-                                        '랭킹',
-                                        style: TextStyle(
-                                          color: selectedSortType == '랭킹' ? Colors.blue : Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-
+                              }).toList(),
                             ],
                           ),
                         ),
+                      ),
+                    ),
+
+                    // 그룹 갯수와 드롭다운 메뉴를 Row로 배치
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "$groupCount개 그룹", // 그룹수
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+
+                          // 드롭다운 버튼 추가
+                          DropdownButton<String>(
+                            value: selectedSortType, // 선택된 정렬 타입
+                            items: ['신규', '랭킹'].map((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (newValue) {
+                              setState(() {
+                                selectedSortType = newValue!;
+                              });
+                              fetchGroups(
+                                category: selectedCategory,
+                                sortType: selectedSortType,
+                              );
+                            },
+                            underline: Container(), // 밑줄 제거
+                          ),
+                        ],
                       ),
                     ),
 
@@ -470,8 +459,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                         itemCount: filteredGroups.length,
                         itemBuilder: (context, index) {
                           final group = filteredGroups[index];
-                          Color textColor =
-                          getCategoryColor(group.groupCategory);
+                          Color textColor = getCategoryColor(group.groupCategory);
                           return InkWell(
                             onTap: () {
                               _showGroupDialog(group);
@@ -482,12 +470,10 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                               child: Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: Column(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Row(
                                           children: [
@@ -495,19 +481,15 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                               group.groupTitle,
                                               style: const TextStyle(
                                                 fontSize: 18,
-                                                fontWeight:
-                                                FontWeight.bold,
+                                                fontWeight: FontWeight.bold,
                                               ),
                                             ),
                                             if (!group.isPublic)
                                               Padding(
-                                                padding:
-                                                const EdgeInsets.only(
-                                                    left: 8.0),
+                                                padding: const EdgeInsets.only(left: 8.0),
                                                 child: Image.asset(
                                                   "assets/images/lock.png",
-                                                  color: const Color(
-                                                      0xFF8DCCFF),
+                                                  color: const Color(0xFF8DCCFF),
                                                   width: 20,
                                                   height: 20,
                                                 ),
@@ -520,25 +502,19 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                                     Row(
                                       children: [
                                         const Text("대표 카테고리 "),
-                                        Text(group.groupCategory,
-                                            style: TextStyle(
-                                                color: textColor)),
+                                        Text(group.groupCategory, style: TextStyle(color: textColor)),
                                         Expanded(child: Container()),
                                         Align(
-                                          alignment:
-                                          Alignment.centerRight,
-                                          child: Text(
-                                              "인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),
+                                          alignment: Alignment.centerRight,
+                                          child: Text("인원 ${group.joinMemberCount}/${group.maxMemberCount}명"),
                                         ),
                                       ],
                                     ),
                                     const SizedBox(height: 8.0),
                                     Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                            "그룹장 ${group.createdUserNickname}"),
+                                        Text("그룹장 ${group.createdUserNickname}"),
                                         Text("그룹코드 ${group.groupId}"),
                                       ],
                                     ),
@@ -557,6 +533,8 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
           ),
         ],
       ),
+
+
     );
   }
 }
