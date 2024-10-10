@@ -12,7 +12,7 @@ dependencies:
   google_fonts: ^2.0.0
   image_picker: ^0.8.7
   image: ^3.0.1
-  permission_handler: ^10.2.0
+  permission_handler: ^11.3.0
 
   #추가한 패키지
   flutter_calendar_week: ^3.0.1
@@ -28,7 +28,7 @@ dependencies:
   table_calendar: ^3.0.0
   fl_chart: ^0.69.0
   kakao_flutter_sdk: ^1.1.0 #카카오로그인
-  url_launcher: ^6.0.20 # 카카오 로그인
+  url_launcher: ^6.0.20
   webview_flutter: ^3.0.4
   uni_links: ^0.5.1
   carousel_slider: ^5.0.0
