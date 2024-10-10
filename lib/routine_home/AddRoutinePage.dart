@@ -99,7 +99,8 @@ class _AddRoutinePageState extends State<AddRoutinePage> {
       print('Response body: ${response.body}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        _showDialog('성공', '루틴이 성공적으로 추가되었습니다.');
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (ctx) => const MyRoutinePage()));
       } else {
         _showDialog('오류', '루틴 추가에 실패했습니다: ${response.body}');
       }

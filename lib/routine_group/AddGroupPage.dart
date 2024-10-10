@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'GroupType.dart';
 import 'package:routine_ade/routine_user/token.dart';
 
@@ -71,7 +72,8 @@ class _AddGroupPageState extends State<AddGroupPage> {
       print('Response body: ${response.body}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        _showDialog('성공', '그룹이 성공적으로 추가되었습니다.');
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (ctx) => const GroupMainPage()));
       } else {
         _showDialog('오류', '그룹 추가에 실패했습니다: ${response.body}');
       }
@@ -335,7 +337,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                   onPressed: _addGroup,
                   style: ButtonStyle(
                     backgroundColor:
-                    WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
+                        WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0),

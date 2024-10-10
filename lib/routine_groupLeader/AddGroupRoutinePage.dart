@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:routine_ade/routine_groupLeader/glOnClickGroupPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart'; //날짜 포맷팅 init 패키지
 import 'package:http/http.dart' as http;
@@ -96,7 +97,12 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
       print('Response body: ${utf8.decode(response.bodyBytes)}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        _showDialog('성공', '루틴이 성공적으로 추가되었습니다.');
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (ctx) => glOnClickGroupPage(
+                      groupId: widget.groupId,
+                    )));
       } else {
         _showDialog('오류', '루틴 추가에 실패했습니다: ${utf8.decode(response.bodyBytes)}');
       }
@@ -299,7 +305,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: List.generate(
                         5,
-                            (index) => GestureDetector(
+                        (index) => GestureDetector(
                           onTap: () {
                             setState(() {
                               selectedCategoryIndex = index;
@@ -317,7 +323,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                                   : const Color(0xFFF0F0F0),
                               borderRadius: BorderRadius.circular(20),
                               border:
-                              Border.all(color: const Color(0xFFF0F0F0)),
+                                  Border.all(color: const Color(0xFFF0F0F0)),
                             ),
                             alignment: Alignment.center,
                             child: Text(
@@ -404,7 +410,7 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
                   onPressed: _addRoutine,
                   style: ButtonStyle(
                     backgroundColor:
-                    WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
+                        WidgetStateProperty.all<Color>(const Color(0xFFB4DDFF)),
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10.0), //테두리 둥글게

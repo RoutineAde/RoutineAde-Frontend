@@ -82,18 +82,22 @@ class _RoutineAde1State extends State<RoutineAde1> {
                   });
                 },
               ),
-              items: imgList.map((item) => Container(
-                child: Center(
-                  child: Image.asset(
-                    item,
-                    fit: BoxFit.contain,
-                    width: 1000,
-                  ),
-                ),
-              )).toList(),
+              items: imgList
+                  .map((item) => Container(
+                        child: Center(
+                          child: Image.asset(
+                            item,
+                            fit: BoxFit.contain,
+                            width: 1000,
+                          ),
+                        ),
+                      ))
+                  .toList(),
             ),
 
-            SizedBox(height: 50,),
+            const SizedBox(
+              height: 50,
+            ),
 
             // 인디케이터 부분
             Row(
@@ -106,7 +110,8 @@ class _RoutineAde1State extends State<RoutineAde1> {
                   child: Container(
                     width: 12.0,
                     height: 12.0,
-                    margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 4.0),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: _currentIndex == entry.key

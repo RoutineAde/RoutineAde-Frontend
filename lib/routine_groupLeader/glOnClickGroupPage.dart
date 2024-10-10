@@ -44,7 +44,7 @@ class glOnClickGroupPage extends StatefulWidget {
 class _glOnClickGroupPageState extends State<glOnClickGroupPage>
     with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  bool _isSwitchOn = false;
+  final bool _isSwitchOn = false;
   late TabController _tabController;
   late Future<GroupResponse> futureGroupResponse;
   bool _isFloatingActionButtonVisible = true;
@@ -202,21 +202,21 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
       endDrawerEnableOpenDragGesture: false,
       floatingActionButton: _tabController.index == 0
           ? FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      AddGroupRoutinePage(groupId: widget.groupId)));
-        },
-        backgroundColor: const Color(0xffA1D1F9),
-        shape: const CircleBorder(),
-        child: Image.asset(
-          "assets/images/add-button.png",
-          width: 80,
-          height: 80,
-        ),
-      )
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            AddGroupRoutinePage(groupId: widget.groupId)));
+              },
+              backgroundColor: const Color(0xffA1D1F9),
+              shape: const CircleBorder(),
+              child: Image.asset(
+                "assets/images/add-button.png",
+                width: 80,
+                height: 80,
+              ),
+            )
           : null,
     );
   }
@@ -233,7 +233,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
             Container(
               color: Colors.white, // DrawerHeader의 배경색
               padding:
-              const EdgeInsets.only(top: 120.0), // DrawerHeader 위쪽 여백 추가
+                  const EdgeInsets.only(top: 120.0), // DrawerHeader 위쪽 여백 추가
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -290,7 +290,7 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
                         isLeader: groupResponse.isGroupAdmin &&
                             member.nickname ==
                                 groupInfo.createdUserNickname // isLeader flag
-                    );
+                        );
                   }),
                 ],
               ),
@@ -365,7 +365,8 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => OtherUserRoutinePage(userId: member.userId),
+              builder: (context) => OtherUserRoutinePage(
+                  userId: member.userId, groupId: widget.groupId),
             ),
           );
         },
@@ -391,59 +392,59 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
       trailing: isLeader
           ? null
           : TextButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: const Text('정말 내보내시겠습니까?'),
-                actions: <Widget>[
-                  TextButton(
-                    child: const Text('취소'),
-                    onPressed: () {
-                      Navigator.of(context).pop(); // 다이얼로그 닫기
-                    },
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      title: const Text('정말 내보내시겠습니까?'),
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('취소'),
+                          onPressed: () {
+                            Navigator.of(context).pop(); // 다이얼로그 닫기
+                          },
+                        ),
+                        TextButton(
+                          child: const Text('내보내기'),
+                          onPressed: () async {
+                            Navigator.of(context).pop(); // 다이얼로그 닫기
+                            try {
+                              await deleteMember(groupId, userId);
+                              // 성공 시 추가 동작을 수행할 수 있습니다. 예: UI 업데이트
+                            } catch (error) {
+                              // 오류 처리
+                            }
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+              style: ButtonStyle(
+                padding: WidgetStateProperty.all<EdgeInsets>(
+                    const EdgeInsets.symmetric(
+                        vertical: 4.0, horizontal: 8.0)), // 패딩 설정
+                minimumSize: WidgetStateProperty.all<Size>(
+                    const Size(0, 30)), // 버튼의 최소 높이 설정 (예: 36)
+                backgroundColor:
+                    WidgetStateProperty.all<Color>(Colors.transparent),
+                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50.0),
+                    side: const BorderSide(color: Colors.black, width: 1.0),
                   ),
-                  TextButton(
-                    child: const Text('내보내기'),
-                    onPressed: () async {
-                      Navigator.of(context).pop(); // 다이얼로그 닫기
-                      try {
-                        await deleteMember(groupId, userId);
-                        // 성공 시 추가 동작을 수행할 수 있습니다. 예: UI 업데이트
-                      } catch (error) {
-                        // 오류 처리
-                      }
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        },
-        style: ButtonStyle(
-          padding: WidgetStateProperty.all<EdgeInsets>(
-              const EdgeInsets.symmetric(
-                  vertical: 4.0, horizontal: 8.0)), // 패딩 설정
-          minimumSize: WidgetStateProperty.all<Size>(
-              const Size(0, 30)), // 버튼의 최소 높이 설정 (예: 36)
-          backgroundColor:
-          WidgetStateProperty.all<Color>(Colors.transparent),
-          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(50.0),
-              side: const BorderSide(color: Colors.black, width: 1.0),
+                ),
+              ),
+              child: const Text(
+                '내보내기',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 13,
+                ),
+              ),
             ),
-          ),
-        ),
-        child: const Text(
-          '내보내기',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 13,
-          ),
-        ),
-      ),
     );
   }
 
@@ -556,7 +557,7 @@ class RoutinePage extends StatelessWidget {
         // 각 카테고리와 루틴 아이템을 동적으로 추가
         ...routineCategories.map((category) {
           final color =
-          getCategoryColor(category.routineCategory); // 카테고리 색상 설정
+              getCategoryColor(category.routineCategory); // 카테고리 색상 설정
           return _buildCategorySection(
             category.routineCategory,
             color,
@@ -653,12 +654,12 @@ class RoutinePage extends StatelessWidget {
 }
 
 void _showRoutineDialog(
-    BuildContext context,
-    String routineTitle,
-    int routineId,
-    int groupId,
-    //String routineCategory, // routineCategory 추가
-    ) {
+  BuildContext context,
+  String routineTitle,
+  int routineId,
+  int groupId,
+  //String routineCategory, // routineCategory 추가
+) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
@@ -772,7 +773,7 @@ void _showDeleteConfirmationDialog(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center, // 모든 텍스트 가운데 정렬
             mainAxisAlignment:
-            MainAxisAlignment.center, // 텍스트들이 수직 가운데 정렬되도록 추가
+                MainAxisAlignment.center, // 텍스트들이 수직 가운데 정렬되도록 추가
             children: [
               Text(
                 "루틴을 삭제하면 해당 루틴의",

@@ -8,6 +8,7 @@ import 'package:routine_ade/routine_groupLeader/AddGroupRoutinePage.dart';
 import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
+import 'package:routine_ade/routine_groupLeader/groupEdit.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:http/http.dart' as http;
 import 'groupType.dart';
@@ -206,7 +207,7 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
             Container(
               color: Colors.white, // DrawerHeader의 배경색
               padding:
-              const EdgeInsets.only(top: 120.0), // DrawerHeader 위쪽 여백 추가
+                  const EdgeInsets.only(top: 120.0), // DrawerHeader 위쪽 여백 추가
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -326,16 +327,16 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
 
   ListTile buildDrawerMemberTile(String title, String imagePath,
       {required GroupResponse groupResponse,
-        required GroupMember groupmember,
-        bool isLeader = false}) {
+      required GroupMember groupmember,
+      bool isLeader = false}) {
     return ListTile(
       leading: GestureDetector(
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  OtherUserRoutinePage(userId: groupmember.userId),
+              builder: (context) => OtherUserRoutinePage(
+                  userId: groupmember.userId, groupId: widget.groupId),
             ),
           );
         },
@@ -457,7 +458,7 @@ class RoutinePage extends StatelessWidget {
         // 각 카테고리와 루틴 아이템을 동적으로 추가
         ...routineCategories.map((category) {
           final color =
-          getCategoryColor(category.routineCategory); // 카테고리 색상 설정
+              getCategoryColor(category.routineCategory); // 카테고리 색상 설정
           return _buildCategorySection(
             category.routineCategory,
             color,
