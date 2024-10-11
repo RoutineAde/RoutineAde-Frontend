@@ -70,8 +70,8 @@ class _WebViewPageState extends State<WebViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Kakao Login WebView'),
-      ),
+          // title: const Text('Kakao Login WebView'),
+          ),
       body: WebView(
         initialUrl:
             'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=25a0f887ecba2fdb77884c01ca0325b0&redirect_uri=http://15.164.88.94/users/login/kakao',

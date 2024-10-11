@@ -203,7 +203,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
                                           height: 50,
                                         )
                                       : Image.asset(
-                                          "assets/images/new-icons/김외롭.png",
+                                          "assets/images/emotion/no-emotion.png",
                                           width: 50,
                                           height: 50),
                                   const SizedBox(width: 10),
@@ -323,24 +323,36 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
         color: const Color(0xFFE6F5F8),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: Theme(
-        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
-          title: Text(group.groupTitle,
-              style: const TextStyle(fontSize: 20, color: Colors.black)),
-          children: group.groupRoutines.map((categoryGroup) {
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 그룹 제목 표시
+          Padding(
+            padding: const EdgeInsets.only(left: 10),
+            child: Text(
+              group.groupTitle,
+              style: const TextStyle(
+                  fontSize: 20,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold),
+            ),
+          ),
+          const SizedBox(height: 15),
+
+          // 그룹 루틴 카테고리 및 루틴 항목들 표시
+          ...group.groupRoutines.map((categoryGroup) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(left: 10),
+                  padding: const EdgeInsets.only(left: 10, bottom: 5),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 1),
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                     child: Text(
                       categoryGroup.routineCategory,
                       style: TextStyle(
@@ -355,8 +367,8 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
                     .map((routine) => _buildRoutineTile2(routine)),
               ],
             );
-          }).toList(),
-        ),
+          }),
+        ],
       ),
     );
   }
@@ -537,7 +549,7 @@ class RoutineResponse2 {
   final String nickname;
   final String intro;
   // final List<UserRoutineCategory> personalRoutines;
-  final List<Group2> groupRoutines;
+  final List<Group2> groupRoutines; //userGroupInfo
   final String userEmotion;
   // final List<UserRoutineCategory> routines;
   // final List<String> groupRoutineCategories;
@@ -560,7 +572,7 @@ class RoutineResponse2 {
       profileImage: json['profileImage'] ?? '', // 한국어로 된 필드명을 사용하여 데이터를 파싱
       nickname: json['nickname'] ?? '기타',
       intro: json['intro'] ?? '기타',
-      groupRoutines: (json['groupRoutines'] as List<dynamic>?)
+      groupRoutines: (json['userGroupInfo'] as List<dynamic>?)
               ?.map((item) => Group2.fromJson(item as Map<String, dynamic>))
               .toList() ??
           [],
