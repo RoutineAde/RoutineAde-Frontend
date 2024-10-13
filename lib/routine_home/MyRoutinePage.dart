@@ -173,6 +173,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
               style: const TextStyle(fontSize: 20),
             ),
           ),
+          const SizedBox(height: 25),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -346,15 +347,30 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                   return const Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(
-                      child: Text('루틴을 불러오는 중 오류가 발생했습니다: ${snapshot.error}'));
+                      child:
+                      Text('루틴을 불러오는 중 오류가 발생했습니다: ${snapshot.error}'));
                 } else if (!snapshot.hasData ||
-                    (snapshot.data!.personalRoutines.isEmpty && snapshot.data!.groupRoutines.isEmpty)) {
+                    (snapshot.data!.personalRoutines.isEmpty &&
+                        snapshot.data!.groupRoutines.isEmpty)) {
                   // 개인 루틴과 그룹 루틴이 모두 비어있을 때 문구 표시
                   return const Center(
-                      child: Text(
-                        '\n\t\t\t\t\t\t\t\t 아래 + 버튼을 눌러 \n 새로운 루틴을 추가해보세요',
-                        style: TextStyle(fontSize: 20, color: Colors.grey),
-                      ));
+                    child: Column(
+                      children: [
+                        SizedBox(height: 100,),
+                        Image(
+                          image: AssetImage('assets/images/new-icons/ice.png'),
+                          width: 150, // 원하는 크기로 설정
+                          height: 150,
+                        ),
+                        Text(
+                          ' 아래 + 버튼을 눌러 \n 새로운 루틴을 추가해보세요',
+                          style: TextStyle(fontSize: 20, color: Colors.grey, fontWeight: FontWeight.bold),
+                          textAlign: TextAlign.center, // 텍스트 중앙 정렬
+                        ),
+                      ],
+                    ),
+                  );
+
                 }
 
                 // 감정 상태를 업데이트
@@ -369,7 +385,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                         padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                         decoration: BoxDecoration(
                           color: const Color(0xFFE6F5F8), // 배경색 설정
-                          borderRadius: BorderRadius.circular(12), // 둥근 모서리 설정
+                          borderRadius:
+                          BorderRadius.circular(12), // 둥근 모서리 설정
                         ),
                         child: Theme(
                           data: Theme.of(context).copyWith(
@@ -381,16 +398,21 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                     fontSize: 20,
                                     color: Colors.black)), // 텍스트 색상 변경
                             initiallyExpanded: true, // 초기상태를 펼친상태로 변경
-                            children: snapshot.data!.personalRoutines.map((category) {
+                            children: snapshot.data!.personalRoutines
+                                .map((category) {
                               return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.only(left: 10, top: 5),
+                                    padding: const EdgeInsets.only(
+                                        left: 10, top: 5),
                                     child: Container(
                                       decoration: BoxDecoration(
-                                        color: const Color.fromARGB(255, 255, 255, 255),
-                                        borderRadius: BorderRadius.circular(20.0),
+                                        color: const Color.fromARGB(
+                                            255, 255, 255, 255),
+                                        borderRadius:
+                                        BorderRadius.circular(20.0),
                                       ),
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 10, vertical: 1),
@@ -407,7 +429,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                   ),
                                   // 카테고리 밑에 루틴 추가
                                   ...category.routines.map((routine) {
-                                    return _buildRoutineTile(routine); // 기존 _buildRoutineTile 메서드 사용
+                                    return _buildRoutineTile(
+                                        routine); // 기존 _buildRoutineTile 메서드 사용
                                   }),
                                 ],
                               );
@@ -424,7 +447,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: Container(
-                            padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                            padding:
+                            const EdgeInsets.fromLTRB(10, 5, 10, 5),
                             decoration: BoxDecoration(
                               color: const Color(0xFFE6F5F8),
                               borderRadius: BorderRadius.circular(12),
@@ -435,8 +459,10 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                               ),
                               child: ExpansionTile(
                                 title: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start, // 시작 부분에 배치
-                                  crossAxisAlignment: CrossAxisAlignment.center, // 수직 중앙 정렬
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.start, // 시작 부분에 배치
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.center, // 수직 중앙 정렬
                                   children: [
                                     Text(
                                       group.groupTitle,
@@ -445,8 +471,10 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                         color: Colors.black,
                                       ),
                                     ),
-                                    const SizedBox(width: 8), // 제목과 아이콘 사이 간격
-                                    if (group.isAlarmEnabled) // 알림이 활성화된 경우에만 벨 아이콘 표시
+                                    const SizedBox(
+                                        width: 8), // 제목과 아이콘 사이 간격
+                                    if (group
+                                        .isAlarmEnabled) // 알림이 활성화된 경우에만 벨 아이콘 표시
                                       Image.asset(
                                         'assets/images/bell.png', // bell.png 이미지 경로
                                         width: 20,
@@ -454,26 +482,37 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                       ),
                                   ],
                                 ),
-                                children: group.groupRoutines.map((categoryGroup) {
+                                children: group.groupRoutines
+                                    .map((categoryGroup) {
                                   return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Padding(
-                                        padding: const EdgeInsets.only(left: 10),
+                                        padding:
+                                        const EdgeInsets.only(left: 10),
                                         child: Container(
                                           decoration: BoxDecoration(
-                                            color: const Color.fromARGB(255, 255, 255, 255),
-                                            borderRadius: BorderRadius.circular(20.0),
+                                            color: const Color.fromARGB(
+                                                255, 255, 255, 255),
+                                            borderRadius:
+                                            BorderRadius.circular(20.0),
                                           ),
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 10.0, vertical: 1),
+                                          padding:
+                                          const EdgeInsets.symmetric(
+                                              horizontal: 10.0,
+                                              vertical: 1),
                                           child: Column(
                                             children: [
                                               Text(
-                                                categoryGroup.routineCategory, // 카테고리 이름
+                                                categoryGroup
+                                                    .routineCategory, // 카테고리 이름
                                                 style: TextStyle(
-                                                  color: _getCategoryColor(categoryGroup.routineCategory),
-                                                  fontWeight: FontWeight.bold,
+                                                  color: _getCategoryColor(
+                                                      categoryGroup
+                                                          .routineCategory),
+                                                  fontWeight:
+                                                  FontWeight.bold,
                                                   fontSize: 18,
                                                 ),
                                               ),
@@ -482,7 +521,8 @@ class _MyRoutinePageState extends State<MyRoutinePage>
                                         ),
                                       ),
                                       ...categoryGroup.routines.map(
-                                              (routine) => _buildRoutineTile2(routine)), // 루틴 목록
+                                              (routine) => _buildRoutineTile2(
+                                              routine)), // 루틴 목록
                                     ],
                                   );
                                 }).toList(),
@@ -499,7 +539,6 @@ class _MyRoutinePageState extends State<MyRoutinePage>
             ),
           ),
         )
-
       ],
     ),
   );

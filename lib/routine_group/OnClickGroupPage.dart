@@ -8,6 +8,7 @@ import 'package:routine_ade/routine_groupLeader/AddGroupRoutinePage.dart';
 import 'package:routine_ade/routine_group/ChatScreen.dart';
 import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'package:routine_ade/routine_group/GroupRoutinePage.dart';
+import 'package:routine_ade/routine_groupLeader/groupEdit.dart';
 import 'package:routine_ade/routine_home/MyRoutinePage.dart';
 import 'package:http/http.dart' as http;
 import 'groupType.dart';
@@ -334,8 +335,8 @@ class _OnClickGroupPageState extends State<OnClickGroupPage>
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  OtherUserRoutinePage(userId: groupmember.userId),
+              builder: (context) => OtherUserRoutinePage(
+                  userId: groupmember.userId, groupId: widget.groupId),
             ),
           );
         },

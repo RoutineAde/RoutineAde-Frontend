@@ -14,10 +14,9 @@ dependencies:
   image: ^3.0.1
   permission_handler: ^10.2.0
 
-  #추가한 패키지
+  # 추가한 패키지
   flutter_calendar_week: ^3.0.1
   intl: ^0.18.0
-
   cupertino_icons: ^1.0.6
   json_annotation: ^4.0.1
   shelf_swagger_ui: ^1.0.0+2
@@ -27,7 +26,7 @@ dependencies:
   shared_preferences: ^2.0.8
   table_calendar: ^3.0.0
   fl_chart: ^0.69.0
-  kakao_flutter_sdk: ^1.1.0 #카카오로그인
+  kakao_flutter_sdk: ^1.1.0 # 카카오 로그인
   url_launcher: ^6.0.20 # 카카오 로그인
   webview_flutter: ^3.0.4
   uni_links: ^0.5.1
@@ -36,8 +35,15 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^3.0.0
+
+# Flutter Icons 설정 추가
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/new-icons/routineade.png"
+  adaptive_icon_background: "#FFFFFF" # 안드로이드용 Adaptive 아이콘 배경색
+  adaptive_icon_foreground: "assets/images/new-icons/RoutineAde.png" # 안드로이드 Adaptive 아이콘
 
 flutter:
   uses-material-design: true

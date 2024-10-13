@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:routine_ade/routine_groupLeader/glOnClickGroupPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:intl/intl.dart'; //날짜 포맷팅 init 패키지
 import 'package:http/http.dart' as http;
@@ -96,7 +97,12 @@ class _AddRoutinePageState extends State<AddGroupRoutinePage> {
       print('Response body: ${utf8.decode(response.bodyBytes)}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        _showDialog('성공', '루틴이 성공적으로 추가되었습니다.');
+        Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (ctx) => glOnClickGroupPage(
+                  groupId: widget.groupId,
+                )));
       } else {
         _showDialog('오류', '루틴 추가에 실패했습니다: ${utf8.decode(response.bodyBytes)}');
       }

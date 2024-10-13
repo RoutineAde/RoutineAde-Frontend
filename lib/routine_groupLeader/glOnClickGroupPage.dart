@@ -44,7 +44,7 @@ class glOnClickGroupPage extends StatefulWidget {
 class _glOnClickGroupPageState extends State<glOnClickGroupPage>
     with SingleTickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey();
-  bool _isSwitchOn = false;
+  final bool _isSwitchOn = false;
   late TabController _tabController;
   late Future<GroupResponse> futureGroupResponse;
   bool _isFloatingActionButtonVisible = true;
@@ -365,7 +365,8 @@ class _glOnClickGroupPageState extends State<glOnClickGroupPage>
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => OtherUserRoutinePage(userId: member.userId),
+              builder: (context) => OtherUserRoutinePage(
+                  userId: member.userId, groupId: widget.groupId),
             ),
           );
         },

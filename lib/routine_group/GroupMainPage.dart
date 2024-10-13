@@ -164,16 +164,6 @@ class _GroupMainPageState extends State<GroupMainPage> {
         backgroundColor:
         isExpanded ? Colors.grey[600] : const Color(0xFF8DCCFF),
         automaticallyImplyLeading: false, // 뒤로가기 제거
-        // actions: [
-        //   Padding(
-        //     padding: const EdgeInsets.only(right: 16.0),
-        //     child: Image.asset(
-        //       "assets/images/bell.png",
-        //       width: 35,
-        //       height: 35,
-        //     ),
-        //   ),
-        // ],
       ),
       body: DarkOverlay(
         isDark: isExpanded, // 눌렀을때만 어둡게
@@ -186,11 +176,26 @@ class _GroupMainPageState extends State<GroupMainPage> {
           color: const Color(0xFFF8F8EF),
           child: Column(
             children: [
-              const SizedBox(
-                height: 20,
-              ),
               Expanded(
-                child: ListView.builder(
+                child: groups.isEmpty
+                    ? const Center(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 200,),
+                      Image(
+                        image: AssetImage('assets/images/new-icons/ice.png'),
+                        width: 150, // 원하는 크기로 설정
+                        height: 150,
+                      ),
+                      Text(
+                        ' 아래 + 버튼을 눌러 \n 새로운 그룹에 가입해보세요',
+                        style: TextStyle(fontSize: 20, color: Colors.grey, fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center, // 텍스트 중앙 정렬
+                      ),
+                    ],
+                  ),
+                )
+                    : ListView.builder(
                   itemCount: groups.length,
                   itemBuilder: (context, index) {
                     final group = groups[index];
@@ -223,8 +228,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
                                       ),
                                       if (!group.isPublic)
                                         Padding(
-                                          padding:
-                                          const EdgeInsets.only(left: 8.0),
+                                          padding: const EdgeInsets.only(left: 8.0),
                                           child: Image.asset(
                                             "assets/images/lock.png",
                                             width: 20,
@@ -238,7 +242,6 @@ class _GroupMainPageState extends State<GroupMainPage> {
                               ),
                               const SizedBox(height: 8.0),
                               Row(
-                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text("대표 카테고리 "),
                                   Text(group.groupCategory,
@@ -304,7 +307,6 @@ class _GroupMainPageState extends State<GroupMainPage> {
             ),
             GestureDetector(
               onTap: () {
-                // 통계 버튼 클릭 시 동작할 코드
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -319,7 +321,6 @@ class _GroupMainPageState extends State<GroupMainPage> {
             ),
             GestureDetector(
               onTap: () {
-                // 더보기 버튼 클릭 시 동작할 코드
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const MyInfo()),
@@ -359,7 +360,7 @@ class _GroupMainPageState extends State<GroupMainPage> {
                         onPressed: () {
                           Navigator.push(context, MaterialPageRoute(
                             builder: (context) {
-                              return const GroupRoutinePage(); // 그룹 루틴 페이지 이동 바꿔야함
+                              return const GroupRoutinePage();
                             },
                           ));
                         },
@@ -424,4 +425,5 @@ class _GroupMainPageState extends State<GroupMainPage> {
       ),
     );
   }
+
 }

@@ -27,10 +27,10 @@ class RoutineAde1 extends StatefulWidget {
 
 class _RoutineAde1State extends State<RoutineAde1> {
   final List<String> imgList = [
-    "assets/images/tap-bar/routine02.png",
-    "assets/images/tap-bar/group02.png",
-    "assets/images/tap-bar/statistics02.png",
-    "assets/images/tap-bar/more02.png",
+    "assets/images/new-icons/onBoarding1.png",
+    "assets/images/new-icons/onBoarding2.png",
+    "assets/images/new-icons/onBoarding3.png",
+    "assets/images/new-icons/onBoarding4.png",
   ];
 
   int _currentIndex = 0; // 현재 선택된 이미지 인덱스
@@ -45,30 +45,7 @@ class _RoutineAde1State extends State<RoutineAde1> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Spacer(),
-            // Image.asset(
-            //   'assets/images/new-icons/RoutineAde.png',
-            //   width: 100,
-            //   height: 100,
-            // ),
-            // const SizedBox(height: 20),
-            // const Text(
-            //   '더 나은 하루, 루틴 에이드',
-            //   style: TextStyle(
-            //     fontSize: 18,
-            //     fontWeight: FontWeight.bold,
-            //     color: Colors.black,
-            //   ),
-            // ),
-            // const SizedBox(height: 8),
-            // Text(
-            //   '루틴으로 더 나은 일상을\n함께 관리해보세요!',
-            //   textAlign: TextAlign.center,
-            //   style: TextStyle(
-            //     fontSize: 14,
-            //     color: Colors.grey[700],
-            //   ),
-            // ),
-            const SizedBox(height: 50),
+            const SizedBox(height: 100),
 
             // Carousel Slider 부분
             CarouselSlider(
@@ -81,8 +58,10 @@ class _RoutineAde1State extends State<RoutineAde1> {
                     _currentIndex = index; // 슬라이드가 바뀔 때 현재 인덱스 업데이트
                   });
                 },
+                enableInfiniteScroll: false, // 무한 스크롤 비활성화
               ),
-              items: imgList.map((item) => Container(
+              items: imgList
+                  .map((item) => Container(
                 child: Center(
                   child: Image.asset(
                     item,
@@ -90,10 +69,13 @@ class _RoutineAde1State extends State<RoutineAde1> {
                     width: 1000,
                   ),
                 ),
-              )).toList(),
+              ))
+                  .toList(),
             ),
 
-            SizedBox(height: 50,),
+            const SizedBox(
+              height: 50,
+            ),
 
             // 인디케이터 부분
             Row(
@@ -106,12 +88,13 @@ class _RoutineAde1State extends State<RoutineAde1> {
                   child: Container(
                     width: 12.0,
                     height: 12.0,
-                    margin: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 4.0),
+                    margin: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 4.0),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: _currentIndex == entry.key
-                          ? Colors.blueAccent // 현재 인덱스일 경우 채워진 동그라미
-                          : Colors.grey, // 그렇지 않은 경우 빈 동그라미
+                          ? Colors.grey // 현재 인덱스일 경우 채워진 동그라미
+                          : Colors.grey[300], // 그렇지 않은 경우 빈 동그라미
                     ),
                   ),
                 );
@@ -119,11 +102,12 @@ class _RoutineAde1State extends State<RoutineAde1> {
             ),
 
             const Spacer(),
+            Text("sns로 간편 가입하기 !", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
               child: SizedBox(
                 width: double.infinity,
-                height: 150,
+                height: 100,
                 child: GestureDetector(
                   onTap: () {
                     // WebView 페이지로 이동
@@ -142,6 +126,7 @@ class _RoutineAde1State extends State<RoutineAde1> {
                 ),
               ),
             ),
+            SizedBox(height: 50,),
           ],
         ),
       ),

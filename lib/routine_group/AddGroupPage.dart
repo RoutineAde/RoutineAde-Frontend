@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:routine_ade/routine_group/GroupMainPage.dart';
 import 'GroupType.dart';
 import 'package:routine_ade/routine_user/token.dart';
 
@@ -16,7 +17,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
   final TextEditingController _groupNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _groupDescriptionController =
-      TextEditingController();
+  TextEditingController();
   int _selectedMemberCount = 0;
 
   // 카테고리 선택 (한번에 하나만)
@@ -49,7 +50,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
 
     // 비밀번호 값 설정
     final groupPassword =
-        _passwordController.text.isEmpty ? null : _passwordController.text;
+    _passwordController.text.isEmpty ? null : _passwordController.text;
 
     // 요청 바디 준비
     final url = Uri.parse('http://15.164.88.94/groups');
@@ -71,7 +72,8 @@ class _AddGroupPageState extends State<AddGroupPage> {
       print('Response body: ${response.body}');
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        _showDialog('성공', '그룹이 성공적으로 추가되었습니다.');
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (ctx) => const GroupMainPage()));
       } else {
         _showDialog('오류', '그룹 추가에 실패했습니다: ${response.body}');
       }
@@ -193,7 +195,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                           borderSide: BorderSide.none,
                         ),
                         contentPadding:
-                            EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
+                        EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
                         counterText: "", // 글자 수 표시 없애기
                       ),
                     ),
@@ -209,13 +211,13 @@ class _AddGroupPageState extends State<AddGroupPage> {
                           borderSide: BorderSide.none,
                         ),
                         contentPadding:
-                            EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
+                        EdgeInsets.symmetric(vertical: 15), // 세로 여백 조정
                       ),
                     ),
                     Container(
                       color: Colors.white,
                       padding:
-                          const EdgeInsets.only(left: 10, right: 10, top: 10),
+                      const EdgeInsets.only(left: 10, right: 10, top: 10),
                       margin: const EdgeInsets.only(top: 30),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,7 +238,7 @@ class _AddGroupPageState extends State<AddGroupPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: List.generate(
                               5,
-                              (index) => GestureDetector(
+                                  (index) => GestureDetector(
                                 onTap: () {
                                   setState(() {
                                     selectedCategoryIndex = index;

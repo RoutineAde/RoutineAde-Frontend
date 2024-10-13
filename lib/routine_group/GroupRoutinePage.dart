@@ -118,7 +118,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                 children: [
                   Text(Egroup.groupTitle,
                       style: const TextStyle(color: Colors.black)),
-                  const SizedBox(height: 1.0), //그룹 여백
+                  const SizedBox(height: 1.0),
                   Text("그룹 코드 #${Egroup.groupId}",
                       textAlign: TextAlign.center,
                       style: const TextStyle(color: Colors.grey, fontSize: 13)),
@@ -129,7 +129,7 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 0), //그룹 코드와 대표 카테고리 사이의 여백
+                const SizedBox(height: 0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -175,19 +175,24 @@ class _GroupRoutinePageState extends State<GroupRoutinePage> {
                     child: const Text("취소",
                         style: TextStyle(
                             color: Color.fromARGB(255, 128, 121, 121))),
-                    onPressed: () {
+                    onPressed: () async {
                       Navigator.of(context).pop();
                     },
                   ),
                   TextButton(
                     child: const Text("그룹 가입",
                         style: TextStyle(color: Color(0xff8DCCFF))),
-                    onPressed: () {
-                      Navigator.of(context).pop();
+                    onPressed: () async {
+                      Navigator.of(context).pop(); // 다이얼로그 닫기
                       if (Egroup.isPublic) {
-                        print("참여 성공!");
+                        bool joinSuccess = await _joinGroup(Egroup.groupId);
+                        if (joinSuccess) {
+                          navigateToGroupPage(Egroup.groupId); // 가입 성공 시 페이지 이동
+                        } else {
+                          print("그룹 참여 실패!");
+                        }
                       } else {
-                        _showPasswordDialog(Egroup);
+                        _showPasswordDialog(Egroup); // 비밀번호 입력 필요 시 다이얼로그 표시
                       }
                     },
                   ),

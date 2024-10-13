@@ -164,8 +164,7 @@ class _StaticsCalendarState extends State<StaticsCalendar>
                 // 더보기 버튼 클릭 시 동작할 코드
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => const MyInfo()),
+                  MaterialPageRoute(builder: (context) => const MyInfo()),
                 );
               },
               child: SizedBox(
