@@ -27,10 +27,10 @@ class RoutineAde1 extends StatefulWidget {
 
 class _RoutineAde1State extends State<RoutineAde1> {
   final List<String> imgList = [
-    "assets/images/new-icons/onBoarding1.png",
     "assets/images/new-icons/onBoarding2.png",
     "assets/images/new-icons/onBoarding3.png",
     "assets/images/new-icons/onBoarding4.png",
+    "assets/images/new-icons/onBoarding1.png",
   ];
 
   int _currentIndex = 0; // 현재 선택된 이미지 인덱스

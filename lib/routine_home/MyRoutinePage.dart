@@ -35,7 +35,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
   Future<RoutineResponse>?
   futureRoutineResponse; // late 키워드를 사용하여 초기화를 나중에 하도록 설정
   String selectedDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
-  late CalendarWeekController _controller;
+  late CalendarWeekController _controller1;
   String? userEmotion;
 
   bool _isTileExpanded = false;
@@ -47,7 +47,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
   @override
   void initState() {
     super.initState();
-    _controller = CalendarWeekController();
+    _controller1 = CalendarWeekController();
     futureRoutineResponse = fetchRoutines(selectedDate);
     _tabController = TabController(length: 4, vsync: this);
     _fetchEmotionForSelectedDate(selectedDate);
@@ -221,7 +221,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     ),
     body: Column(
       children: [
-        _buildCalendarWeek(),
+        _buildCalendarWeek1(),
         Container(
           padding: const EdgeInsets.all(16),
           color: const Color(0xFFF8F8EF),
@@ -645,7 +645,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
     );
   }
 
-  Widget _buildCalendarWeek() {
+  Widget _buildCalendarWeek1() {
     return Container(
       decoration: BoxDecoration(boxShadow: [
         BoxShadow(
@@ -654,7 +654,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
             spreadRadius: 1)
       ]),
       child: CalendarWeek(
-        controller: _controller,
+        controller: _controller1,
         height: 160,
         showMonth: true,
         minDate: DateTime.now().add(const Duration(days: -367)),
@@ -692,7 +692,7 @@ class _MyRoutinePageState extends State<MyRoutinePage>
               children: [
                 const SizedBox(width: 20),
                 Text(
-                  '${_controller.selectedDate.year}년 ${_controller.selectedDate.month}월',
+                  '${_controller1.selectedDate.year}년 ${_controller1.selectedDate.month}월',
                   style: const TextStyle(
                     color: Colors.white, // 텍스트 색상
                     fontWeight: FontWeight.bold,

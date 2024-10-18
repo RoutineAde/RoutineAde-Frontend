@@ -1,22 +1,12 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_calendar_week/flutter_calendar_week.dart';
-// import 'package:intl/date_symbol_data_local.dart';
-// import 'package:routine_ade/routine_myInfo/MyInfo.dart';
-// import 'package:routine_ade/routine_group/GroupType.dart';
-// import 'package:routine_ade/routine_group/GroupMainPage.dart';
-// import 'package:routine_ade/routine_home/AlarmListPage.dart';
-// import 'package:routine_ade/routine_home/ModifiedRoutinePage.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:routine_ade/routine_otherUser/OtherUserCalender.dart';
 import 'package:routine_ade/routine_otherUser/OtherUserCategory.dart';
 import 'package:routine_ade/routine_user/token.dart';
-import 'package:routine_ade/routine_statistics/StaticsCalendar.dart';
 
 class OtherUserRoutinePage extends StatefulWidget {
   final int userId;
@@ -33,28 +23,31 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
     with SingleTickerProviderStateMixin {
   Future<RoutineResponse2>? futureRoutineResponse2;
   String selectedDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
-  late CalendarWeekController _controller;
+  late CalendarWeekController _controller2;
   String? userEmotion;
   String? profileImage;
   String? nickname;
   String? intro;
 
-  final bool _isTileExpanded = false;
-
   late TabController _tabController;
   bool _isExpanded = false;
-  String? _selectedImage;
 
   @override
   void initState() {
     super.initState();
-    _controller = CalendarWeekController();
+    _controller2 = CalendarWeekController();
 
-    String todayDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
-    // 여기서 widget.userId로 접근해야 함
     futureRoutineResponse2 =
-        fetchRoutinesByUserId(widget.userId, widget.groupId, todayDate);
+        fetchRoutinesByUserId(widget.userId, widget.groupId, selectedDate);
     _tabController = TabController(length: 3, vsync: this);
+  }
+
+  void _onDateSelected(DateTime date) {
+    setState(() {
+      selectedDate = DateFormat('yyyy.MM.dd').format(date);
+      futureRoutineResponse2 =
+          fetchRoutinesByUserId(widget.userId, widget.groupId, selectedDate);
+    });
   }
 
   @override
@@ -170,7 +163,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
                   children: [
                     Column(
                       children: [
-                        _buildMonthView(),
+                        _buildCalendarWeek2(),
                         Container(
                           padding: const EdgeInsets.all(16),
                           color: const Color(0xFFF8F8EF),
@@ -411,7 +404,6 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
               routine.routineTitle,
               style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-            // const SizedBox(width: 3),
           ],
         ),
         trailing: Transform.scale(
@@ -419,12 +411,6 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
           child: Checkbox(
             value: routine.isCompletion,
             onChanged: (bool? value) {
-              // if (value != null) {
-              //   print("Checkbox changed: $value");
-              //   setState(() {
-              //     routine.isCompletion = value;
-              //   });
-              // }
             },
             activeColor: const Color(0xFF8DCCFF),
             checkColor: Colors.white,
@@ -437,6 +423,40 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
                 }),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildCalendarWeek2() {
+    return Container(
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 10,
+            spreadRadius: 1)
+      ]),
+      child: CalendarWeek(
+        controller: _controller2,
+        height: 160,
+        showMonth: true,
+        minDate: DateTime.now().add(const Duration(days: -367)),
+        maxDate: DateTime.now().add(const Duration(days: 365)),
+        onDatePressed: (DateTime datetime) {
+          _onDateSelected(datetime);
+        },
+        dayOfWeekStyle: const TextStyle(
+            color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 17),
+        dayOfWeek: const ['월', '화', '수', '목', '금', '토', '일'],
+        dateStyle: const TextStyle(
+            color: Colors.grey, fontWeight: FontWeight.w600, fontSize: 17),
+        todayDateStyle: const TextStyle(
+            color: Color(0xffFFFFFF),
+            fontWeight: FontWeight.w600,
+            fontSize: 17),
+        //todayBackgroundColor: Colors.blueAccent,
+        weekendsStyle: const TextStyle(
+            fontWeight: FontWeight.bold, fontSize: 17, color: Colors.grey),
+        monthViewBuilder: (DateTime time) => _buildMonthView(),
       ),
     );
   }
@@ -454,7 +474,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
               children: [
                 const SizedBox(width: 20),
                 Text(
-                  '${_controller.selectedDate.year}년 ${_controller.selectedDate.month}월 ${_controller.selectedDate.day}일',
+                  '${_controller2.selectedDate.year}년 ${_controller2.selectedDate.month}월 ${_controller2.selectedDate.day}일',
                   style: const TextStyle(
                     color: Colors.black, // 텍스트 색상
                     fontWeight: FontWeight.bold,
@@ -474,7 +494,7 @@ class _OtherUserRoutinePageState extends State<OtherUserRoutinePage>
 
 //루틴, 감정 조회
 Future<RoutineResponse2> fetchRoutinesByUserId(
-    int userId, int groupId, String routineDate) async {
+    int userId, int groupId, String date) async {
   print('사용할 토큰: $token'); // 요청 전에 토큰을 출력하여 확인
   print('API 요청 사용자 ID: $userId'); // 요청할 사용자 ID를 출력하여 확인
   print('요청그룹: $groupId ');
@@ -482,7 +502,7 @@ Future<RoutineResponse2> fetchRoutinesByUserId(
   try {
     final response = await http.get(
       Uri.parse(
-          'http://15.164.88.94/groups/$groupId/users/$userId/routines?routineDate=$routineDate'),
+          'http://15.164.88.94/groups/$groupId/users/$userId/routines?routineDate=$date'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json; charset=UTF-8', // UTF-8 설정
