@@ -1,3 +1,32 @@
+plugins {
+    // ...
+    id 'com.android.application'
+    id 'com.google.gms.google-services' version '4.4.2' apply false
+}
+
+android {
+    compileSdkVersion 33 // 최신 compileSdkVersion 사용
+    defaultConfig {
+        applicationId "com.example.routine_ade"
+        minSdkVersion 21
+        targetSdkVersion 33 // 최신 targetSdkVersion 사용
+        versionCode 1
+        versionName "1.0"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
 allprojects {
     repositories {
         google()

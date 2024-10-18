@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "209765230419",
+    "project_id": "push-notification-yjlee",
+    "storage_bucket": "push-notification-yjlee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:209765230419:android:e7079ea4d4cd27dee263a6",
+        "android_client_info": {
+          "package_name": "com.example.push_notification"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeWlwJ_2sJv40HGkpG8WmjELO_cKwAlzw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:209765230419:android:5bcfd32b4ddedba7e263a6",
+        "android_client_info": {
+          "package_name": "com.example.routine_ade"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeWlwJ_2sJv40HGkpG8WmjELO_cKwAlzw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

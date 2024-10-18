@@ -1,8 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'WebViewPage.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -33,7 +37,25 @@ class _RoutineAde1State extends State<RoutineAde1> {
     "assets/images/new-icons/onBoarding1.png",
   ];
 
-  int _currentIndex = 0; // 현재 선택된 이미지 인덱스
+  int _currentIndex = 0;
+  String? _fcmToken; // FCM 토큰 변수
+
+  @override
+  void initState() {
+    super.initState();
+    _getToken(); // FCM 토큰 가져오기
+  }
+
+  // FCM 토큰을 가져오는 함수
+  void _getToken() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    String? token = await messaging.getToken();
+    setState(() {
+      _fcmToken = token;
+    });
+
+    print("FCM Token: $_fcmToken");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,44 +68,35 @@ class _RoutineAde1State extends State<RoutineAde1> {
           children: [
             const Spacer(),
             const SizedBox(height: 100),
-
-            // Carousel Slider 부분
             CarouselSlider(
               options: CarouselOptions(
-                height: 300, // 슬라이더 높이
-                enlargeCenterPage: true, // 가운데 이미지 크게 보이기
-                viewportFraction: 0.8, // 슬라이드 간격 조절
+                height: 300,
+                enlargeCenterPage: true,
+                viewportFraction: 0.8,
                 onPageChanged: (index, reason) {
                   setState(() {
-                    _currentIndex = index; // 슬라이드가 바뀔 때 현재 인덱스 업데이트
+                    _currentIndex = index;
                   });
                 },
-                enableInfiniteScroll: false, // 무한 스크롤 비활성화
+                enableInfiniteScroll: false,
               ),
               items: imgList
-                  .map((item) => Container(
-                child: Center(
-                  child: Image.asset(
-                    item,
-                    fit: BoxFit.contain,
-                    width: 1000,
-                  ),
+                  .map((item) => Center(
+                child: Image.asset(
+                  item,
+                  fit: BoxFit.contain,
+                  width: 1000,
                 ),
               ))
                   .toList(),
             ),
-
-            const SizedBox(
-              height: 50,
-            ),
-
-            // 인디케이터 부분
+            const SizedBox(height: 50),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: imgList.asMap().entries.map((entry) {
                 return GestureDetector(
                   onTap: () => setState(() {
-                    _currentIndex = entry.key; // 해당 인디케이터 클릭 시 슬라이드 변경
+                    _currentIndex = entry.key;
                   }),
                   child: Container(
                     width: 12.0,
@@ -93,28 +106,29 @@ class _RoutineAde1State extends State<RoutineAde1> {
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: _currentIndex == entry.key
-                          ? Colors.grey // 현재 인덱스일 경우 채워진 동그라미
-                          : Colors.grey[300], // 그렇지 않은 경우 빈 동그라미
+                          ? Colors.grey
+                          : Colors.grey[300],
                     ),
                   ),
                 );
               }).toList(),
             ),
-
             const Spacer(),
-            Text("sns로 간편 가입하기 !", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),),
+            const Text(
+              "sns로 간편 가입하기 !",
+              style: TextStyle(
+                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),
+            ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: SizedBox(
                 width: double.infinity,
                 height: 100,
                 child: GestureDetector(
                   onTap: () {
-                    // WebView 페이지로 이동
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const WebViewPage()),
+                      MaterialPageRoute(builder: (context) => const WebViewPage()),
                     );
                   },
                   child: Image.asset(
@@ -126,7 +140,16 @@ class _RoutineAde1State extends State<RoutineAde1> {
                 ),
               ),
             ),
-            SizedBox(height: 50,),
+            const SizedBox(height: 50),
+            if (_fcmToken != null)
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  'FCM Token: $_fcmToken',
+                  style: const TextStyle(fontSize: 12, color: Colors.black54),
+                  textAlign: TextAlign.center,
+                ),
+              ),
           ],
         ),
       ),
