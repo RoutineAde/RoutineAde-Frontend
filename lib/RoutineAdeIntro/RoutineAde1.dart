@@ -62,14 +62,14 @@ class _RoutineAde1State extends State<RoutineAde1> {
               ),
               items: imgList
                   .map((item) => Container(
-                child: Center(
-                  child: Image.asset(
-                    item,
-                    fit: BoxFit.contain,
-                    width: 1000,
-                  ),
-                ),
-              ))
+                        child: Center(
+                          child: Image.asset(
+                            item,
+                            fit: BoxFit.contain,
+                            width: 1000,
+                          ),
+                        ),
+                      ))
                   .toList(),
             ),
 
@@ -100,11 +100,17 @@ class _RoutineAde1State extends State<RoutineAde1> {
                 );
               }).toList(),
             ),
-
             const Spacer(),
-            Text("sns로 간편 가입하기 !", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey),),
+            const SizedBox(height: 10),
+            const Text(
+              "sns로 간편 가입하기 !",
+              style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey),
+            ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
               child: SizedBox(
                 width: double.infinity,
                 height: 100,
@@ -119,14 +125,16 @@ class _RoutineAde1State extends State<RoutineAde1> {
                   },
                   child: Image.asset(
                     "assets/images/new-icons/kakaoTalk.png",
-                    width: 200,
+                    width: 250,
                     height: 200,
                     fit: BoxFit.contain,
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 50,),
+            const SizedBox(
+              height: 10,
+            ),
           ],
         ),
       ),

@@ -45,16 +45,18 @@ class _WebViewPageState extends State<WebViewPage> {
     if (response.statusCode == 200) {
       final responseBody = json.decode(utf8.decode(response.bodyBytes));
       bool isFirst = responseBody['isFirst'] ?? false;
+      print('isFirst: $isFirst');
 
       // 최초 로그인 여부에 따라 페이지 이동
       if (isFirst) {
+        print("ProfileSetting 페이지로 이동");
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(
-              builder: (context) =>
-              const ProfileSetting()), // ProfileSetting 페이지로 이동
+          MaterialPageRoute(builder: (context) => const ProfileSetting()),
+          // ProfileSetting 페이지로 이동
         );
       } else {
+        print("MyRoutinePage로 이동");
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const MyRoutinePage()),
@@ -70,11 +72,11 @@ class _WebViewPageState extends State<WebViewPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // title: const Text('Kakao Login WebView'),
+        title: const Text('카카오앱으로 로그인하기'),
       ),
       body: WebView(
         initialUrl:
-        'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=25a0f887ecba2fdb77884c01ca0325b0&redirect_uri=http://15.164.88.94/users/login/kakao',
+            'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=25a0f887ecba2fdb77884c01ca0325b0&redirect_uri=http://15.164.88.94/users/login/kakao',
         javascriptMode: JavascriptMode.unrestricted,
         onWebViewCreated: (WebViewController webViewController) {
           _controller = webViewController;

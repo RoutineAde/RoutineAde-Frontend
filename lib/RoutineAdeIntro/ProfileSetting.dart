@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:http/http.dart' as http;
 import '../routine_home/MyRoutinePage.dart';
-import 'package:routine_ade/routine_user/token.dart'; // 토큰 가져오는 곳
+import 'package:routine_ade/routine_user/token.dart';
 
 class ProfileSetting extends StatefulWidget {
   const ProfileSetting({super.key});
@@ -17,6 +17,59 @@ class ProfileSetting extends StatefulWidget {
 class _ProfileSettingState extends State<ProfileSetting> {
   File? _imageFile;
   final ImagePicker _picker = ImagePicker();
+  String? _kakaoProfileImageUrl;
+  String? _apiProfileImageUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfileImage(); // 프로필 이미지 로드
+  }
+
+  Future<void> _loadProfileImage() async {
+    await _loadKakaoProfile();
+    await _getApiProfileImage(); // API로 프로필 이미지 불러오기
+  }
+
+  Future<void> _getApiProfileImage() async {
+    const url = 'http://15.164.88.94/users/isFirst';
+
+    try {
+      // API 호출을 위한 GET 요청
+      final response = await http.get(
+        Uri.parse(url),
+        headers: {'Authorization': 'Bearer $token'}, // 토큰 추가
+      );
+
+      if (response.statusCode == 200) {
+        // 서버로부터 응답을 받은 경우
+        final data = json.decode(response.body);
+        setState(() {
+          _apiProfileImageUrl = data['profileImage']; // API에서 프로필 이미지 URL 받아오기
+        });
+      } else {
+        print('Failed to get profile image: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error during profile image fetch: $e');
+    }
+  }
+
+  // 카카오 프로필 이미지 불러오기
+  Future<void> _loadKakaoProfile() async {
+    try {
+      User user = await UserApi.instance.me(); // 카카오 사용자 정보 불러오기
+      setState(() {
+        _kakaoProfileImageUrl =
+            user.kakaoAccount?.profile?.profileImageUrl; // 프로필 이미지 URL 저장
+      });
+    } catch (error) {
+      print('Failed to load Kakao profile: $error');
+      setState(() {
+        _kakaoProfileImageUrl = null;
+      });
+    }
+  }
 
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -62,13 +115,13 @@ class _ProfileSettingState extends State<ProfileSetting> {
   }
 
   Future<void> _registerUserInfo() async {
-    const url = 'http://15.164.88.94/users/infos'; // API URL
+    const url = 'http://15.164.88.94/users/infos';
 
     // POST 요청 준비
     final request = http.MultipartRequest('POST', Uri.parse(url));
 
     // 토큰 확인 및 추가
-    if (token == null || token.isEmpty) {
+    if (token.isEmpty) {
       print('Token is missing.');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('토큰이 없습니다. 다시 로그인해주세요.')),
@@ -85,7 +138,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
 
     // 선택한 이미지가 있으면 파일로 추가
     if (_imageFile != null) {
-      request.files.add(await http.MultipartFile.fromPath('image', _imageFile!.path));
+      request.files
+          .add(await http.MultipartFile.fromPath('image', _imageFile!.path));
     }
 
     try {
@@ -108,11 +162,12 @@ class _ProfileSettingState extends State<ProfileSetting> {
       } else {
         // 실패 시 서버에서 보낸 오류 메시지 출력
         final errorBody = utf8.decode(responseData.bodyBytes);
-        print('Failed to register user info. Status code: ${response.statusCode}');
+        print(
+            'Failed to register user info. Status code: ${response.statusCode}');
         print('Response body: $errorBody');
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('정보 등록 실패: 이미 사용 중인 닉네임입니다.')),
+          const SnackBar(content: Text('정보 등록 실패: 이미 사용 중인 닉네임입니다.')),
         );
       }
     } catch (e) {
@@ -122,7 +177,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
       );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -159,8 +213,15 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         radius: 50,
                         backgroundImage: _imageFile != null
                             ? FileImage(_imageFile!)
-                            : const AssetImage('assets/images/defaultProfile.png')
-                        as ImageProvider,
+                            : (_kakaoProfileImageUrl != null &&
+                                        _kakaoProfileImageUrl!.isNotEmpty
+                                    ? NetworkImage(_kakaoProfileImageUrl!)
+                                    : (_apiProfileImageUrl != null &&
+                                            _apiProfileImageUrl!.isNotEmpty
+                                        ? NetworkImage(_apiProfileImageUrl!)
+                                        : const AssetImage(
+                                            'assets/images/defaultProfile.png')))
+                                as ImageProvider,
                       ),
                       Positioned(
                         bottom: 0,
@@ -192,13 +253,13 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     counterText: '', // 글자수 카운터 삭제
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                         color: Colors.black, // 기본 테두리 검은색
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                         color: Colors.black, // 포커스 시 테두리 검은색
                         width: 2.0,
                       ),
@@ -234,13 +295,13 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     counterText: '', // 글자수 카운터 삭제
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                         color: Colors.black, // 기본 테두리 검은색
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10.0),
-                      borderSide: BorderSide(
+                      borderSide: const BorderSide(
                         color: Colors.black, // 포커스 시 테두리 검은색
                         width: 2.0,
                       ),
