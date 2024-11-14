@@ -21,10 +21,10 @@
 ## 🧑‍💻 Developer
 
 
-|<img width="250px" alt="윤정" src="https://avatars.githubusercontent.com/u/129257050?s=400&u=eef10c4800621c193ec7fc34a6b9112aba7d94bb&v=4">|
+|<img width="250px" alt="윤정" src="https://avatars.githubusercontent.com/u/129257050?v=4">|
 |:----:|
 |[이윤정](https://github.com/yjlee0321)|
-|<img width="250px" alt="가은" src="https://avatars.githubusercontent.com/u/109871579?v=4">|
+|<img width="250px" alt="가은" src="https://avatars.githubusercontent.com/u/127672696?v=4">|
 |[박가은](https://github.com/gaeunpark7)|
 
 <br>
