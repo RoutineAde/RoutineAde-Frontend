@@ -36,8 +36,19 @@
 <br>
 
 
+
+## ⛓️ Architectural
+
+![최종 시스템 구성도](https://github.com/user-attachments/assets/90a0d29b-c6c9-4b99-8afa-98710d6fda97)
+
+
+<br>
+
+
+
 ## ⛓️ 화면 구성도
 
+여기에 UI 두기
 ![최종 시스템 구성도](https://github.com/user-attachments/assets/90a0d29b-c6c9-4b99-8afa-98710d6fda97)
 
 
