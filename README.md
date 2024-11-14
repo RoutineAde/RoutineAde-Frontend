@@ -21,11 +21,9 @@
 ## 🧑‍💻 Developer
 
 
-|<img width="250px" alt="윤정" src="https://avatars.githubusercontent.com/u/129257050?v=4">|
+|<img width="250px" alt="윤정" src="https://avatars.githubusercontent.com/u/129257050?v=4">| |<img width="250px" alt="가은" src="https://avatars.githubusercontent.com/u/127672696?v=4">|
 |:----:|
-|[이윤정](https://github.com/yjlee0321)|
-|<img width="250px" alt="가은" src="https://avatars.githubusercontent.com/u/127672696?v=4">|
-|[박가은](https://github.com/gaeunpark7)|
+|[이윤정](https://github.com/yjlee0321)| |[박가은](https://github.com/gaeunpark7)|
 
 <br>
 
@@ -33,7 +31,7 @@
 #### Development Stack
 
 <img src="https://img.shields.io/badge/dart-0175C2?style=for-the-badge&logo=dart&logoColor=white"/> <img src="https://img.shields.io/badge/flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white"/> <br>
-
+<img src="https://img.shields.io/badge/figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white"/> <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white"/> <img src="https://img.shields.io/badge/notion-white?style=for-the-badge&logo=notion&logoColor=181717"/>
 
 <br>
 
