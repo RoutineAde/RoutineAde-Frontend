@@ -22,9 +22,10 @@
 
 
 |<img width="250px" alt="윤정" src="https://avatars.githubusercontent.com/u/109871579?v=4">|
-|<img width="250px" alt="가은" src="https://avatars.githubusercontent.com/u/109871579?v=4">|
 |:----:|
 |[이윤정](https://github.com/yjlee0321)|
+|<img width="250px" alt="가은" src="https://avatars.githubusercontent.com/u/109871579?v=4">|
+|:----:|
 |[박가은](https://github.com/gaeunpark7)|
 
 <br>
