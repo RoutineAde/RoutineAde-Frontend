@@ -47,8 +47,7 @@
 
 
 ## ⛓️ 사용자 인터페이스
-
-![제목 추가](https://github.com/user-attachments/assets/e6703060-707f-4946-9c2a-ac2ccef10108)
+![제목 추가 (1)](https://github.com/user-attachments/assets/735e560a-f637-4480-94aa-77b4f12d8428)
 
 
 <br>
