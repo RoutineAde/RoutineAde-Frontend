@@ -46,7 +46,7 @@
 
 
 
-## ⛓️ 화면 구성도
+## ⛓️ 사용자 인터페이스
 
 ![제목 추가](https://github.com/user-attachments/assets/e6703060-707f-4946-9c2a-ac2ccef10108)
 
